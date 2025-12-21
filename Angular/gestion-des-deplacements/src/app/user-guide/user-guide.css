@@ -1,0 +1,262 @@
+.user-guide-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.guide-header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.guide-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5em;
+}
+
+.version {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.guide-content {
+    line-height: 1.8;
+}
+
+/* Table of Contents */
+.toc {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.toc h2 {
+    margin-top: 0;
+    color: #1976d2;
+}
+
+.toc ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.toc li {
+    margin: 10px 0;
+}
+
+.toc a {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.toc a:hover {
+    text-decoration: underline;
+}
+
+/* Sections */
+section {
+    margin-bottom: 50px;
+    scroll-margin-top: 80px;
+}
+
+section h2 {
+    color: #1976d2;
+    border-bottom: 3px solid #1976d2;
+    padding-bottom: 10px;
+    margin-top: 40px;
+}
+
+section h3 {
+    color: #424242;
+    margin-top: 30px;
+}
+
+section h4 {
+    color: #616161;
+    margin-top: 20px;
+}
+
+/* Screenshots */
+.screenshot {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    display: block;
+}
+
+.screenshot.mobile {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+/* Tables */
+.roles-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.roles-table th,
+.roles-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+}
+
+.roles-table th {
+    background: #1976d2;
+    color: white;
+    font-weight: 500;
+}
+
+.roles-table tr:nth-child(even) {
+    background: #f5f5f5;
+}
+
+/* Cards */
+.app-card,
+.support-card {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid #1976d2;
+}
+
+.app-card h3 {
+    margin-top: 0;
+    color: #1976d2;
+}
+
+/* Features & Lists */
+.features,
+.status-legend {
+    background: #e3f2fd;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.features h4,
+.status-legend h4 {
+    margin-top: 0;
+    color: #1976d2;
+}
+
+.features ul,
+.status-legend ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.features li,
+.status-legend li {
+    margin: 8px 0;
+}
+
+/* Tips */
+.tip {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.tip strong {
+    color: #856404;
+}
+
+/* FAQ */
+.faq-item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 15px 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+}
+
+.faq-item h4 {
+    margin-top: 0;
+    color: #1976d2;
+}
+
+.faq-item p {
+    margin-bottom: 0;
+}
+
+/* Footer */
+.guide-footer {
+    text-align: center;
+    padding: 30px 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin-top: 50px;
+    color: #757575;
+}
+
+/* Links */
+a {
+    color: #1976d2;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-guide-container {
+        padding: 10px;
+    }
+
+    .guide-header h1 {
+        font-size: 1.8em;
+    }
+
+    .screenshot {
+        max-width: 100%;
+    }
+
+    .screenshot.mobile {
+        max-width: 100%;
+    }
+
+    .roles-table {
+        font-size: 0.9em;
+    }
+
+    .roles-table th,
+    .roles-table td {
+        padding: 8px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .toc {
+        page-break-after: always;
+    }
+
+    section {
+        page-break-inside: avoid;
+    }
+
+    .screenshot {
+        max-width: 100%;
+        page-break-inside: avoid;
+    }
+}

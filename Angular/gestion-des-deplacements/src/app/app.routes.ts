@@ -121,6 +121,11 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin', 'Admin'] }
   },
   {
+    path: 'user-guide',
+    loadComponent: () => import('./user-guide/user-guide').then(m => m.UserGuideComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'guide-utilisateur',
     loadComponent: () => import('./guide-utilisateur/guide-utilisateur.component').then(m => m.GuideUtilisateurComponent),
     canActivate: [AuthGuard],
