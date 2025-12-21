@@ -1,0 +1,69 @@
+<div style="padding: 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="margin: 0;">Mes Mouvements</h2>
+    <button mat-raised-button [style.background-color]="showCompleted ? '#52ae32' : '#005fb6'"
+      style="color: white; font-weight: 500;" (click)="toggleCompleted()">
+      {{ showCompleted ? '✓ Afficher actifs uniquement' : 'Afficher l\'historique complet' }}
+    </button>
+  </div>
+
+  <div *ngIf="filteredMouvements.length === 0" style="text-align: center; padding: 40px; color: #999;">
+    Aucun mouvement à afficher
+  </div>
+
+  <ul style="list-style: none; padding: 0;">
+    <li *ngFor="let mouvement of filteredMouvements"
+      style="background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #005fb6;">
+      <div>
+        <strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})<br>
+        <strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})<br>
+        <strong>Date:</strong> {{ mouvement.dateDepart | date:'mediumDate' }} - {{ mouvement.dateArrivee |
+        date:'mediumDate' }}<br>
+        <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
+        <ng-container *ngIf="mouvement.demandeur">
+          <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
+        </ng-container>
+        <ng-container *ngIf="mouvement.vehicule">
+          <strong>Véhicule:</strong> {{ mouvement.vehicule?.marque }} {{ mouvement.vehicule?.modele }} ({{
+          mouvement.vehicule?.immatriculation }})<br>
+        </ng-container>
+        <ng-container *ngIf="mouvement.chauffeur">
+          <strong>Chauffeur:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }} (Tél: {{
+          mouvement.chauffeur?.telephone }})<br>
+        </ng-container>
+
+        <!-- NOUVEAU : Affichage des passagers -->
+        <ng-container *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
+          <strong>Passagers:</strong>
+          <ul>
+            <li *ngFor="let passager of mouvement.passagers">
+              {{ passager?.nom }} ({{ passager?.email }})
+            </li>
+          </ul>
+        </ng-container>
+        <!-- NOUVEAU : Affichage du statut -->
+        <strong>Statut:</strong> {{ mouvement.statut | titlecase }}<br>
+        <!-- Utilise le pipe titlecase pour une meilleure présentation -->
+
+        <!-- NOUVEAU : Affichage du motif de refus si le statut est 'refusé' -->
+        <ng-container *ngIf="mouvement.statut === 'refusé'">
+          <strong>Motif de refus:</strong> {{ mouvement.motifRefus }}<br>
+        </ng-container>
+
+        <button mat-icon-button color="primary" (click)="viewMouvement(mouvement)" title="Voir les détails">
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteMouvement(mouvement._id)" style="margin-left: 8px;">
+          Supprimer
+        </button>
+        <button mat-raised-button color="primary" [routerLink]="['/modifier-mouvement', mouvement._id]"
+          *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
+          style="margin-left: 8px;">
+          Modifier
+        </button>
+
+        <hr> <!-- Séparateur pour chaque mouvement -->
+      </div>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,96 @@
+<mat-toolbar color="primary">
+  <div style="display: flex; align-items: center;">
+    <img src="assets/logo_bandeau.png" alt="Logo" style="height: 40px; margin-right: 10px;">
+    <span *ngIf="isAuthenticated">
+      Bienvenue, <span style="font-weight: bold;">{{ userName }}</span> ({{ userProfile }}<span *ngIf="userPays"> - {{
+        userPays }}</span><span *ngIf="userBase"> / {{ userBase }}</span>)
+    </span>
+  </div>
+
+  <!-- Country Selector -->
+  <app-country-selector *ngIf="isAuthenticated"></app-country-selector>
+
+  <span class="toolbar-spacer"></span>
+
+  <!-- Liens de navigation -->
+  <button mat-button *ngIf="isAuthenticated" routerLink="/mes-mouvements">Mes Mouvements</button>
+  <button mat-button *ngIf="isAuthenticated" routerLink="/planning">Planning Global</button>
+  <button mat-button *ngIf="isAuthenticated" routerLink="/demande-mouvement">Nouvelle Demande</button>
+
+  <!-- NOUVEAU Menu Validation -->
+  <ng-container
+    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')">
+    <button mat-button [matMenuTriggerFor]="validationMenu">
+      Validation <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #validationMenu="matMenu">
+      <button mat-menu-item routerLink="/valider-mouvements">
+        <mat-icon>check_circle</mat-icon>
+        <span>Valider Mouvements</span>
+      </button>
+      <button mat-menu-item routerLink="/consolidation">
+        <mat-icon>merge_type</mat-icon>
+        <span>Consolidation</span>
+      </button>
+    </mat-menu>
+  </ng-container>
+
+  <!-- Menu Administration (réorganisé) -->
+  <ng-container
+    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')">
+    <button mat-button [matMenuTriggerFor]="adminMenu">
+      Administration <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #adminMenu="matMenu">
+      <button mat-menu-item routerLink="/gestion-utilisateurs"
+        *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
+        <mat-icon>people</mat-icon>
+        <span>Gestion Utilisateurs</span>
+      </button>
+      <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="userProfile === 'SuperAdmin'">
+        <mat-icon>public</mat-icon>
+        <span>Pays & Bases</span>
+      </button>
+      <button mat-menu-item routerLink="/gestion-projets"
+        *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
+        <mat-icon>folder</mat-icon>
+        <span>Gestion Projets</span>
+      </button>
+      <button mat-menu-item routerLink="/guide-utilisateur"
+        *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
+        <mat-icon>menu_book</mat-icon>
+        <span>Guide Utilisateur</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item routerLink="/gestion-lieux">
+        <mat-icon>place</mat-icon>
+        <span>Gestion Lieux</span>
+      </button>
+      <button mat-menu-item routerLink="/gestion-vehicules">
+        <mat-icon>directions_car</mat-icon>
+        <span>Gestion Véhicules</span>
+      </button>
+      <button mat-menu-item routerLink="/recap-flotte">
+        <mat-icon>assessment</mat-icon>
+        <span>Récapitulatif Flotte</span>
+      </button>
+      <button mat-menu-item routerLink="/rapports-mensuels">
+        <mat-icon>bar_chart</mat-icon>
+        <span>Rapports Mensuels</span>
+      </button>
+    </mat-menu>
+  </ng-container>
+
+  <button mat-button *ngIf="isAuthenticated" routerLink="/logbook">Logbook</button>
+  <button mat-button
+    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')"
+    routerLink="/tableau-bord">Tableau de Bord</button>
+
+  <!-- Boutons Se Connecter / Déconnexion -->
+  <button mat-raised-button color="accent" *ngIf="!isAuthenticated" routerLink="/login">Se Connecter</button>
+  <button mat-raised-button color="warn" *ngIf="isAuthenticated" (click)="logout()">Déconnexion</button>
+</mat-toolbar>
+
+<div style="padding: 20px;">
+  <router-outlet></router-outlet>
+</div>

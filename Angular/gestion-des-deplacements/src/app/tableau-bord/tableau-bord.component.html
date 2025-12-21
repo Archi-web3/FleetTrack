@@ -1,0 +1,176 @@
+<div style="padding: 20px;">
+  <h2>Tableau de Bord - Statistiques</h2>
+
+  <!-- Filtres et Période -->
+  <mat-card style="margin-bottom: 20px;">
+    <mat-card-header>
+      <mat-card-title>Filtres</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <!-- Sélecteur de période -->
+        <mat-form-field appearance="outline">
+          <mat-label>Date début</mat-label>
+          <input matInput [matDatepicker]="pickerDebut" [(ngModel)]="dateDebut">
+          <mat-datepicker-toggle matSuffix [for]="pickerDebut"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDebut></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Date fin</mat-label>
+          <input matInput [matDatepicker]="pickerFin" [(ngModel)]="dateFin">
+          <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFin></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Filtre par projet -->
+        <mat-form-field appearance="outline">
+          <mat-label>Projet</mat-label>
+          <mat-select [(ngModel)]="projetFiltre">
+            <mat-option value="">Tous les projets</mat-option>
+            <mat-option *ngFor="let p of projets" [value]="p">{{p}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Filtre par véhicule -->
+        <mat-form-field appearance="outline">
+          <mat-label>Véhicule</mat-label>
+          <mat-select [(ngModel)]="vehiculeFiltre">
+            <mat-option value="">Tous les véhicules</mat-option>
+            <mat-option *ngFor="let v of vehicules" [value]="v._id">
+              {{v.immatriculation}} - {{v.marque}} {{v.modele}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Bouton actualiser -->
+        <button mat-raised-button color="primary" (click)="chargerStatistiques()" style="height: 56px;">
+          <mat-icon>refresh</mat-icon>
+          Actualiser
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Statistiques Globales -->
+  <mat-card style="margin-bottom: 20px;">
+    <mat-card-header>
+      <mat-card-title>Statistiques Globales</mat-card-title>
+      <mat-card-subtitle *ngIf="dateDebut && dateFin">
+        Période: {{dateDebut | date:'dd/MM/yyyy'}} - {{dateFin | date:'dd/MM/yyyy'}}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+        <div class="stat-card">
+          <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #005fb6;">directions_car</mat-icon>
+          <h2 style="margin: 10px 0; color: #005fb6;">{{statsGlobales.kmTotaux | number:'1.0-0'}} km</h2>
+          <p style="color: #666;">Distance totale</p>
+        </div>
+        <div class="stat-card">
+          <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #52ae32;">eco</mat-icon>
+          <h2 style="margin: 10px 0; color: #52ae32;">{{statsGlobales.co2Total | number:'1.0-0'}} kg</h2>
+          <p style="color: #666;">CO2 émis</p>
+        </div>
+        <div class="stat-card">
+          <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #ff9800;">local_gas_station</mat-icon>
+          <h2 style="margin: 10px 0; color: #ff9800;">{{statsGlobales.consommationTotale | number:'1.0-0'}} L</h2>
+          <p style="color: #666;">Carburant consommé</p>
+        </div>
+        <div class="stat-card">
+          <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #9c27b0;">assignment</mat-icon>
+          <h2 style="margin: 10px 0; color: #9c27b0;">{{statsGlobales.nombreMouvements}}</h2>
+          <p style="color: #666;">Mouvements terminés</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Statistiques par Projet -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Statistiques par Projet</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngIf="statsParProjet.length === 0" style="text-align: center; padding: 20px; color: #999;">
+        Aucune donnée disponible pour la période sélectionnée
+      </div>
+
+      <table mat-table [dataSource]="statsParProjet" *ngIf="statsParProjet.length > 0" style="width: 100%;">
+        <!-- Colonne Projet -->
+        <ng-container matColumnDef="projet">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Projet</th>
+          <td mat-cell *matCellDef="let stat">
+            <strong style="color: #005fb6;">{{stat.projet}}</strong>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Multi-Projets -->
+        <ng-container matColumnDef="multiProjet">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Multi-Projets</th>
+          <td mat-cell *matCellDef="let stat">
+            <span *ngIf="stat.isMultiProjet" [matTooltip]="'Projets impliqués: ' + stat.projetsInvolves.join(', ')"
+              style="background-color: #ff9800; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+              <mat-icon
+                style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle;">group_work</mat-icon>
+              {{stat.projetsInvolves.length}} projets
+            </span>
+            <span *ngIf="!stat.isMultiProjet" style="color: #999;">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Km -->
+        <ng-container matColumnDef="km">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Distance (km)</th>
+          <td mat-cell *matCellDef="let stat">{{stat.kmTotaux | number:'1.0-0'}}</td>
+        </ng-container>
+
+        <!-- Colonne Ratio Km -->
+        <ng-container matColumnDef="ratioKm">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Ratio Km (%)</th>
+          <td mat-cell *matCellDef="let stat">
+            <span style="color: #005fb6; font-weight: 500;">{{stat.ratioKm | number:'1.1-1'}}%</span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne CO2 -->
+        <ng-container matColumnDef="co2">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">CO2 (kg)</th>
+          <td mat-cell *matCellDef="let stat">{{stat.co2Total | number:'1.0-0'}}</td>
+        </ng-container>
+
+        <!-- Colonne Ratio CO2 -->
+        <ng-container matColumnDef="ratioCO2">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Ratio CO2 (%)</th>
+          <td mat-cell *matCellDef="let stat">
+            <span style="color: #52ae32; font-weight: 500;">{{stat.ratioCO2 | number:'1.1-1'}}%</span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Consommation -->
+        <ng-container matColumnDef="consommation">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Consommation (L)</th>
+          <td mat-cell *matCellDef="let stat">{{stat.consommationTotale | number:'1.0-0'}}</td>
+        </ng-container>
+
+        <!-- Colonne Ratio Consommation -->
+        <ng-container matColumnDef="ratioConsommation">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Ratio Conso (%)</th>
+          <td mat-cell *matCellDef="let stat">
+            <span style="color: #ff9800; font-weight: 500;">{{stat.ratioConsommation | number:'1.1-1'}}%</span>
+          </td>
+        </ng-container>
+
+        <!-- Colonne Mouvements -->
+        <ng-container matColumnDef="mouvements">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Mouvements</th>
+          <td mat-cell *matCellDef="let stat">{{stat.nombreMouvements}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

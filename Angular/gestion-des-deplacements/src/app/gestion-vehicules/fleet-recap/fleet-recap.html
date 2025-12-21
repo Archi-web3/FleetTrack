@@ -1,0 +1,147 @@
+<div class="container">
+    <div class="header">
+        <h1>Récapitulatif Flotte</h1>
+        <div class="header-actions">
+            <button mat-raised-button color="accent" routerLink="/rapports-mensuels">
+                <mat-icon>assessment</mat-icon> Rapport Mensuel
+            </button>
+            <button mat-raised-button color="primary" (click)="addVehicle()">
+                <mat-icon>add</mat-icon> Ajouter Véhicule
+            </button>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <!-- ACF Code -->
+            <ng-container matColumnDef="acfCode">
+                <th mat-header-cell *matHeaderCellDef> Code ACF </th>
+                <td mat-cell *matCellDef="let element"> {{element.acfCode || '-'}} </td>
+            </ng-container>
+
+            <!-- Base -->
+            <ng-container matColumnDef="base">
+                <th mat-header-cell *matHeaderCellDef> Base </th>
+                <td mat-cell *matCellDef="let element"> {{element.base || '-'}} </td>
+            </ng-container>
+
+            <!-- Owner -->
+            <ng-container matColumnDef="owner">
+                <th mat-header-cell *matHeaderCellDef> Propriétaire </th>
+                <td mat-cell *matCellDef="let element"> {{element.owner || '-'}} </td>
+            </ng-container>
+
+            <!-- Category -->
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef> Catégorie </th>
+                <td mat-cell *matCellDef="let element"> {{element.category || '-'}} </td>
+            </ng-container>
+
+            <!-- Type -->
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef> Type </th>
+                <td mat-cell *matCellDef="let element"> {{element.type || '-'}} </td>
+            </ng-container>
+
+            <!-- Immatriculation -->
+            <ng-container matColumnDef="immatriculation">
+                <th mat-header-cell *matHeaderCellDef> Immatriculation </th>
+                <td mat-cell *matCellDef="let element"> {{element.immatriculation}} </td>
+            </ng-container>
+
+            <!-- Marque -->
+            <ng-container matColumnDef="marque">
+                <th mat-header-cell *matHeaderCellDef> Marque </th>
+                <td mat-cell *matCellDef="let element"> {{element.marque}} </td>
+            </ng-container>
+
+            <!-- Modele -->
+            <ng-container matColumnDef="modele">
+                <th mat-header-cell *matHeaderCellDef> Modèle </th>
+                <td mat-cell *matCellDef="let element"> {{element.modele}} </td>
+            </ng-container>
+
+            <!-- Fuel Type -->
+            <ng-container matColumnDef="fuelType">
+                <th mat-header-cell *matHeaderCellDef> Carburant </th>
+                <td mat-cell *matCellDef="let element"> {{element.fuelType || '-'}} </td>
+            </ng-container>
+
+            <!-- Year -->
+            <ng-container matColumnDef="year">
+                <th mat-header-cell *matHeaderCellDef> Année </th>
+                <td mat-cell *matCellDef="let element"> {{element.year || '-'}} </td>
+            </ng-container>
+
+            <!-- Start Date -->
+            <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef> 1ère Utilisation </th>
+                <td mat-cell *matCellDef="let element"> {{element.startDate | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+
+            <!-- Purchase Value -->
+            <ng-container matColumnDef="purchaseValue">
+                <th mat-header-cell *matHeaderCellDef> Valeur Achat </th>
+                <td mat-cell *matCellDef="let element"> {{element.purchaseValue | currency:'EUR':'symbol':'1.0-0'}}
+                </td>
+            </ng-container>
+
+            <!-- Depreciation -->
+            <ng-container matColumnDef="depreciationMonths">
+                <th mat-header-cell *matHeaderCellDef> Dépréciation (Mois) </th>
+                <td mat-cell *matCellDef="let element"> {{element.depreciationMonths || '-'}} </td>
+            </ng-container>
+
+            <!-- Insurance Cost -->
+            <ng-container matColumnDef="insuranceCost">
+                <th mat-header-cell *matHeaderCellDef> Coût Assur. (An) </th>
+                <td mat-cell *matCellDef="let element"> {{element.insuranceCost | currency:'EUR':'symbol':'1.0-0'}}
+                </td>
+            </ng-container>
+
+            <!-- Insurance End -->
+            <ng-container matColumnDef="insuranceEndDate">
+                <th mat-header-cell *matHeaderCellDef> Fin Assur. </th>
+                <td mat-cell *matCellDef="let element"> {{element.insuranceEndDate | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+
+            <!-- Initial Mileage -->
+            <ng-container matColumnDef="initialMileage">
+                <th mat-header-cell *matHeaderCellDef> KM Initial </th>
+                <td mat-cell *matCellDef="let element"> {{element.initialMileage | number}} </td>
+            </ng-container>
+
+            <!-- Last Maint Mileage -->
+            <ng-container matColumnDef="lastMaintenanceMileage">
+                <th mat-header-cell *matHeaderCellDef> KM Dern. Maint. </th>
+                <td mat-cell *matCellDef="let element"> {{element.lastMaintenanceMileage | number}} </td>
+            </ng-container>
+
+            <!-- Last Service Type -->
+            <ng-container matColumnDef="lastServiceType">
+                <th mat-header-cell *matHeaderCellDef> Type Dern. Service </th>
+                <td mat-cell *matCellDef="let element"> {{element.lastServiceType || '-'}} </td>
+            </ng-container>
+
+            <!-- Remarks -->
+            <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef> Remarques </th>
+                <td mat-cell *matCellDef="let element"> {{element.remarks || '-'}} </td>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button color="primary" (click)="editVehicle(element)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+</div>

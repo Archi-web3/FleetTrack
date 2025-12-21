@@ -1,0 +1,52 @@
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs'); // Importez bcryptjs
+
+const utilisateurSchema = new mongoose.Schema({
+  nom: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  motDePasse: { type: String, required: true },
+  profil: {
+    type: String,
+    enum: ['SuperAdmin', 'Admin', 'Superviseur', 'Technicien', 'Guest', 'Chauffeur'],
+    default: 'Technicien'
+  },
+  // Multi-Tenancy
+  pays: { type: mongoose.Schema.Types.ObjectId, ref: 'Pays' },
+  base: { type: mongoose.Schema.Types.ObjectId, ref: 'Base' },
+
+  // Champs spécifiques aux chauffeurs
+  prenom: { type: String },
+  telephone: { type: String },
+  permis: { type: String },
+  disponible: { type: Boolean, default: true },
+  formationEcoConduite: {
+    effectuee: { type: Boolean, default: false },
+    date: { type: Date }
+  },
+  vehiculeAttitre: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicule' },
+
+  // Projet/Programme
+  projet: {
+    type: String,
+    default: 'Support',
+    trim: true
+  }
+});
+
+// Pré-hook Mongoose : avant de sauvegarder, hacher le mot de passe
+utilisateurSchema.pre('save', async function (next) {
+  if (this.isModified('motDePasse')) { // Hacher seulement si le mot de passe a été modifié ou est nouveau
+    const salt = await bcrypt.genSalt(10); // Générer un sel (coût de hachage de 10)
+    this.motDePasse = await bcrypt.hash(this.motDePasse, salt); // Hacher le mot de passe
+  }
+  next(); // Passer au prochain middleware ou à la sauvegarde
+});
+
+// Méthode pour comparer un mot de passe donné avec le mot de passe haché
+utilisateurSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.motDePasse);
+};
+
+const Utilisateur = mongoose.model('Utilisateur', utilisateurSchema);
+
+module.exports = Utilisateur;

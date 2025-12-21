@@ -1,0 +1,151 @@
+<div class="trips-container">
+    <!-- Header -->
+    <div class="trips-header">
+        <h1>
+            <mat-icon>directions_car</mat-icon>
+            Trajets
+        </h1>
+        <div class="header-actions">
+            <button mat-raised-button color="primary" (click)="startNewTrip()">
+                <mat-icon>add</mat-icon>
+                Nouveau trajet
+            </button>
+            <button mat-icon-button (click)="router.navigate(['/dashboard'])" matTooltip="Retour au tableau de bord">
+                <mat-icon>dashboard</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="isSyncing" (click)="syncData()" matTooltip="Synchroniser">
+                <mat-icon [class.spinning]="isSyncing">sync</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- Trips Table -->
+    <div class="table-container">
+        <table mat-table [dataSource]="trips" class="trips-table">
+
+            <!-- Sync Status Column -->
+            <ng-container matColumnDef="syncStatus">
+                <th mat-header-cell *matHeaderCellDef>Sync</th>
+                <td mat-cell *matCellDef="let trip">
+                    <mat-icon [color]="trip.synced ? 'primary' : 'warn'"
+                        [matTooltip]="trip.synced ? 'Synchronisé' : 'En attente de synchronisation'">
+                        {{ trip.synced ? 'check_circle' : 'sync' }}
+                    </mat-icon>
+                </td>
+            </ng-container>
+
+            <!-- Date Column -->
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let trip">
+                    {{ trip.startDateTime | date:'dd/MM/yyyy' }}
+                </td>
+            </ng-container>
+
+            <!-- Time Column -->
+            <ng-container matColumnDef="time">
+                <th mat-header-cell *matHeaderCellDef>Heure</th>
+                <td mat-cell *matCellDef="let trip">
+                    {{ trip.startDateTime | date:'HH:mm' }}
+                </td>
+            </ng-container>
+
+            <!-- Departure Location Column -->
+            <ng-container matColumnDef="departure">
+                <th mat-header-cell *matHeaderCellDef> {{ (isHandset$ | async) ? 'Itinéraire' : 'Lieu Départ' }} </th>
+                <td mat-cell *matCellDef="let trip">
+                    <ng-container *ngIf="(isHandset$ | async); else desktopDeparture">
+                        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                            <span>{{ getDepartureName(trip) }}</span>
+                            <mat-icon style="font-size: 14px; height: 14px; width: 14px;">arrow_forward</mat-icon>
+                            <span>{{ getArrivalName(trip) }}</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #desktopDeparture>
+                        {{ getDepartureName(trip) }}
+                    </ng-template>
+                </td>
+            </ng-container>
+
+            <!-- Arrival Location Column -->
+            <ng-container matColumnDef="arrival">
+                <th mat-header-cell *matHeaderCellDef>Lieu Arrivée</th>
+                <td mat-cell *matCellDef="let trip">
+                    {{ getArrivalName(trip) }}
+                </td>
+            </ng-container>
+
+            <!-- Passengers Column -->
+            <ng-container matColumnDef="passengers">
+                <th mat-header-cell *matHeaderCellDef>Passagers</th>
+                <td mat-cell *matCellDef="let trip">
+                    <span class="passenger-count" [matTooltip]="getPassengerNames(trip)" matTooltipPosition="above">
+                        <mat-icon class="small-icon">people</mat-icon>
+                        {{ trip.passengerIds?.length || 0 }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Purpose Column -->
+            <ng-container matColumnDef="purpose">
+                <th mat-header-cell *matHeaderCellDef>Motif</th>
+                <td mat-cell *matCellDef="let trip">
+                    {{ trip.purpose || '-' }}
+                </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let trip">
+                    <button mat-icon-button color="primary" matTooltip="Voir détails" (click)="openDetails(trip)">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteTrip(trip, $event)" matTooltip="Supprimer"
+                        *ngIf="isAdmin">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <!-- Table Rows -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="trip-row"></tr>
+
+            <!-- No Data Row -->
+            <tr class="mat-row no-data-row" *matNoDataRow>
+                <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                    <div class="no-data">
+                        <mat-icon>inbox</mat-icon>
+                        <p>Aucun trajet trouvé</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <mat-card class="stat-card">
+            <mat-icon>local_gas_station</mat-icon>
+            <div class="stat-info">
+                <h3>{{ fuels.length }}</h3>
+                <p>Ravitaillements</p>
+            </div>
+        </mat-card>
+        <mat-card class="stat-card">
+            <mat-icon>build</mat-icon>
+            <div class="stat-info">
+                <h3>{{ maintenances.length }}</h3>
+                <p>Maintenances</p>
+            </div>
+        </mat-card>
+        <mat-card class="stat-card">
+            <mat-icon>warning</mat-icon>
+            <div class="stat-info">
+                <h3>{{ incidents.length }}</h3>
+                <p>Incidents</p>
+            </div>
+        </mat-card>
+    </div>
+</div>

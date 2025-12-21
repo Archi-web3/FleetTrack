@@ -1,0 +1,142 @@
+<div class="planning-container">
+    <!-- Header -->
+    <div class="header">
+        <button mat-icon-button (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h2>Mon Planning</h2>
+        <div class="spacer"></div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+        <mat-icon class="spinning">sync</mat-icon>
+        <p>Chargement du planning...</p>
+    </div>
+
+    <div *ngIf="!isLoading">
+        <mat-tab-group animationDuration="0ms">
+            <!-- ONGLET 1 : MISSIONS EN COURS -->
+            <mat-tab label="Missions">
+                <div class="tab-content">
+                    <!-- Empty State Active -->
+                    <div *ngIf="activeMovements.length === 0" class="empty-state">
+                        <mat-icon>event_available</mat-icon>
+                        <h3>Aucune mission active</h3>
+                        <p>Vous n'avez pas de mission à effectuer pour le moment.</p>
+                    </div>
+
+                    <!-- Active List -->
+                    <div *ngIf="activeMovements.length > 0" class="movements-list">
+                        <mat-card *ngFor="let movement of activeMovements" class="movement-card">
+                            <mat-card-header>
+                                <mat-icon mat-card-avatar [class]="'status-icon ' + movement.statut">
+                                    {{ getStatusIcon(movement.statut) }}
+                                </mat-icon>
+                                <mat-card-title>
+                                    <span *ngIf="movement.stops && movement.stops.length > 0">
+                                        {{ movement.stops[0].lieu?.nom || 'Départ' }}
+                                        <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                                        {{ movement.stops[movement.stops.length - 1].lieu?.nom || 'Arrivée' }}
+                                    </span>
+                                </mat-card-title>
+                                <mat-card-subtitle>
+                                    <mat-chip [color]="getStatusColor(movement.statut)" selected>
+                                        {{ movement.statut }}
+                                    </mat-chip>
+                                </mat-card-subtitle>
+                            </mat-card-header>
+
+                            <mat-card-content>
+                                <div class="movement-details">
+                                    <div class="detail-row" *ngIf="movement.stops && movement.stops.length > 0">
+                                        <mat-icon>event</mat-icon>
+                                        <div class="date-times">
+                                            <div>
+                                                <strong>Départ:</strong>
+                                                {{ movement.stops[0].dateDepart | date:'short' }}
+                                            </div>
+                                            <div *ngIf="movement.stops[movement.stops.length - 1].dateArrivee">
+                                                <strong>Arrivée:</strong>
+                                                {{ movement.stops[movement.stops.length - 1].dateArrivee | date:'short'
+                                                }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-row" *ngIf="movement.vehicule">
+                                        <mat-icon>directions_car</mat-icon>
+                                        <span>{{ movement.vehicule.marque }} {{ movement.vehicule.modele }} ({{
+                                            movement.vehicule.immatriculation }})</span>
+                                    </div>
+                                    <div class="detail-row" *ngIf="movement.objectif">
+                                        <mat-icon>description</mat-icon>
+                                        <span>{{ movement.objectif }}</span>
+                                    </div>
+                                </div>
+                            </mat-card-content>
+
+                            <mat-card-actions>
+                                <button mat-button (click)="viewDetails(movement)">
+                                    <mat-icon>info</mat-icon>
+                                    Détails
+                                </button>
+                                <button mat-raised-button color="accent" *ngIf="canTakeCharge(movement)"
+                                    (click)="takeCharge(movement)">
+                                    <mat-icon>assignment_turned_in</mat-icon>
+                                    Prendre en charge
+                                </button>
+                                <button mat-raised-button color="primary" *ngIf="canStart(movement)"
+                                    (click)="startMovement(movement)">
+                                    <mat-icon>play_arrow</mat-icon>
+                                    Démarrer
+                                </button>
+                                <button mat-raised-button color="warn" *ngIf="movement.statut === 'en cours'"
+                                    (click)="startMovement(movement)">
+                                    <mat-icon>directions_car</mat-icon>
+                                    Reprendre
+                                </button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- ONGLET 2 : HISTORIQUE -->
+            <mat-tab label="Historique">
+                <div class="tab-content">
+                    <!-- Empty State History -->
+                    <div *ngIf="historyMovements.length === 0" class="empty-state">
+                        <mat-icon>history</mat-icon>
+                        <h3>Aucun historique</h3>
+                        <p>Vos trajets terminés apparaîtront ici.</p>
+                    </div>
+
+                    <!-- History List -->
+                    <div *ngIf="historyMovements.length > 0" class="movements-list">
+                        <mat-card *ngFor="let movement of historyMovements" class="movement-card history-card">
+                            <mat-card-header>
+                                <mat-icon mat-card-avatar>done_all</mat-icon>
+                                <mat-card-title>
+                                    <span *ngIf="movement.stops && movement.stops.length > 0">
+                                        {{ movement.stops[0].lieu?.nom || 'Départ' }}
+                                        <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                                        {{ movement.stops[movement.stops.length - 1].lieu?.nom || 'Arrivée' }}
+                                    </span>
+                                </mat-card-title>
+                                <mat-card-subtitle>
+                                    {{ movement.statut }} - {{ movement.stops[0].dateDepart | date:'shortDate' }}
+                                </mat-card-subtitle>
+                            </mat-card-header>
+                            <mat-card-actions>
+                                <button mat-button (click)="viewDetails(movement)">
+                                    <mat-icon>visibility</mat-icon>
+                                    Voir détails
+                                </button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

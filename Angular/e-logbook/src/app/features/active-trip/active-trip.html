@@ -1,0 +1,95 @@
+<div class="trip-container">
+    <mat-card class="trip-card">
+        <mat-card-header>
+            <mat-card-title>{{ tripStarted ? 'Trajet en cours' : 'Nouveau Trajet' }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+
+            <!-- START TRIP FORM -->
+            <div *ngIf="!tripStarted">
+                <form [formGroup]="startForm">
+                    <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Kilométrage de départ</mat-label>
+                        <input matInput type="number" formControlName="startMileage">
+                        <mat-hint *ngIf="lastMileage > 0">Dernier kilométrage: {{ lastMileage }} km</mat-hint>
+                        <mat-error *ngIf="startForm.get('startMileage')?.invalid">
+                            {{ getStartMileageError() }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Lieu de départ</mat-label>
+                        <mat-select formControlName="departurePlaceId">
+                            <mat-option *ngFor="let lieu of lieux" [value]="lieu._id">
+                                {{ lieu.nom }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>Le lieu de départ est requis</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Motif du déplacement</mat-label>
+                        <input matInput formControlName="purpose">
+                        <mat-error>Le motif est requis</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Passagers</mat-label>
+                        <mat-select formControlName="passengerIds" multiple>
+                            <mat-option *ngFor="let user of users" [value]="user._id">
+                                {{ user.nom }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div class="actions">
+                        <button mat-raised-button color="warn" type="button" (click)="cancel()">ANNULER</button>
+                        <button mat-raised-button color="primary" type="button" (click)="startTrip()"
+                            [disabled]="startForm.invalid || startForm.pending">
+                            <span *ngIf="!startForm.pending">DÉMARRER</span>
+                            <span *ngIf="startForm.pending">Validation...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- STOP TRIP FORM -->
+            <div *ngIf="tripStarted">
+                <div class="timer">
+                    <p>Départ: {{ startTime | date:'shortTime' }}</p>
+                </div>
+
+                <form [formGroup]="endForm">
+                    <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Lieu d'arrivée</mat-label>
+                        <mat-select formControlName="arrivalPlaceId">
+                            <mat-option *ngFor="let lieu of lieux" [value]="lieu._id">
+                                {{ lieu.nom }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>Le lieu d'arrivée est requis</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Kilométrage d'arrivée</mat-label>
+                        <input matInput type="number" formControlName="endMileage">
+                        <mat-hint>Kilométrage de départ: {{ startForm.get('startMileage')?.value }} km</mat-hint>
+                        <mat-error *ngIf="endForm.get('endMileage')?.invalid">
+                            {{ getEndMileageError() }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div class="actions">
+                        <button mat-raised-button color="warn" type="button" (click)="cancel()">ANNULER</button>
+                        <button mat-raised-button color="accent" type="button" (click)="stopTrip()"
+                            [disabled]="endForm.invalid || endForm.pending">
+                            <span *ngIf="!endForm.pending">TERMINER</span>
+                            <span *ngIf="endForm.pending">Validation...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -1,0 +1,36 @@
+<div class="selector-container">
+    <mat-card class="selector-card">
+        <mat-card-header>
+            <mat-card-title>Sélectionner un Véhicule</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+
+            <div *ngIf="isLoading" class="loading">
+                Chargement des véhicules...
+            </div>
+
+            <div *ngIf="!isLoading">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Véhicule</mat-label>
+                    <mat-select [(ngModel)]="selectedVehicleId">
+                        <mat-option *ngFor="let vehicle of vehicules" [value]="vehicle._id" class="vehicle-option">
+                            <div class="vehicle-item">
+                                <span>{{ vehicle.immatriculation }} - {{ vehicle.marque }} {{ vehicle.modele }}</span>
+                                <button mat-icon-button color="warn" *ngIf="isAdmin"
+                                    (click)="deleteVehicle($event, vehicle._id)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" class="full-width select-btn" (click)="selectVehicle()"
+                    [disabled]="!selectedVehicleId">
+                    CONTINUER
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>

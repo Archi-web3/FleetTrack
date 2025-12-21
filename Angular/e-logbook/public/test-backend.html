@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Backend</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Test de connexion au backend</h1>
+    <button onclick="testBackend()">Tester la connexion</button>
+    <div id="result"></div>
+
+    <script>
+        function testBackend() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Test en cours...';
+
+            fetch('http://192.168.1.60:3000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: 'jonathan.doe@example.com',
+                    motDePasse: 'password123'
+                })
+            })
+                .then(response => {
+                    resultDiv.innerHTML = 'Réponse reçue ! Status: ' + response.status;
+                    return response.json();
+                })
+                .then(data => {
+                    resultDiv.innerHTML += '<br>Données: ' + JSON.stringify(data);
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = 'ERREUR: ' + error.message;
+                });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,187 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { VehiculeService } from '../vehicule.service';
+import { AuthService } from '../auth.service';
+import { AdminService } from '../admin.service';
+
+@Component({
+  selector: 'app-gestion-vehicules',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './gestion-vehicules.component.html',
+  styleUrls: ['./gestion-vehicules.component.css']
+})
+export class GestionVehiculesComponent implements OnInit {
+  vehicules: any[] = [];
+  newVehicule: any = {
+    marque: '',
+    modele: '',
+    immatriculation: '',
+    type: 'Voiture',
+    capacitePassagers: 1,
+    enService: true,
+    pays: '',
+    base: '',
+    emissionsCO2: { valeur: null, source: 'Constructeur' },
+    consommation: { valeur: null, source: 'Constructeur', dateTest: null }
+  };
+  selectedVehicule: any = null;
+  vehicleTypes = ['Voiture', 'Camionnette', 'Moto', 'Autre'];
+  userProfile: string | null = null;
+  userPaysId: string | null = null;
+  userBaseId: string | null = null;
+
+  // Pour SuperAdmin
+  paysList: any[] = [];
+  basesList: any[] = [];
+
+  // Pour filtrage
+  showAllBasesInPays: boolean = false;
+
+  constructor(
+    private vehiculeService: VehiculeService,
+    private authService: AuthService,
+    private adminService: AdminService
+  ) { }
+
+  ngOnInit(): void {
+    this.userProfile = this.authService.getUserProfile();
+    this.userPaysId = this.authService.getUserPaysId();
+    this.userBaseId = this.authService.getUserBaseId();
+
+    if (this.userProfile === 'SuperAdmin') {
+      this.loadPays();
+    } else if (this.userProfile === 'Admin' || this.userProfile === 'Superviseur') {
+      this.newVehicule.pays = this.userPaysId;
+      this.newVehicule.base = this.userBaseId;
+      if (this.userPaysId) {
+        this.loadBases(this.userPaysId);
+      }
+    }
+
+    this.loadVehicules();
+  }
+
+  loadPays(): void {
+    this.adminService.getPays().subscribe(
+      (data) => this.paysList = data,
+      (error) => console.error('Erreur chargement pays:', error)
+    );
+  }
+
+  loadBases(paysId?: string): void {
+    this.adminService.getBases(paysId).subscribe(
+      (data) => this.basesList = data,
+      (error) => console.error('Erreur chargement bases:', error)
+    );
+  }
+
+  onPaysChange(): void {
+    this.newVehicule.base = '';
+    if (this.newVehicule.pays) {
+      this.loadBases(this.newVehicule.pays);
+    } else {
+      this.basesList = [];
+    }
+  }
+
+  loadVehicules(): void {
+    this.vehiculeService.getVehicules().subscribe(
+      (data) => {
+        // Filtrage côté client
+        if (this.userProfile === 'SuperAdmin') {
+          // SuperAdmin voit tout
+          this.vehicules = data;
+        } else if (!this.showAllBasesInPays && this.userBaseId) {
+          // Afficher uniquement les véhicules de ma base (exclure les véhicules sans base)
+          this.vehicules = data.filter((v: any) =>
+            v.base && v.base._id === this.userBaseId
+          );
+        } else if (this.showAllBasesInPays && this.userPaysId) {
+          // Afficher tous les véhicules du même pays (exclure les véhicules sans pays)
+          this.vehicules = data.filter((v: any) =>
+            v.pays && v.pays._id === this.userPaysId
+          );
+        } else {
+          this.vehicules = data;
+        }
+      },
+      (error) => console.error('Erreur chargement véhicules:', error)
+    );
+  }
+
+  toggleShowAllBasesInPays(): void {
+    this.showAllBasesInPays = !this.showAllBasesInPays;
+    this.loadVehicules();
+  }
+
+  addVehicule(): void {
+    this.vehiculeService.addVehicule(this.newVehicule).subscribe(
+      (response) => {
+        alert('Véhicule créé avec succès !');
+        this.newVehicule = {
+          marque: '',
+          modele: '',
+          immatriculation: '',
+          type: 'Voiture',
+          capacitePassagers: 1,
+          enService: true,
+          pays: this.userProfile === 'SuperAdmin' ? '' : this.userPaysId,
+          base: this.userProfile === 'SuperAdmin' ? '' : this.userBaseId,
+          emissionsCO2: { valeur: null, source: 'Constructeur' },
+          consommation: { valeur: null, source: 'Constructeur', dateTest: null }
+        };
+        this.loadVehicules();
+      },
+      (error) => {
+        console.error('Erreur création véhicule:', error);
+        if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à créer des véhicules.');
+        else alert('Erreur lors de la création du véhicule.');
+      }
+    );
+  }
+
+  selectVehicule(vehicule: any): void {
+    this.selectedVehicule = { ...vehicule };
+    // Initialiser les champs environnementaux s'ils n'existent pas
+    if (!this.selectedVehicule.emissionsCO2) {
+      this.selectedVehicule.emissionsCO2 = { valeur: null, source: 'Constructeur' };
+    }
+    if (!this.selectedVehicule.consommation) {
+      this.selectedVehicule.consommation = { valeur: null, source: 'Constructeur', dateTest: null };
+    }
+  }
+
+  updateVehicule(): void {
+    if (!this.selectedVehicule) return;
+    this.vehiculeService.updateVehicule(this.selectedVehicule._id, this.selectedVehicule).subscribe(
+      (response) => {
+        alert('Véhicule mis à jour avec succès !');
+        this.selectedVehicule = null;
+        this.loadVehicules();
+      },
+      (error) => {
+        console.error('Erreur mise à jour véhicule:', error);
+        if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à modifier ce véhicule.');
+        else alert('Erreur lors de la mise à jour du véhicule.');
+      }
+    );
+  }
+
+  deleteVehicule(id: string): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')) {
+      this.vehiculeService.deleteVehicule(id).subscribe(
+        (response) => {
+          alert('Véhicule supprimé avec succès !');
+          this.loadVehicules();
+        },
+        (error) => {
+          console.error('Erreur suppression véhicule:', error);
+          if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à supprimer des véhicules.');
+          else alert('Erreur lors de la suppression du véhicule.');
+        }
+      );
+    }
+  }
+}

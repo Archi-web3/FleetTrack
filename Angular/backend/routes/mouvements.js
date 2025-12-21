@@ -1,0 +1,426 @@
+const express = require('express');
+const router = express.Router();
+const Mouvement = require('../models/mouvement.model');
+const Lieu = require('../models/lieu.model');
+const Vehicule = require('../models/vehicule.model');
+const Chauffeur = require('../models/chauffeur.model');
+const Utilisateur = require('../models/utilisateur.model'); // AJOUT pour vérifier les chauffeurs
+const auth = require('../middleware/authMiddleware');
+const mongoose = require('mongoose');
+
+// Route pour créer un nouveau mouvement (pour test - NON PROTÉGÉE PAR AUTH car c'est un test simple)
+router.post('/mouvements/test', async (req, res) => {
+  console.log('Requête reçue sur /mouvements/test (non protégée)');
+  try {
+    const nouveauMouvement = new Mouvement({
+      stops: [
+        {
+          lieu: '691ccf5fb73cc314cea638c8', // REMPLACEZ PAR UN VRAI ID DE LIEU EXSITANT
+          dateDepart: new Date('2025-11-19T09:00:00Z'),
+          dateArrivee: new Date('2025-11-19T09:05:00Z')
+        },
+        {
+          lieu: '691ccfa5b73cc314cea638cb', // REMPLACEZ PAR UN VRAI ID DE LIEU EXSITANT
+          dateDepart: new Date('2025-11-19T10:00:00Z'),
+          dateArrivee: new Date('2025-11-19T10:05:00Z')
+        }
+      ],
+      demandeur: '691725d3c84274956b8afba3', // REMPLACEZ PAR UN VRAI ID D'UTILISATEUR EXSITANT
+      vehicule: '691727c0f7f497a0465224d1', // REMPLACEZ PAR UN VRAI ID DE VÉHICULE EXSITANT
+      chauffeur: '69172905fbfec25232433f2e', // REMPLACEZ PAR UN VRAI ID DE CHAUFFEUR EXSITANT
+      objectif: 'Test depuis le backend',
+      statut: 'en attente',
+      isRoundTrip: false
+    });
+    const savedMouvement = await nouveauMouvement.save();
+    console.log('Mouvement de test créé:', savedMouvement);
+    res.status(201).json(savedMouvement);
+  } catch (err) {
+    console.error('Erreur lors de la création du mouvement de test:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Récupérer les mouvements pour le planning (uniquement validés ou en cours)
+router.get('/mouvements/planning', auth(), async (req, res) => {
+  try {
+    let query = {
+      statut: { $in: ['validé', 'pris en charge', 'en cours', 'terminé'] }
+    };
+
+    if (req.utilisateur.base) {
+      query.base = req.utilisateur.base;
+    }
+
+    // Filtre MULTI-PAYS : Filtrer par pays sélectionné
+    if (req.selectedCountry) {
+      query.pays = req.selectedCountry;
+    }
+
+    const mouvements = await Mouvement.find(query)
+      .populate({
+        path: 'stops.lieu',
+        select: 'nom adresse coordonnees estSensible'
+      })
+      .populate('demandeur', 'nom email')
+      .populate('vehicule', 'marque modele immatriculation')
+      .populate('chauffeur', 'nom prenom telephone')
+      .populate('passagers', 'nom email')
+      .sort({ 'stops.0.dateDepart': 1 });
+
+    res.json(mouvements);
+  } catch (err) {
+    console.error('Erreur lors de la récupération du planning des mouvements:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// Obtenir les statistiques des mouvements par statut
+router.get('/mouvements/stats-by-status', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, res) => {
+  try {
+    const stats = await Mouvement.aggregate([
+      {
+        $match: req.utilisateur.base ? { base: new mongoose.Types.ObjectId(req.utilisateur.base) } : {}
+      },
+      {
+        $group: {
+          _id: '$statut',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          statut: '$_id',
+          count: 1,
+          _id: 0
+        }
+      }
+    ]);
+    res.json(stats);
+  } catch (err) {
+    console.error('Erreur lors de la récupération des statistiques par statut:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// Récupérer tous les mouvements (Accès pour tout utilisateur connecté)
+router.get('/mouvements', auth(), async (req, res) => {
+  try {
+    let query = {};
+    if (req.utilisateur.profil === 'Technicien' || req.utilisateur.profil === 'Guest') {
+      if (!mongoose.Types.ObjectId.isValid(req.utilisateur.id)) {
+        return res.status(400).json({ message: 'ID utilisateur invalide' });
+      }
+      query = { demandeur: req.utilisateur.id };
+    } else if (req.query.demandeurId && mongoose.Types.ObjectId.isValid(req.query.demandeurId)) {
+      query = { demandeur: req.query.demandeurId };
+    }
+
+    // Filtre MULTI-SITES : On ne voit que les mouvements de sa base (sauf SuperAdmin)
+    if (req.utilisateur.base && req.utilisateur.profil !== 'SuperAdmin') {
+      query.base = req.utilisateur.base;
+    }
+
+    // Filtre MULTI-PAYS : Filtrer par pays sélectionné
+    if (req.selectedCountry) {
+      query.pays = req.selectedCountry;
+    }
+
+    const mouvements = await Mouvement.find(query)
+      .populate({
+        path: 'stops.lieu',
+        select: 'nom adresse coordonnees estSensible'
+      })
+      .populate('demandeur', 'nom email')
+      .populate('vehicule', 'marque modele immatriculation')
+      .populate('chauffeur', 'nom prenom telephone')
+      .populate('passagers', 'nom email');
+    console.log('Mouvements récupérés avec filtre:', query, mouvements);
+    res.json(mouvements);
+  } catch (err) {
+    console.error('Erreur lors de la récupération des mouvements:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET one movement (Accès pour tout utilisateur connecté)
+router.get('/mouvements/:id', auth(), async (req, res) => {
+  try {
+    const mouvement = await Mouvement.findById(req.params.id)
+      .populate({
+        path: 'stops.lieu',
+        select: 'nom adresse coordonnees estSensible'
+      })
+      .populate('demandeur', 'nom email')
+      .populate('vehicule', 'marque modele immatriculation')
+      .populate('chauffeur', 'nom prenom telephone')
+      .populate('passagers', 'nom email');
+    if (mouvement == null) {
+      return res.status(404).json({ message: 'Cannot find movement' });
+    }
+    res.json(mouvement);
+  } catch (err) {
+    console.error("Erreur GET /mouvements/:id:", err);
+    return res.status(500).json({ message: err.message });
+  }
+});
+
+// Créer un nouveau mouvement (Accès pour tout utilisateur connecté)
+router.post('/mouvements', auth(), async (req, res) => {
+  try {
+    // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ ---
+    let statutInitial = 'en attente';
+    const stopLieuIds = req.body.stops.map((stop) => stop.lieu);
+
+    // Vérifier si les lieux sont sensibles
+    const lieuxImpliques = await Lieu.find({
+      _id: { $in: stopLieuIds }
+    });
+
+    const estLieuSensible = lieuxImpliques.some(lieu => lieu.estSensible);
+
+    if (estLieuSensible) {
+      statutInitial = 'en attente validation sécurité';
+    }
+    // --- FIN NOUVELLE LOGIQUE ---
+
+    const mouvement = new Mouvement({
+      stops: req.body.stops, // Utiliser le tableau stops
+      demandeur: req.body.demandeur,
+      vehicule: req.body.vehicule,
+      chauffeur: req.body.chauffeur,
+      passagers: req.body.passagers,
+      materiel: req.body.materiel,
+      objectif: req.body.objectif,
+      projet: req.body.projet,
+      statut: statutInitial, // Utiliser le statut déterminé par la logique de sécurité
+      isRoundTrip: req.body.isRoundTrip // Récupérer l'information aller-retour
+    });
+
+    if (!mouvement.demandeur) {
+      mouvement.demandeur = req.utilisateur.id;
+    }
+
+    // Assigner la base du créateur au mouvement
+    if (req.utilisateur.base) {
+      mouvement.base = req.utilisateur.base;
+    }
+
+    // Si le projet n'est pas fourni, le récupérer depuis le demandeur
+    if (!mouvement.projet && mouvement.demandeur) {
+      try {
+        const demandeur = await Utilisateur.findById(mouvement.demandeur);
+        if (demandeur && demandeur.projet) {
+          mouvement.projet = demandeur.projet;
+          console.log(`Projet assigné au mouvement depuis le demandeur: ${mouvement.projet}`);
+        }
+      } catch (err) {
+        console.error('Erreur lors de la récupération du projet du demandeur:', err);
+      }
+    }
+
+    // Récupérer les projets de tous les passagers pour détecter les mouvements multi-projets
+    if (mouvement.passagers && mouvement.passagers.length > 0) {
+      try {
+        const passagers = await Utilisateur.find({ _id: { $in: mouvement.passagers } });
+        const projetsUniques = [...new Set(passagers.map(p => p.projet).filter(p => p))];
+        mouvement.projetsPassagers = projetsUniques;
+
+        if (projetsUniques.length > 1) {
+          console.log(`Mouvement multi-projets détecté: ${projetsUniques.join(', ')}`);
+        }
+      } catch (err) {
+        console.error('Erreur lors de la récupération des projets des passagers:', err);
+      }
+    }
+
+    const nouveauMouvement = await mouvement.save();
+    res.status(201).json(nouveauMouvement);
+  } catch (err) {
+    console.error('Erreur lors de la création du mouvement:', err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+
+// MISE À JOUR D'UN MOUVEMENT (PROTÉGÉE PAR RÔLE : Admin ou Superviseur peuvent valider/refuser/AFFECTER)
+router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, res) => {
+  try {
+    console.log('=== DEBUG: PUT /mouvements/:id ===');
+    console.log('Body reçu:', JSON.stringify(req.body, null, 2));
+    const mouvement = await Mouvement.findById(req.params.id);
+    if (mouvement == null) {
+      return res.status(404).json({ message: 'Cannot find movement' });
+    }
+    console.log('Mouvement trouvé:', mouvement._id);
+    console.log('Stops du mouvement:', JSON.stringify(mouvement.stops, null, 2));
+
+    // --- LOGIQUE : Si le statut devient 'regroupé-enfant', désaffecter vehicule/chauffeur ---
+    if (req.body.statut === 'regroupé-enfant') {
+      mouvement.vehicule = null;
+      mouvement.chauffeur = null;
+    }
+
+    // --- CONTRÔLES DE DISPONIBILITÉ ---
+    // Les dates de départ/arrivée globales sont dérivées des stops par le hook pre-save.
+    // Nous allons utiliser ces dates pour les contrôles de disponibilité.
+    // Donc, nous devons récupérer les dates du premier et dernier stop après la mise à jour des stops.
+    // newDateDepart et newDateArrivee seront définis par le body si stops sont modifiés, ou par l'objet mouvement existant.
+    let newDateDepart;
+    let newDateArrivee;
+
+    // Déterminer les dates à utiliser pour le conflit
+    if (req.body.stops && req.body.stops.length > 0) {
+      console.log('Utilisation des stops du body');
+      newDateDepart = new Date(req.body.stops[0].dateDepart);
+      newDateArrivee = new Date(req.body.stops[req.body.stops.length - 1].dateArrivee);
+    } else if (mouvement.stops && mouvement.stops.length > 0) {
+      console.log('Utilisation des stops existants du mouvement');
+      // Utiliser les stops existants du mouvement
+      newDateDepart = new Date(mouvement.stops[0].dateDepart);
+      newDateArrivee = new Date(mouvement.stops[mouvement.stops.length - 1].dateArrivee);
+    } else {
+      console.error('ERREUR: Aucun stop valide trouvé');
+      return res.status(400).json({ message: 'Le mouvement doit avoir au moins un stop avec des dates valides.' });
+    }
+
+    console.log('Dates calculées - Départ:', newDateDepart, 'Arrivée:', newDateArrivee);
+
+    // Validation si des dates sont manquantes
+    if (!newDateDepart || !newDateArrivee || isNaN(newDateDepart.getTime()) || isNaN(newDateArrivee.getTime())) {
+      console.error('ERREUR: Dates invalides - Départ:', newDateDepart, 'Arrivée:', newDateArrivee);
+      return res.status(400).json({ message: 'Dates de mouvement invalides pour les vérifications de disponibilité.' });
+    }
+
+
+    const newVehiculeId = req.body.vehicule;
+    const newChauffeurId = req.body.chauffeur;
+
+    // Seulement si une tentative d'affectation est faite ET que les dates sont valides
+    if ((newVehiculeId || newChauffeurId) && newDateDepart && newDateArrivee) {
+      // 1. Vérifier si le chauffeur existe et a le bon profil
+      if (newChauffeurId) {
+        console.log('Vérification du chauffeur ID:', newChauffeurId);
+        const chauffeur = await Utilisateur.findById(newChauffeurId);
+        if (!chauffeur) {
+          console.error('ERREUR: Chauffeur introuvable');
+          return res.status(400).json({ message: 'Chauffeur sélectionné introuvable.' });
+        }
+        console.log('Chauffeur trouvé:', chauffeur.nom, 'Profil:', chauffeur.profil);
+        if (chauffeur.profil !== 'Chauffeur') {
+          console.error('ERREUR: Utilisateur n\'est pas un chauffeur');
+          return res.status(400).json({ message: 'L\'utilisateur sélectionné n\'est pas un chauffeur.' });
+        }
+
+        // Vérifier les conflits d'horaire pour le chauffeur
+        // Chevauchement si (A < D ET C < B)
+        // A = newDateDepart, B = newDateArrivee (le mouvement que l'on veut affecter)
+        // C = dateDepart d'un autre mouvement, D = dateArrivee d'un autre mouvement
+        console.log('Vérification des conflits pour le chauffeur...');
+        console.log('Dates du mouvement - Départ:', newDateDepart, 'Arrivée:', newDateArrivee);
+
+        try {
+          const conflitChauffeur = await Mouvement.findOne({
+            _id: { $ne: mouvement._id }, // Exclure le mouvement actuel
+            chauffeur: newChauffeurId,
+            statut: { $in: ['en attente', 'validé', 'en cours'] }, // Statuts où le chauffeur est "occupé"
+            dateDepart: { $lt: newDateArrivee }, // Le mouvement existant commence avant que le nouveau ne finisse
+            dateArrivee: { $gt: newDateDepart }   // Et le mouvement existant se termine après que le nouveau ne commence
+          });
+
+          console.log('Résultat recherche conflit chauffeur:', conflitChauffeur ? 'CONFLIT TROUVÉ' : 'Pas de conflit');
+
+          if (conflitChauffeur) {
+            const conflitDepart = conflitChauffeur.stops[0].dateDepart.toLocaleString();
+            const conflitArrivee = conflitChauffeur.stops[conflitChauffeur.stops.length - 1].dateArrivee.toLocaleString();
+            return res.status(400).json({ message: `Le chauffeur est déjà affecté au mouvement du ${conflitDepart} au ${conflitArrivee}.` });
+          }
+        } catch (conflictErr) {
+          console.error('ERREUR lors de la vérification des conflits chauffeur:', conflictErr);
+          // Continuer sans vérification de conflit pour l'instant
+        }
+      }
+
+      // 2. Vérifier les conflits d'horaire pour le véhicule
+      if (newVehiculeId) {
+        const vehicule = await Vehicule.findById(newVehiculeId);
+        if (!vehicule) {
+          return res.status(400).json({ message: 'Véhicule sélectionné introuvable.' });
+        }
+
+        const conflitVehicule = await Mouvement.findOne({
+          _id: { $ne: mouvement._id },
+          vehicule: newVehiculeId,
+          statut: { $in: ['en attente', 'validé', 'en cours'] },
+          dateDepart: { $lt: newDateArrivee },
+          dateArrivee: { $gt: newDateDepart }
+        });
+
+        if (conflitVehicule) {
+          const conflitDepart = conflitVehicule.stops[0].dateDepart.toLocaleString();
+          const conflitArrivee = conflitVehicule.stops[conflitVehicule.stops.length - 1].dateArrivee.toLocaleString();
+          return res.status(400).json({ message: `Le véhicule est déjà affecté au mouvement du ${conflitDepart} au ${conflitArrivee}.` });
+        }
+      }
+    }
+
+
+    // Mettre à jour les champs si présents dans le body
+    if (req.body.stops != null) mouvement.stops = req.body.stops;
+    if (req.body.demandeur != null) mouvement.demandeur = req.body.demandeur;
+    // Ne pas affecter vehicule/chauffeur si le mouvement devient regroupé-enfant
+    if (req.body.statut !== 'regroupé-enfant') {
+      if (req.body.vehicule != null) mouvement.vehicule = newVehiculeId;
+      if (req.body.chauffeur != null) mouvement.chauffeur = newChauffeurId;
+    }
+    if (req.body.passagers != null) mouvement.passagers = req.body.passagers;
+    if (req.body.materiel != null) mouvement.materiel = req.body.materiel;
+    if (req.body.objectif != null) mouvement.objectif = req.body.objectif;
+    if (req.body.statut != null) mouvement.statut = req.body.statut;
+    if (req.body.motifRefus != null) mouvement.motifRefus = req.body.motifRefus;
+    if (req.body.parentMouvement != null) mouvement.parentMouvement = req.body.parentMouvement;
+    if (req.body.enfantsMouvements != null) mouvement.enfantsMouvements = req.body.enfantsMouvements;
+    if (req.body.isRoundTrip != null) mouvement.isRoundTrip = req.body.isRoundTrip; // NOUVEAU
+
+    const mouvementMisAJour = await mouvement.save();
+    res.json(mouvementMisAJour);
+  } catch (err) {
+    console.error("Erreur UPDATE /mouvements/:id:", err);
+    if (err.message.includes('validation failed')) {
+      return res.status(400).json({ message: err.message });
+    }
+    return res.status(500).json({ message: err.message });
+  }
+});
+
+// GET /api/mouvements/suggestions/:id - Suggestions de regroupement (placeholder)
+router.get('/mouvements/suggestions/:id', auth(), async (req, res) => {
+  try {
+    // Pour l'instant, retourner un tableau vide
+    // Cette fonctionnalité pourrait être implémentée plus tard pour suggérer
+    // des mouvements similaires à regrouper
+    res.json([]);
+  } catch (err) {
+    console.error("Erreur GET /mouvements/suggestions/:id:", err);
+    return res.status(500).json({ message: err.message });
+  }
+});
+
+// SUPPRESSION D'UN MOUVEMENT (PROTÉGÉE PAR RÔLE : Admin et SuperAdmin peuvent supprimer)
+router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), async (req, res) => {
+  try {
+    const mouvement = await Mouvement.findById(req.params.id);
+    if (mouvement == null) {
+      return res.status(404).json({ message: 'Cannot find movement' });
+    }
+    await mouvement.deleteOne();
+    res.json({ message: 'Mouvement supprimé' });
+  } catch (err) {
+    console.error("Erreur DELETE /mouvements/:id:", err);
+    return res.status(500).json({ message: err.message });
+  }
+});
+
+module.exports = router;

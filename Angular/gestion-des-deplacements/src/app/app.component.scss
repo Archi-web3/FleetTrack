@@ -1,0 +1,12 @@
+mat-toolbar {
+    background: linear-gradient(135deg, #005fb6 0%, #003e6b 100%) !important;
+    color: white !important;
+}
+
+mat-toolbar button {
+    color: white !important;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}

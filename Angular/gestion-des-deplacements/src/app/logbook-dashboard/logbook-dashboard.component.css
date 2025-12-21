@@ -1,0 +1,74 @@
+.container {
+  padding: 20px;
+}
+
+.vehicle-selector {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+}
+
+.vehicle-selector select {
+  padding: 8px;
+  font-size: 16px;
+  margin-left: 10px;
+  min-width: 300px;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-bottom: 3px solid transparent;
+}
+
+.tabs button.active {
+  border-bottom: 3px solid #005fb6;
+  color: #005fb6;
+  font-weight: bold;
+}
+
+.tabs button:hover {
+  background-color: #f8f9fa;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #dee2e6;
+  padding: 12px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #e9ecef;
+}
+
+.badge-danger {
+  color: white;
+  background-color: #dc3545;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.badge-warning {
+  color: black;
+  background-color: #ffc107;
+  padding: 3px 8px;
+  border-radius: 4px;
+}

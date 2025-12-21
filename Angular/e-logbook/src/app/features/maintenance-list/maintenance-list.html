@@ -1,0 +1,107 @@
+<div class="maintenance-container">
+    <!-- Header -->
+    <div class="maintenance-header">
+        <h1>
+            <mat-icon>build</mat-icon>
+            Maintenances
+        </h1>
+        <div class="header-actions">
+            <button mat-raised-button color="primary" (click)="addMaintenance()">
+                <mat-icon>add</mat-icon>
+                Nouvelle
+            </button>
+            <button mat-icon-button (click)="router.navigate(['/dashboard'])" matTooltip="Retour au tableau de bord">
+                <mat-icon>dashboard</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="isSyncing" (click)="syncData()" matTooltip="Synchroniser">
+                <mat-icon [class.spinning]="isSyncing">sync</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- Maintenance Table -->
+    <div class="table-container">
+        <table mat-table [dataSource]="maintenances" class="maintenance-table">
+
+            <!-- Sync Status Column -->
+            <ng-container matColumnDef="syncStatus">
+                <th mat-header-cell *matHeaderCellDef>Sync</th>
+                <td mat-cell *matCellDef="let maintenance">
+                    <mat-icon [color]="maintenance.synced ? 'primary' : 'warn'"
+                        [matTooltip]="maintenance.synced ? 'Synchronisé' : 'En attente de synchronisation'">
+                        {{ maintenance.synced ? 'check_circle' : 'sync' }}
+                    </mat-icon>
+                </td>
+            </ng-container>
+
+            <!-- Date Column -->
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let maintenance">
+                    {{ maintenance.date | date:'dd/MM/yyyy' }}
+                </td>
+            </ng-container>
+
+            <!-- Type Column -->
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let maintenance">
+                    {{ maintenance.type }}
+                </td>
+            </ng-container>
+
+            <!-- Mileage Column -->
+            <ng-container matColumnDef="mileage">
+                <th mat-header-cell *matHeaderCellDef>Kilométrage</th>
+                <td mat-cell *matCellDef="let maintenance">
+                    {{ maintenance.mileage }} km
+                </td>
+            </ng-container>
+
+            <!-- Garage Column -->
+            <ng-container matColumnDef="garage">
+                <th mat-header-cell *matHeaderCellDef>Garage</th>
+                <td mat-cell *matCellDef="let maintenance">
+                    {{ maintenance.garage }}
+                </td>
+            </ng-container>
+
+            <!-- Cost Column -->
+            <ng-container matColumnDef="cost">
+                <th mat-header-cell *matHeaderCellDef>Coût</th>
+                <td mat-cell *matCellDef="let maintenance">
+                    {{ maintenance.cost | currency:'EUR':'symbol':'1.2-2' }}
+                </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let maintenance">
+                    <button mat-icon-button color="primary" matTooltip="Voir détails"
+                        (click)="openDetails(maintenance)">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteMaintenance(maintenance, $event)"
+                        matTooltip="Supprimer" *ngIf="isAdmin">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <!-- Table Rows -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="maintenance-row"></tr>
+
+            <!-- No Data Row -->
+            <tr class="mat-row no-data-row" *matNoDataRow>
+                <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                    <div class="no-data">
+                        <mat-icon>inbox</mat-icon>
+                        <p>Aucune maintenance trouvée</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

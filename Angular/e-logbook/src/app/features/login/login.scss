@@ -1,0 +1,62 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #ffffff;
+    padding: 16px;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-branding {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.acf-logo {
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.app-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #005fb6;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.login-card {
+    width: 100%;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.login-btn {
+    height: 56px;
+    font-size: 18px;
+    margin-top: 16px;
+}
+
+.error-message {
+    color: #f44336;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+mat-card-title {
+    font-size: 24px;
+    text-align: center;
+}
+
+mat-card-subtitle {
+    text-align: center;
+}

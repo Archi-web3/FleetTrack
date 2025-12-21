@@ -1,0 +1,122 @@
+<h2 mat-dialog-title>
+    <mat-icon style="vertical-align: middle; margin-right: 8px;">info</mat-icon>
+    Détails du Mouvement
+</h2>
+
+<mat-dialog-content>
+    <div style="padding: 16px;">
+        <!-- Statut -->
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin: 0 0 8px 0; color: #005fb6;">Statut</h3>
+            <span [style.background-color]="getStatutColor(data.mouvement.statut)"
+                style="padding: 6px 12px; border-radius: 4px; color: white; font-weight: 500;">
+                {{ data.mouvement.statut }}
+            </span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Informations Générales -->
+        <div style="margin: 20px 0;">
+            <h3 style="margin: 0 0 12px 0; color: #005fb6;">Informations Générales</h3>
+            <div style="display: grid; grid-template-columns: 150px 1fr; gap: 8px;">
+                <strong>Objectif :</strong>
+                <span>{{ data.mouvement.objectif || '-' }}</span>
+
+                <strong>Demandeur :</strong>
+                <span>{{ data.mouvement.demandeur?.nom || '-' }}</span>
+
+                <strong>Chauffeur :</strong>
+                <span>{{ data.mouvement.chauffeur?.nom || '-' }}</span>
+
+                <strong>Véhicule :</strong>
+                <span>{{ data.mouvement.vehicule?.immatriculation || '-' }}</span>
+
+                <strong>Passagers :</strong>
+                <span>{{ data.mouvement.passagers?.length || 0 }} personne(s)</span>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Dates Planifiées -->
+        <div style="margin: 20px 0;">
+            <h3 style="margin: 0 0 12px 0; color: #005fb6;">
+                <mat-icon style="vertical-align: middle; font-size: 20px; margin-right: 4px;">event</mat-icon>
+                Dates Planifiées
+            </h3>
+            <div style="display: grid; grid-template-columns: 150px 1fr; gap: 8px;">
+                <strong>Départ prévu :</strong>
+                <span>{{ formatDateTime(data.mouvement.dateDepart) }}</span>
+
+                <strong>Arrivée prévue :</strong>
+                <span>{{ formatDateTime(data.mouvement.dateArrivee) }}</span>
+            </div>
+        </div>
+
+        <!-- Dates Réelles (si mouvement terminé) -->
+        <div *ngIf="data.mouvement.realDepartureTime || data.mouvement.realArrivalTime" style="margin: 20px 0;">
+            <mat-divider style="margin-bottom: 20px;"></mat-divider>
+            <h3 style="margin: 0 0 12px 0; color: #52ae32;">
+                <mat-icon style="vertical-align: middle; font-size: 20px; margin-right: 4px;">check_circle</mat-icon>
+                Dates Réelles (Effectuées)
+            </h3>
+            <div
+                style="display: grid; grid-template-columns: 150px 1fr; gap: 8px; background-color: #f0f8f0; padding: 12px; border-radius: 4px;">
+                <strong>Départ réel :</strong>
+                <span style="color: #52ae32; font-weight: 500;">{{ formatDateTime(data.mouvement.realDepartureTime)
+                    }}</span>
+
+                <strong>Arrivée réelle :</strong>
+                <span style="color: #52ae32; font-weight: 500;">{{ formatDateTime(data.mouvement.realArrivalTime)
+                    }}</span>
+
+                <strong *ngIf="data.mouvement.startMileage">Kilométrage départ :</strong>
+                <span *ngIf="data.mouvement.startMileage">{{ data.mouvement.startMileage }} km</span>
+
+                <strong *ngIf="data.mouvement.endMileage">Kilométrage arrivée :</strong>
+                <span *ngIf="data.mouvement.endMileage">{{ data.mouvement.endMileage }} km</span>
+
+                <strong *ngIf="data.mouvement.startMileage && data.mouvement.endMileage">Distance parcourue :</strong>
+                <span *ngIf="data.mouvement.startMileage && data.mouvement.endMileage" style="font-weight: 600;">
+                    {{ data.mouvement.endMileage - data.mouvement.startMileage }} km
+                </span>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Itinéraire -->
+        <div style="margin: 20px 0;">
+            <h3 style="margin: 0 0 12px 0; color: #005fb6;">
+                <mat-icon style="vertical-align: middle; font-size: 20px; margin-right: 4px;">route</mat-icon>
+                Itinéraire
+            </h3>
+            <div *ngFor="let stop of data.mouvement.stops; let i = index" style="margin-bottom: 8px;">
+                <div style="display: flex; align-items: center;">
+                    <mat-icon style="color: #005fb6; margin-right: 8px;">{{ i === 0 ? 'place' : 'flag' }}</mat-icon>
+                    <div>
+                        <strong>{{ i === 0 ? 'Départ' : 'Arrivée' }} :</strong>
+                        {{ stop.lieu?.nom || 'Lieu inconnu' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Observations du chauffeur -->
+        <div *ngIf="data.mouvement.driverObservations" style="margin: 20px 0;">
+            <mat-divider style="margin-bottom: 20px;"></mat-divider>
+            <h3 style="margin: 0 0 12px 0; color: #005fb6;">
+                <mat-icon style="vertical-align: middle; font-size: 20px; margin-right: 4px;">comment</mat-icon>
+                Observations du Chauffeur
+            </h3>
+            <p style="background-color: #f5f5f5; padding: 12px; border-radius: 4px; margin: 0;">
+                {{ data.mouvement.driverObservations }}
+            </p>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Fermer</button>
+</mat-dialog-actions>

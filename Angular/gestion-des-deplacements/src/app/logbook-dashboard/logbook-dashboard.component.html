@@ -1,0 +1,203 @@
+<div class="container">
+    <h2>Tableau de Bord Logbook</h2>
+
+    <div class="vehicle-selector">
+        <label for="vehiculeSelect">Sélectionner un Véhicule :</label>
+        <select id="vehiculeSelect" [(ngModel)]="selectedVehiculeId" (change)="onVehiculeChange()">
+            <option *ngFor="let v of vehicules" [value]="v._id">
+                {{ v.marque }} {{ v.modele }} - {{ v.immatriculation }}
+            </option>
+        </select>
+    </div>
+
+    <div class="tabs">
+        <button [class.active]="activeTab === 'trips'" (click)="setActiveTab('trips')">Trajets</button>
+        <button [class.active]="activeTab === 'fuel'" (click)="setActiveTab('fuel')">Carburant</button>
+        <button [class.active]="activeTab === 'maintenance'" (click)="setActiveTab('maintenance')">Maintenance</button>
+        <button [class.active]="activeTab === 'incidents'" (click)="setActiveTab('incidents')">Incidents</button>
+    </div>
+
+    <div class="tab-content">
+        <!-- EDIT FORM OVERLAY -->
+        <div *ngIf="editingItem" class="edit-overlay">
+            <div class="edit-form">
+                <h3>Modifier {{ editingType }}</h3>
+
+                <div *ngIf="editingType === 'fuel'">
+                    <label>Quantité (L): <input [(ngModel)]="editingItem.quantity" type="number"></label>
+                    <label>Km: <input [(ngModel)]="editingItem.mileage" type="number"></label>
+                    <label>Source: <input [(ngModel)]="editingItem.source"></label>
+                </div>
+
+                <div *ngIf="editingType === 'maintenance'">
+                    <label>Type: <input [(ngModel)]="editingItem.type"></label>
+                    <label>Coût: <input [(ngModel)]="editingItem.cost" type="number"></label>
+                    <label>Garage: <input [(ngModel)]="editingItem.garage"></label>
+                </div>
+
+                <div *ngIf="editingType === 'incident'">
+                    <label>Type: <input [(ngModel)]="editingItem.type"></label>
+                    <label>Sévérité:
+                        <select [(ngModel)]="editingItem.severity">
+                            <option>Faible</option>
+                            <option>Moyenne</option>
+                            <option>Critique</option>
+                        </select>
+                    </label>
+                    <label>Description: <textarea [(ngModel)]="editingItem.description"></textarea></label>
+                </div>
+
+                <div class="form-actions">
+                    <button (click)="saveItem()" class="btn-save">Enregistrer</button>
+                    <button (click)="cancelEdit()" class="btn-cancel">Annuler</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRIPS TAB -->
+        <div *ngIf="activeTab === 'trips'">
+            <h3>Historique des Trajets</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Chauffeur</th>
+                        <th>Objectif</th>
+                        <th>Km Départ</th>
+                        <th>Km Arrivée</th>
+                        <th>Distance</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let trip of trips">
+                        <td>{{ trip.realDepartureTime | date:'short' }}</td>
+                        <td>{{ trip.chauffeur?.prenom }} {{ trip.chauffeur?.nom }}</td>
+                        <td>{{ trip.objectif }}</td>
+                        <td>{{ trip.startMileage }}</td>
+                        <td>{{ trip.endMileage }}</td>
+                        <td>{{ (trip.endMileage - trip.startMileage) | number }} km</td>
+                        <td>
+                            <span class="badge" [ngClass]="{
+                                'badge-success': trip.statut === 'terminé',
+                                'badge-warning': trip.statut === 'en cours' || trip.statut === 'pris en charge',
+                                'badge-info': trip.statut === 'validé'
+                            }">
+                                {{ trip.statut }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="trips.length === 0">
+                        <td colspan="7">Aucun trajet enregistré.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FUEL TAB -->
+        <div *ngIf=" activeTab==='fuel'">
+            <h3>Historique Carburant</h3>
+            <table class=" table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Chauffeur</th>
+                        <th>Quantité (L)</th>
+                        <th>Km Compteur</th>
+                        <th>Type</th>
+                        <th>Source</th>
+                        <th *ngIf="isAdmin()">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let f of fuels">
+                        <td>{{ f.date | date:'short' }}</td>
+                        <td>{{ f.chauffeur?.prenom }} {{ f.chauffeur?.nom }}</td>
+                        <td>{{ f.quantity }}</td>
+                        <td>{{ f.mileage }}</td>
+                        <td>{{ f.fuelType }}</td>
+                        <td>{{ f.source }}</td>
+                        <td *ngIf="isAdmin()">
+                            <button (click)="editItem('fuel', f)">✏️</button>
+                            <button (click)="deleteItem('fuel', f._id)">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="fuels.length === 0">
+                        <td colspan="7">Aucun plein enregistré.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MAINTENANCE TAB -->
+        <div *ngIf="activeTab === 'maintenance'">
+            <h3>Historique Maintenance</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Km</th>
+                        <th>Garage</th>
+                        <th>Coût</th>
+                        <th *ngIf="isAdmin()">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let m of maintenances">
+                        <td>{{ m.date | date:'short' }}</td>
+                        <td>{{ m.type }}</td>
+                        <td>{{ m.mileage }}</td>
+                        <td>{{ m.garage || 'Interne' }}</td>
+                        <td>{{ m.cost | currency:'EUR' }}</td>
+                        <td *ngIf="isAdmin()">
+                            <button (click)="editItem('maintenance', m)">✏️</button>
+                            <button (click)="deleteItem('maintenance', m._id)">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="maintenances.length === 0">
+                        <td colspan="6">Aucune maintenance enregistrée.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INCIDENTS TAB -->
+        <div *ngIf="activeTab === 'incidents'">
+            <h3>Incidents Signalés</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Sévérité</th>
+                        <th>Description</th>
+                        <th>Statut</th>
+                        <th *ngIf="isAdmin()">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let i of incidents">
+                        <td>{{ i.date | date:'short' }}</td>
+                        <td>{{ i.type }}</td>
+                        <td>
+                            <span
+                                [ngClass]="{'badge-danger': i.severity === 'Critique', 'badge-warning': i.severity === 'Moyenne'}">
+                                {{ i.severity }}
+                            </span>
+                        </td>
+                        <td>{{ i.description }}</td>
+                        <td>{{ i.status }}</td>
+                        <td *ngIf="isAdmin()">
+                            <button (click)="editItem('incident', i)">✏️</button>
+                            <button (click)="deleteItem('incident', i._id)">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="incidents.length === 0">
+                        <td colspan="6">Aucun incident signalé.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

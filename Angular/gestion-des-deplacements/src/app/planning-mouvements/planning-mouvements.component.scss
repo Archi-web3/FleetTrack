@@ -1,0 +1,48 @@
+/* Conteneur des boutons */
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  /* espace entre les boutons */
+  margin-bottom: 20px;
+}
+
+/* Boutons Material */
+button[mat-raised-button] {
+  font-weight: 600;
+  text-transform: none;
+  /* évite les majuscules forcées */
+  padding: 8px 16px;
+  border-radius: 6px;
+
+  mat-icon {
+    vertical-align: middle;
+    margin-right: 6px;
+    font-size: 20px;
+  }
+}
+
+/* Titre du planning */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #005fb6;
+  /* ACF Blue */
+  font-weight: 700;
+}
+
+/* Date affichée au centre */
+h3 {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Message quand il n’y a pas d’événements */
+.no-events {
+  text-align: center;
+  font-style: italic;
+  color: #777;
+  margin-top: 20px;
+}

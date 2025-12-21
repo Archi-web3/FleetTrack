@@ -1,0 +1,76 @@
+<div class="container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Ravitaillement</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="fuelForm" (ngSubmit)="saveFuel()">
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Quantité (Litres)</mat-label>
+                    <input matInput type="number" formControlName="quantity" step="0.1">
+                    <mat-error *ngIf="fuelForm.get('quantity')?.hasError('required')">
+                        La quantité est requise
+                    </mat-error>
+                    <mat-error *ngIf="fuelForm.get('quantity')?.hasError('min')">
+                        La quantité doit être positive
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Kilométrage</mat-label>
+                    <input matInput type="number" formControlName="mileage">
+                    <mat-hint *ngIf="lastMileage > 0">Dernier kilométrage: {{ lastMileage }} km</mat-hint>
+                    <mat-error *ngIf="fuelForm.get('mileage')?.invalid">
+                        {{ getMileageError() }}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Type de Carburant</mat-label>
+                    <mat-select formControlName="fuelType">
+                        <mat-option value="Diesel">Diesel</mat-option>
+                        <mat-option value="Essence">Essence</mat-option>
+                        <mat-option value="Électrique">Électrique</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Source</mat-label>
+                    <mat-select formControlName="source">
+                        <mat-option value="Station Service">Station Service</mat-option>
+                        <mat-option value="Stock ACF">Stock ACF</mat-option>
+                        <mat-option value="Autre">Autre</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Coût Total (Devise locale)</mat-label>
+                    <input matInput type="number" formControlName="price" step="0.01">
+                    <mat-error *ngIf="fuelForm.get('price')?.hasError('min')">
+                        Le coût doit être positif
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="checkbox-container">
+                    <mat-checkbox formControlName="isFull">
+                        Plein complet
+                    </mat-checkbox>
+                    <span class="checkbox-hint">
+                        (Cochez si le réservoir a été rempli complètement - nécessaire pour le calcul précis de
+                        consommation)
+                    </span>
+                </div>
+
+                <button mat-raised-button color="primary" class="full-width action-btn" type="submit"
+                    [disabled]="fuelForm.invalid || fuelForm.pending">
+                    <span *ngIf="!fuelForm.pending">ENREGISTRER</span>
+                    <span *ngIf="fuelForm.pending">Validation...</span>
+                </button>
+
+                <button mat-button class="full-width" type="button" (click)="cancel()">
+                    ANNULER
+                </button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

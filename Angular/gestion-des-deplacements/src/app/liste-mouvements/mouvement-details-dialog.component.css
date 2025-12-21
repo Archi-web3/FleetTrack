@@ -1,0 +1,14 @@
+/* Styles pour le dialog de détails du mouvement */
+
+h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+strong {
+    color: #333;
+}
+
+mat-divider {
+    margin: 16px 0;
+}

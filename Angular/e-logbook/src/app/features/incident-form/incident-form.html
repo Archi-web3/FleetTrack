@@ -1,0 +1,49 @@
+<div class="container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Signaler un Incident</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Type d'Incident</mat-label>
+                <mat-select [(ngModel)]="incidentType">
+                    <mat-option value="Panne">Panne</mat-option>
+                    <mat-option value="Accident">Accident</mat-option>
+                    <mat-option value="Retard">Retard</mat-option>
+                    <mat-option value="Crevaison">Crevaison</mat-option>
+                    <mat-option value="Autre">Autre</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Gravité</mat-label>
+                <mat-select [(ngModel)]="severity">
+                    <mat-option value="Faible">Faible</mat-option>
+                    <mat-option value="Moyenne">Moyenne</mat-option>
+                    <mat-option value="Élevée">Élevée</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Description</mat-label>
+                <textarea matInput [(ngModel)]="description" rows="4" required></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Coût (optionnel)</mat-label>
+                <input matInput type="number" [(ngModel)]="cost" step="0.01">
+            </mat-form-field>
+
+            <button mat-raised-button color="warn" class="full-width action-btn" (click)="saveIncident()"
+                [disabled]="!incidentType || !description">
+                SIGNALER
+            </button>
+
+            <button mat-button class="full-width" (click)="cancel()">
+                ANNULER
+            </button>
+
+        </mat-card-content>
+    </mat-card>
+</div>

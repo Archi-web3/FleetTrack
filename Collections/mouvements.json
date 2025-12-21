@@ -1,0 +1,26 @@
+[
+  {
+    "lieuDepart": "Paris",
+    "lieuArrivee": "Lyon",
+    "dateDepart": { "$date": "2024-11-15T08:00:00.000Z" },
+    "dateArrivee": { "$date": "2024-11-15T18:00:00.000Z" },
+    "demandeur": null,
+    "vehicule": null,
+    "chauffeur": null,
+    "passagers": [],
+    "materiel": [],
+    "objectif": "Réunion client"
+  },
+  {
+    "lieuDepart": "Marseille",
+    "lieuArrivee": "Toulouse",
+    "dateDepart": { "$date": "2024-11-20T10:00:00.000Z" },
+    "dateArrivee": { "$date": "2024-11-20T16:00:00.000Z" },
+    "demandeur": null,
+    "vehicule": null,
+    "chauffeur": null,
+    "passagers": [],
+    "materiel": [],
+    "objectif": "Formation"
+  }
+]

@@ -1,0 +1,65 @@
+<div style="padding: 20px;">
+  <h2>Validation des Mouvements (Profil: {{ userProfile || 'Non connecté' }})</h2>
+
+  <!-- Section pour les mouvements en attente de validation SECURITE -->
+  <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'">
+    <!-- Ajustez le rôle si vous avez 'CoordinateurTerrain' -->
+    <h3>Mouvements à valider par la Sécurité</h3>
+    <p *ngIf="mouvementsPourValidationSecurite.length === 0">Aucun mouvement en attente de validation sécurité.</p>
+
+    <div *ngFor="let mouvement of mouvementsPourValidationSecurite"
+      style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #ffe0b2;">
+      <!-- Orange clair -->
+      <p><strong>ID Mouvement:</strong> {{ mouvement._id }}</p>
+      <p><strong>Statut:</strong> {{ mouvement.statut | titlecase }}</p>
+      <p><strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})</p>
+      <p><strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})</p>
+      <p><strong>Date:</strong> {{ mouvement.dateDepart | date:'medium' }} - {{ mouvement.dateArrivee | date:'medium' }}
+      </p>
+      <p><strong>Objectif:</strong> {{ mouvement.objectif }}</p>
+      <!-- ... autres détails ... -->
+      <p><strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})</p>
+      <p><strong>Véhicule:</strong> {{ mouvement.vehicule?.marque }} {{ mouvement.vehicule?.modele }} ({{
+        mouvement.vehicule?.immatriculation }})</p>
+      <p><strong>Chauffeur:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}</p>
+
+      <div style="margin-top: 10px;">
+        <button (click)="validerMouvement(mouvement._id, mouvement.statut)"
+          style="background-color: #28a745; color: white; border: none; padding: 8px 15px; cursor: pointer; margin-right: 10px;">Valider
+          Sécurité</button>
+        <button (click)="refuserMouvement(mouvement._id)"
+          style="background-color: #dc3545; color: white; border: none; padding: 8px 15px; cursor: pointer;">Refuser</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section pour les mouvements en attente de validation LOGISTIQUE -->
+  <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'">
+    <h3>Mouvements à valider par la Logistique</h3>
+    <p *ngIf="mouvementsPourValidationLogistique.length === 0">Aucun mouvement en attente de validation logistique.</p>
+
+    <div *ngFor="let mouvement of mouvementsPourValidationLogistique"
+      style="border: 1px solid #e0f2f7; padding: 15px; margin-bottom: 15px; border-radius: 5px;"> <!-- Bleu clair -->
+      <p><strong>ID Mouvement:</strong> {{ mouvement._id }}</p>
+      <p><strong>Statut:</strong> {{ mouvement.statut | titlecase }}</p>
+      <p><strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})</p>
+      <p><strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})</p>
+      <p><strong>Date:</strong> {{ mouvement.dateDepart | date:'medium' }} - {{ mouvement.dateArrivee | date:'medium' }}
+      </p>
+      <p><strong>Objectif:</strong> {{ mouvement.objectif }}</p>
+      <!-- ... autres détails ... -->
+      <p><strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})</p>
+      <p><strong>Véhicule:</strong> {{ mouvement.vehicule?.marque }} {{ mouvement.vehicule?.modele }} ({{
+        mouvement.vehicule?.immatriculation }})</p>
+      <p><strong>Chauffeur:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}</p>
+
+      <div style="margin-top: 10px;">
+        <button (click)="validerMouvement(mouvement._id, mouvement.statut)"
+          style="background-color: #28a745; color: white; border: none; padding: 8px 15px; cursor: pointer; margin-right: 10px;">Valider
+          Logistique</button>
+        <button (click)="refuserMouvement(mouvement._id)"
+          style="background-color: #dc3545; color: white; border: none; padding: 8px 15px; cursor: pointer;">Refuser</button>
+      </div>
+    </div>
+  </div>
+</div>

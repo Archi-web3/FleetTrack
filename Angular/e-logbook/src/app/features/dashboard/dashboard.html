@@ -1,0 +1,115 @@
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="vehicle-info">
+            <mat-icon class="vehicle-icon">directions_car</mat-icon>
+            <div class="vehicle-details">
+                <h2>{{ selectedVehicle?.marque }} {{ selectedVehicle?.modele }}</h2>
+                <p class="immatriculation">{{ selectedVehicle?.immatriculation }}</p>
+            </div>
+        </div>
+
+        <div class="user-info" *ngIf="currentUser">
+            <mat-icon class="user-icon">account_circle</mat-icon>
+            <div class="user-details">
+                <p class="user-name">{{ currentUser.prenom }} {{ currentUser.nom }}</p>
+                <p class="user-profile">{{ currentUser.profil }}</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button mat-stroked-button (click)="changeVehicle()">
+                <mat-icon>swap_horiz</mat-icon>
+                Changer de véhicule
+            </button>
+            <button mat-stroked-button color="warn" (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                Déconnexion
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="dashboard-grid">
+        <!-- Planning Card -->
+        <mat-card class="dashboard-card planning-card" (click)="navigateTo('/planning')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" [matBadge]="pendingMissionsCount"
+                        [matBadgeHidden]="pendingMissionsCount === 0" matBadgeColor="accent" matBadgeSize="small">
+                        event_note
+                    </mat-icon>
+                </div>
+                <h3>Mon Planning</h3>
+                <p class="card-description">Missions assignées</p>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Trips Card -->
+        <mat-card class="dashboard-card trips-card" (click)="navigateTo('/trips')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" [matBadge]="unsyncedCounts.trips"
+                        [matBadgeHidden]="unsyncedCounts.trips === 0" matBadgeColor="warn" matBadgeSize="small">
+                        directions_car
+                    </mat-icon>
+                </div>
+                <h3>Trajets</h3>
+                <p class="card-description">Historique des déplacements</p>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Fuel Card -->
+        <mat-card class="dashboard-card fuel-card" (click)="navigateTo('/fuels')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" [matBadge]="unsyncedCounts.fuels"
+                        [matBadgeHidden]="unsyncedCounts.fuels === 0" matBadgeColor="warn" matBadgeSize="small">
+                        local_gas_station
+                    </mat-icon>
+                </div>
+                <h3>Carburant</h3>
+                <p class="card-description">Ravitaillements</p>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Maintenance Card -->
+        <mat-card class="dashboard-card maintenance-card" (click)="navigateTo('/maintenances')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" [matBadge]="unsyncedCounts.maintenances"
+                        [matBadgeHidden]="unsyncedCounts.maintenances === 0" matBadgeColor="warn" matBadgeSize="small">
+                        build
+                    </mat-icon>
+                </div>
+                <h3>Maintenance</h3>
+                <p class="card-description">Entretiens et réparations</p>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Incidents Card -->
+        <mat-card class="dashboard-card incidents-card" (click)="navigateTo('/incidents')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" [matBadge]="unsyncedCounts.incidents"
+                        [matBadgeHidden]="unsyncedCounts.incidents === 0" matBadgeColor="warn" matBadgeSize="small">
+                        warning
+                    </mat-icon>
+                </div>
+                <h3>Incidents</h3>
+                <p class="card-description">Anomalies et problèmes</p>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Fleet Card -->
+        <mat-card class="dashboard-card fleet-card" (click)="navigateTo('/fleet')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon">garage</mat-icon>
+                </div>
+                <h3>Flotte</h3>
+                <p class="card-description">Gestion des véhicules</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

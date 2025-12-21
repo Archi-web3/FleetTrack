@@ -1,0 +1,101 @@
+<div class="container" style="padding: 20px; display: flex; gap: 20px;">
+
+    <!-- COLONNE PAYS -->
+    <div style="flex: 1;">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Pays (Missions)</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-list>
+                    <mat-list-item *ngFor="let p of paysList" (click)="onPaysSelect(p)"
+                        [class.selected]="selectedPays?._id === p._id" style="cursor: pointer;">
+                        <span matListItemTitle>{{ p.nom }} ({{ p.code }})</span>
+                        <span matListItemLine>{{ p.devise }}</span>
+                        <button mat-icon-button matListItemMeta (click)="editPays(p); $event.stopPropagation()"
+                            *ngIf="userProfile === 'SuperAdmin'">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button matListItemMeta (click)="deletePays(p._id); $event.stopPropagation()"
+                            *ngIf="userProfile === 'SuperAdmin'">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-list-item>
+                </mat-list>
+
+                <div class="form-section" style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px;">
+                    <h3>{{ editingPays ? 'Modifier' : 'Ajouter' }} Pays</h3>
+                    <mat-form-field appearance="fill" style="width: 100%;">
+                        <mat-label>Nom</mat-label>
+                        <input matInput [(ngModel)]="newPays.nom">
+                    </mat-form-field>
+                    <div style="display: flex; gap: 10px;">
+                        <mat-form-field appearance="fill" style="flex: 1;">
+                            <mat-label>Code (ex: RDC)</mat-label>
+                            <input matInput [(ngModel)]="newPays.code">
+                        </mat-form-field>
+                        <mat-form-field appearance="fill" style="flex: 1;">
+                            <mat-label>Devise</mat-label>
+                            <input matInput [(ngModel)]="newPays.devise">
+                        </mat-form-field>
+                    </div>
+                    <button mat-raised-button color="primary" (click)="savePays()" style="margin-right: 10px;">
+                        {{ editingPays ? 'Mettre à jour' : 'Créer' }} Pays
+                    </button>
+                    <button mat-button *ngIf="editingPays" (click)="cancelEditPays()">Annuler</button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- COLONNE BASES -->
+    <div style="flex: 1;">
+        <mat-card *ngIf="selectedPays; else noPaysSelected">
+            <mat-card-header>
+                <mat-card-title>Bases pour {{ selectedPays.nom }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-list>
+                    <mat-list-item *ngFor="let b of baseList">
+                        <mat-icon matListItemIcon>location_on</mat-icon>
+                        <div matListItemTitle>{{ b.nom }}</div>
+                        <button mat-icon-button matListItemMeta (click)="editBase(b)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button matListItemMeta (click)="deleteBase(b._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-list-item>
+                </mat-list>
+
+                <div class="form-section" style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px;">
+                    <h3>{{ editingBase ? 'Modifier' : 'Ajouter' }} Base</h3>
+                    <mat-form-field appearance="fill" style="width: 100%;">
+                        <mat-label>Nom de la Base</mat-label>
+                        <input matInput [(ngModel)]="newBase.nom">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 100%;">
+                        <mat-label>Code Interne (Optionnel)</mat-label>
+                        <input matInput [(ngModel)]="newBase.code">
+                    </mat-form-field>
+                    <button mat-raised-button color="accent" (click)="saveBase()" style="margin-right: 10px;">
+                        {{ editingBase ? 'Mettre à jour' : 'Ajouter' }} Base
+                    </button>
+                    <button mat-button *ngIf="editingBase" (click)="cancelEditBase()">Annuler</button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <ng-template #noPaysSelected>
+            <mat-card>
+                <mat-card-content>
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <mat-icon style="font-size: 48px; width: 48px; height: 48px;">public</mat-icon>
+                        <p>Sélectionnez un Pays à gauche pour gérer ses bases.</p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </ng-template>
+    </div>
+
+</div>

@@ -1,0 +1,170 @@
+<div style="padding: 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Nouvelle Demande de Mouvement</h2>
+    <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" type="button" (click)="toggleShowAllLieuxInPays()"
+      style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
+      {{ showAllLieuxInPays ? 'Afficher lieux de ma base uniquement' : 'Afficher lieux du pays' }}
+    </button>
+  </div>
+  <form (ngSubmit)="onSubmit()" #demandeForm="ngForm">
+
+    <!-- Section Lieu de Départ -->
+    <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+      <label>Lieu de Départ:</label><br>
+      <input type="radio" id="departExisting" name="departOption" value="existing"
+        [(ngModel)]="selectedLieuDepartOption" checked>
+      <label for="departExisting">Lieu existant</label>
+      <input type="radio" id="departNew" name="departOption" value="new" [(ngModel)]="selectedLieuDepartOption">
+      <label for="departNew">Nouveau lieu</label>
+
+      <div *ngIf="selectedLieuDepartOption === 'existing'" style="margin-top: 10px;">
+        <select id="lieuDepart" name="lieuDepartExisting" [(ngModel)]="mouvement.lieuDepart" required
+          style="width: 100%; padding: 8px;">
+          <option value="">Sélectionnez un lieu de départ</option>
+          <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedLieuDepartOption === 'new'" style="margin-top: 10px;">
+        <input type="text" placeholder="Nom du lieu" [(ngModel)]="newLieuDepart.nom" name="newDepartNom" required
+          style="width: 100%; padding: 8px; margin-bottom: 5px;">
+        <input type="text" placeholder="Adresse" [(ngModel)]="newLieuDepart.adresse" name="newDepartAdresse" required
+          style="width: 100%; padding: 8px; margin-bottom: 5px;">
+        <!-- MODIFICATION ICI : liaison vers newLieuDepart.coordonnees.latitude/longitude -->
+        <input type="number" placeholder="Latitude" [(ngModel)]="newLieuDepart.coordonnees.latitude" name="newDepartLat"
+          required style="width: 48%; padding: 8px; margin-right: 2%;">
+        <input type="number" placeholder="Longitude" [(ngModel)]="newLieuDepart.coordonnees.longitude"
+          name="newDepartLong" required style="width: 48%; padding: 8px;">
+        <div style="margin-top: 5px;">
+          <input type="checkbox" id="newDepartSensible" [(ngModel)]="newLieuDepart.estSensible"
+            name="newDepartSensible">
+          <label for="newDepartSensible">Lieu sensible</label>
+        </div>
+      </div>
+
+      <!-- Date de Départ (Déplacé ici) -->
+      <div style="margin-top: 15px;">
+        <label for="dateDepart">Date et Heure de Départ:</label>
+        <input type="datetime-local" id="dateDepart" name="dateDepart" [(ngModel)]="mouvement.dateDepart" required
+          style="width: 100%; padding: 8px;">
+      </div>
+    </div>
+
+    <!-- Section Étapes Intermédiaires -->
+    <div
+      style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
+      <h3 style="margin-top: 0;">Étapes Intermédiaires (Optionnel)</h3>
+      <div *ngFor="let etape of etapes; let i = index" style="margin-bottom: 10px; display: flex; align-items: center;">
+        <span style="margin-right: 10px; font-weight: bold;">Étape {{ i + 1 }}:</span>
+        <select [(ngModel)]="etape.lieu" name="etapeLieu_{{i}}" required
+          style="flex-grow: 1; padding: 8px; margin-right: 10px;">
+          <option value="">Sélectionnez un lieu</option>
+          <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+        </select>
+
+        <!-- NOUVEAU: Dates pour l'étape -->
+        <div style="display: flex; flex-direction: column; margin-right: 10px;">
+          <input type="datetime-local" [(ngModel)]="etape.dateArrivee" name="etapeArrivee_{{i}}" placeholder="Arrivée"
+            style="padding: 5px; margin-bottom: 2px;">
+          <input type="datetime-local" [(ngModel)]="etape.dateDepart" name="etapeDepart_{{i}}" placeholder="Départ"
+            style="padding: 5px;">
+        </div>
+
+        <button type="button" (click)="removeEtape(i)"
+          style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Supprimer</button>
+      </div>
+      <button type="button" (click)="addEtape()"
+        style="background-color: #007bff; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 3px;">+
+        Ajouter une étape</button>
+    </div>
+
+    <!-- Checkbox Lieu Retour Identique -->
+    <div style="margin-bottom: 10px;">
+      <input type="checkbox" id="retourIdentique" [(ngModel)]="isRetourIdentique" (change)="onRetourIdentiqueChange()"
+        name="retourIdentique">
+      <label for="retourIdentique">Lieu retour identique au départ ?</label>
+    </div>
+
+    <!-- Section Lieu d'Arrivée (SIMILAIRE AU DÉPART) -->
+    <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+      <label>Lieu d'Arrivée:</label><br>
+      <input type="radio" id="arriveeExisting" name="arriveeOption" value="existing"
+        [(ngModel)]="selectedLieuArriveeOption" checked [disabled]="isRetourIdentique">
+      <label for="arriveeExisting">Lieu existant</label>
+      <input type="radio" id="arriveeNew" name="arriveeOption" value="new" [(ngModel)]="selectedLieuArriveeOption"
+        [disabled]="isRetourIdentique">
+      <label for="arriveeNew">Nouveau lieu</label>
+
+      <div *ngIf="selectedLieuArriveeOption === 'existing'" style="margin-top: 10px;">
+        <select id="lieuArrivee" name="lieuArriveeExisting" [(ngModel)]="mouvement.lieuArrivee" required
+          style="width: 100%; padding: 8px;" [disabled]="isRetourIdentique">
+          <option value="">Sélectionnez un lieu d'arrivée</option>
+          <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedLieuArriveeOption === 'new'" style="margin-top: 10px;">
+        <input type="text" placeholder="Nom du lieu" [(ngModel)]="newLieuArrivee.nom" name="newArriveeNom" required
+          style="width: 100%; padding: 8px; margin-bottom: 5px;" [disabled]="isRetourIdentique">
+        <input type="text" placeholder="Adresse" [(ngModel)]="newLieuArrivee.adresse" name="newArriveeAdresse" required
+          style="width: 100%; padding: 8px; margin-bottom: 5px;" [disabled]="isRetourIdentique">
+        <!-- MODIFICATION ICI : liaison vers newLieuArrivee.coordonnees.latitude/longitude -->
+        <input type="number" placeholder="Latitude" [(ngModel)]="newLieuArrivee.coordonnees.latitude"
+          name="newArriveeLat" required style="width: 48%; padding: 8px; margin-right: 2%;"
+          [disabled]="isRetourIdentique">
+        <input type="number" placeholder="Longitude" [(ngModel)]="newLieuArrivee.coordonnees.longitude"
+          name="newArriveeLong" required style="width: 48%; padding: 8px;" [disabled]="isRetourIdentique">
+        <div style="margin-top: 5px;">
+          <input type="checkbox" id="newArriveeSensible" [(ngModel)]="newLieuArrivee.estSensible"
+            name="newArriveeSensible" [disabled]="isRetourIdentique">
+          <label for="newArriveeSensible">Lieu sensible</label>
+        </div>
+      </div>
+
+      <!-- Date d'Arrivée (Déplacé ici) -->
+      <div style="margin-top: 15px;">
+        <label for="dateArrivee">Date et Heure d'Arrivée:</label>
+        <input type="datetime-local" id="dateArrivee" name="dateArrivee" [(ngModel)]="mouvement.dateArrivee" required
+          style="width: 100%; padding: 8px;">
+      </div>
+    </div>
+
+    <!-- NOUVEAU : Sélection multiple des passagers -->
+    <div style="margin-bottom: 10px;">
+      <label for="passagers">Passagers (Ctrl+clic pour sélection multiple):</label>
+      <select multiple id="passagers" name="passagers" [(ngModel)]="selectedPassagersIds"
+        style="width: 100%; padding: 8px; min-height: 100px;">
+        <option *ngFor="let user of utilisateurs" [value]="user._id">
+          {{ user.nom }} ({{ user.email }})
+          <ng-container *ngIf="user._id === authService.getUserId()"> (Vous)</ng-container>
+        </option>
+      </select>
+    </div>
+
+    <!-- <div style="margin-bottom: 10px;">
+      <label for="vehicule">Véhicule:</label>
+      <select id="vehicule" name="vehicule" [(ngModel)]="mouvement.vehicule" required style="width: 100%; padding: 8px;">
+        <option value="">Sélectionnez un véhicule</option>
+        <option *ngFor="let vehicule of vehicules" [value]="vehicule._id">{{ vehicule.marque }} {{ vehicule.modele }} ({{ vehicule.immatriculation }})</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <label for="chauffeur">Chauffeur:</label>
+      <select id="chauffeur" name="chauffeur" [(ngModel)]="mouvement.chauffeur" required style="width: 100%; padding: 8px;">
+        <option value="">Sélectionnez un chauffeur</option>
+        <option *ngFor="let chauffeur of chauffeurs" [value]="chauffeur._id">{{ chauffeur.prenom }} {{ chauffeur.nom }}</option>
+      </select>
+    </div>
+ ... -->
+    <div style="margin-bottom: 10px;">
+      <label for="objectif">Objectif du déplacement:</label>
+      <input type="text" id="objectif" name="objectif" [(ngModel)]="mouvement.objectif" required
+        style="width: 100%; padding: 8px;">
+    </div>
+
+    <button type="submit" [disabled]="!demandeForm.form.valid"
+      style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer;">Soumettre
+      Demande</button>
+  </form>
+</div>

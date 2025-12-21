@@ -1,0 +1,199 @@
+<div class="container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{ isEditMode ? 'Modifier Véhicule' : 'Nouveau Véhicule' }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="vehicleForm" (ngSubmit)="saveVehicle()">
+
+                <!-- Section: Identification -->
+                <h3>Identification</h3>
+                <div class="form-row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Immatriculation</mat-label>
+                        <input matInput formControlName="immatriculation" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Marque</mat-label>
+                        <input matInput formControlName="marque" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Modèle</mat-label>
+                        <input matInput formControlName="modele" required>
+                    </mat-form-field>
+                </div>
+                <div class="form-row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Code ACF</mat-label>
+                        <input matInput formControlName="acfCode">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Base</mat-label>
+                        <input matInput formControlName="base">
+                    </mat-form-field>
+                </div>
+
+                <!-- Section: Classification -->
+                <h3>Classification</h3>
+                <div class="form-row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Propriétaire</mat-label>
+                        <mat-select formControlName="owner">
+                            <mat-option value="ACF">ACF</mat-option>
+                            <mat-option value="Location">Location</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Catégorie</mat-label>
+                        <mat-select formControlName="category">
+                            <mat-option value="Voiture">Voiture</mat-option>
+                            <mat-option value="Camion">Camion</mat-option>
+                            <mat-option value="Moto">Moto</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Type (ex: 4x4, Minibus)</mat-label>
+                        <input matInput formControlName="type">
+                    </mat-form-field>
+                </div>
+
+                <!-- Section: Détails -->
+                <h3>Détails Techniques</h3>
+                <div class="form-row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Carburant</mat-label>
+                        <mat-select formControlName="fuelType">
+                            <mat-option value="Diesel">Diesel</mat-option>
+                            <mat-option value="Essence">Essence</mat-option>
+                            <mat-option value="Hybride">Hybride</mat-option>
+                            <mat-option value="Electrique">Electrique</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Année</mat-label>
+                        <input matInput type="number" formControlName="year">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Capacité Passagers</mat-label>
+                        <input matInput type="number" formControlName="capacitePassagers">
+                    </mat-form-field>
+                </div>
+                <div class="form-row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Date 1ère Utilisation</mat-label>
+                        <input matInput [matDatepicker]="pickerStart" formControlName="startDate">
+                        <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerStart></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Kilométrage Initial</mat-label>
+                        <input matInput type="number" formControlName="initialMileage">
+                    </mat-form-field>
+                </div>
+
+                <!-- Section: Données Environnementales -->
+                <h3 class="environmental-title">🌱 Données Environnementales</h3>
+                <div class="environmental-section" formGroupName="emissionsCO2">
+                    <h4>Émissions CO2</h4>
+                    <div class="form-row">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Émissions CO2 (g/km)</mat-label>
+                            <input matInput type="number" formControlName="valeur" min="0" step="1">
+                            <mat-hint>Émissions de CO2 en grammes par kilomètre</mat-hint>
+                        </mat-form-field>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Source des données</mat-label>
+                            <mat-select formControlName="source">
+                                <mat-option value="Constructeur">🏭 Constructeur</mat-option>
+                                <mat-option value="Test Manuel">🔬 Test Manuel</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="environmental-section" formGroupName="consommation">
+                    <h4>Consommation Carburant</h4>
+                    <div class="form-row">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Consommation (L/100km)</mat-label>
+                            <input matInput type="number" formControlName="valeur" min="0" step="0.1">
+                            <mat-hint>Consommation moyenne en litres pour 100 km</mat-hint>
+                        </mat-form-field>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Source des données</mat-label>
+                            <mat-select formControlName="source">
+                                <mat-option value="Constructeur">🏭 Constructeur</mat-option>
+                                <mat-option value="Test Manuel">🔬 Test Manuel (2 pleins sur 100km)</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-row" *ngIf="vehicleForm.get('consommation.source')?.value === 'Test Manuel'">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Date du test de consommation</mat-label>
+                            <input matInput [matDatepicker]="pickerTest" formControlName="dateTest">
+                            <mat-datepicker-toggle matSuffix [for]="pickerTest"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerTest></mat-datepicker>
+                            <mat-hint>Date du test manuel (2 pleins sur 100km)</mat-hint>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Section: Coûts (Conditionnel) -->
+                <h3>Coûts & Valeur</h3>
+                <div class="form-row" *ngIf="vehicleForm.get('owner')?.value === 'ACF'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Valeur Achat</mat-label>
+                        <input matInput type="number" formControlName="purchaseValue">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Dépréciation (Mois)</mat-label>
+                        <input matInput type="number" formControlName="depreciationMonths">
+                    </mat-form-field>
+                </div>
+                <div class="form-row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Coût Assurance (Annuel)</mat-label>
+                        <input matInput type="number" formControlName="insuranceCost">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fin Assurance</mat-label>
+                        <input matInput [matDatepicker]="pickerIns" formControlName="insuranceEndDate">
+                        <mat-datepicker-toggle matSuffix [for]="pickerIns"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerIns></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row" *ngIf="vehicleForm.get('owner')?.value === 'Location'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Coût Location (Mensuel)</mat-label>
+                        <input matInput type="number" formControlName="rentalCost">
+                    </mat-form-field>
+                    <mat-checkbox formControlName="driverIncluded" class="checkbox-margin">
+                        Chauffeur Inclus
+                    </mat-checkbox>
+                </div>
+
+                <!-- Section: Autre -->
+                <h3>Autre</h3>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Remarques</mat-label>
+                    <textarea matInput formControlName="remarks" rows="3"></textarea>
+                </mat-form-field>
+
+                <mat-checkbox formControlName="enService" class="checkbox-margin">
+                    En Service
+                </mat-checkbox>
+
+                <div class="actions">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="vehicleForm.invalid">
+                        ENREGISTRER
+                    </button>
+                    <button mat-button type="button" (click)="cancel()">
+                        ANNULER
+                    </button>
+                </div>
+
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

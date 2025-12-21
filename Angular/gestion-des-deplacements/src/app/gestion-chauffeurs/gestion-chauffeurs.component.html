@@ -1,0 +1,97 @@
+<div style="padding: 20px;">
+  <h2>Gestion des Chauffeurs</h2>
+
+  <!-- Formulaire de création de chauffeur -->
+  <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'"
+    style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+    <h3>Créer un nouveau chauffeur</h3>
+    <form (ngSubmit)="addChauffeur()" #chauffeurForm="ngForm">
+      <div style="margin-bottom: 10px;">
+        <label for="newChauffeurNom">Nom:</label>
+        <input type="text" id="newChauffeurNom" name="newChauffeurNom" [(ngModel)]="newChauffeur.nom" required
+          style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="newChauffeurPrenom">Prénom:</label>
+        <input type="text" id="newChauffeurPrenom" name="newChauffeurPrenom" [(ngModel)]="newChauffeur.prenom" required
+          style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="newChauffeurTelephone">Téléphone:</label>
+        <input type="text" id="newChauffeurTelephone" name="newChauffeurTelephone" [(ngModel)]="newChauffeur.telephone"
+          required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="newChauffeurPermis">Permis:</label>
+        <input type="text" id="newChauffeurPermis" name="newChauffeurPermis" [(ngModel)]="newChauffeur.permis" required
+          style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <input type="checkbox" id="newChauffeurDisponible" name="newChauffeurDisponible"
+          [(ngModel)]="newChauffeur.disponible">
+        <label for="newChauffeurDisponible">Disponible</label>
+      </div>
+      <button type="submit" [disabled]="!chauffeurForm.form.valid"
+        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Créer
+        Chauffeur</button>
+    </form>
+  </div>
+
+  <!-- Formulaire de modification de chauffeur -->
+  <div *ngIf="selectedChauffeur"
+    style="border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #fff3cd;">
+    <h3>Modifier chauffeur: {{ selectedChauffeur.prenom }} {{ selectedChauffeur.nom }}</h3>
+    <form (ngSubmit)="updateChauffeur()" #editChauffeurForm="ngForm">
+      <div style="margin-bottom: 10px;">
+        <label for="editChauffeurNom">Nom:</label>
+        <input type="text" id="editChauffeurNom" name="editChauffeurNom" [(ngModel)]="selectedChauffeur.nom" required
+          style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editChauffeurPrenom">Prénom:</label>
+        <input type="text" id="editChauffeurPrenom" name="editChauffeurPrenom" [(ngModel)]="selectedChauffeur.prenom"
+          required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editChauffeurTelephone">Téléphone:</label>
+        <input type="text" id="editChauffeurTelephone" name="editChauffeurTelephone"
+          [(ngModel)]="selectedChauffeur.telephone" required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editChauffeurPermis">Permis:</label>
+        <input type="text" id="editChauffeurPermis" name="editChauffeurPermis" [(ngModel)]="selectedChauffeur.permis"
+          required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <input type="checkbox" id="editChauffeurDisponible" name="editChauffeurDisponible"
+          [(ngModel)]="selectedChauffeur.disponible">
+        <label for="editChauffeurDisponible">Disponible</label>
+      </div>
+      <button type="submit" [disabled]="!editChauffeurForm.form.valid"
+        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Mettre
+        à jour</button>
+      <button type="button" (click)="selectedChauffeur = null"
+        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">Annuler</button>
+    </form>
+  </div>
+
+  <!-- Liste des chauffeurs existants -->
+  <h3>Chauffeurs existants</h3>
+  <div *ngIf="chauffeurs.length === 0">Aucun chauffeur enregistré.</div>
+  <ul style="list-style-type: none; padding: 0;">
+    <li *ngFor="let chauffeur of chauffeurs"
+      style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <strong>{{ chauffeur.prenom }} {{ chauffeur.nom }}</strong> ({{ chauffeur.telephone }}) - Permis: {{
+        chauffeur.permis }}
+        <span *ngIf="!chauffeur.disponible" style="color: red; margin-left: 10px;">(Non disponible)</span>
+      </div>
+      <div>
+        <button (click)="selectChauffeur(chauffeur)"
+          style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">Modifier</button>
+        <button (click)="deleteChauffeur(chauffeur._id)"
+          style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Supprimer</button>
+      </div>
+    </li>
+  </ul>
+</div>

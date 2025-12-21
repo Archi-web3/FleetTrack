@@ -1,0 +1,291 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { UtilisateurService } from '../utilisateur.service';
+import { AuthService } from '../auth.service';
+import { AdminService } from '../admin.service';
+import { ProjetService } from '../projet.service';
+
+// Imports Angular Material
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
+@Component({
+  selector: 'app-gestion-utilisateurs',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatRadioModule,
+    MatCheckboxModule
+  ],
+  templateUrl: './gestion-utilisateurs.component.html',
+  styleUrls: ['./gestion-utilisateurs.component.css']
+})
+export class GestionUtilisateursComponent implements OnInit {
+  utilisateurs: any[] = [];
+  filteredUtilisateurs: any[] = []; // Liste filtrée
+  newUser: any = {
+    nom: '',
+    prenom: '',
+    email: '',
+    motDePasse: '',
+    profil: 'Technicien',
+    telephone: '',
+    pays: '',
+    base: '',
+    // Champs chauffeur
+    permis: '',
+    disponible: true,
+    formationEcoConduite: {
+      effectuee: false,
+      date: null
+    },
+    vehiculeAttitre: '',
+    projet: 'Support'
+  };
+  selectedUser: any = null; // Pour la modification
+  profiles = ['Admin', 'Superviseur', 'Technicien', 'Guest', 'Chauffeur']; // Profils possibles
+  userProfile: string | null = null;
+  userPaysId: string | null = null;
+  bases: any[] = []; // Liste des bases
+  paysList: any[] = []; // Liste des pays (pour SuperAdmin)
+  vehicules: any[] = []; // Liste des véhicules
+  projets: any[] = []; // Liste des projets (chargée dynamiquement)
+  selectedPays: string = ''; // Pays sélectionné par SuperAdmin
+  selectedProfileFilter: string = ''; // Filtre par profil
+
+  constructor(
+    private utilisateurService: UtilisateurService,
+    public authService: AuthService,
+    private adminService: AdminService,
+    private projetService: ProjetService
+  ) { }
+
+  ngOnInit(): void {
+    this.userProfile = this.authService.getUserProfile();
+    this.userPaysId = this.authService.getUserPaysId();
+
+    // Adapter les profils disponibles
+    if (this.userProfile === 'SuperAdmin') {
+      this.profiles = ['SuperAdmin', 'Admin', 'Superviseur', 'Technicien', 'Guest', 'Chauffeur'];
+      this.loadPays();
+      // On ne charge pas les bases tout de suite, on attend la sélection du pays
+    } else if (this.userProfile === 'Admin') {
+      this.profiles = ['Superviseur', 'Technicien', 'Guest', 'Chauffeur']; // Admin ne crée pas Admin
+      this.newUser.pays = this.userPaysId; // Force le pays
+      this.loadBases(this.userPaysId!);
+    } else {
+      // Autres profils limités
+      this.profiles = [];
+    }
+
+    this.loadVehicules();
+    this.loadProjets(); // Charger les projets dynamiquement
+    this.loadUtilisateurs();
+  }
+
+  loadPays() {
+    this.adminService.getPays().subscribe(data => this.paysList = data);
+  }
+
+  loadBases(paysId?: string) {
+    this.adminService.getBases(paysId).subscribe(
+      data => {
+        this.bases = data;
+      },
+      error => console.error('Erreur chargement bases:', error)
+    );
+  }
+
+  // Appelé quand le SuperAdmin change le pays dans le form
+  onPaysChange(paysId: string) {
+    this.newUser.pays = paysId; // Assigner le pays sélectionné
+    this.newUser.base = ''; // Reset base selection
+    this.loadBases(paysId);
+  }
+
+  loadVehicules(): void {
+    // Charger la liste des véhicules via le service approprié
+    // Pour l'instant, on peut utiliser un service générique ou créer un VehiculeService
+    this.adminService.getVehicules().subscribe(
+      (data) => this.vehicules = data,
+      (error) => console.error('Erreur chargement véhicules:', error)
+    );
+  }
+
+  loadProjets(): void {
+    // Charger la liste des projets actifs
+    this.projetService.getProjets(false).subscribe(
+      (data) => {
+        this.projets = data;
+        console.log('Projets chargés:', this.projets);
+      },
+      (error) => console.error('Erreur chargement projets:', error)
+    );
+  }
+
+  onProfilChange(): void {
+    // Réinitialiser les champs chauffeur si on change de profil
+    if (this.newUser.profil !== 'Chauffeur') {
+      this.newUser.permis = '';
+      this.newUser.formationEcoConduite = { effectuee: false, date: null };
+      this.newUser.vehiculeAttitre = '';
+      this.newUser.disponible = true;
+    }
+  }
+
+  filterByProfile(): void {
+    if (!this.selectedProfileFilter) {
+      this.filteredUtilisateurs = [...this.utilisateurs];
+    } else {
+      this.filteredUtilisateurs = this.utilisateurs.filter(
+        u => u.profil === this.selectedProfileFilter
+      );
+    }
+  }
+
+  loadUtilisateurs(): void {
+    this.utilisateurService.getUtilisateurs().subscribe(
+      (data) => {
+        this.utilisateurs = data;
+        this.filteredUtilisateurs = [...data]; // Initialiser la liste filtrée
+      },
+      (error) => console.error('Erreur chargement utilisateurs:', error)
+    );
+  }
+
+  addUser(): void {
+    // Nettoyer les données avant envoi : convertir les chaînes vides en null pour les ObjectId
+    const userData = { ...this.newUser };
+    if (userData.pays === '') userData.pays = null;
+    if (userData.base === '') userData.base = null;
+    if (userData.vehiculeAttitre === '') userData.vehiculeAttitre = null;
+
+    console.log('Données envoyées au serveur:', userData); // DEBUG
+    this.utilisateurService.addUser(userData).subscribe(
+      (response) => {
+        alert('Utilisateur créé avec succès !');
+        // Reset form, keeping context if Admin
+        const currentPays = this.userProfile === 'Admin' ? this.userPaysId : '';
+        const currentBase = this.userProfile === 'Admin' ? this.newUser.base : '';
+        this.newUser = {
+          nom: '',
+          prenom: '',
+          email: '',
+          motDePasse: '',
+          profil: 'Technicien',
+          telephone: '',
+          pays: currentPays,
+          base: currentBase,
+          // Champs chauffeur
+          permis: '',
+          disponible: true,
+          formationEcoConduite: {
+            effectuee: false,
+            date: null
+          },
+          vehiculeAttitre: '',
+          projet: 'Support'
+        };
+        if (this.userProfile === 'Admin') {
+          this.loadBases(this.userPaysId!);
+        }
+        this.loadUtilisateurs();
+      },
+      (error) => {
+        console.error('Erreur création utilisateur:', error);
+        console.error('Détails erreur:', error.error); // DEBUG
+        if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à créer des utilisateurs.');
+        else alert('Erreur lors de la création de l\'utilisateur: ' + (error.error?.message || error.message));
+      }
+    );
+  }
+
+  selectUser(user: any): void {
+    this.selectedUser = { ...user, motDePasse: '' }; // Copie l'utilisateur pour modification
+
+    // Si base est un objet peuplé, on garde juste l'ID pour le select
+    if (this.selectedUser.base && this.selectedUser.base._id) {
+      this.selectedUser.base = this.selectedUser.base._id;
+    }
+
+    // Si pays est un objet peuplé, extraire l'ID
+    let paysId = this.selectedUser.pays;
+    if (this.selectedUser.pays && this.selectedUser.pays._id) {
+      paysId = this.selectedUser.pays._id;
+      this.selectedUser.pays = paysId; // Garder l'ID pour le select
+    }
+
+    // Charger les bases pour ce pays (pour SuperAdmin et Admin)
+    if (paysId) {
+      this.loadBases(paysId);
+    } else if (this.userProfile === 'Admin' && this.userPaysId) {
+      // Si pas de pays défini mais Admin, charger les bases de son pays
+      this.loadBases(this.userPaysId);
+    }
+  }
+
+  // Appelé quand le SuperAdmin change le pays dans le formulaire d'édition
+  onEditPaysChange(paysId: string) {
+    if (this.selectedUser) {
+      this.selectedUser.pays = paysId;
+      this.selectedUser.base = ''; // Reset base selection
+      this.loadBases(paysId);
+    }
+  }
+
+  updateUser(): void {
+    if (!this.selectedUser) return;
+
+    // Nettoyer l'objet avant envoi
+    const userData = { ...this.selectedUser };
+    if (!userData.motDePasse || userData.motDePasse.trim() === '') {
+      delete userData.motDePasse;
+    }
+    if (userData.pays === '') userData.pays = null;
+    if (userData.base === '') userData.base = null;
+    if (userData.vehiculeAttitre === '') userData.vehiculeAttitre = null;
+
+    console.log('Données envoyées pour mise à jour utilisateur:', userData);
+    this.utilisateurService.updateUser(this.selectedUser._id, userData).subscribe(
+      (response) => {
+        alert('Utilisateur mis à jour avec succès !');
+        this.selectedUser = null;
+        this.loadUtilisateurs();
+      },
+      (error) => {
+        console.error('Erreur mise à jour utilisateur:', error);
+        if (error.status === 403) alert('Accès refusé.');
+        else alert('Erreur lors de la mise à jour: ' + (error.error?.message || error.message));
+      }
+    );
+  }
+
+  deleteUser(id: string): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+      this.utilisateurService.deleteUser(id).subscribe(
+        (response) => {
+          alert('Utilisateur supprimé avec succès !');
+          this.loadUtilisateurs();
+        },
+        (error) => {
+          console.error('Erreur suppression utilisateur:', error);
+          if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à supprimer des utilisateurs.');
+          else alert('Erreur lors de la suppression de l\'utilisateur.');
+        }
+      );
+    }
+  }
+}
