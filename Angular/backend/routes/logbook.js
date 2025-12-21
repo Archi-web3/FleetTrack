@@ -332,11 +332,25 @@ router.post('/sync', async (req, res) => {
                 const lieuDepartId = tripData.departurePlaceId || defaultLieu._id;
                 const lieuArriveeId = tripData.arrivalPlaceId || defaultLieu._id;
 
+                // Fetch driver to get their base
+                const Utilisateur = require('../models/utilisateur.model');
+                let driverBase = null;
+                try {
+                    const driver = await Utilisateur.findById(tripData.driverId);
+                    if (driver && driver.base) {
+                        driverBase = driver.base;
+                        console.log(`Assigning base ${driverBase} from driver ${driver.nom} to new movement`);
+                    }
+                } catch (err) {
+                    console.error('Error fetching driver base:', err);
+                }
+
                 const newMouvement = new Mouvement({
                     vehicule: tripData.vehicleId,
                     chauffeur: tripData.driverId,
                     demandeur: tripData.driverId, // Self-assigned
                     passagers: tripData.passengerIds || [], // Add passengers
+                    base: driverBase, // ✅ ADD BASE FROM DRIVER
 
                     // Stops are required by schema
                     stops: [
