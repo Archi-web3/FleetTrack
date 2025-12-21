@@ -5,18 +5,18 @@ import 'leaflet-routing-machine'; // Import pour la bibliothèque de routage
 
 // Interface pour mieux typer les mouvements reçus
 interface MapMouvement {
-    id: string;
-    title: string;
-    demandeur: string;
-    stops: {
-        lieuId: string;
-        nom: string;
-        adresse: string;
-        lat: number;
-        lng: number;
-        dateDepart?: string;
-        dateArrivee?: string;
-    }[];
+  id: string;
+  title: string;
+  demandeur: string;
+  stops: {
+    lieuId: string;
+    nom: string;
+    adresse: string;
+    lat: number;
+    lng: number;
+    dateDepart?: string;
+    dateArrivee?: string;
+  }[];
 }
 
 @Component({
@@ -30,7 +30,7 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() mouvements: MapMouvement[] = [];
   private map!: L.Map;
   private markers: L.Marker[] = [];
-  private routingControls: L.Routing.Control[] = [];
+  private routingControls: any[] = []; // Using any to avoid TypeScript errors with leaflet-routing-machine
 
   constructor() { }
 
@@ -124,7 +124,7 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
           lineOptions: {
             styles: [{ color: 'blue', weight: 6, opacity: 0.7 }]
           },
-          createMarker: function(i: number, waypoint: any, n: number) { return null; }, // Pas de marqueurs LRM
+          createMarker: function (i: number, waypoint: any, n: number) { return null; }, // Pas de marqueurs LRM
           addWaypoints: false,
           draggableWaypoints: false,
           fitSelectedRoutes: false,
