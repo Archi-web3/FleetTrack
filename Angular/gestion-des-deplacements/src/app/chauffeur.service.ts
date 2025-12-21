@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class ChauffeurService {
-  private apiUrl = 'http://localhost:3000/api/chauffeurs';
+  private apiUrl = 'https://fleettrack-api.onrender.com/api/chauffeurs';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -41,3 +41,4 @@ export class ChauffeurService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
   }
 }
+

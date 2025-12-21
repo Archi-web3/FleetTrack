@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class LieuService {
-  private apiUrl = 'http://localhost:3000/api/lieux';
+  private apiUrl = 'https://fleettrack-api.onrender.com/api/lieux';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -41,3 +41,4 @@ export class LieuService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
   }
 }
+

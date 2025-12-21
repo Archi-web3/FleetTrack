@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 })
 export class MouvementService {
 
-  private apiUrl = 'http://localhost:3000/api/mouvements';
+  private apiUrl = 'https://fleettrack-api.onrender.com/api/mouvements';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -57,3 +57,4 @@ export class MouvementService {
     return this.http.get<any[]>(`${this.apiUrl}/suggestions/${mouvementId}`, { headers });
   }
 }
+

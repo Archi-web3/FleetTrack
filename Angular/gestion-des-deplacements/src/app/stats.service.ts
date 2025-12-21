@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
     providedIn: 'root'
 })
 export class StatsService {
-    private apiUrl = 'http://localhost:3000/api/stats';
+    private apiUrl = 'https://fleettrack-api.onrender.com/api/stats';
 
     constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -52,3 +52,4 @@ export class StatsService {
         return this.http.get<string[]>(`${this.apiUrl}/projets`, { headers });
     }
 }
+

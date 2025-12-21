@@ -13,7 +13,7 @@ export interface Pays {
     providedIn: 'root'
 })
 export class PaysService {
-    private apiUrl = 'http://localhost:3000/api/pays';
+    private apiUrl = 'https://fleettrack-api.onrender.com/api/pays';
     private readonly STORAGE_KEY = 'selectedCountry';
 
     constructor(private http: HttpClient) { }
@@ -53,3 +53,4 @@ export class PaysService {
         localStorage.removeItem(this.STORAGE_KEY);
     }
 }
+

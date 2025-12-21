@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = 'https://fleettrack-api.onrender.com/api/auth';
   private tokenKey = 'jwtToken';
 
   private _isAuthenticated = new BehaviorSubject<boolean>(this.hasToken());
@@ -223,3 +223,4 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 }
+

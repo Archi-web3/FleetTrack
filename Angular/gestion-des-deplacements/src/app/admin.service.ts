@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
     providedIn: 'root'
 })
 export class AdminService {
-    private apiUrl = 'http://localhost:3000/api';
+    private apiUrl = 'https://fleettrack-api.onrender.com/api';
 
     constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -59,3 +59,4 @@ export class AdminService {
         return this.http.get<any[]>(`${this.apiUrl}/vehicules`, { headers: this.getHeaders() });
     }
 }
+
