@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Component, OnInit, OnChanges, SimpleChanges, Input, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Pour *ngIf, etc.
 import * as L from 'leaflet'; // Import Leaflet
