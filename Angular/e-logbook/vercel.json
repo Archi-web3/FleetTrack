@@ -1,6 +1,6 @@
 {
     "buildCommand": "npm run build",
-    "outputDirectory": "dist/e-logbook",
+    "outputDirectory": "dist/e-logbook/browser",
     "rewrites": [
         {
             "source": "/(.*)",
