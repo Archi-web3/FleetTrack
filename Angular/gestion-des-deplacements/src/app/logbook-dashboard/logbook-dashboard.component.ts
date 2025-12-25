@@ -67,7 +67,7 @@ export class LogbookDashboardComponent implements OnInit {
                 const matchVehicule = mVehiculeId === this.selectedVehiculeId;
 
                 // On accepte plusieurs statuts pour l'affichage
-                const allowedStatuses = ['terminé', 'pris en charge', 'en cours', 'validé'];
+                const allowedStatuses = ['terminé', 'pris en charge', 'en cours', 'validé', 'regroupé'];
                 const matchStatut = allowedStatuses.includes(m.statut);
 
                 // Debug detailed
