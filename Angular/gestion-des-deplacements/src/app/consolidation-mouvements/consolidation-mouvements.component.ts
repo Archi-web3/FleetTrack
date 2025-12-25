@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MouvementService } from '../mouvement.service';
 import { VehiculeService } from '../vehicule.service';
 import { UtilisateurService } from '../utilisateur.service';
+import { LieuService } from '../lieu.service';
 import { AuthService } from '../auth.service';
 import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,12 +49,14 @@ export class ConsolidationMouvementsComponent implements OnInit {
   isEditingConsolidation: boolean = false;
   consolidationStops: any[] = [];
   consolidationData: any = null;
-  consolidationMapEvents: any[] = []; // NOUVEAU: Pour afficher la carte pendant l'édition
+  consolidationMapEvents: any[] = [];
+  lieux: any[] = []; // NOUVEAU: Liste des lieux disponibles pour modification
 
   constructor(
     private mouvementService: MouvementService,
     private vehiculeService: VehiculeService,
     private utilisateurService: UtilisateurService,
+    private lieuService: LieuService,
     private authService: AuthService
   ) { }
 
@@ -182,6 +185,9 @@ export class ConsolidationMouvementsComponent implements OnInit {
     }
 
     console.log('🔄 [CONSOLIDATION] Début du regroupement de', this.mouvementsToRegroup.length, 'mouvements');
+
+    // Charger les lieux disponibles pour modification
+    this.loadLieux();
 
     // Fusionner tous les stops de tous les mouvements
     this.consolidationStops = this.mergeStopsFromMovements(this.mouvementsToRegroup);
@@ -346,6 +352,58 @@ export class ConsolidationMouvementsComponent implements OnInit {
   onConsolidationDateChange(): void {
     // Mettre à jour la carte quand les dates changent
     this.updateConsolidationMap();
+  }
+
+  // NOUVEAU: Gestion des étapes
+  moveStopUp(index: number): void {
+    if (index > 0) {
+      const temp = this.consolidationStops[index];
+      this.consolidationStops[index] = this.consolidationStops[index - 1];
+      this.consolidationStops[index - 1] = temp;
+      this.updateConsolidationMap();
+      console.log('🔄 [CONSOLIDATION] Étape déplacée vers le haut');
+    }
+  }
+
+  moveStopDown(index: number): void {
+    if (index < this.consolidationStops.length - 1) {
+      const temp = this.consolidationStops[index];
+      this.consolidationStops[index] = this.consolidationStops[index + 1];
+      this.consolidationStops[index + 1] = temp;
+      this.updateConsolidationMap();
+      console.log('🔄 [CONSOLIDATION] Étape déplacée vers le bas');
+    }
+  }
+
+  removeStop(index: number): void {
+    if (this.consolidationStops.length <= 2) {
+      alert('Un mouvement doit avoir au moins 2 étapes (départ et arrivée).');
+      return;
+    }
+    if (confirm(`Voulez-vous vraiment supprimer l'étape "${this.consolidationStops[index].lieu.nom}" ?`)) {
+      this.consolidationStops.splice(index, 1);
+      this.updateConsolidationMap();
+      console.log('🗑️ [CONSOLIDATION] Étape supprimée');
+    }
+  }
+
+  changeStopLocation(index: number, newLieuId: string): void {
+    const newLieu = this.lieux.find(l => l._id === newLieuId);
+    if (newLieu) {
+      this.consolidationStops[index].lieu = newLieu;
+      this.updateConsolidationMap();
+      console.log('📍 [CONSOLIDATION] Lieu modifié:', newLieu.nom);
+    }
+  }
+
+  loadLieux(): void {
+    this.lieuService.getLieux().subscribe(
+      (data) => {
+        this.lieux = data;
+        console.log('📍 [CONSOLIDATION] Lieux chargés:', this.lieux.length);
+      },
+      (error) => console.error('❌ [CONSOLIDATION] Erreur chargement lieux:', error)
+    );
   }
 
   loadVehicules(): void {
