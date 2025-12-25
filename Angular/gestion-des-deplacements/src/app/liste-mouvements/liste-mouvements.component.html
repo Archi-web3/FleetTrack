@@ -35,6 +35,9 @@
         <strong>Date:</strong> {{ mouvement.dateDepart | date:'mediumDate' }} - {{ mouvement.dateArrivee |
         date:'mediumDate' }}<br>
         <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
+        <ng-container *ngIf="mouvement.projet">
+          <strong>Projet:</strong> {{ mouvement.projet }}<br>
+        </ng-container>
         <ng-container *ngIf="mouvement.demandeur">
           <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
         </ng-container>
