@@ -71,10 +71,38 @@ width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
           <strong style="font-size: 1.1em; color: #333;">Étape {{ i + 1 }}</strong>
         </div>
 
-        <p style="margin: 8px 0; font-size: 0.95em;">
-          <strong>📍 Lieu :</strong> {{ stop.lieu.nom }}
-          <span style="color: #666;">({{ stop.lieu.adresse }})</span>
-        </p>
+
+        <!-- Sélecteur de lieu avec dropdown -->
+        <div style="margin: 12px 0;">
+          <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
+            📍 Lieu :
+          </label>
+          <select [(ngModel)]="stop.lieu._id" (change)="changeStopLocation(i, stop.lieu._id)"
+            style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
+            <option *ngFor="let lieu of lieux" [value]="lieu._id">
+              {{ lieu.nom }} ({{ lieu.adresse }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Boutons de gestion -->
+        <div style="display: flex; gap: 8px; margin-top: 12px; margin-bottom: 12px;">
+          <button (click)="moveStopUp(i)" [disabled]="i === 0"
+            style="padding: 6px 12px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 0.85em;"
+            [style.opacity]="i === 0 ? '0.5' : '1'">
+            ⬆️ Monter
+          </button>
+          <button (click)="moveStopDown(i)" [disabled]="i === consolidationStops.length - 1"
+            style="padding: 6px 12px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 0.85em;"
+            [style.opacity]="i === consolidationStops.length - 1 ? '0.5' : '1'">
+            ⬇️ Descendre
+          </button>
+          <button (click)="removeStop(i)" [disabled]="consolidationStops.length <= 2"
+            style="padding: 6px 12px; background-color: #dc3545; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 0.85em;"
+            [style.opacity]="consolidationStops.length <= 2 ? '0.5' : '1'">
+            🗑️ Supprimer
+          </button>
+        </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
           <div *ngIf="i > 0">
