@@ -75,9 +75,19 @@ router.get('/global', auth(), async (req, res) => {
 
         const result = await Mouvement.aggregate(pipeline);
 
+        // DEBUG: Compter tous les mouvements terminés
+        const allTerminated = await Mouvement.countDocuments({ statut: 'terminé' });
+        const terminatedWithMileage = await Mouvement.countDocuments({
+            statut: 'terminé',
+            startMileage: { $ne: null },
+            endMileage: { $ne: null }
+        });
+
         console.log('=== DEBUG STATS GLOBALES ===');
         console.log('Filtre appliqué:', JSON.stringify(matchFilter));
-        console.log('Nombre de mouvements trouvés:', result.length);
+        console.log('Total mouvements terminés (tous):', allTerminated);
+        console.log('Mouvements terminés avec kilométrage:', terminatedWithMileage);
+        console.log('Nombre de mouvements trouvés (après filtre):', result.length);
         console.log('Résultat agrégation:', result);
 
         if (result.length === 0) {
