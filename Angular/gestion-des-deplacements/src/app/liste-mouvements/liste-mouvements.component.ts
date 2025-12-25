@@ -74,9 +74,9 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
       // Afficher tous les mouvements (historique complet)
       this.filteredMouvements = this.mouvements;
     } else {
-      // Masquer les mouvements terminés, annulés et refusés (mouvements en cours uniquement)
+      // Masquer les mouvements terminés, annulés, refusés ET regroupés (mouvements en cours uniquement)
       this.filteredMouvements = this.mouvements.filter(
-        m => m.statut !== 'terminé' && m.statut !== 'annulé' && m.statut !== 'refusé'
+        m => m.statut !== 'terminé' && m.statut !== 'annulé' && m.statut !== 'refusé' && m.statut !== 'regroupé'
       );
     }
   }

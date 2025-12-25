@@ -15,8 +15,23 @@
     <li *ngFor="let mouvement of filteredMouvements"
       style="background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #005fb6;">
       <div>
-        <strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})<br>
-        <strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})<br>
+        <!-- Affichage de l'itinéraire complet -->
+        <div *ngIf="mouvement.stops && mouvement.stops.length > 0" style="margin-bottom: 10px;">
+          <strong>Itinéraire:</strong>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li *ngFor="let stop of mouvement.stops; let i = index">
+              <strong>{{ i === 0 ? '🚀 Départ' : (i === mouvement.stops.length - 1 ? '🏁 Arrivée' : '📍 Étape ' + i)
+                }}:</strong>
+              {{ stop.lieu?.nom }}
+              <span style="color: #666; font-size: 0.9em;">({{ stop.lieu?.adresse }})</span>
+            </li>
+          </ul>
+        </div>
+        <!-- Fallback pour ancien format -->
+        <div *ngIf="!mouvement.stops || mouvement.stops.length === 0">
+          <strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})<br>
+          <strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})<br>
+        </div>
         <strong>Date:</strong> {{ mouvement.dateDepart | date:'mediumDate' }} - {{ mouvement.dateArrivee |
         date:'mediumDate' }}<br>
         <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
