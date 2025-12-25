@@ -49,75 +49,65 @@
 
 
   <!-- NOUVEAU: Dialogue d'édition de consolidation -->
-<!-- À insérer apr\u00e8s la ligne 48 dans consolidation-mouvements.component.html -->
-<div *ngIf="isEditingConsolidation"
-style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;
+  <!-- À insérer apr\u00e8s la ligne 48 dans consolidation-mouvements.component.html -->
+  <div *ngIf="isEditingConsolidation" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;
 display: flex; align-items: center; justify-content: center;">
-<div
-style="background: white; padding: 30px; border-radius: 10px; max-width: 900px; max-height: 85vh; overflow-y: auto;
+    <div style="background: white; padding: 30px; border-radius: 10px; max-width: 900px; max-height: 85vh; overflow-y: auto;
 width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-<h3 style="margin-top: 0; color: #007bff;"><strong>🔄 Édition de la
-Consolidation</strong></h3>
-<p><strong>Objectif :</strong> {{ consolidationData.objectif }}</p>
-<p><strong>Nombre de mouvements :</strong> {{ mouvementsToRegroup.length }}</p>
+      <h3 style="margin-top: 0; color: #007bff;"><strong>🔄 Édition de la
+          Consolidation</strong></h3>
+      <p><strong>Objectif :</strong> {{ consolidationData.objectif }}</p>
+      <p><strong>Nombre de mouvements :</strong> {{ mouvementsToRegroup.length }}</p>
 
-<h4 style="margin-top: 20px; color: #28a745;">Étapes du mouvement consolidé :</h4>
-<p style="color: #666; font-size: 0.9em; font-style: italic;">
-✏️ Vous pouvez modifier les dates et heures de chaque étape avant de confirmer
-</p>
+      <h4 style="margin-top: 20px; color: #28a745;">Étapes du mouvement consolidé :</h4>
+      <p style="color: #666; font-size: 0.9em; font-style: italic;">
+        ✏️ Vous pouvez modifier les dates et heures de chaque étape avant de confirmer
+      </p>
 
-<div *ngFor="let stop of consolidationStops; let i = index"
-style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; background-color:
+      <div *ngFor="let stop of consolidationStops; let i = index" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; background-color:
 #f9f9f9;">
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-<strong style="font-size: 1.1em; color: #333;">Étape {{ i + 1 }}</strong>
-<span
-style="background-color: #e3f2fd; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; color: #1976d2; border: 1px
-solid #90caf9;">
-📍 Origine: {{ stop.originMouvementObjectif }}
-</span>
-</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <strong style="font-size: 1.1em; color: #333;">Étape {{ i + 1 }}</strong>
+        </div>
 
-<p style="margin: 8px 0; font-size: 0.95em;">
-<strong>📍 Lieu :</strong> {{ stop.lieu.nom }}
-<span style="color: #666;">({{ stop.lieu.adresse }})</span>
-</p>
+        <p style="margin: 8px 0; font-size: 0.95em;">
+          <strong>📍 Lieu :</strong> {{ stop.lieu.nom }}
+          <span style="color: #666;">({{ stop.lieu.adresse }})</span>
+        </p>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
-<div *ngIf="i > 0">
-<label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
-📍 Date/Heure d'arrivée :
-</label>
-<input type="datetime-local" [(ngModel)]="stop.dateArrivee"
-style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
-</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+          <div *ngIf="i > 0">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
+              📍 Date/Heure d'arrivée :
+            </label>
+            <input type="datetime-local" [(ngModel)]="stop.dateArrivee"
+              style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
+          </div>
 
-<div *ngIf="i < consolidationStops.length - 1">
-<label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
-🚀 Date/Heure de départ :
-</label>
-<input type="datetime-local" [(ngModel)]="stop.dateDepart"
-style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
-</div>
-</div>
-</div>
+          <div *ngIf="i < consolidationStops.length - 1">
+            <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
+              🚀 Date/Heure de départ :
+            </label>
+            <input type="datetime-local" [(ngModel)]="stop.dateDepart"
+              style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
+          </div>
+        </div>
+      </div>
 
-<div style="margin-top: 25px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid #ddd;
+      <div style="margin-top: 25px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid #ddd;
 padding-top: 20px;">
-<button (click)="cancelConsolidation()"
-style="padding: 12px 24px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 5px;
+        <button (click)="cancelConsolidation()" style="padding: 12px 24px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 5px;
 font-size: 1em; font-weight: 500;">
-❌ Annuler
-</button>
-<button (click)="confirmConsolidation()"
-style="padding: 12px 24px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px;
+          ❌ Annuler
+        </button>
+        <button (click)="confirmConsolidation()" style="padding: 12px 24px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px;
 font-size: 1em; font-weight: 500;">
-✅ Confirmer la consolidation
-</button>
-</div>
-</div>
-</div>  <!-- Liste des mouvements validés en attente d'affectation -->
+          ✅ Confirmer la consolidation
+        </button>
+      </div>
+    </div>
+  </div> <!-- Liste des mouvements validés en attente d'affectation -->
   <h3>Mouvements validés en attente d'affectation</h3>
   <p *ngIf="mouvementsValides.length === 0">Aucun mouvement validé n'attend d'affectation de véhicule/chauffeur.</p>
 
