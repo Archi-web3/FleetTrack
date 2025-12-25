@@ -48,6 +48,7 @@ export class ConsolidationMouvementsComponent implements OnInit {
   isEditingConsolidation: boolean = false;
   consolidationStops: any[] = [];
   consolidationData: any = null;
+  consolidationMapEvents: any[] = []; // NOUVEAU: Pour afficher la carte pendant l'édition
 
   constructor(
     private mouvementService: MouvementService,
@@ -86,13 +87,15 @@ export class ConsolidationMouvementsComponent implements OnInit {
         console.log('Chauffeurs chargés pour cette base:', this.chauffeurs.length);
 
         // Filtrer les mouvements "validés" qui n'ont pas encore de véhicule/chauffeur affecté
+        // IMPORTANT: Exclure les mouvements "regroupé" (mouvements enfants)
         this.mouvementsValides = mouvements.filter(m =>
           m.statut === 'validé' && (!m.vehicule || !m.chauffeur) && m.stops && m.stops.length > 0
         );
 
         // Charger tous les mouvements consolidés/affectés pour l'historique
+        // IMPORTANT: Inclure 'regroupé' dans l'historique uniquement
         this.mouvementsConsolides = mouvements.filter(m =>
-          (m.statut === 'validé' || m.statut === 'pris en charge' || m.statut === 'en cours' || m.statut === 'regroupé' || m.statut === 'regroupé-enfant' || m.statut === 'terminé') && m.stops && m.stops.length > 0
+          (m.statut === 'validé' || m.statut === 'pris en charge' || m.statut === 'en cours' || m.statut === 'regroupé' || m.statut === 'terminé') && m.stops && m.stops.length > 0
         );
         this.applyConsolidesFilters();
 
@@ -196,6 +199,9 @@ export class ConsolidationMouvementsComponent implements OnInit {
       enfantsMouvements: this.mouvementsToRegroup.map(m => m._id)
     };
 
+    // NOUVEAU: Préparer la carte pour visualisation
+    this.updateConsolidationMap();
+
     // Activer le mode édition
     this.isEditingConsolidation = true;
   }
@@ -275,9 +281,10 @@ export class ConsolidationMouvementsComponent implements OnInit {
         console.log('✅ [CONSOLIDATION] Mouvement consolidé créé:', newRegroupedMouvement._id);
 
         // Mettre à jour les mouvements enfants
+        // IMPORTANT: Utiliser le statut 'regroupé' au lieu de 'regroupé-enfant'
         const updatePromises = this.mouvementsToRegroup.map(m => {
           return firstValueFrom(this.mouvementService.updateMouvement(m._id, {
-            statut: 'regroupé-enfant',
+            statut: 'regroupé',
             parentMouvement: newRegroupedMouvement._id
           }));
         });
@@ -305,7 +312,40 @@ export class ConsolidationMouvementsComponent implements OnInit {
     this.isEditingConsolidation = false;
     this.consolidationStops = [];
     this.consolidationData = null;
+    this.consolidationMapEvents = [];
     this.mouvementsToRegroup = [];
+  }
+
+  updateConsolidationMap(): void {
+    // Créer un événement de carte temporaire avec les stops consolidés
+    const validStops = this.consolidationStops.filter(stop =>
+      stop.lieu?.coordonnees &&
+      typeof stop.lieu.coordonnees.latitude === 'number' &&
+      typeof stop.lieu.coordonnees.longitude === 'number'
+    );
+
+    if (validStops.length > 0) {
+      this.consolidationMapEvents = [{
+        id: 'consolidation-preview',
+        title: this.consolidationData.objectif,
+        demandeur: 'Aperçu consolidation',
+        stops: validStops.map((stop: any) => ({
+          lieuId: stop.lieu._id,
+          nom: stop.lieu.nom,
+          adresse: stop.lieu.adresse,
+          lat: stop.lieu.coordonnees.latitude,
+          lng: stop.lieu.coordonnees.longitude,
+          dateDepart: stop.dateDepart,
+          dateArrivee: stop.dateArrivee
+        }))
+      }];
+      console.log('🗺️ [CONSOLIDATION] Carte mise à jour avec', validStops.length, 'stops');
+    }
+  }
+
+  onConsolidationDateChange(): void {
+    // Mettre à jour la carte quand les dates changent
+    this.updateConsolidationMap();
   }
 
   loadVehicules(): void {

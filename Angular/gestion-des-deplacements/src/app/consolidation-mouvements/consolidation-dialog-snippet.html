@@ -1,0 +1,70 @@
+\u003c!-- NOUVEAU: Dialogue d'\u00e9dition de consolidation --\u003e
+\u003c!-- À ins\u00e9rer apr\u00e8s la ligne 48 dans consolidation-mouvements.component.html --\u003e
+\u003cdiv *ngIf=\"isEditingConsolidation\"
+style=\"position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;
+display: flex; align-items: center; justify-content: center;\"\u003e
+\u003cdiv
+style=\"background: white; padding: 30px; border-radius: 10px; max-width: 900px; max-height: 85vh; overflow-y: auto;
+width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);\"\u003e
+\u003ch3 style=\"margin-top: 0; color: #007bff;\"\u003e\u003cstrong\u003e\ud83d\udd04 Édition de la
+Consolidation\u003c/strong\u003e\u003c/h3\u003e
+\u003cp\u003e\u003cstrong\u003eObjectif :\u003c/strong\u003e {{ consolidationData.objectif }}\u003c/p\u003e
+\u003cp\u003e\u003cstrong\u003eNombre de mouvements :\u003c/strong\u003e {{ mouvementsToRegroup.length }}\u003c/p\u003e
+
+\u003ch4 style=\"margin-top: 20px; color: #28a745;\"\u003eÉtapes du mouvement consolid\u00e9 :\u003c/h4\u003e
+\u003cp style=\"color: #666; font-size: 0.9em; font-style: italic;\"\u003e
+✏️ Vous pouvez modifier les dates et heures de chaque \u00e9tape avant de confirmer
+\u003c/p\u003e
+
+\u003cdiv *ngFor=\"let stop of consolidationStops; let i = index\"
+style=\"border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; background-color:
+#f9f9f9;\"\u003e
+
+\u003cdiv style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;\"\u003e
+\u003cstrong style=\"font-size: 1.1em; color: #333;\"\u003eÉtape {{ i + 1 }}\u003c/strong\u003e
+\u003cspan
+style=\"background-color: #e3f2fd; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; color: #1976d2; border: 1px
+solid #90caf9;\"\u003e
+\ud83d\udccd Origine: {{ stop.originMouvementObjectif }}
+\u003c/span\u003e
+\u003c/div\u003e
+
+\u003cp style=\"margin: 8px 0; font-size: 0.95em;\"\u003e
+\u003cstrong\u003e\ud83d\udccd Lieu :\u003c/strong\u003e {{ stop.lieu.nom }}
+\u003cspan style=\"color: #666;\"\u003e({{ stop.lieu.adresse }})\u003c/span\u003e
+\u003c/p\u003e
+
+\u003cdiv style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;\"\u003e
+\u003cdiv *ngIf=\"i \u003e 0\"\u003e
+\u003clabel style=\"display: block; margin-bottom: 5px; font-weight: 500; color: #555;\"\u003e
+\ud83d\udccd Date/Heure d'arriv\u00e9e :
+\u003c/label\u003e
+\u003cinput type=\"datetime-local\" [(ngModel)]=\"stop.dateArrivee\"
+style=\"width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;\"\u003e
+\u003c/div\u003e
+
+\u003cdiv *ngIf=\"i \u003c consolidationStops.length - 1\"\u003e
+\u003clabel style=\"display: block; margin-bottom: 5px; font-weight: 500; color: #555;\"\u003e
+\ud83d\ude80 Date/Heure de d\u00e9part :
+\u003c/label\u003e
+\u003cinput type=\"datetime-local\" [(ngModel)]=\"stop.dateDepart\"
+style=\"width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;\"\u003e
+\u003c/div\u003e
+\u003c/div\u003e
+\u003c/div\u003e
+
+\u003cdiv style=\"margin-top: 25px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid #ddd;
+padding-top: 20px;\"\u003e
+\u003cbutton (click)=\"cancelConsolidation()\"
+style=\"padding: 12px 24px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 5px;
+font-size: 1em; font-weight: 500;\"\u003e
+❌ Annuler
+\u003c/button\u003e
+\u003cbutton (click)=\"confirmConsolidation()\"
+style=\"padding: 12px 24px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px;
+font-size: 1em; font-weight: 500;\"\u003e
+✅ Confirmer la consolidation
+\u003c/button\u003e
+\u003c/div\u003e
+\u003c/div\u003e
+\u003c/div\u003e
