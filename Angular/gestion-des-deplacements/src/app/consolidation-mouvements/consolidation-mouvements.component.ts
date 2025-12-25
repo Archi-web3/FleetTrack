@@ -44,6 +44,11 @@ export class ConsolidationMouvementsComponent implements OnInit {
   userProfile: string | null = null;
   userBaseId: string | null = null;
 
+  // NOUVEAU: Mode d'édition pour la consolidation
+  isEditingConsolidation: boolean = false;
+  consolidationStops: any[] = [];
+  consolidationData: any = null;
+
   constructor(
     private mouvementService: MouvementService,
     private vehiculeService: VehiculeService,
@@ -172,43 +177,135 @@ export class ConsolidationMouvementsComponent implements OnInit {
       alert('Veuillez sélectionner au moins deux mouvements pour le regroupement.');
       return;
     }
-    if (!confirm(`Voulez-vous regrouper ${this.mouvementsToRegroup.length} mouvements ?`)) {
-      return;
-    }
 
-    const firstMouvement = this.mouvementsToRegroup[0];
-    const regroupedTitle = `Regroupement pour ${this.mouvementsToRegroup.length} mouvements`;
-    const allPassagersIds = Array.from(new Set(this.mouvementsToRegroup.flatMap(m => m.passagers.map((p: any) => p._id))));
+    console.log('🔄 [CONSOLIDATION] Début du regroupement de', this.mouvementsToRegroup.length, 'mouvements');
 
-    const regroupementData = {
-      stops: firstMouvement.stops,
-      demandeur: firstMouvement.demandeur._id,
-      objectif: regroupedTitle,
-      statut: 'regroupé',
+    // Fusionner tous les stops de tous les mouvements
+    this.consolidationStops = this.mergeStopsFromMovements(this.mouvementsToRegroup);
+    console.log('🔄 [CONSOLIDATION] Stops fusionnés:', this.consolidationStops.length);
+
+    // Préparer les données de consolidation
+    const allPassagersIds = Array.from(new Set(
+      this.mouvementsToRegroup.flatMap(m => m.passagers.map((p: any) => p._id))
+    ));
+
+    this.consolidationData = {
+      objectif: `Regroupement pour ${this.mouvementsToRegroup.length} mouvements`,
       passagers: allPassagersIds,
+      demandeur: this.mouvementsToRegroup[0].demandeur._id,
       enfantsMouvements: this.mouvementsToRegroup.map(m => m._id)
     };
 
+    // Activer le mode édition
+    this.isEditingConsolidation = true;
+  }
+
+  mergeStopsFromMovements(mouvements: any[]): any[] {
+    const allStops: any[] = [];
+
+    mouvements.forEach(mouvement => {
+      mouvement.stops.forEach((stop: any, index: number) => {
+        allStops.push({
+          lieu: stop.lieu,
+          dateArrivee: stop.dateArrivee ? this.formatDateForInput(stop.dateArrivee) : '',
+          dateDepart: stop.dateDepart ? this.formatDateForInput(stop.dateDepart) : '',
+          originMouvement: mouvement._id,
+          originMouvementObjectif: mouvement.objectif,
+          isFirstStop: index === 0,
+          isLastStop: index === mouvement.stops.length - 1
+        });
+      });
+    });
+
+    console.log('🔄 [CONSOLIDATION] Stops avant tri:', allStops.length);
+
+    // Trier par date de départ
+    allStops.sort((a, b) => {
+      const dateA = new Date(a.dateDepart || a.dateArrivee);
+      const dateB = new Date(b.dateDepart || b.dateArrivee);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    // Dédupliquer les lieux identiques consécutifs
+    const deduplicatedStops = [];
+    for (let i = 0; i < allStops.length; i++) {
+      if (i === 0 || allStops[i].lieu._id !== allStops[i - 1].lieu._id) {
+        deduplicatedStops.push(allStops[i]);
+      } else {
+        console.log('🔄 [CONSOLIDATION] Lieu dupliqué ignoré:', allStops[i].lieu.nom);
+      }
+    }
+
+    console.log('🔄 [CONSOLIDATION] Stops après déduplication:', deduplicatedStops.length);
+    return deduplicatedStops;
+  }
+
+  formatDateForInput(dateString: string): string {
+    // Convertir la date au format datetime-local (YYYY-MM-DDTHH:mm)
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  confirmConsolidation(): void {
+    console.log('✅ [CONSOLIDATION] Confirmation de la consolidation');
+
+    const regroupementData = {
+      stops: this.consolidationStops.map(stop => ({
+        lieu: stop.lieu._id,
+        dateArrivee: stop.dateArrivee ? new Date(stop.dateArrivee).toISOString() : undefined,
+        dateDepart: stop.dateDepart ? new Date(stop.dateDepart).toISOString() : undefined,
+        originMouvement: stop.originMouvement
+      })),
+      demandeur: this.consolidationData.demandeur,
+      objectif: this.consolidationData.objectif,
+      statut: 'validé', // IMPORTANT: Garder le statut validé, pas de re-validation
+      passagers: this.consolidationData.passagers,
+      enfantsMouvements: this.consolidationData.enfantsMouvements
+    };
+
+    console.log('✅ [CONSOLIDATION] Données à envoyer:', regroupementData);
+
     this.mouvementService.addMouvement(regroupementData).subscribe(
       (newRegroupedMouvement) => {
-        alert('Mouvement de regroupement créé !');
+        console.log('✅ [CONSOLIDATION] Mouvement consolidé créé:', newRegroupedMouvement._id);
+
+        // Mettre à jour les mouvements enfants
         const updatePromises = this.mouvementsToRegroup.map(m => {
           return firstValueFrom(this.mouvementService.updateMouvement(m._id, {
-            statut: 'regroupé-enfant'
+            statut: 'regroupé-enfant',
+            parentMouvement: newRegroupedMouvement._id
           }));
         });
 
         forkJoin(updatePromises).subscribe(
           () => {
-            alert('Mouvements regroupés.');
-            this.mouvementsToRegroup = [];
+            alert('Mouvements regroupés avec succès !');
+            this.cancelConsolidation();
             this.loadDataForConsolidation();
           },
-          (error) => console.error('Erreur update enfants:', error)
+          (error) => {
+            console.error('❌ [CONSOLIDATION] Erreur update enfants:', error);
+            alert('Erreur lors de la mise à jour des mouvements enfants.');
+          }
         );
       },
-      (error) => console.error('Erreur création regroupement:', error)
+      (error) => {
+        console.error('❌ [CONSOLIDATION] Erreur création regroupement:', error);
+        alert('Erreur lors de la création du mouvement consolidé.');
+      }
     );
+  }
+
+  cancelConsolidation(): void {
+    this.isEditingConsolidation = false;
+    this.consolidationStops = [];
+    this.consolidationData = null;
+    this.mouvementsToRegroup = [];
   }
 
   loadVehicules(): void {

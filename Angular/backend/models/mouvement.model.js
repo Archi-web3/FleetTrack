@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const stopSchema = new mongoose.Schema({
   lieu: { type: mongoose.Schema.Types.ObjectId, ref: 'Lieu', required: true },
   dateArrivee: { type: Date }, // Date/heure d'arrivée à cette étape (optionnel, ex: pour le départ final)
-  dateDepart: { type: Date } // Date/heure de départ de cette étape (optionnel, ex: pour l'arrivée finale)
+  dateDepart: { type: Date }, // Date/heure de départ de cette étape (optionnel, ex: pour l'arrivée finale)
+  originMouvement: { type: mongoose.Schema.Types.ObjectId, ref: 'Mouvement' } // NOUVEAU: Pour tracer l'origine lors de la consolidation
 }, { _id: false });
 
 const mouvementSchema = new mongoose.Schema({
