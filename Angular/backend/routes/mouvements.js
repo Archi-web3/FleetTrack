@@ -108,25 +108,66 @@ router.get('/mouvements/stats-by-status', auth(['SuperAdmin', 'Admin', 'Supervis
 // Récupérer tous les mouvements (Accès pour tout utilisateur connecté)
 router.get('/mouvements', auth(), async (req, res) => {
   try {
+    console.log('📥 [GET MOUVEMENTS] Récupération des mouvements...');
+    console.log('📥 [GET MOUVEMENTS] Utilisateur:', req.utilisateur.id, 'Profil:', req.utilisateur.profil);
+    console.log('📥 [GET MOUVEMENTS] Base utilisateur:', req.utilisateur.base);
+    console.log('📥 [GET MOUVEMENTS] Pays utilisateur:', req.utilisateur.pays);
+
     let query = {};
+    let demandeurQuery = {}; // Pour stocker la condition demandeur séparément
+
     if (req.utilisateur.profil === 'Technicien' || req.utilisateur.profil === 'Guest') {
       if (!mongoose.Types.ObjectId.isValid(req.utilisateur.id)) {
         return res.status(400).json({ message: 'ID utilisateur invalide' });
       }
-      query = { demandeur: req.utilisateur.id };
+      demandeurQuery = { demandeur: req.utilisateur.id };
     } else if (req.query.demandeurId && mongoose.Types.ObjectId.isValid(req.query.demandeurId)) {
-      query = { demandeur: req.query.demandeurId };
+      demandeurQuery = { demandeur: req.query.demandeurId };
     }
 
     // Filtre MULTI-SITES : On ne voit que les mouvements de sa base (sauf SuperAdmin)
+    // CORRECTION : Inclure aussi les mouvements sans base assignée pour éviter de les perdre
     if (req.utilisateur.base && req.utilisateur.profil !== 'SuperAdmin') {
-      query.base = req.utilisateur.base;
+      query.$and = query.$and || [];
+      query.$and.push({
+        $or: [
+          { base: req.utilisateur.base },
+          { base: null },
+          { base: { $exists: false } }
+        ]
+      });
+      console.log('📥 [GET MOUVEMENTS] Filtre par base avec fallback pour mouvements sans base');
     }
 
     // Filtre MULTI-PAYS : Filtrer par pays sélectionné
+    // CORRECTION : Inclure aussi les mouvements sans pays assigné
     if (req.selectedCountry) {
-      query.pays = req.selectedCountry;
+      query.$and = query.$and || [];
+      query.$and.push({
+        $or: [
+          { pays: req.selectedCountry },
+          { pays: null },
+          { pays: { $exists: false } }
+        ]
+      });
+      console.log('📥 [GET MOUVEMENTS] Filtre par pays avec fallback pour mouvements sans pays');
     }
+
+    // Ajouter la condition demandeur à la query finale
+    if (Object.keys(demandeurQuery).length > 0) {
+      query.$and = query.$and || [];
+      query.$and.push(demandeurQuery);
+    }
+
+    // Si $and n'a qu'un seul élément, le déballer pour éviter un $and inutile
+    if (query.$and && query.$and.length === 1) {
+      query = query.$and[0];
+    } else if (query.$and && query.$and.length === 0) {
+      query = {}; // Si $and est vide, pas de filtre spécifique
+    }
+
+
+    console.log('📥 [GET MOUVEMENTS] Query MongoDB:', JSON.stringify(query, null, 2));
 
     const mouvements = await Mouvement.find(query)
       .populate({
@@ -137,10 +178,13 @@ router.get('/mouvements', auth(), async (req, res) => {
       .populate('vehicule', 'marque modele immatriculation')
       .populate('chauffeur', 'nom prenom telephone')
       .populate('passagers', 'nom email');
-    console.log('Mouvements récupérés avec filtre:', query, mouvements);
+
+    console.log('📥 [GET MOUVEMENTS] Mouvements trouvés:', mouvements.length);
+    console.log('📥 [GET MOUVEMENTS] Mouvements récupérés:', mouvements);
+
     res.json(mouvements);
   } catch (err) {
-    console.error('Erreur lors de la récupération des mouvements:', err);
+    console.error('❌ [GET MOUVEMENTS] Erreur lors de la récupération des mouvements:', err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -170,19 +214,33 @@ router.get('/mouvements/:id', auth(), async (req, res) => {
 // Créer un nouveau mouvement (Accès pour tout utilisateur connecté)
 router.post('/mouvements', auth(), async (req, res) => {
   try {
+    console.log('🆕 [CREATE MOUVEMENT] Création d\'un nouveau mouvement...');
+    console.log('🆕 [CREATE MOUVEMENT] Utilisateur:', req.utilisateur.id, 'Profil:', req.utilisateur.profil);
+    console.log('🆕 [CREATE MOUVEMENT] Base utilisateur:', req.utilisateur.base);
+    console.log('🆕 [CREATE MOUVEMENT] Pays utilisateur:', req.utilisateur.pays);
+
     // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ ---
     let statutInitial = 'en attente';
     const stopLieuIds = req.body.stops.map((stop) => stop.lieu);
+    console.log('🆕 [CREATE MOUVEMENT] Lieux impliqués (IDs):', stopLieuIds);
 
     // Vérifier si les lieux sont sensibles
     const lieuxImpliques = await Lieu.find({
       _id: { $in: stopLieuIds }
     });
+    console.log('🆕 [CREATE MOUVEMENT] Lieux trouvés:', lieuxImpliques.length);
+    lieuxImpliques.forEach(lieu => {
+      console.log(`  - Lieu: ${lieu.nom}, Sensible: ${lieu.estSensible}`);
+    });
 
     const estLieuSensible = lieuxImpliques.some(lieu => lieu.estSensible);
+    console.log('🆕 [CREATE MOUVEMENT] Contient un lieu sensible?', estLieuSensible);
 
     if (estLieuSensible) {
       statutInitial = 'en attente validation sécurité';
+      console.log('🔒 [CREATE MOUVEMENT] Statut assigné: "en attente validation sécurité"');
+    } else {
+      console.log('✅ [CREATE MOUVEMENT] Statut assigné: "en attente"');
     }
     // --- FIN NOUVELLE LOGIQUE ---
 
@@ -201,11 +259,23 @@ router.post('/mouvements', auth(), async (req, res) => {
 
     if (!mouvement.demandeur) {
       mouvement.demandeur = req.utilisateur.id;
+      console.log('🆕 [CREATE MOUVEMENT] Demandeur assigné depuis le token:', mouvement.demandeur);
     }
 
     // Assigner la base du créateur au mouvement
     if (req.utilisateur.base) {
       mouvement.base = req.utilisateur.base;
+      console.log('🆕 [CREATE MOUVEMENT] Base assignée:', mouvement.base);
+    } else {
+      console.warn('⚠️ [CREATE MOUVEMENT] Aucune base assignée à l\'utilisateur!');
+    }
+
+    // Assigner le pays depuis l'utilisateur si disponible
+    if (req.utilisateur.pays) {
+      mouvement.pays = req.utilisateur.pays;
+      console.log('🆕 [CREATE MOUVEMENT] Pays assigné:', mouvement.pays);
+    } else {
+      console.warn('⚠️ [CREATE MOUVEMENT] Aucun pays assigné à l\'utilisateur!');
     }
 
     // Si le projet n'est pas fourni, le récupérer depuis le demandeur
@@ -214,10 +284,10 @@ router.post('/mouvements', auth(), async (req, res) => {
         const demandeur = await Utilisateur.findById(mouvement.demandeur);
         if (demandeur && demandeur.projet) {
           mouvement.projet = demandeur.projet;
-          console.log(`Projet assigné au mouvement depuis le demandeur: ${mouvement.projet}`);
+          console.log(`🆕 [CREATE MOUVEMENT] Projet assigné au mouvement depuis le demandeur: ${mouvement.projet}`);
         }
       } catch (err) {
-        console.error('Erreur lors de la récupération du projet du demandeur:', err);
+        console.error('❌ [CREATE MOUVEMENT] Erreur lors de la récupération du projet du demandeur:', err);
       }
     }
 
@@ -229,17 +299,23 @@ router.post('/mouvements', auth(), async (req, res) => {
         mouvement.projetsPassagers = projetsUniques;
 
         if (projetsUniques.length > 1) {
-          console.log(`Mouvement multi-projets détecté: ${projetsUniques.join(', ')}`);
+          console.log(`🆕 [CREATE MOUVEMENT] Mouvement multi-projets détecté: ${projetsUniques.join(', ')}`);
         }
       } catch (err) {
-        console.error('Erreur lors de la récupération des projets des passagers:', err);
+        console.error('❌ [CREATE MOUVEMENT] Erreur lors de la récupération des projets des passagers:', err);
       }
     }
 
     const nouveauMouvement = await mouvement.save();
+    console.log('✅ [CREATE MOUVEMENT] Mouvement créé avec succès!');
+    console.log('✅ [CREATE MOUVEMENT] ID:', nouveauMouvement._id);
+    console.log('✅ [CREATE MOUVEMENT] Statut final:', nouveauMouvement.statut);
+    console.log('✅ [CREATE MOUVEMENT] Base finale:', nouveauMouvement.base);
+    console.log('✅ [CREATE MOUVEMENT] Pays final:', nouveauMouvement.pays);
+
     res.status(201).json(nouveauMouvement);
   } catch (err) {
-    console.error('Erreur lors de la création du mouvement:', err);
+    console.error('❌ [CREATE MOUVEMENT] Erreur lors de la création du mouvement:', err);
     res.status(400).json({ message: err.message });
   }
 });

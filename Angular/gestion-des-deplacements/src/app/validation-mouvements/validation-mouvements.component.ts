@@ -28,17 +28,30 @@ export class ValidationMouvementsComponent implements OnInit {
   }
 
   loadMouvementsPourValidation(): void {
+    console.log('🔍 [VALIDATION] Chargement des mouvements pour validation...');
+    console.log('🔍 [VALIDATION] Profil utilisateur:', this.userProfile);
+
     if (!this.userProfile) {
       // Si l'utilisateur n'est pas connecté ou son profil n'est pas disponible,
       // on ne charge pas les mouvements et on vide les listes.
       this.mouvementsPourValidationSecurite = [];
       this.mouvementsPourValidationLogistique = [];
-      console.warn('Profil utilisateur non chargé. Impossible de filtrer les mouvements pour validation.');
+      console.warn('⚠️ [VALIDATION] Profil utilisateur non chargé. Impossible de filtrer les mouvements pour validation.');
       return;
     }
 
     this.mouvementService.getMouvements().subscribe(
       (data) => {
+        console.log('📦 [VALIDATION] Tous les mouvements récupérés du backend:', data.length, 'mouvements');
+        console.log('📦 [VALIDATION] Détails des mouvements:', data);
+
+        // Afficher les statuts de tous les mouvements
+        const statutsCount: any = {};
+        data.forEach((m: any) => {
+          statutsCount[m.statut] = (statutsCount[m.statut] || 0) + 1;
+        });
+        console.log('📊 [VALIDATION] Répartition par statut:', statutsCount);
+
         // Logique de filtrage des mouvements en fonction du profil
         this.mouvementsPourValidationSecurite = []; // Réinitialiser pour chaque chargement
         this.mouvementsPourValidationLogistique = []; // Réinitialiser pour chaque chargement
@@ -48,17 +61,25 @@ export class ValidationMouvementsComponent implements OnInit {
           // et ceux qui attendent la logistique (car il couvre les deux rôles pour la démo)
           this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
           this.mouvementsPourValidationLogistique = data.filter(m => m.statut === 'en attente');
+
+          console.log('✅ [VALIDATION] Mouvements pour validation sécurité:', this.mouvementsPourValidationSecurite.length);
+          console.log('✅ [VALIDATION] Mouvements pour validation logistique:', this.mouvementsPourValidationLogistique.length);
+        } else {
+          console.log('⚠️ [VALIDATION] Profil non autorisé pour la validation:', this.userProfile);
         }
         // Si nous avions un rôle 'CoordinateurTerrain' distinct, ce serait ici:
         // else if (this.userProfile === 'CoordinateurTerrain') {
         //   this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
         // }
 
+        if (this.mouvementsPourValidationLogistique.length === 0 && this.mouvementsPourValidationSecurite.length === 0) {
+          console.log('ℹ️ [VALIDATION] Aucun mouvement à valider trouvé.');
+        }
 
-        console.log("Mouvements pour validation logistique chargés:", this.mouvementsPourValidationLogistique);
-        console.log("Mouvements pour validation sécurité chargés:", this.mouvementsPourValidationSecurite);
+        console.log("📋 [VALIDATION] Mouvements pour validation logistique:", this.mouvementsPourValidationLogistique);
+        console.log("📋 [VALIDATION] Mouvements pour validation sécurité:", this.mouvementsPourValidationSecurite);
       },
-      (error) => console.error('Erreur chargement mouvements pour validation:', error)
+      (error) => console.error('❌ [VALIDATION] Erreur chargement mouvements pour validation:', error)
     );
   }
 
