@@ -1,1 +1,278 @@
--NoNewline
+<div style="padding: 20px;">
+  <h2>Consolidation & Affectation des Mouvements</h2>
+
+  <!-- Formulaire d'affectation (apparaît quand un mouvement est sélectionné) -->
+  <div *ngIf="selectedMouvementId"
+    style="border: 1px solid #007bff; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #e9f7ff;">
+    <h3>Affecter Véhicule & Chauffeur au mouvement #{{ selectedMouvementId }}</h3>
+    <p><strong>Mouvement sélectionné:</strong> Objectif: {{ mouvementEnSelection?.objectif }} - De: {{
+      getOrigin(mouvementEnSelection) }} - À: {{ getFinalDestination(mouvementEnSelection) }}</p>
+
+    <form (ngSubmit)="assignVehiculeAndChauffeur()" #assignmentForm="ngForm">
+      <div style="margin-bottom: 10px;">
+        <label for="vehiculeAssignment">Véhicule:</label>
+        <select id="vehiculeAssignment" name="vehiculeAssignment" [(ngModel)]="selectedVehiculeId" required
+          style="width: 100%; padding: 8px;">
+          <option value="">Sélectionnez un véhicule</option>
+          <option *ngFor="let vehicule of vehicules" [value]="vehicule._id">{{ vehicule.marque }} {{ vehicule.modele }}
+            ({{ vehicule.immatriculation }})</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="chauffeurAssignment">Chauffeur:</label>
+        <select id="chauffeurAssignment" name="chauffeurAssignment" [(ngModel)]="selectedChauffeurId" required
+          style="width: 100%; padding: 8px;">
+          <option value="">Sélectionnez un chauffeur</option>
+          <option *ngFor="let chauffeur of chauffeurs" [value]="chauffeur._id">{{ chauffeur.prenom }} {{ chauffeur.nom
+            }} ({{ chauffeur.telephone }})</option>
+        </select>
+      </div>
+      <button type="submit" [disabled]="!assignmentForm.form.valid"
+        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Affecter</button>
+      <button type="button" (click)="cancelAssignment()"
+        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">Annuler</button>
+    </form>
+
+    <h4 style="margin-top: 20px;">Suggestions de regroupement :</h4>
+    <div *ngIf="suggestedMouvements.length === 0">Aucune suggestion trouvée pour ce mouvement.</div>
+    <ul style="list-style-type: none; padding: 0;">
+      <li *ngFor="let suggestion of suggestedMouvements"
+        style="border: 1px solid #e0f2f7; padding: 10px; margin-bottom: 5px; border-radius: 3px;">
+        <strong>Objectif:</strong> {{ suggestion.objectif }}<br>
+        <strong>De:</strong> {{ getOrigin(suggestion) }}<br>
+        <strong>À:</strong> {{ getFinalDestination(suggestion) }}<br>
+        <strong>Demandeur:</strong> {{ suggestion.demandeur?.nom }}
+        <!-- Ajoutez ici un bouton ou une case à cocher pour ajouter à la sélection de regroupement -->
+      </li>
+    </ul>
+  </div>
+
+
+  <!-- NOUVEAU: Dialogue d'\u00e9dition de consolidation -->
+<!-- À ins\u00e9rer apr\u00e8s la ligne 48 dans consolidation-mouvements.component.html -->
+<div *ngIf="isEditingConsolidation"
+style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;
+display: flex; align-items: center; justify-content: center;">
+<div
+style="background: white; padding: 30px; border-radius: 10px; max-width: 900px; max-height: 85vh; overflow-y: auto;
+width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+<h3 style="margin-top: 0; color: #007bff;"><strong>\ud83d\udd04 Édition de la
+Consolidation</strong></h3>
+<p><strong>Objectif :</strong> {{ consolidationData.objectif }}</p>
+<p><strong>Nombre de mouvements :</strong> {{ mouvementsToRegroup.length }}</p>
+
+<h4 style="margin-top: 20px; color: #28a745;">Étapes du mouvement consolid\u00e9 :</h4>
+<p style="color: #666; font-size: 0.9em; font-style: italic;">
+✏️ Vous pouvez modifier les dates et heures de chaque \u00e9tape avant de confirmer
+</p>
+
+<div *ngFor="let stop of consolidationStops; let i = index"
+style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; background-color:
+#f9f9f9;">
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<strong style="font-size: 1.1em; color: #333;">Étape {{ i + 1 }}</strong>
+<span
+style="background-color: #e3f2fd; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; color: #1976d2; border: 1px
+solid #90caf9;">
+\ud83d\udccd Origine: {{ stop.originMouvementObjectif }}
+</span>
+</div>
+
+<p style="margin: 8px 0; font-size: 0.95em;">
+<strong>\ud83d\udccd Lieu :</strong> {{ stop.lieu.nom }}
+<span style="color: #666;">({{ stop.lieu.adresse }})</span>
+</p>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+<div *ngIf="i > 0">
+<label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
+\ud83d\udccd Date/Heure d'arriv\u00e9e :
+</label>
+<input type="datetime-local" [(ngModel)]="stop.dateArrivee"
+style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
+</div>
+
+<div *ngIf="i < consolidationStops.length - 1">
+<label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
+\ud83d\ude80 Date/Heure de d\u00e9part :
+</label>
+<input type="datetime-local" [(ngModel)]="stop.dateDepart"
+style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
+</div>
+</div>
+</div>
+
+<div style="margin-top: 25px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid #ddd;
+padding-top: 20px;">
+<button (click)="cancelConsolidation()"
+style="padding: 12px 24px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 5px;
+font-size: 1em; font-weight: 500;">
+❌ Annuler
+</button>
+<button (click)="confirmConsolidation()"
+style="padding: 12px 24px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px;
+font-size: 1em; font-weight: 500;">
+✅ Confirmer la consolidation
+</button>
+</div>
+</div>
+</div>  <!-- Liste des mouvements validés en attente d'affectation -->
+  <h3>Mouvements validés en attente d'affectation</h3>
+  <p *ngIf="mouvementsValides.length === 0">Aucun mouvement validé n'attend d'affectation de véhicule/chauffeur.</p>
+
+  <!-- Bouton de regroupement -->
+  <button (click)="regrouperMouvementsSelectionnes()" [disabled]="mouvementsToRegroup.length < 2"
+    style="padding: 10px 20px; background-color: #ffc107; color: black; border: none; cursor: pointer;">Regrouper les {{
+    mouvementsToRegroup.length }} mouvements sélectionnés</button>
+  <p *ngIf="mouvementsToRegroup.length > 0" style="margin-top: 5px;">Mouvements sélectionnés pour regroupement: {{
+    mouvementsToRegroup.length }}</p>
+
+  <ul style="list-style-type: none; padding: 0;">
+    <li *ngFor="let mouvement of mouvementsValides"
+      style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <!-- Case à cocher pour le regroupement -->
+        <input type="checkbox" [value]="mouvement._id" (change)="onCheckboxChange($event, mouvement)"
+          style="margin-right: 10px;"> Sélectionner pour regroupement
+        <br>
+        <!-- CORRECTION ICI : UNE SEULE CASE À COCHER POUR LA CARTE -->
+        <input type="checkbox" [checked]="isMouvementSelectedForMap(mouvement._id)"
+          (change)="onToggleMapDisplay($event, mouvement)" style="margin-right: 10px;"> Afficher sur la carte
+        <br>
+        <!-- MODIFIÉ : Affichage détaillé des étapes -->
+        <p><strong>Itinéraire:</strong></p>
+        <ul>
+          <li *ngFor="let stop of mouvement.stops; let i = index">
+            <strong>Étape {{ i + 1 }}:</strong> {{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})
+            <span *ngIf="i < mouvement.stops.length - 1"> Départ: {{ stop.dateDepart | date:'short' }}</span>
+            <span *ngIf="i > 0"> Arrivée: {{ stop.dateArrivee | date:'short' }}</span>
+          </li>
+        </ul>
+
+        <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
+        <ng-container *ngIf="mouvement.demandeur">
+          <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
+        </ng-container>
+        <ng-container *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
+          <strong>Passagers:</strong> {{ getPassagersNoms(mouvement) }}<br>
+        </ng-container>
+        <ng-container *ngIf="mouvement.vehicule">
+          <strong>Véhicule affecté:</strong> {{ mouvement.vehicule?.marque }} ({{ mouvement.vehicule?.immatriculation
+          }})<br>
+        </ng-container>
+        <ng-container *ngIf="mouvement.chauffeur">
+          <strong>Chauffeur affecté:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}<br>
+        </ng-container>
+      </div>
+      <div>
+        <button (click)="selectMouvementForAssignment(mouvement)"
+          style="padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">Affecter</button>
+      </div>
+    </li>
+  </ul>
+
+  <br />
+  <!-- CARTE MONTÉE ICI -->
+  <h3 style="margin-top: 30px;">Carte des Mouvements à Consolider</h3>
+  <app-map-mouvements [mouvements]="mapEvents"></app-map-mouvements>
+  <br />
+
+  <!-- Historique des mouvements consolidés/affectés -->
+  <h3 (click)="showConsolidesHistory = !showConsolidesHistory"
+    style="cursor: pointer; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
+    Historique des mouvements consolidés/affectés (cliquer pour {{ showConsolidesHistory ? 'masquer' : 'afficher' }})
+  </h3>
+
+  <div *ngIf="showConsolidesHistory" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+    <!-- Filtres de date pour l'historique -->
+    <div style="margin-bottom: 15px;">
+      <label for="filterStartDate">Date de début:</label>
+      <input type="date" id="filterStartDate" [(ngModel)]="filterStartDate" (change)="applyConsolidesFilters()"
+        style="margin-right: 10px;">
+      <label for="filterEndDate">Date de fin:</label>
+      <input type="date" id="filterEndDate" [(ngModel)]="filterEndDate" (change)="applyConsolidesFilters()">
+    </div>
+
+    <p *ngIf="filteredMouvementsConsolides.length === 0">Aucun mouvement n'a été consolidé pour le moment.</p>
+
+    <ul style="list-style-type: none; padding: 0;">
+      <li *ngFor="let mouvement of filteredMouvementsConsolides"
+        style="border: 1px solid #d4edda; padding: 10px; margin-bottom: 5px; border-radius: 3px; background-color: #f0fdf4; display: flex; flex-direction: column; align-items: stretch;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div>
+            <!-- Affichage détaillé des étapes -->
+            <p><strong>Itinéraire:</strong></p>
+            <ul>
+              <li *ngFor="let stop of mouvement.stops; let i = index">
+                <strong>Étape {{ i + 1 }}:</strong> {{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})
+                <span *ngIf="i < mouvement.stops.length - 1"> Départ: {{ stop.dateDepart | date:'short' }}</span>
+                <span *ngIf="i > 0"> Arrivée: {{ stop.dateArrivee | date:'short' }}</span>
+              </li>
+            </ul>
+
+            <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
+            <ng-container *ngIf="mouvement.demandeur">
+              <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
+            </ng-container>
+            <ng-container *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
+              <strong>Passagers:</strong> {{ getPassagersNoms(mouvement) }}<br>
+            </ng-container>
+            <ng-container *ngIf="mouvement.vehicule">
+              <strong>Véhicule affecté:</strong> {{ mouvement.vehicule?.marque }} ({{
+              mouvement.vehicule?.immatriculation }})<br>
+            </ng-container>
+            <ng-container *ngIf="mouvement.chauffeur">
+              <strong>Chauffeur affecté:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}<br>
+            </ng-container>
+            <strong>Statut:</strong> {{ mouvement.statut | titlecase }}<br>
+          </div>
+        </div>
+
+        <!-- COMPARAISON THÉORIE VS RÉEL -->
+        <div *ngIf="mouvement.realDepartureTime || mouvement.startMileage"
+          style="margin-top: 15px; padding: 15px; background-color: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 5px;">
+          <h4 style="margin: 0 0 10px 0; color: #2e7d32; display: flex; align-items: center;">
+            <mat-icon style="margin-right: 5px; font-size: 20px;">smartphone</mat-icon>
+            Données Réelles (e-Logbook)
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <span style="font-weight: bold; color: #2e7d32;">⏱️ Horaires:</span><br>
+              <div style="margin-left: 10px; font-size: 0.9em;">
+                Départ Réel: <strong>{{ mouvement.realDepartureTime | date:'short' }}</strong><br>
+                Arrivée Réelle: <strong>{{ mouvement.realArrivalTime ? (mouvement.realArrivalTime | date:'short') : 'En
+                  cours...' }}</strong>
+              </div>
+            </div>
+            <div>
+              <span style="font-weight: bold; color: #2e7d32;">🚗 Kilométrage:</span><br>
+              <div style="margin-left: 10px; font-size: 0.9em;">
+                Départ: <strong>{{ mouvement.startMileage }} km</strong><br>
+                Arrivée: <strong>{{ mouvement.endMileage ? mouvement.endMileage + ' km' : '--' }}</strong>
+                <span *ngIf="mouvement.endMileage && mouvement.startMileage" style="margin-left: 5px; color: #1976d2;">
+                  (Distance: {{ mouvement.endMileage - mouvement.startMileage }} km)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="mouvement.deviations && mouvement.deviations.length > 0"
+            style="margin-top: 10px; border-top: 1px dashed #a5d6a7; padding-top: 10px;">
+            <span style="font-weight: bold; color: #c62828;">⚠️ Écarts signalés:</span>
+            <ul style="margin: 5px 0 0 0; padding-left: 20px; color: #c62828;">
+              <li *ngFor="let dev of mouvement.deviations">
+                {{ dev.type | titlecase }}: {{ dev.value }} ({{ dev.description }})
+              </li>
+            </ul>
+          </div>
+
+          <div *ngIf="mouvement.driverObservations" style="margin-top: 10px;">
+            <span style="font-weight: bold; color: #555;">💬 Observations Chauffeur:</span>
+            <p style="margin: 5px 0 0 10px; font-style: italic; color: #333;">"{{ mouvement.driverObservations }}"</p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
