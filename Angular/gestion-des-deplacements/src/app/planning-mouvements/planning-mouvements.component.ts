@@ -16,7 +16,7 @@ import {
   DateFormatterParams
 } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { addDays, format } from 'date-fns';
+import { addDays, format, startOfWeek, endOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Subject } from 'rxjs';
 
@@ -71,11 +71,40 @@ export class PlanningMouvementsComponent implements OnInit {
   getPlanningMouvements() {
     this.mouvementService.getPlanningMouvements().subscribe(
       (data: any[]) => {
-        // Préparer les événements pour la carte
-        this.mapEvents = data.filter((m: any) =>
-          m.stops && m.stops.length > 0 &&
-          m.stops.every((stop: any) => stop.lieu && stop.lieu.coordonnees)
-        ).map((m: any) => ({
+        // Calculer le début et la fin de la semaine en cours
+        const startOfCurrentWeek = this.getStartOfWeek(this.viewDate);
+        const endOfCurrentWeek = this.getEndOfWeek(this.viewDate);
+
+        console.log('📅 Semaine affichée:', {
+          debut: startOfCurrentWeek,
+          fin: endOfCurrentWeek
+        });
+
+        // Préparer les événements pour la carte - FILTRER PAR SEMAINE EN COURS
+        this.mapEvents = data.filter((m: any) => {
+          // Vérifier que le mouvement a des stops valides
+          if (!m.stops || m.stops.length === 0 || !m.stops.every((stop: any) => stop.lieu && stop.lieu.coordonnees)) {
+            return false;
+          }
+
+          // Vérifier que le mouvement se déroule pendant la semaine en cours
+          const mouvementStart = new Date(m.dateDepart);
+          const mouvementEnd = new Date(m.dateArrivee);
+
+          // Le mouvement est dans la semaine si :
+          // - Il commence avant la fin de la semaine ET
+          // - Il se termine après le début de la semaine
+          const isInCurrentWeek = mouvementStart <= endOfCurrentWeek && mouvementEnd >= startOfCurrentWeek;
+
+          if (isInCurrentWeek) {
+            console.log('✅ Mouvement dans la semaine:', m.objectif, {
+              debut: mouvementStart,
+              fin: mouvementEnd
+            });
+          }
+
+          return isInCurrentWeek;
+        }).map((m: any) => ({
           id: m._id,
           title: m.objectif,
           demandeur: m.demandeur?.nom,
@@ -91,6 +120,8 @@ export class PlanningMouvementsComponent implements OnInit {
             dateArrivee: stop.dateArrivee
           }))
         }));
+
+        console.log('🗺️ Mouvements affichés sur la carte:', this.mapEvents.length);
 
         this.events = data.map((mouvement: any) => {
           // Construire le titre avec les infos de véhicule et chauffeur
@@ -164,6 +195,15 @@ export class PlanningMouvementsComponent implements OnInit {
       default:
         return { primary: '#1e90ff', secondary: '#D1E8FF' }; // Bleu par défaut
     }
+  }
+
+  // Méthodes helper pour calculer le début et la fin de la semaine
+  getStartOfWeek(date: Date): Date {
+    return startOfWeek(date, { weekStartsOn: 1 }); // Semaine commence le lundi
+  }
+
+  getEndOfWeek(date: Date): Date {
+    return endOfWeek(date, { weekStartsOn: 1 }); // Semaine se termine le dimanche
   }
 
   handleEvent(action: string, event: any): void {
