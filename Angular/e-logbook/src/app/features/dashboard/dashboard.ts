@@ -112,7 +112,22 @@ export class DashboardComponent implements OnInit {
 
     // NOUVEAU: Vérifier si l'utilisateur est Admin
     isAdmin(): boolean {
-        return this.currentUser?.profil === 'Admin' || this.currentUser?.profil === 'SuperAdmin';
+        // Vérifier d'abord currentUser
+        if (this.currentUser?.profil === 'Admin' || this.currentUser?.profil === 'SuperAdmin') {
+            return true;
+        }
+
+        // Fallback: vérifier localStorage
+        const currentUserStr = localStorage.getItem('currentUser');
+        if (!currentUserStr) return false;
+
+        try {
+            const user = JSON.parse(currentUserStr);
+            return user.profil === 'Admin' || user.profil === 'SuperAdmin';
+        } catch (e) {
+            console.error('Error parsing currentUser from localStorage:', e);
+            return false;
+        }
     }
 
     // NOUVEAU: Réinitialiser les données locales (Admin uniquement)
