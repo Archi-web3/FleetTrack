@@ -142,7 +142,14 @@
 
         <!-- Colonne Ratio CO2 -->
         <ng-container matColumnDef="ratioCO2">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Ratio CO2 (%)</th>
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
+            Ratio CO2 (%)
+            <mat-icon
+              style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
+              matTooltip="Pourcentage des émissions CO2 de ce projet par rapport au total (formule: 2.3 kg CO2/L de diesel)">
+              info
+            </mat-icon>
+          </th>
           <td mat-cell *matCellDef="let stat">
             <span style="color: #52ae32; font-weight: 500;">{{stat.ratioCO2 | number:'1.1-1'}}%</span>
           </td>
@@ -156,7 +163,14 @@
 
         <!-- Colonne Ratio Consommation -->
         <ng-container matColumnDef="ratioConsommation">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Ratio Conso (%)</th>
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
+            Ratio Conso (%)
+            <mat-icon
+              style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
+              matTooltip="Pourcentage de la consommation de carburant de ce projet par rapport au total (moyenne: 8L/100km)">
+              info
+            </mat-icon>
+          </th>
           <td mat-cell *matCellDef="let stat">
             <span style="color: #ff9800; font-weight: 500;">{{stat.ratioConsommation | number:'1.1-1'}}%</span>
           </td>
