@@ -80,7 +80,9 @@
                     </mat-form-field>
 
                     <div class="actions">
-                        <button mat-raised-button color="warn" type="button" (click)="cancel()">ANNULER</button>
+                        <button mat-stroked-button type="button" (click)="returnToMenu()">
+                            REVENIR AU MENU
+                        </button>
                         <button mat-raised-button color="accent" type="button" (click)="stopTrip()"
                             [disabled]="endForm.invalid || endForm.pending">
                             <span *ngIf="!endForm.pending">TERMINER</span>

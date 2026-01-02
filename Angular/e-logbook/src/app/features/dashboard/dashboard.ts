@@ -99,4 +99,14 @@ export class DashboardComponent implements OnInit {
             this.router.navigate(['/login']);
         }
     }
+
+    // NOUVEAU: Vérifier si un trip est actif
+    hasActiveTrip(): boolean {
+        return localStorage.getItem('activeTrip') !== null;
+    }
+
+    // NOUVEAU: Reprendre le trip actif
+    resumeActiveTrip() {
+        this.router.navigate(['/active-trip']);
+    }
 }

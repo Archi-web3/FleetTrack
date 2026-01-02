@@ -78,6 +78,9 @@ export class ActiveTripComponent implements OnInit {
       arrivalPlaceId: ['', Validators.required]
     });
 
+    // NOUVEAU: Charger trip actif si existant
+    this.loadActiveTrip();
+
     // Then load async data
     try {
       // Get last mileage for validation
@@ -190,7 +193,7 @@ export class ActiveTripComponent implements OnInit {
     return null;
   }
 
-  startTrip() {
+  async startTrip() {
     if (this.startForm.invalid) {
       this.startForm.markAllAsTouched();
       return;
@@ -198,6 +201,19 @@ export class ActiveTripComponent implements OnInit {
 
     this.tripStarted = true;
     this.startTime = new Date();
+
+    // NOUVEAU: Appeler backend si mouvement planifié
+    if (this.plannedMovementId) {
+      try {
+        await this.updateMovementStatus();
+      } catch (error) {
+        console.error('Erreur mise à jour statut:', error);
+        // Continuer même si l'appel backend échoue (mode offline)
+      }
+    }
+
+    // NOUVEAU: Sauvegarder état dans localStorage
+    this.saveActiveTrip();
   }
 
   async stopTrip() {
@@ -236,11 +252,95 @@ export class ActiveTripComponent implements OnInit {
     console.log('Saving trip:', trip);
     await this.offlineService.addTrip(trip);
     console.log('Trip saved successfully');
+
+    // NOUVEAU: Nettoyer localStorage
+    this.clearActiveTrip();
+
     this.router.navigate(['/trip-list']);
   }
 
   cancel() {
+    // MODIFIÉ: Ne pas nettoyer si trip démarré
+    if (!this.tripStarted) {
+      this.clearActiveTrip();
+    }
     this.router.navigate(['/trip-list']);
+  }
+
+  // NOUVEAU: Retourner au menu en gardant le trip actif
+  returnToMenu() {
+    this.saveActiveTrip();
+    this.router.navigate(['/dashboard']);
+  }
+
+  // NOUVEAU: Sauvegarder trip en cours
+  saveActiveTrip() {
+    const activeTripData = {
+      tripStarted: this.tripStarted,
+      startTime: this.startTime?.toISOString(),
+      startFormValue: this.startForm.value,
+      plannedMovementId: this.plannedMovementId,
+      vehicleId: this.vehicleId
+    };
+    localStorage.setItem('activeTrip', JSON.stringify(activeTripData));
+    console.log('✅ Trip actif sauvegardé dans localStorage');
+  }
+
+  // NOUVEAU: Charger trip en cours
+  loadActiveTrip() {
+    const saved = localStorage.getItem('activeTrip');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        this.tripStarted = data.tripStarted;
+        this.startTime = data.startTime ? new Date(data.startTime) : null;
+        this.plannedMovementId = data.plannedMovementId;
+
+        // Restaurer les valeurs du formulaire
+        if (data.startFormValue) {
+          this.startForm.patchValue(data.startFormValue);
+        }
+
+        console.log('✅ Trip actif restauré depuis localStorage');
+      } catch (error) {
+        console.error('Erreur chargement trip actif:', error);
+        this.clearActiveTrip();
+      }
+    }
+  }
+
+  // NOUVEAU: Nettoyer localStorage
+  clearActiveTrip() {
+    localStorage.removeItem('activeTrip');
+    console.log('🗑️ Trip actif supprimé du localStorage');
+  }
+
+  // NOUVEAU: Appeler backend pour mettre statut "en cours"
+  async updateMovementStatus() {
+    if (!this.plannedMovementId) return;
+
+    const apiUrl = 'https://fleettrack-api.onrender.com/api';
+    const token = localStorage.getItem('token'); // Utiliser localStorage directement
+
+    try {
+      const response = await this.http.put(
+        `${apiUrl}/mouvements/${this.plannedMovementId}/start`,
+        {
+          realDepartureTime: this.startTime?.toISOString(),
+          startMileage: this.startForm.get('startMileage')?.value
+        },
+        {
+          headers: {
+            'x-auth-token': token || ''
+          }
+        }
+      ).toPromise();
+
+      console.log('✅ Statut mouvement mis à jour:', response);
+    } catch (error) {
+      console.error('❌ Erreur mise à jour statut mouvement:', error);
+      throw error;
+    }
   }
 
   // Helper to get error message for start mileage

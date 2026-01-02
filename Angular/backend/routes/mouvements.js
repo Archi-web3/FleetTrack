@@ -471,6 +471,43 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), asyn
   }
 });
 
+// DÉMARRER UN MOUVEMENT (Chauffeur commence le trajet)
+router.put('/mouvements/:id/start', auth(), async (req, res) => {
+  try {
+    console.log('🚗 [START MOUVEMENT] Démarrage du mouvement:', req.params.id);
+    console.log('🚗 [START MOUVEMENT] Données reçues:', req.body);
+
+    const mouvement = await Mouvement.findById(req.params.id);
+    if (!mouvement) {
+      return res.status(404).json({ message: 'Mouvement non trouvé' });
+    }
+
+    // Vérifier que le mouvement est dans un statut approprié
+    if (!['validé', 'pris en charge'].includes(mouvement.statut)) {
+      return res.status(400).json({
+        message: `Le mouvement doit être validé ou pris en charge pour être démarré (statut actuel: ${mouvement.statut})`
+      });
+    }
+
+    // Mettre à jour le statut et les données de démarrage
+    mouvement.statut = 'en cours';
+    mouvement.realDepartureTime = req.body.realDepartureTime || new Date();
+
+    if (req.body.startMileage) {
+      mouvement.startMileage = req.body.startMileage;
+    }
+
+    const mouvementMisAJour = await mouvement.save();
+    console.log('✅ [START MOUVEMENT] Mouvement démarré avec succès');
+    console.log('✅ [START MOUVEMENT] Nouveau statut:', mouvementMisAJour.statut);
+
+    res.json(mouvementMisAJour);
+  } catch (err) {
+    console.error('❌ [START MOUVEMENT] Erreur:', err);
+    return res.status(500).json({ message: err.message });
+  }
+});
+
 // GET /api/mouvements/suggestions/:id - Suggestions de regroupement (placeholder)
 router.get('/mouvements/suggestions/:id', auth(), async (req, res) => {
   try {

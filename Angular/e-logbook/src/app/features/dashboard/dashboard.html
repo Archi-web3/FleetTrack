@@ -31,6 +31,17 @@
 
     <!-- Dashboard Cards -->
     <div class="dashboard-grid">
+        <!-- NOUVEAU: Active Trip Card (si trip en cours) -->
+        <mat-card *ngIf="hasActiveTrip()" class="dashboard-card active-trip-card" (click)="resumeActiveTrip()">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" style="color: #9c27b0;">trip_origin</mat-icon>
+                </div>
+                <h3 style="color: #9c27b0;">🚗 Mouvement en Cours</h3>
+                <p class="card-description">Reprendre le trajet</p>
+            </mat-card-content>
+        </mat-card>
+
         <!-- Planning Card -->
         <mat-card class="dashboard-card planning-card" (click)="navigateTo('/planning')">
             <mat-card-content>
