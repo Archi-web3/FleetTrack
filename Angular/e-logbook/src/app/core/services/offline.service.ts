@@ -267,6 +267,21 @@ export class OfflineService extends Dexie {
             mileages.push(lastMaintenance[0].mileage);
         }
 
+        // NOUVEAU: Vérifier aussi le trip actif dans localStorage
+        const activeTripData = localStorage.getItem('activeTrip');
+        if (activeTripData) {
+            try {
+                const activeTrip = JSON.parse(activeTripData);
+                // Vérifier que c'est bien le même véhicule
+                if (activeTrip.vehicleId === vehicleId && activeTrip.startFormValue?.startMileage) {
+                    mileages.push(activeTrip.startFormValue.startMileage);
+                    console.log('✅ Kilométrage du trip actif pris en compte:', activeTrip.startFormValue.startMileage);
+                }
+            } catch (error) {
+                console.error('Erreur lecture active trip pour km:', error);
+            }
+        }
+
         return mileages.length > 0 ? Math.max(...mileages) : 0;
     }
 

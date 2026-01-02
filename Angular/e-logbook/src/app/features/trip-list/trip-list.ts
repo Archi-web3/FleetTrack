@@ -124,6 +124,7 @@ export class TripListComponent implements OnInit {
     // Keep trips that are either:
     // 1. Have a plannedMovementId (completed from planning - the REAL trip), OR
     // 2. Don't have a serverId matching a completed planned movement (not a duplicate)
+    // 3. NOUVEAU: Have an endDateTime (completed trips only, not active)
     this.trips = allTrips.filter(trip => {
       console.log('Filtering trip:', {
         id: trip.id,
@@ -132,6 +133,12 @@ export class TripListComponent implements OnInit {
         endDateTime: trip.endDateTime,
         purpose: trip.purpose
       });
+
+      // NOUVEAU: Exclure les trips actifs (sans endDateTime)
+      if (!trip.endDateTime) {
+        console.log('  -> REMOVE: Active trip (no endDateTime)');
+        return false;
+      }
 
       // If trip has plannedMovementId, it's a real completed trip - KEEP
       if (trip.plannedMovementId) {
