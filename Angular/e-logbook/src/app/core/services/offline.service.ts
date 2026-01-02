@@ -245,6 +245,8 @@ export class OfflineService extends Dexie {
 
     // Get last recorded mileage for a vehicle
     async getLastMileage(vehicleId: string): Promise<number> {
+        console.log('🔍 [getLastMileage] Recherche dernier km pour véhicule:', vehicleId);
+
         const [lastTrip, lastFuel, lastMaintenance] = await Promise.all([
             this.trips.where('vehicleId').equals(vehicleId).reverse().sortBy('startDateTime'),
             this.fuels.where('vehicleId').equals(vehicleId).reverse().sortBy('date'),
@@ -253,17 +255,27 @@ export class OfflineService extends Dexie {
 
         const mileages: number[] = [];
 
-        if (lastTrip.length > 0 && lastTrip[0].endMileage) {
-            mileages.push(lastTrip[0].endMileage);
-        } else if (lastTrip.length > 0) {
-            mileages.push(lastTrip[0].startMileage);
+        // Vérifier TOUS les trips récents pour trouver le dernier endMileage
+        console.log('📊 [getLastMileage] Trips trouvés:', lastTrip.length);
+        if (lastTrip.length > 0) {
+            // Chercher le premier trip avec endMileage
+            const tripWithEndMileage = lastTrip.find(t => t.endMileage != null);
+            if (tripWithEndMileage) {
+                console.log('✅ [getLastMileage] Trip avec endMileage trouvé:', tripWithEndMileage.endMileage);
+                mileages.push(tripWithEndMileage.endMileage);
+            } else if (lastTrip[0].startMileage) {
+                console.log('⚠️ [getLastMileage] Aucun endMileage, utilisation startMileage:', lastTrip[0].startMileage);
+                mileages.push(lastTrip[0].startMileage);
+            }
         }
 
         if (lastFuel.length > 0) {
+            console.log('⛽ [getLastMileage] Dernier fuel km:', lastFuel[0].mileage);
             mileages.push(lastFuel[0].mileage);
         }
 
         if (lastMaintenance.length > 0) {
+            console.log('🔧 [getLastMileage] Dernière maintenance km:', lastMaintenance[0].mileage);
             mileages.push(lastMaintenance[0].mileage);
         }
 
@@ -275,14 +287,16 @@ export class OfflineService extends Dexie {
                 // Vérifier que c'est bien le même véhicule
                 if (activeTrip.vehicleId === vehicleId && activeTrip.startFormValue?.startMileage) {
                     mileages.push(activeTrip.startFormValue.startMileage);
-                    console.log('✅ Kilométrage du trip actif pris en compte:', activeTrip.startFormValue.startMileage);
+                    console.log('🚗 [getLastMileage] Trip actif km:', activeTrip.startFormValue.startMileage);
                 }
             } catch (error) {
-                console.error('Erreur lecture active trip pour km:', error);
+                console.error('❌ [getLastMileage] Erreur lecture active trip:', error);
             }
         }
 
-        return mileages.length > 0 ? Math.max(...mileages) : 0;
+        const maxMileage = mileages.length > 0 ? Math.max(...mileages) : 0;
+        console.log('🎯 [getLastMileage] Kilométrage maximum trouvé:', maxMileage, 'parmi:', mileages);
+        return maxMileage;
     }
 
     // Calculate fuel consumption for a vehicle
