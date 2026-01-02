@@ -12,16 +12,32 @@
       <!-- Orange clair -->
       <p><strong>ID Mouvement:</strong> {{ mouvement._id }}</p>
       <p><strong>Statut:</strong> {{ mouvement.statut | titlecase }}</p>
-      <p><strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})</p>
-      <p><strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})</p>
+
+      <!-- Affichage des lieux via stops -->
+      <p *ngIf="mouvement.stops && mouvement.stops.length > 0">
+        <strong>Départ:</strong> {{ mouvement.stops[0].lieu?.nom }} ({{ mouvement.stops[0].lieu?.adresse }})
+      </p>
+      <p *ngIf="mouvement.stops && mouvement.stops.length > 1">
+        <strong>Arrivée:</strong> {{ mouvement.stops[mouvement.stops.length - 1].lieu?.nom }} ({{
+        mouvement.stops[mouvement.stops.length - 1].lieu?.adresse }})
+      </p>
+
+      <!-- Affichage des étapes intermédiaires si présentes -->
+      <div *ngIf="mouvement.stops && mouvement.stops.length > 2">
+        <p><strong>Étapes intermédiaires:</strong></p>
+        <ul>
+          <li *ngFor="let stop of mouvement.stops.slice(1, -1)">
+            {{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})
+          </li>
+        </ul>
+      </div>
+
       <p><strong>Date:</strong> {{ mouvement.dateDepart | date:'medium' }} - {{ mouvement.dateArrivee | date:'medium' }}
       </p>
       <p><strong>Objectif:</strong> {{ mouvement.objectif }}</p>
-      <!-- ... autres détails ... -->
       <p><strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})</p>
-      <p><strong>Véhicule:</strong> {{ mouvement.vehicule?.marque }} {{ mouvement.vehicule?.modele }} ({{
-        mouvement.vehicule?.immatriculation }})</p>
-      <p><strong>Chauffeur:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}</p>
+
+      <!-- Véhicule et Chauffeur MASQUÉS car pas encore attribués -->
 
       <div style="margin-top: 10px;">
         <button (click)="validerMouvement(mouvement._id, mouvement.statut)"
@@ -42,16 +58,32 @@
       style="border: 1px solid #e0f2f7; padding: 15px; margin-bottom: 15px; border-radius: 5px;"> <!-- Bleu clair -->
       <p><strong>ID Mouvement:</strong> {{ mouvement._id }}</p>
       <p><strong>Statut:</strong> {{ mouvement.statut | titlecase }}</p>
-      <p><strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})</p>
-      <p><strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})</p>
+
+      <!-- Affichage des lieux via stops -->
+      <p *ngIf="mouvement.stops && mouvement.stops.length > 0">
+        <strong>Départ:</strong> {{ mouvement.stops[0].lieu?.nom }} ({{ mouvement.stops[0].lieu?.adresse }})
+      </p>
+      <p *ngIf="mouvement.stops && mouvement.stops.length > 1">
+        <strong>Arrivée:</strong> {{ mouvement.stops[mouvement.stops.length - 1].lieu?.nom }} ({{
+        mouvement.stops[mouvement.stops.length - 1].lieu?.adresse }})
+      </p>
+
+      <!-- Affichage des étapes intermédiaires si présentes -->
+      <div *ngIf="mouvement.stops && mouvement.stops.length > 2">
+        <p><strong>Étapes intermédiaires:</strong></p>
+        <ul>
+          <li *ngFor="let stop of mouvement.stops.slice(1, -1)">
+            {{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})
+          </li>
+        </ul>
+      </div>
+
       <p><strong>Date:</strong> {{ mouvement.dateDepart | date:'medium' }} - {{ mouvement.dateArrivee | date:'medium' }}
       </p>
       <p><strong>Objectif:</strong> {{ mouvement.objectif }}</p>
-      <!-- ... autres détails ... -->
       <p><strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})</p>
-      <p><strong>Véhicule:</strong> {{ mouvement.vehicule?.marque }} {{ mouvement.vehicule?.modele }} ({{
-        mouvement.vehicule?.immatriculation }})</p>
-      <p><strong>Chauffeur:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}</p>
+
+      <!-- Véhicule et Chauffeur MASQUÉS car pas encore attribués -->
 
       <div style="margin-top: 10px;">
         <button (click)="validerMouvement(mouvement._id, mouvement.statut)"
