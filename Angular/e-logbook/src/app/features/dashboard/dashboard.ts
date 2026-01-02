@@ -109,4 +109,58 @@ export class DashboardComponent implements OnInit {
     resumeActiveTrip() {
         this.router.navigate(['/active-trip']);
     }
+
+    // NOUVEAU: Vérifier si l'utilisateur est Admin
+    isAdmin(): boolean {
+        return this.currentUser?.profil === 'Admin' || this.currentUser?.profil === 'SuperAdmin';
+    }
+
+    // NOUVEAU: Réinitialiser les données locales (Admin uniquement)
+    async resetLocalData() {
+        if (!this.isAdmin()) {
+            alert('Accès refusé. Cette fonctionnalité est réservée aux administrateurs.');
+            return;
+        }
+
+        const confirmation = confirm(
+            '⚠️ ATTENTION ⚠️\n\n' +
+            'Cette action va supprimer TOUTES les données locales non synchronisées :\n' +
+            '- Trajets\n' +
+            '- Ravitaillements\n' +
+            '- Maintenances\n' +
+            '- Incidents\n' +
+            '- Trip actif\n\n' +
+            'Assurez-vous d\'avoir synchronisé vos données avant de continuer.\n\n' +
+            'Voulez-vous vraiment continuer ?'
+        );
+
+        if (!confirmation) return;
+
+        try {
+            // Supprimer la base de données IndexedDB
+            const dbDeleted = indexedDB.deleteDatabase('eLogbookDB');
+
+            dbDeleted.onsuccess = () => {
+                console.log('✅ Base de données IndexedDB supprimée');
+
+                // Supprimer le trip actif du localStorage
+                localStorage.removeItem('activeTrip');
+                console.log('✅ Trip actif supprimé du localStorage');
+
+                alert('✅ Données locales réinitialisées avec succès !\n\nLa page va se recharger.');
+
+                // Recharger la page
+                window.location.reload();
+            };
+
+            dbDeleted.onerror = (error) => {
+                console.error('❌ Erreur suppression base de données:', error);
+                alert('❌ Erreur lors de la réinitialisation des données.');
+            };
+
+        } catch (error) {
+            console.error('❌ Erreur réinitialisation:', error);
+            alert('❌ Erreur lors de la réinitialisation des données.');
+        }
+    }
 }

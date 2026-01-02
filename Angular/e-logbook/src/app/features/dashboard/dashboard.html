@@ -22,6 +22,12 @@
                 <mat-icon>swap_horiz</mat-icon>
                 Changer de véhicule
             </button>
+            <!-- NOUVEAU: Bouton Reset pour Admin uniquement -->
+            <button mat-stroked-button color="accent" (click)="resetLocalData()" *ngIf="isAdmin()"
+                style="border-color: #ff9800; color: #ff9800;">
+                <mat-icon>delete_sweep</mat-icon>
+                Reset Données
+            </button>
             <button mat-stroked-button color="warn" (click)="logout()">
                 <mat-icon>logout</mat-icon>
                 Déconnexion
