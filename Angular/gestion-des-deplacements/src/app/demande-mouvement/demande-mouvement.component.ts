@@ -192,8 +192,16 @@ export class DemandeMouvementComponent implements OnInit {
         this.newLieuDepart.coordonnees.longitude = long;
 
         console.log('Création nouveau lieu de départ:', this.newLieuDepart);
-        const newDepartLieu = await firstValueFrom(this.lieuService.addLieu(this.newLieuDepart));
-        this.mouvement.lieuDepart = newDepartLieu._id;
+        try {
+          const newDepartLieu = await firstValueFrom(this.lieuService.addLieu(this.newLieuDepart));
+          this.mouvement.lieuDepart = newDepartLieu._id;
+          console.log('✅ Lieu de départ créé avec succès:', newDepartLieu._id);
+        } catch (error: any) {
+          console.error('❌ Erreur création lieu de départ:', error);
+          const errorMsg = error.error?.message || error.message || 'Erreur inconnue';
+          alert(`Erreur lors de la création du lieu de départ: ${errorMsg}`);
+          return;
+        }
       }
 
       // Gérer le nouveau lieu d'arrivée si sélectionné
@@ -211,8 +219,16 @@ export class DemandeMouvementComponent implements OnInit {
         this.newLieuArrivee.coordonnees.longitude = long;
 
         console.log('Création nouveau lieu d\'arrivée:', this.newLieuArrivee);
-        const newArriveeLieu = await firstValueFrom(this.lieuService.addLieu(this.newLieuArrivee));
-        this.mouvement.lieuArrivee = newArriveeLieu._id;
+        try {
+          const newArriveeLieu = await firstValueFrom(this.lieuService.addLieu(this.newLieuArrivee));
+          this.mouvement.lieuArrivee = newArriveeLieu._id;
+          console.log('✅ Lieu d\'arrivée créé avec succès:', newArriveeLieu._id);
+        } catch (error: any) {
+          console.error('❌ Erreur création lieu d\'arrivée:', error);
+          const errorMsg = error.error?.message || error.message || 'Erreur inconnue';
+          alert(`Erreur lors de la création du lieu d'arrivée: ${errorMsg}`);
+          return;
+        }
       }
 
       // 3. Construction du payload avec 'stops'

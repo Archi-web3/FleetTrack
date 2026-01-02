@@ -81,7 +81,7 @@ router.get('/mouvements/stats-by-status', auth(['SuperAdmin', 'Admin', 'Supervis
   try {
     const stats = await Mouvement.aggregate([
       {
-        $match: req.utilisateur.base ? { base: new mongoose.Types.ObjectId(req.utilisateur.base) } : {}
+        $match: req.utilisateur.base ? { base: mongoose.Types.ObjectId.createFromHexString(req.utilisateur.base) } : {}
       },
       {
         $group: {
