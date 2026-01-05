@@ -60,6 +60,19 @@ export class IncidentFormComponent {
   async saveIncident() {
     if (!this.incidentType || !this.description) return;
 
+    // NOUVEAU: Vérifier si des photos sont en cours d'upload
+    const pendingCount = this.getPendingUploadsCount();
+    if (pendingCount > 0) {
+      const confirmSave = confirm(
+        `⚠️ Attention : ${pendingCount} photo(s) sont encore en cours d'upload.\n\n` +
+        `Si vous continuez maintenant, ces photos ne seront pas incluses dans l'incident.\n\n` +
+        `Voulez-vous continuer quand même ?`
+      );
+      if (!confirmSave) {
+        return; // Annuler la sauvegarde
+      }
+    }
+
     const currentUser = this.authService.getCurrentUser();
     const driverId = currentUser ? currentUser._id : 'mock-driver-id';
 
@@ -88,6 +101,11 @@ export class IncidentFormComponent {
   // NOUVEAU: Méthodes de gestion des photos
   takePhoto() {
     this.fileInput.nativeElement.click();
+  }
+
+  // NOUVEAU: Compter les photos en attente d'upload
+  getPendingUploadsCount(): number {
+    return this.photos.filter(p => !p.synced).length;
   }
 
   async onPhotoSelected(event: any) {

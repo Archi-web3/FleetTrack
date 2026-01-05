@@ -101,6 +101,26 @@ mat-card {
             }
         }
     }
+
+    // NOUVEAU: Message d'upload en cours
+    .upload-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 10px;
+        background: #fff3e0;
+        border-left: 4px solid #ff9800;
+        border-radius: 4px;
+        color: #e65100;
+        font-size: 14px;
+        font-weight: 500;
+
+        .upload-icon {
+            color: #ff9800;
+            animation: pulse 2s infinite;
+        }
+    }
 }
 
 @keyframes pulse {

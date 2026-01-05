@@ -64,6 +64,12 @@
                         </mat-icon>
                     </div>
                 </div>
+
+                <!-- NOUVEAU: Message d'upload en cours -->
+                <div class="upload-status" *ngIf="getPendingUploadsCount() > 0">
+                    <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                    <span>Upload en cours... ({{ getPendingUploadsCount() }} photo(s))</span>
+                </div>
             </div>
 
             <button mat-raised-button color="warn" class="full-width action-btn" (click)="saveIncident()"
