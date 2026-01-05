@@ -23,7 +23,8 @@
                 Changer de véhicule
             </button>
             <!-- NOUVEAU: Bouton Reset pour Admin uniquement -->
-            <button mat-stroked-button color="accent" (click)="resetLocalData()" *ngIf="isAdmin()"
+            <button mat-stroked-button color="accent" (click)="resetLocalData()"
+                *ngIf="currentUser && (currentUser.profil === 'Admin' || currentUser.profil === 'SuperAdmin')"
                 style="border-color: #ff9800; color: #ff9800;">
                 <mat-icon>delete_sweep</mat-icon>
                 Reset Données
