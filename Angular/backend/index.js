@@ -80,6 +80,11 @@ app.use('/api/logbook', logbookRoute);
 const statsRoute = require('./routes/stats');
 app.use('/api/stats', statsRoute);
 
+// NOUVEAU : Routes pour l'upload de photos (Cloudinary)
+const uploadRoute = require('./routes/upload');
+app.use('/api', uploadRoute);
+
+
 
 // Route de test (page d'accueil du backend)
 app.get('/', (req, res) => {

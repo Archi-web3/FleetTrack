@@ -16,7 +16,13 @@ const incidentSchema = new mongoose.Schema({
         address: String
     },
 
-    photos: [String], // URLs des photos
+    // MODIFIÉ: Photos avec métadonnées Cloudinary
+    photos: [{
+        url: { type: String, required: true },
+        publicId: String,
+        uploadedAt: { type: Date, default: Date.now },
+        uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' }
+    }],
 
     status: { type: String, enum: ['Signalé', 'En cours de traitement', 'Résolu', 'Clôturé'], default: 'Signalé' },
     resolutionNotes: String,
