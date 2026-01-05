@@ -48,7 +48,7 @@ export class PhotoService {
 
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
+            'x-auth-token': token || '' // CORRIGÉ: Utiliser x-auth-token au lieu de Authorization
         });
 
         console.log(`📸 [PhotoService] Upload photo pour ${type}/${recordId}`);
@@ -71,7 +71,7 @@ export class PhotoService {
     async deletePhoto(publicId: string): Promise<void> {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
+            'x-auth-token': token || '' // CORRIGÉ: Utiliser x-auth-token au lieu de Authorization
         });
 
         // Encoder le publicId pour l'URL
