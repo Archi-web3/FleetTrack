@@ -6,6 +6,7 @@ const Vehicule = require('../models/vehicule.model');
 const Chauffeur = require('../models/chauffeur.model');
 const Utilisateur = require('../models/utilisateur.model'); // AJOUT pour vérifier les chauffeurs
 const auth = require('../middleware/authMiddleware');
+const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
 const mongoose = require('mongoose');
 
 // Route pour créer un nouveau mouvement (pour test - NON PROTÉGÉE PAR AUTH car c'est un test simple)
@@ -42,19 +43,15 @@ router.post('/mouvements/test', async (req, res) => {
 });
 
 // Récupérer les mouvements pour le planning (uniquement validés ou en cours)
-router.get('/mouvements/planning', auth(), async (req, res) => {
+router.get('/mouvements/planning', auth(), countryFilter, async (req, res) => {
   try {
     let query = {
-      statut: { $in: ['validé', 'pris en charge', 'en cours', 'terminé'] }
+      statut: { $in: ['validé', 'pris en charge', 'en cours', 'terminé'] },
+      ...req.countryFilter  // NOUVEAU: Filtre pays automatique
     };
 
     if (req.utilisateur.base) {
       query.base = req.utilisateur.base;
-    }
-
-    // Filtre MULTI-PAYS : Filtrer par pays sélectionné
-    if (req.selectedCountry) {
-      query.pays = req.selectedCountry;
     }
 
     const mouvements = await Mouvement.find(query)
@@ -106,14 +103,17 @@ router.get('/mouvements/stats-by-status', auth(['SuperAdmin', 'Admin', 'Supervis
 
 
 // Récupérer tous les mouvements (Accès pour tout utilisateur connecté)
-router.get('/mouvements', auth(), async (req, res) => {
+router.get('/mouvements', auth(), countryFilter, async (req, res) => {
   try {
     console.log('📥 [GET MOUVEMENTS] Récupération des mouvements...');
     console.log('📥 [GET MOUVEMENTS] Utilisateur:', req.utilisateur.id, 'Profil:', req.utilisateur.profil);
     console.log('📥 [GET MOUVEMENTS] Base utilisateur:', req.utilisateur.base);
     console.log('📥 [GET MOUVEMENTS] Pays utilisateur:', req.utilisateur.pays);
+    console.log('📥 [GET MOUVEMENTS] Filtre pays automatique:', req.countryFilter);
 
-    let query = {};
+    let query = {
+      ...req.countryFilter  // NOUVEAU: Filtre pays automatique
+    };
     let demandeurQuery = {}; // Pour stocker la condition demandeur séparément
 
     if (req.utilisateur.profil === 'Technicien' || req.utilisateur.profil === 'Guest') {
@@ -137,20 +137,6 @@ router.get('/mouvements', auth(), async (req, res) => {
         ]
       });
       console.log('📥 [GET MOUVEMENTS] Filtre par base avec fallback pour mouvements sans base');
-    }
-
-    // Filtre MULTI-PAYS : Filtrer par pays sélectionné
-    // CORRECTION : Inclure aussi les mouvements sans pays assigné
-    if (req.selectedCountry) {
-      query.$and = query.$and || [];
-      query.$and.push({
-        $or: [
-          { pays: req.selectedCountry },
-          { pays: null },
-          { pays: { $exists: false } }
-        ]
-      });
-      console.log('📥 [GET MOUVEMENTS] Filtre par pays avec fallback pour mouvements sans pays');
     }
 
     // Ajouter la condition demandeur à la query finale
