@@ -28,7 +28,8 @@ const upload = multer({
 router.post('/upload', auth(), upload.single('photo'), async (req, res) => {
     try {
         console.log('📸 [UPLOAD] Début upload photo');
-        console.log('📸 [UPLOAD] User:', req.utilisateur.nom);
+        console.log('📸 [UPLOAD] Headers:', req.headers.authorization ? 'Token présent' : 'PAS DE TOKEN');
+        console.log('📸 [UPLOAD] User:', req.utilisateur ? req.utilisateur.nom : 'UTILISATEUR NON DÉFINI');
         console.log('📸 [UPLOAD] File:', req.file ? req.file.originalname : 'No file');
 
         if (!req.file) {
