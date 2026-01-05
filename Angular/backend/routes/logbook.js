@@ -503,7 +503,9 @@ router.post('/sync', async (req, res) => {
                     date: incData.date,
                     type: incData.type,
                     severity: incData.severity,
-                    description: incData.description
+                    description: incData.description,
+                    photos: incData.photos || [], // AJOUTÉ: Copier les photos depuis e-logbook
+                    cost: incData.cost // AJOUTÉ: Copier le coût
                 });
                 await newInc.save();
                 console.log(`Created new incident for vehicle ${incData.vehicleId} on ${incData.date}`);
