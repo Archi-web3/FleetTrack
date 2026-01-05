@@ -35,6 +35,37 @@
                 <input matInput type="number" [(ngModel)]="cost" step="0.01">
             </mat-form-field>
 
+            <!-- NOUVEAU: Section Photos -->
+            <div class="photos-section">
+                <h3>Photos</h3>
+
+                <!-- Bouton Prendre Photo -->
+                <button mat-raised-button color="primary" type="button" (click)="takePhoto()" class="photo-btn">
+                    <mat-icon>photo_camera</mat-icon>
+                    Prendre une photo
+                </button>
+
+                <!-- Input caché pour sélection fichier -->
+                <input #fileInput type="file" accept="image/*" capture="environment" (change)="onPhotoSelected($event)"
+                    style="display: none">
+
+                <!-- Miniatures des photos -->
+                <div class="photo-grid" *ngIf="photos.length > 0">
+                    <div *ngFor="let photo of photos; let i = index" class="photo-item">
+                        <img [src]="photo.url || photo.localUrl" [alt]="'Photo ' + (i+1)">
+                        <button mat-icon-button class="delete-btn" (click)="removePhoto(i)" type="button">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <mat-icon *ngIf="!photo.synced" class="sync-icon" matTooltip="En attente de synchronisation">
+                            cloud_upload
+                        </mat-icon>
+                        <mat-icon *ngIf="photo.synced" class="synced-icon" matTooltip="Synchronisé">
+                            cloud_done
+                        </mat-icon>
+                    </div>
+                </div>
+            </div>
+
             <button mat-raised-button color="warn" class="full-width action-btn" (click)="saveIncident()"
                 [disabled]="!incidentType || !description">
                 SIGNALER

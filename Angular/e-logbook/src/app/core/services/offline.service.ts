@@ -58,6 +58,7 @@ export interface Incident {
     severity: string;
     description: string;
     cost?: number; // Cost related to the incident
+    photos?: string[]; // NOUVEAU: URLs des photos Cloudinary
     synced: number;
 }
 
