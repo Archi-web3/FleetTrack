@@ -156,10 +156,10 @@ export class DashboardComponent implements OnInit {
         console.log('🎯 [checkAdminStatus] showResetButton =', this.showResetButton);
     }
 
-    // NOUVEAU: Réinitialiser les données locales (Admin uniquement)
+    // NOUVEAU: Réinitialiser les données locales (SuperAdmin uniquement)
     async resetLocalData() {
         if (!this.isAdmin()) {
-            alert('Accès refusé. Cette fonctionnalité est réservée aux administrateurs.');
+            alert('Accès refusé. Cette fonctionnalité est réservée aux SuperAdmins.');
             return;
         }
 
