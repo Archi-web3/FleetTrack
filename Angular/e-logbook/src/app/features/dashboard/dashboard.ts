@@ -112,20 +112,33 @@ export class DashboardComponent implements OnInit {
 
     // NOUVEAU: Vérifier si l'utilisateur est Admin
     isAdmin(): boolean {
+        console.log('🔍 [isAdmin] Vérification profil utilisateur');
+        console.log('🔍 [isAdmin] currentUser:', this.currentUser);
+
         // Vérifier d'abord currentUser
         if (this.currentUser?.profil === 'Admin' || this.currentUser?.profil === 'SuperAdmin') {
+            console.log('✅ [isAdmin] Admin détecté via currentUser');
             return true;
         }
 
         // Fallback: vérifier localStorage
         const currentUserStr = localStorage.getItem('currentUser');
-        if (!currentUserStr) return false;
+        console.log('🔍 [isAdmin] localStorage currentUser:', currentUserStr);
+
+        if (!currentUserStr) {
+            console.log('❌ [isAdmin] Pas de currentUser dans localStorage');
+            return false;
+        }
 
         try {
             const user = JSON.parse(currentUserStr);
-            return user.profil === 'Admin' || user.profil === 'SuperAdmin';
+            console.log('🔍 [isAdmin] User parsé:', user);
+            console.log('🔍 [isAdmin] Profil:', user.profil);
+            const isAdminUser = user.profil === 'Admin' || user.profil === 'SuperAdmin';
+            console.log(isAdminUser ? '✅ [isAdmin] Admin détecté via localStorage' : '❌ [isAdmin] Pas Admin');
+            return isAdminUser;
         } catch (e) {
-            console.error('Error parsing currentUser from localStorage:', e);
+            console.error('❌ [isAdmin] Error parsing currentUser from localStorage:', e);
             return false;
         }
     }
