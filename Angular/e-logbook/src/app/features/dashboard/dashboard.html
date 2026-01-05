@@ -1,6 +1,11 @@
 <div class="dashboard-container">
     <!-- Header -->
     <div class="dashboard-header">
+        <!-- NOUVEAU: Logo ACF -->
+        <div class="logo-container">
+            <img src="assets/acf-logo.png" alt="ACF Logo" class="acf-logo">
+        </div>
+
         <div class="vehicle-info">
             <mat-icon class="vehicle-icon">directions_car</mat-icon>
             <div class="vehicle-details">
@@ -23,8 +28,7 @@
                 Changer de véhicule
             </button>
             <!-- NOUVEAU: Bouton Reset pour Admin uniquement -->
-            <button mat-stroked-button color="accent" (click)="resetLocalData()"
-                *ngIf="showResetButton"
+            <button mat-stroked-button color="accent" (click)="resetLocalData()" *ngIf="showResetButton"
                 style="border-color: #ff9800; color: #ff9800;">
                 <mat-icon>delete_sweep</mat-icon>
                 Reset Données
