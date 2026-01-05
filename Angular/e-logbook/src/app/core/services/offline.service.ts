@@ -260,7 +260,7 @@ export class OfflineService extends Dexie {
         if (lastTrip.length > 0) {
             // Chercher le premier trip avec endMileage
             const tripWithEndMileage = lastTrip.find(t => t.endMileage != null);
-            if (tripWithEndMileage) {
+            if (tripWithEndMileage && tripWithEndMileage.endMileage) {
                 console.log('✅ [getLastMileage] Trip avec endMileage trouvé:', tripWithEndMileage.endMileage);
                 mileages.push(tripWithEndMileage.endMileage);
             } else if (lastTrip[0].startMileage) {

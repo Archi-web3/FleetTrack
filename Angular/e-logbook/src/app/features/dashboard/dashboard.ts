@@ -149,6 +149,13 @@ export class DashboardComponent implements OnInit {
         }
     }
 
+    // NOUVEAU: Vérifier et mettre à jour le statut admin
+    checkAdminStatus() {
+        const isAdminUser = this.isAdmin();
+        this.showResetButton = isAdminUser;
+        console.log('🎯 [checkAdminStatus] showResetButton =', this.showResetButton);
+    }
+
     // NOUVEAU: Réinitialiser les données locales (Admin uniquement)
     async resetLocalData() {
         if (!this.isAdmin()) {
