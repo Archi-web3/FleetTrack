@@ -2,20 +2,19 @@ const express = require('express');
 const router = express.Router();
 const Lieu = require('../models/lieu.model');
 const auth = require('../middleware/authMiddleware');
+const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
 
 // GET all locations (PROTÉGÉE - Accessible à tout utilisateur connecté)
-router.get('/lieux', auth(), async (req, res) => {
+router.get('/lieux', auth(), countryFilter, async (req, res) => {
   try {
     let query = {};
 
     // Filtre MULTI-PAYS : Les lieux sont filtrés via leur base
-    if (req.selectedCountry) {
-      // D'abord, trouver toutes les bases du pays sélectionné
+    if (Object.keys(req.countryFilter).length > 0) {
+      // Si un pays est sélectionné, trouver toutes les bases du pays
       const Base = require('../models/base.model');
-      const basesInCountry = await Base.find({ pays: req.selectedCountry }).select('_id');
+      const basesInCountry = await Base.find({ pays: req.countryFilter.pays }).select('_id');
       const baseIds = basesInCountry.map(b => b._id);
-
-      // Filtrer les lieux qui appartiennent à ces bases
       query.base = { $in: baseIds };
     }
 

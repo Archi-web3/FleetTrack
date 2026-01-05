@@ -2,18 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Utilisateur = require('../models/utilisateur.model');
 const auth = require('../middleware/authMiddleware'); // Importez le middleware auth
+const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
 
 // GET all users (Accessible à tout utilisateur connecté pour peupler les listes déroulantes)
-router.get('/utilisateurs', auth(), async (req, res) => {
+router.get('/utilisateurs', auth(), countryFilter, async (req, res) => {
   try {
-    let query = {};
-
-    // Filtre MULTI-PAYS : Filtrer par pays sélectionné
-    if (req.selectedCountry) {
-      query.pays = req.selectedCountry;
-    }
-
-    const utilisateurs = await Utilisateur.find(query).select('-motDePasse');
+    const utilisateurs = await Utilisateur.find(req.countryFilter).select('-motDePasse');
     res.json(utilisateurs);
   } catch (err) {
     console.error("Erreur GET /utilisateurs:", err);

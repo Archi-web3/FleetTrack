@@ -198,7 +198,7 @@ router.get('/mouvements/:id', auth(), async (req, res) => {
 });
 
 // Créer un nouveau mouvement (Accès pour tout utilisateur connecté)
-router.post('/mouvements', auth(), async (req, res) => {
+router.post('/mouvements', auth(), countryFilter, async (req, res) => {
   try {
     console.log('🆕 [CREATE MOUVEMENT] Création d\'un nouveau mouvement...');
     console.log('🆕 [CREATE MOUVEMENT] Utilisateur:', req.utilisateur.id, 'Profil:', req.utilisateur.profil);
@@ -308,7 +308,7 @@ router.post('/mouvements', auth(), async (req, res) => {
 
 
 // MISE À JOUR D'UN MOUVEMENT (PROTÉGÉE PAR RÔLE : Admin ou Superviseur peuvent valider/refuser/AFFECTER)
-router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, res) => {
+router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), countryFilter, async (req, res) => {
   try {
     console.log('=== DEBUG: PUT /mouvements/:id ===');
     console.log('Body reçu:', JSON.stringify(req.body, null, 2));
@@ -458,7 +458,7 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), asyn
 });
 
 // DÉMARRER UN MOUVEMENT (Chauffeur commence le trajet)
-router.put('/mouvements/:id/start', auth(), async (req, res) => {
+router.put('/mouvements/:id/start', auth(), countryFilter, async (req, res) => {
   try {
     console.log('🚗 [START MOUVEMENT] Démarrage du mouvement:', req.params.id);
     console.log('🚗 [START MOUVEMENT] Données reçues:', req.body);
@@ -508,7 +508,7 @@ router.get('/mouvements/suggestions/:id', auth(), async (req, res) => {
 });
 
 // SUPPRESSION D'UN MOUVEMENT (PROTÉGÉE PAR RÔLE : Admin et SuperAdmin peuvent supprimer)
-router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), async (req, res) => {
+router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), countryFilter, async (req, res) => {
   try {
     const mouvement = await Mouvement.findById(req.params.id);
     if (mouvement == null) {

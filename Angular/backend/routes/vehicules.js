@@ -2,18 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Vehicule = require('../models/vehicule.model');
 const auth = require('../middleware/authMiddleware');
+const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
 
 // GET all vehicles (Filtré par base)
-router.get('/vehicules', auth(), async (req, res) => {
+router.get('/vehicules', auth(), countryFilter, async (req, res) => {
   try {
-    let query = {};
+    let query = {
+      ...req.countryFilter  // NOUVEAU: Filtre pays automatique
+    };
     // Si l'utilisateur est rattaché à une base, on filtre
     if (req.utilisateur.base) {
       query.base = req.utilisateur.base;
-    }
-    // Filtre MULTI-PAYS : Filtrer par pays sélectionné
-    if (req.selectedCountry) {
-      query.pays = req.selectedCountry;
     }
     const vehicules = await Vehicule.find(query).populate('base', 'nom code').populate('pays', 'nom code');
     res.json(vehicules);
