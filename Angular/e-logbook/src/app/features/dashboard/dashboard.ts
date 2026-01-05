@@ -33,6 +33,7 @@ export class DashboardComponent implements OnInit {
         incidents: 0
     };
     pendingMissionsCount = 0;
+    showResetButton = false; // NOUVEAU: Pour afficher le bouton Reset
 
     constructor(
         private router: Router,
@@ -50,7 +51,12 @@ export class DashboardComponent implements OnInit {
         // Subscribe to current user
         this.authService.currentUser$.subscribe(user => {
             this.currentUser = user;
+            console.log('📊 [Dashboard] currentUser mis à jour:', user);
+            this.checkAdminStatus(); // Vérifier le statut admin
         });
+
+        // NOUVEAU: Vérifier immédiatement le statut admin depuis localStorage
+        this.checkAdminStatus();
 
         await this.loadUnsyncedCounts();
         await this.loadPendingMissions();
