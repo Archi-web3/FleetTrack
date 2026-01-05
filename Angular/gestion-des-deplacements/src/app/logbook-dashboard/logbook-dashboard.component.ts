@@ -27,6 +27,9 @@ export class LogbookDashboardComponent implements OnInit {
     editingItem: any = null;
     editingType: string | null = null;
 
+    // NOUVEAU: Photo modal
+    selectedPhoto: string | null = null;
+
     constructor(
         private vehiculeService: VehiculeService,
         private logbookService: LogbookService,
@@ -143,5 +146,14 @@ export class LogbookDashboardComponent implements OnInit {
                 this.loadData(); // Reload
             }, err => console.error('Error updating item:', err));
         }
+    }
+
+    // NOUVEAU: Méthodes pour le modal photo
+    openPhotoModal(photoUrl: string): void {
+        this.selectedPhoto = photoUrl;
+    }
+
+    closePhotoModal(): void {
+        this.selectedPhoto = null;
     }
 }

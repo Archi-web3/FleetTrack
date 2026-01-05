@@ -172,6 +172,7 @@
                         <th>Type</th>
                         <th>Sévérité</th>
                         <th>Description</th>
+                        <th>Photos</th>
                         <th>Statut</th>
                         <th *ngIf="isAdmin()">Actions</th>
                     </tr>
@@ -187,6 +188,19 @@
                             </span>
                         </td>
                         <td>{{ i.description }}</td>
+                        <td>
+                            <!-- NOUVEAU: Affichage des photos -->
+                            <div class="photo-thumbnails" *ngIf="i.photos && i.photos.length > 0">
+                                <img *ngFor="let photo of i.photos" [src]="photo.url || photo" alt="Photo incident"
+                                    class="thumbnail" (click)="openPhotoModal(photo.url || photo)">
+                                <span class="photo-count" *ngIf="i.photos.length > 1">
+                                    +{{ i.photos.length }}
+                                </span>
+                            </div>
+                            <span *ngIf="!i.photos || i.photos.length === 0" class="no-photos">
+                                Aucune photo
+                            </span>
+                        </td>
                         <td>{{ i.status }}</td>
                         <td *ngIf="isAdmin()">
                             <button (click)="editItem('incident', i)">✏️</button>
@@ -194,10 +208,18 @@
                         </td>
                     </tr>
                     <tr *ngIf="incidents.length === 0">
-                        <td colspan="6">Aucun incident signalé.</td>
+                        <td colspan="7">Aucun incident signalé.</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- NOUVEAU: Modal pour afficher la photo en grand -->
+    <div *ngIf="selectedPhoto" class="photo-modal" (click)="closePhotoModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <button class="close-btn" (click)="closePhotoModal()">×</button>
+            <img [src]="selectedPhoto" alt="Photo en grand">
         </div>
     </div>
 </div>
