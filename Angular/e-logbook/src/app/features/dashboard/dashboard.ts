@@ -122,8 +122,8 @@ export class DashboardComponent implements OnInit {
         console.log('🔍 [isAdmin] currentUser:', this.currentUser);
 
         // Vérifier d'abord currentUser
-        if (this.currentUser?.profil === 'Admin' || this.currentUser?.profil === 'SuperAdmin') {
-            console.log('✅ [isAdmin] Admin détecté via currentUser');
+        if (this.currentUser?.profil === 'SuperAdmin') {
+            console.log('✅ [isAdmin] SuperAdmin détecté via currentUser');
             return true;
         }
 
@@ -140,9 +140,9 @@ export class DashboardComponent implements OnInit {
             const user = JSON.parse(currentUserStr);
             console.log('🔍 [isAdmin] User parsé:', user);
             console.log('🔍 [isAdmin] Profil:', user.profil);
-            const isAdminUser = user.profil === 'Admin' || user.profil === 'SuperAdmin';
-            console.log(isAdminUser ? '✅ [isAdmin] Admin détecté via localStorage' : '❌ [isAdmin] Pas Admin');
-            return isAdminUser;
+            const isSuperAdmin = user.profil === 'SuperAdmin';
+            console.log(isSuperAdmin ? '✅ [isAdmin] SuperAdmin détecté via localStorage' : '❌ [isAdmin] Pas SuperAdmin');
+            return isSuperAdmin;
         } catch (e) {
             console.error('❌ [isAdmin] Error parsing currentUser from localStorage:', e);
             return false;
