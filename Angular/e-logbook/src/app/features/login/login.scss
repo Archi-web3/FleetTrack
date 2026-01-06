@@ -17,14 +17,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 64px); // Ajusté pour le toolbar
+    min-height: calc(100vh - 64px);
     background: #ffffff;
     padding: 16px;
 }
 
-.login-wrapper {
+.login-card {
     width: 100%;
     max-width: 400px;
+    padding: 20px;
 }
 
 .login-branding {
@@ -33,21 +34,17 @@
 }
 
 .acf-logo {
-    max-width: 200px;
+    max-width: 150px;
     height: auto;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .app-title {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 600;
     color: #005fb6;
     margin: 0;
     letter-spacing: 1px;
-}
-
-.login-card {
-    width: 100%;
 }
 
 .full-width {
