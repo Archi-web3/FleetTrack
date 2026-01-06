@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -8,8 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { OfflineService, Fuel } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
+import { PhotoService, Photo } from '../../core/services/photo.service';
 
 @Component({
   selector: 'app-fuel-form',
@@ -22,7 +25,9 @@ import { AuthService } from '../../core/services/auth.service';
     MatFormFieldModule,
     MatCardModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './fuel-form.html',
   styleUrls: ['./fuel-form.scss']
@@ -32,10 +37,15 @@ export class FuelFormComponent implements OnInit {
   vehicleId: string = '';
   lastMileage: number = 0;
 
+  // NOUVEAU: Photos
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  photos: Photo[] = [];
+
   constructor(
     private fb: FormBuilder,
     private offlineService: OfflineService,
     private authService: AuthService,
+    private photoService: PhotoService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
@@ -92,6 +102,19 @@ export class FuelFormComponent implements OnInit {
       return;
     }
 
+    // NOUVEAU: Vérifier si des photos sont en cours d'upload
+    const pendingCount = this.getPendingUploadsCount();
+    if (pendingCount > 0) {
+      const confirmSave = confirm(
+        `⚠️ Attention : ${pendingCount} photo(s) sont encore en cours d'upload.\n\n` +
+        `Si vous continuez maintenant, ces photos ne seront pas incluses.\n\n` +
+        `Voulez-vous continuer quand même ?`
+      );
+      if (!confirmSave) {
+        return;
+      }
+    }
+
     const currentUser = this.authService.getCurrentUser();
     const driverId = currentUser ? currentUser._id : 'mock-driver-id';
 
@@ -106,6 +129,7 @@ export class FuelFormComponent implements OnInit {
       source: formValue.source,
       isFull: formValue.isFull,
       price: formValue.price,
+      photos: this.photos.filter(p => p.synced).map(p => p.url!), // NOUVEAU: Photos synchronisées
       synced: 0
     };
 
@@ -133,5 +157,71 @@ export class FuelFormComponent implements OnInit {
       return `Le kilométrage ne peut pas être inférieur au dernier enregistré (${error.lastMileage} km)`;
     }
     return '';
+  }
+
+  // NOUVEAU: Méthodes de gestion des photos
+  takePhoto() {
+    this.fileInput.nativeElement.click();
+  }
+
+  getPendingUploadsCount(): number {
+    return this.photos.filter(p => !p.synced).length;
+  }
+
+  async onPhotoSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    console.log('📸 Photo sélectionnée:', file.name);
+
+    // Créer URL locale pour affichage immédiat
+    const localUrl = this.photoService.createLocalUrl(file);
+    const photo: Photo = {
+      localUrl,
+      file,
+      synced: false
+    };
+    this.photos.push(photo);
+    this.cdr.detectChanges();
+
+    // Upload vers Cloudinary
+    console.log('📤 Upload photo vers Cloudinary...');
+    const currentUser = this.authService.getCurrentUser();
+    const country = currentUser?.pays?.nom || 'Unknown';
+    const base = currentUser?.base?.nom || 'Unknown';
+
+    try {
+      const compressedFile = await this.photoService.compressImage(file);
+      const recordId = `temp_${Date.now()}`;
+      const result = await this.photoService.uploadPhoto(compressedFile, 'fuels', recordId, country, base);
+
+      console.log('✅ Photo uploadée:', result.url);
+      photo.url = result.url;
+      photo.publicId = result.publicId;
+      photo.synced = true;
+      photo.uploadedAt = new Date();
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('❌ Erreur upload photo:', error);
+      photo.synced = false;
+    }
+
+    event.target.value = '';
+  }
+
+  async removePhoto(index: number) {
+    const photo = this.photos[index];
+    if (photo.localUrl) {
+      this.photoService.revokeLocalUrl(photo.localUrl);
+    }
+    if (photo.publicId) {
+      try {
+        await this.photoService.deletePhoto(photo.publicId);
+      } catch (error) {
+        console.error('Erreur suppression photo:', error);
+      }
+    }
+    this.photos.splice(index, 1);
+    this.cdr.detectChanges();
   }
 }

@@ -11,7 +11,7 @@ const fuelSchema = new mongoose.Schema({
   fullTank: { type: Boolean, default: true }, // Est-ce un plein complet ? (Utile pour calcul conso)
   price: { type: Number }, // Prix total ou par litre (optionnel)
   driverSignature: { type: String }, // URL ou base64 de la signature
-  receiptPhoto: { type: String }, // URL de la photo du reçu
+  photos: [{ type: mongoose.Schema.Types.Mixed }], // MODIFIÉ: Photos (tickets, compteur) - Support string[] ou object[]
   comments: { type: String }
 }, { timestamps: true });
 

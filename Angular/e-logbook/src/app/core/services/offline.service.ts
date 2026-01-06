@@ -33,6 +33,7 @@ export interface Fuel {
     source: string;
     isFull?: boolean; // Indicates if it's a full tank refill
     price?: number; // Total cost
+    photos?: string[]; // NOUVEAU: URLs des photos
     synced: number;
 }
 

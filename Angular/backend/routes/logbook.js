@@ -425,7 +425,8 @@ router.post('/sync', async (req, res) => {
                     fuelType: fuelData.type, // Map 'type' to 'fuelType'
                     source: fuelData.source,
                     fullTank: fuelData.isFull !== undefined ? fuelData.isFull : true, // Map isFull to fullTank
-                    price: fuelData.price // Add price
+                    price: fuelData.price, // Add price
+                    photos: fuelData.photos || [] // NOUVEAU: Copier les photos
                 });
                 await newFuel.save();
                 console.log(`Created new fuel for vehicle ${fuelData.vehicleId} at ${fuelData.mileage}km`);
