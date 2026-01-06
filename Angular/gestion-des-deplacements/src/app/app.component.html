@@ -86,8 +86,8 @@
     *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')"
     routerLink="/tableau-bord">Tableau de Bord</button>
 
-  <!-- Boutons Se Connecter / Déconnexion -->
-  <button mat-raised-button color="accent" *ngIf="!isAuthenticated" routerLink="/login">Se Connecter</button>
+
+  <!-- Bouton Déconnexion uniquement -->
   <button mat-raised-button color="warn" *ngIf="isAuthenticated" (click)="logout()">Déconnexion</button>
 </mat-toolbar>
 
