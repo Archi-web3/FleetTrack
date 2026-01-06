@@ -61,6 +61,7 @@ const mouvementSchema = new mongoose.Schema({
     description: String
   }],
   driverObservations: { type: String }, // Remarques du chauffeur
+  photos: [{ type: mongoose.Schema.Types.Mixed }], // NOUVEAU: Photos (compteur, trajet) - Support string[] ou object[]
   isLocked: { type: Boolean, default: false }, // Si true, les données ne sont plus modifiables par le chauffeur
   syncStatus: { type: String, enum: ['pending', 'synced', 'error'], default: 'pending' } // Pour le debug de synchro
 });

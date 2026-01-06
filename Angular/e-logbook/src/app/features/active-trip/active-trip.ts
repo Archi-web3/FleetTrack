@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -8,8 +8,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { OfflineService, Trip, Lieu, User } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
+import { PhotoService, Photo } from '../../core/services/photo.service';
 
 @Component({
   selector: 'app-active-trip',
@@ -21,7 +24,9 @@ import { AuthService } from '../../core/services/auth.service';
     MatInputModule,
     MatFormFieldModule,
     MatCardModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './active-trip.html',
   styleUrls: ['./active-trip.scss']
@@ -37,9 +42,9 @@ export class ActiveTripComponent implements OnInit {
   startForm!: FormGroup;
   endForm!: FormGroup;
 
-  // ... (Constructor and ngOnInit)
-
-
+  // NOUVEAU: Photos
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  photos: Photo[] = [];
 
   // Reference data
   lieux: Lieu[] = [];
@@ -49,8 +54,10 @@ export class ActiveTripComponent implements OnInit {
     private fb: FormBuilder,
     private offlineService: OfflineService,
     private authService: AuthService,
+    private photoService: PhotoService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {
     // Get selected vehicle from localStorage
     const selectedVehicle = localStorage.getItem('selectedVehicle');
@@ -222,6 +229,19 @@ export class ActiveTripComponent implements OnInit {
       return;
     }
 
+    // NOUVEAU: Vérifier si des photos sont en cours d'upload
+    const pendingCount = this.getPendingUploadsCount();
+    if (pendingCount > 0) {
+      const confirmSave = confirm(
+        `⚠️ Attention : ${pendingCount} photo(s) sont encore en cours d'upload.\n\n` +
+        `Si vous continuez maintenant, ces photos ne seront pas incluses.\n\n` +
+        `Voulez-vous continuer quand même ?`
+      );
+      if (!confirmSave) {
+        return;
+      }
+    }
+
     const currentUser = this.authService.getCurrentUser();
     const driverId = currentUser ? (currentUser._id || currentUser.id) : 'mock-driver-id';
 
@@ -245,6 +265,7 @@ export class ActiveTripComponent implements OnInit {
       departurePlaceId: startFormValue.departurePlaceId,
       arrivalPlaceId: endFormValue.arrivalPlaceId,
       passengerIds: startFormValue.passengerIds,
+      photos: this.photos.filter(p => p.synced).map(p => p.url!), // NOUVEAU: Photos synchronisées
       synced: 0,
       plannedMovementId: this.plannedMovementId // Include plannedMovementId if present
     };
@@ -377,5 +398,71 @@ export class ActiveTripComponent implements OnInit {
       return `Le kilométrage d'arrivée (${error.endMileage} km) doit être supérieur au kilométrage de départ (${error.startMileage} km)`;
     }
     return '';
+  }
+
+  // NOUVEAU: Méthodes de gestion des photos
+  takePhoto() {
+    this.fileInput.nativeElement.click();
+  }
+
+  getPendingUploadsCount(): number {
+    return this.photos.filter(p => !p.synced).length;
+  }
+
+  async onPhotoSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    console.log('📸 Photo sélectionnée:', file.name);
+
+    // Créer URL locale pour affichage immédiat
+    const localUrl = this.photoService.createLocalUrl(file);
+    const photo: Photo = {
+      localUrl,
+      file,
+      synced: false
+    };
+    this.photos.push(photo);
+    this.cdr.detectChanges();
+
+    // Upload vers Cloudinary
+    console.log('📤 Upload photo vers Cloudinary...');
+    const currentUser = this.authService.getCurrentUser();
+    const country = currentUser?.pays?.nom || 'Unknown';
+    const base = currentUser?.base?.nom || 'Unknown';
+
+    try {
+      const compressedFile = await this.photoService.compressImage(file);
+      const recordId = `temp_${Date.now()}`;
+      const result = await this.photoService.uploadPhoto(compressedFile, 'trips', recordId, country, base);
+
+      console.log('✅ Photo uploadée:', result.url);
+      photo.url = result.url;
+      photo.publicId = result.publicId;
+      photo.synced = true;
+      photo.uploadedAt = new Date();
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('❌ Erreur upload photo:', error);
+      photo.synced = false;
+    }
+
+    event.target.value = '';
+  }
+
+  async removePhoto(index: number) {
+    const photo = this.photos[index];
+    if (photo.localUrl) {
+      this.photoService.revokeLocalUrl(photo.localUrl);
+    }
+    if (photo.publicId) {
+      try {
+        await this.photoService.deletePhoto(photo.publicId);
+      } catch (error) {
+        console.error('Erreur suppression photo:', error);
+      }
+    }
+    this.photos.splice(index, 1);
+    this.cdr.detectChanges();
   }
 }

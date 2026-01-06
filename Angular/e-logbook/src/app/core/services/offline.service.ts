@@ -14,6 +14,7 @@ export interface Trip {
     departurePlaceId?: string;
     arrivalPlaceId?: string;
     passengerIds?: string[];
+    photos?: string[]; // NOUVEAU: URLs des photos
     synced: number; // 0 = false, 1 = true
     plannedMovementId?: string; // ID of the planned movement if started from planning
 }

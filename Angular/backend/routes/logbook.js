@@ -379,6 +379,7 @@ router.post('/sync', async (req, res) => {
                     startMileage: tripData.startMileage,
                     endMileage: tripData.endMileage,
                     driverObservations: tripData.purpose,
+                    photos: tripData.photos || [], // NOUVEAU: Copier les photos
                     isLocked: true
                 });
 
