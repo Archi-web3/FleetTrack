@@ -66,6 +66,7 @@
                         <th>Km Départ</th>
                         <th>Km Arrivée</th>
                         <th>Distance</th>
+                        <th>Photos</th>
                         <th>Statut</th>
                     </tr>
                 </thead>
@@ -78,6 +79,19 @@
                         <td>{{ trip.endMileage }}</td>
                         <td>{{ (trip.endMileage - trip.startMileage) | number }} km</td>
                         <td>
+                            <!-- NOUVEAU: Affichage des photos -->
+                            <div class="photo-thumbnails" *ngIf="trip.photos && trip.photos.length > 0">
+                                <img *ngFor="let photo of trip.photos" [src]="photo.url || photo" alt="Photo trajet"
+                                    class="thumbnail" (click)="openPhotoModal(photo.url || photo)">
+                                <span class="photo-count" *ngIf="trip.photos.length > 1">
+                                    +{{ trip.photos.length }}
+                                </span>
+                            </div>
+                            <span *ngIf="!trip.photos || trip.photos.length === 0" class="no-photos">
+                                Aucune photo
+                            </span>
+                        </td>
+                        <td>
                             <span class="badge" [ngClass]="{
                                 'badge-success': trip.statut === 'terminé',
                                 'badge-warning': trip.statut === 'en cours' || trip.statut === 'pris en charge',
@@ -88,7 +102,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="trips.length === 0">
-                        <td colspan="7">Aucun trajet enregistré.</td>
+                        <td colspan="8">Aucun trajet enregistré.</td>
                     </tr>
                 </tbody>
             </table>
@@ -106,6 +120,7 @@
                         <th>Km Compteur</th>
                         <th>Type</th>
                         <th>Source</th>
+                        <th>Photos</th>
                         <th *ngIf="isAdmin()">Actions</th>
                     </tr>
                 </thead>
@@ -117,13 +132,26 @@
                         <td>{{ f.mileage }}</td>
                         <td>{{ f.fuelType }}</td>
                         <td>{{ f.source }}</td>
+                        <td>
+                            <!-- NOUVEAU: Affichage des photos -->
+                            <div class="photo-thumbnails" *ngIf="f.photos && f.photos.length > 0">
+                                <img *ngFor="let photo of f.photos" [src]="photo.url || photo" alt="Photo carburant"
+                                    class="thumbnail" (click)="openPhotoModal(photo.url || photo)">
+                                <span class="photo-count" *ngIf="f.photos.length > 1">
+                                    +{{ f.photos.length }}
+                                </span>
+                            </div>
+                            <span *ngIf="!f.photos || f.photos.length === 0" class="no-photos">
+                                Aucune photo
+                            </span>
+                        </td>
                         <td *ngIf="isAdmin()">
                             <button (click)="editItem('fuel', f)">✏️</button>
                             <button (click)="deleteItem('fuel', f._id)">🗑️</button>
                         </td>
                     </tr>
                     <tr *ngIf="fuels.length === 0">
-                        <td colspan="7">Aucun plein enregistré.</td>
+                        <td [attr.colspan]="isAdmin() ? 8 : 7">Aucun plein enregistré.</td>
                     </tr>
                 </tbody>
             </table>
