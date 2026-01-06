@@ -158,7 +158,8 @@
 }
 
 .planning-card {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    // Vert ACF: rgb(82, 174, 50)
+    background: linear-gradient(135deg, rgb(82, 174, 50) 0%, rgb(65, 140, 40) 100%);
     color: white;
 
     .card-icon {
@@ -171,7 +172,8 @@
 }
 
 .trips-card {
-    background: linear-gradient(135deg, #005fb6 0%, #003e6b 100%);
+    // Bleu ACF: rgb(0, 95, 182)
+    background: linear-gradient(135deg, rgb(0, 95, 182) 0%, rgb(0, 70, 140) 100%);
     color: white;
 
     .card-icon {
@@ -184,7 +186,8 @@
 }
 
 .fuel-card {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    // Violet professionnel
+    background: linear-gradient(135deg, rgb(142, 68, 173) 0%, rgb(106, 48, 147) 100%);
     color: white;
 
     .card-icon {
@@ -197,7 +200,8 @@
 }
 
 .maintenance-card {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    // Gris/Bleu neutre professionnel
+    background: linear-gradient(135deg, rgb(96, 125, 139) 0%, rgb(69, 90, 100) 100%);
     color: white;
 
     .card-icon {
@@ -210,7 +214,8 @@
 }
 
 .incidents-card {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    // Orange ACF: rgb(238, 114, 3)
+    background: linear-gradient(135deg, rgb(238, 114, 3) 0%, rgb(200, 90, 0) 100%);
     color: white;
 
     .card-icon {
