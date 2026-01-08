@@ -78,6 +78,17 @@
             </mat-card-content>
         </mat-card>
 
+        <!-- NOUVEAU: Scheduled Service Card -->
+        <mat-card class="dashboard-card service-card" (click)="navigateTo('/scheduled-service')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" style="color: #673ab7;">build_circle</mat-icon>
+                </div>
+                <h3>Services A/B/C</h3>
+                <p class="card-description">Services programmés</p>
+            </mat-card-content>
+        </mat-card>
+
         <!-- Trips Card -->
         <mat-card class="dashboard-card trips-card" (click)="navigateTo('/trips')">
             <mat-card-content>

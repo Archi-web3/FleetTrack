@@ -1,0 +1,268 @@
+.service-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header-card {
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        color: white;
+    }
+
+    mat-card-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        margin-top: 8px;
+    }
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+
+    p {
+        margin-top: 20px;
+        color: #666;
+    }
+}
+
+.service-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.service-info-card {
+    .service-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .service-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 18px;
+
+            mat-icon {
+                font-size: 28px;
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        mat-chip {
+            mat-icon {
+                margin-right: 4px;
+            }
+        }
+    }
+
+    .km-progress {
+        .km-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 16px;
+
+            .km-item {
+                text-align: center;
+
+                .label {
+                    display: block;
+                    font-size: 12px;
+                    color: #666;
+                    margin-bottom: 4px;
+                }
+
+                .value {
+                    display: block;
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: #333;
+                }
+
+                &.highlight {
+                    .value {
+                        color: #667eea;
+                        font-size: 24px;
+                    }
+                }
+            }
+        }
+
+        mat-progress-bar {
+            height: 12px;
+            border-radius: 6px;
+        }
+    }
+
+    .next-service-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        padding: 12px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        font-size: 14px;
+
+        mat-icon {
+            color: #667eea;
+        }
+
+        strong {
+            color: #667eea;
+        }
+    }
+}
+
+.tasks-card {
+    mat-card-header {
+        mat-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    }
+
+    .tasks-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin: 20px 0;
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: #f9f9f9;
+                border-color: #667eea;
+            }
+
+            &.completed {
+                background: #f1f8f4;
+                border-color: #4CAF50;
+            }
+
+            mat-checkbox {
+                flex: 1;
+                display: flex;
+                align-items: center;
+
+                .task-number {
+                    font-weight: 600;
+                    margin-right: 8px;
+                    color: #667eea;
+                }
+
+                .task-description {
+                    flex: 1;
+                }
+            }
+
+            .manual-button {
+                color: #667eea;
+                margin-left: 8px;
+            }
+
+            .validation-date {
+                font-size: 12px;
+                color: #4CAF50;
+                margin-left: 12px;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #e0e0e0;
+
+        button {
+            mat-icon {
+                margin-right: 8px;
+            }
+        }
+    }
+}
+
+.no-service {
+    text-align: center;
+    padding: 60px 20px;
+
+    mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #4CAF50;
+        margin-bottom: 16px;
+    }
+
+    p {
+        font-size: 18px;
+        color: #333;
+        margin: 8px 0;
+
+        &.subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .service-container {
+        padding: 10px;
+    }
+
+    .service-info-card {
+        .service-header {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .km-progress .km-info {
+            flex-direction: column;
+            gap: 12px;
+
+            .km-item {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+        }
+    }
+
+    .tasks-list .task-item {
+        flex-wrap: wrap;
+
+        .validation-date {
+            width: 100%;
+            margin-left: 40px;
+            margin-top: 4px;
+        }
+    }
+}

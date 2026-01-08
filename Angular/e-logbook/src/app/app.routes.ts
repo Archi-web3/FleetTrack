@@ -29,6 +29,7 @@ export const routes: Routes = [
 
     // Maintenance System
     { path: 'weekly-checklist', loadComponent: () => import('./features/weekly-checklist/weekly-checklist').then(m => m.WeeklyChecklistComponent) },
+    { path: 'scheduled-service', loadComponent: () => import('./features/scheduled-service/scheduled-service').then(m => m.ScheduledServiceComponent) },
 
     // Fleet Management
     { path: 'fleet', loadComponent: () => import('./features/fleet-recap/fleet-recap').then(m => m.FleetRecapComponent) },
