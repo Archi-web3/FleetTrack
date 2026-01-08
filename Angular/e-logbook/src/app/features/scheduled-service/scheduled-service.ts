@@ -65,7 +65,8 @@ export class ScheduledServiceComponent implements OnInit {
 
     constructor(
         private maintenanceService: MaintenanceService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit() {
@@ -213,6 +214,7 @@ export class ScheduledServiceComponent implements OnInit {
             },
             error: (error) => {
                 console.error('❌ [SCHEDULED SERVICE] Error completing service:', error);
+                console.error('❌ [SCHEDULEED SERVICE] Error completing service:', error);
                 alert('Erreur lors de la validation du service : ' + (error.error?.message || error.message));
             }
         });
@@ -220,7 +222,16 @@ export class ScheduledServiceComponent implements OnInit {
 
     openManual(numeroTache?: string) {
         if (!numeroTache) return;
-        console.log('📖 Opening manual page:', numeroTache);
-        // TODO: Implémenter viewer PDF
+
+        // Logique de mapping tâche -> page
+        const page = 1;
+
+        this.dialog.open(ManualViewerComponent, {
+            width: '95vw',
+            height: '95vh',
+            maxWidth: '100vw',
+            panelClass: 'full-screen-modal',
+            data: { page: page }
+        });
     }
 }

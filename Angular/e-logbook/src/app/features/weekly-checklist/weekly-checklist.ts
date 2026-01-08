@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService, WeeklyChecklist, Task } from '../../core/services/maintenance.service';
+import { ManualViewerComponent } from '../../shared/components/manual-viewer/manual-viewer';
 
 @Component({
     selector: 'app-weekly-checklist',
@@ -131,9 +132,19 @@ export class WeeklyChecklistComponent implements OnInit {
     }
 
     openManual(numeroTache: string) {
-        // TODO: Ouvrir le viewer PDF à la page correspondante
-        console.log('Ouvrir manuel à la tâche:', numeroTache);
-        // Implémenter le viewer PDF dans une prochaine étape
+        if (!numeroTache) return;
+
+        // Convertir numéro de tâche en numéro de page si nécessaire
+        // Pour l'instant on ouvre juste le manuel
+        const page = 1; // Par défaut page 1, ou logique de mapping ici
+
+        this.dialog.open(ManualViewerComponent, {
+            width: '95vw',
+            height: '95vh',
+            maxWidth: '100vw',
+            panelClass: 'full-screen-modal',
+            data: { page: page }
+        });
     }
 
     getCategoryIcon(categorie: string): string {
