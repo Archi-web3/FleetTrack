@@ -15,7 +15,10 @@
                     <mat-select [(ngModel)]="selectedVehicleId">
                         <mat-option *ngFor="let vehicle of vehicules" [value]="vehicle._id" class="vehicle-option">
                             <div class="vehicle-item">
-                                <span>{{ vehicle.immatriculation }} - {{ vehicle.marque }} {{ vehicle.modele }}</span>
+                                <span *ngIf="vehicle.acfCode">{{ vehicle.acfCode }} - {{ vehicle.marque }} {{
+                                    vehicle.modele }}</span>
+                                <span *ngIf="!vehicle.acfCode">{{ vehicle.marque }} {{ vehicle.modele }} ({{
+                                    vehicle.immatriculation }})</span>
                                 <button mat-icon-button color="warn" *ngIf="isAdmin"
                                     (click)="deleteVehicle($event, vehicle._id)">
                                     <mat-icon>delete</mat-icon>
