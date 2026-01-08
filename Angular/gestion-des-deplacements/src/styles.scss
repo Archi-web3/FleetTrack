@@ -11,6 +11,14 @@
 
 /* Styles globaux pour HTML et BODY */
 html,
+body,
+select,
+option {
+  background-color: white;
+  color: black;
+}
+
+html,
 body {
   height: 100%;
 }
