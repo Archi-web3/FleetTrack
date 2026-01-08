@@ -1,0 +1,27 @@
+<div style="padding: 20px; background: white;">
+    <h1>TEST CHECKLIST</h1>
+
+    <div *ngIf="loading">
+        <p>LOADING...</p>
+    </div>
+
+    <div *ngIf="!loading && checklist">
+        <h2>Checklist Semaine {{checklist.semaine}} - {{checklist.annee}}</h2>
+        <p>Taux: {{checklist.tauxCompletion}}%</p>
+        <p>Nombre de catégories: {{categories.length}}</p>
+
+        <div *ngFor="let categorie of categories" style="margin: 10px 0; padding: 10px; border: 1px solid #ccc;">
+            <h3>{{categorie}}</h3>
+            <div *ngFor="let tache of tachesParCategorie[categorie]">
+                <label style="display: block; padding: 5px;">
+                    <input type="checkbox" [(ngModel)]="tache.validee">
+                    {{tache.description}}
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && !checklist">
+        <p>PAS DE CHECKLIST</p>
+    </div>
+</div>
