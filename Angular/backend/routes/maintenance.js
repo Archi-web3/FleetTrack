@@ -14,8 +14,10 @@ const auth = require('../middleware/authMiddleware');
 // GET /api/maintenance/weekly/current - Checklist de la semaine en cours
 router.get('/weekly/current', auth(), async (req, res) => {
     try {
+        console.log('📋 [WEEKLY CHECKLIST] Début requête');
         const userId = req.userId;
         const vehiculeId = req.query.vehicule;
+        console.log('📋 [WEEKLY CHECKLIST] userId:', userId, 'vehiculeId:', vehiculeId);
 
         if (!vehiculeId) {
             return res.status(400).json({ message: 'Véhicule requis' });
@@ -27,20 +29,26 @@ router.get('/weekly/current', auth(), async (req, res) => {
         const days = Math.floor((now - startOfYear) / (24 * 60 * 60 * 1000));
         const semaine = Math.ceil((days + startOfYear.getDay() + 1) / 7);
         const annee = now.getFullYear();
+        console.log('📋 [WEEKLY CHECKLIST] Semaine:', semaine, 'Année:', annee);
 
         // Chercher checklist existante
+        console.log('📋 [WEEKLY CHECKLIST] Recherche checklist existante...');
         let checklist = await WeeklyChecklist.findOne({
             vehicule: vehiculeId,
             semaine: semaine,
             annee: annee
         }).populate('vehicule').populate('chauffeur');
+        console.log('📋 [WEEKLY CHECKLIST] Checklist trouvée:', checklist ? 'OUI' : 'NON');
 
         // Si pas de checklist, en créer une
         if (!checklist) {
+            console.log('📋 [WEEKLY CHECKLIST] Création nouvelle checklist...');
             const template = await ChecklistTemplate.findOne({ type: 'Hebdomadaire', actif: true });
             if (!template) {
+                console.log('❌ [WEEKLY CHECKLIST] Template non trouvé');
                 return res.status(404).json({ message: 'Template checklist non trouvé' });
             }
+            console.log('📋 [WEEKLY CHECKLIST] Template trouvé, création...');
 
             checklist = await WeeklyChecklist.create({
                 vehicule: vehiculeId,
@@ -57,10 +65,13 @@ router.get('/weekly/current', auth(), async (req, res) => {
                 completee: false,
                 tauxCompletion: 0
             });
+            console.log('📋 [WEEKLY CHECKLIST] Checklist créée, populate...');
 
             checklist = await checklist.populate('vehicule').populate('chauffeur');
+            console.log('📋 [WEEKLY CHECKLIST] Populate terminé');
         }
 
+        console.log('✅ [WEEKLY CHECKLIST] Envoi réponse');
         res.json(checklist);
     } catch (error) {
         console.error('Erreur récupération checklist:', error);
