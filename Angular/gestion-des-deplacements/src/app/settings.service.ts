@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, map } from 'rxjs/operators';
 
 export interface VehicleTypeSetting {
     vehicleTypes: string[];
@@ -42,20 +42,18 @@ export class SettingsService {
         }
 
         return this.http.get<{ key: string, value: string[] }>(`${this.apiUrl}/vehicleTypes`).pipe(
-            tap(setting => {
+            map(setting => setting.value),
+            tap(types => {
                 this.loaded = true;
-                this.vehicleTypesSubject.next(setting.value);
+                this.vehicleTypesSubject.next(types);
             }),
             catchError(error => {
                 console.error('Erreur chargement types véhicules', error);
-                // Si pas de setting (404), on renvoie les par défaut
                 this.loaded = true;
                 this.vehicleTypesSubject.next(this.defaultTypes);
                 return of(this.defaultTypes);
-            }),
-            // On renvoie un tableau de string, pas l'objet setting complet
-            tap(() => { }) // just to allow type mapping in the observable chain if needed essentially
-        ) as Observable<string[]>; // Cast simplifié, en réalité on map le flux dans le component ou ici
+            })
+        );
     }
 
     // Version propre avec map
