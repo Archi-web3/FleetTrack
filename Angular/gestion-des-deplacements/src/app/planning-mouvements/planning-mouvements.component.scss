@@ -71,6 +71,33 @@ h3 {
   }
 }
 
+/* NOUVEAU: Forcer le texte blanc sur TOUS les événements angular-calendar */
+::ng-deep {
+  .cal-event {
+    color: white !important;
+  }
+
+  .cal-event-title,
+  .cal-week-view .cal-event-title,
+  .cal-week-view .cal-event .cal-event-title {
+    color: white !important;
+  }
+
+  // Cibler spécifiquement les événements dans la vue semaine
+  mwl-calendar-week-view .cal-event {
+    color: white !important;
+  }
+
+  mwl-calendar-week-view .cal-event-title {
+    color: white !important;
+  }
+
+  // Cibler tous les éléments de texte dans les événements
+  .cal-week-view .cal-event * {
+    color: white !important;
+  }
+}
+
 /* NOUVEAU: Styles pour le tooltip global */
 ::ng-deep .event-tooltip {
   background-color: rgba(0, 0, 0, 0.95) !important;
