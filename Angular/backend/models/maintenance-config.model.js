@@ -3,16 +3,7 @@ const mongoose = require('mongoose');
 const maintenanceConfigSchema = new mongoose.Schema({
     typeVehicule: {
         type: String,
-        required: true,
-        enum: [
-            'Land Cruiser',
-            'City car diesel',
-            'City car essence',
-            'Minibus',
-            '4x4 légers',
-            'City car hybride',
-            'City car électrique'
-        ]
+        required: true
     },
     conditionsRoute: {
         type: String,
