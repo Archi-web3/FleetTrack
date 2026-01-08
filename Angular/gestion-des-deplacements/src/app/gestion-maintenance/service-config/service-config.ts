@@ -49,7 +49,7 @@ export class ServiceConfigComponent implements OnInit {
     ) {
         this.configForm = this.fb.group({
             typeVehicule: ['', Validators.required],
-            conditionsRoute: ['Normale', Validators.required],
+            conditionsRoute: ['Route mixte/urbaine', Validators.required],
             intervalleService: [5000, [Validators.required, Validators.min(1000)]],
             intervalleVidangeBonne: [5000, Validators.required],
             intervalleVidangeMauvaise: [2500, Validators.required],
@@ -91,7 +91,7 @@ export class ServiceConfigComponent implements OnInit {
         this.selectedConfig = null;
         this.configForm.reset({
             typeVehicule: '',
-            conditionsRoute: 'Normale',
+            conditionsRoute: 'Route mixte/urbaine',
             intervalleService: 5000,
             intervalleVidangeBonne: 5000,
             intervalleVidangeMauvaise: 2500,
