@@ -81,10 +81,16 @@ export class WeeklyChecklistComponent implements OnInit {
     }
 
     groupTasksByCategory() {
-        if (!this.checklist) return;
+        console.log('📂 [GROUP TASKS] Starting grouping...');
+        if (!this.checklist) {
+            console.log('❌ [GROUP TASKS] No checklist');
+            return;
+        }
 
+        console.log('📂 [GROUP TASKS] Checklist has', this.checklist.taches.length, 'tasks');
         this.tachesParCategorie = {};
-        this.checklist.taches.forEach(tache => {
+        this.checklist.taches.forEach((tache, index) => {
+            console.log(`📂 [GROUP TASKS] Task ${index}:`, tache.categorie, '-', tache.description);
             if (!this.tachesParCategorie[tache.categorie]) {
                 this.tachesParCategorie[tache.categorie] = [];
             }
@@ -92,6 +98,8 @@ export class WeeklyChecklistComponent implements OnInit {
         });
 
         this.categories = Object.keys(this.tachesParCategorie);
+        console.log('📂 [GROUP TASKS] Categories:', this.categories);
+        console.log('📂 [GROUP TASKS] Tasks by category:', this.tachesParCategorie);
     }
 
     toggleTask(tache: Task) {
