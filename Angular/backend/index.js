@@ -84,6 +84,22 @@ app.use('/api/stats', statsRoute);
 const uploadRoute = require('./routes/upload');
 app.use('/api', uploadRoute);
 
+// NOUVEAU : Routes pour la maintenance
+const maintenanceRoute = require('./routes/maintenance');
+app.use('/api/maintenance', maintenanceRoute);
+
+// NOUVEAU : Démarrer les tâches CRON de maintenance
+const { startCronJobs } = require('./jobs/maintenance-cron');
+const { initializeTemplate } = require('./init-checklist-template');
+
+// Initialiser le template de checklist au démarrage
+mongoose.connection.once('open', async () => {
+    console.log('📋 Initialisation du template de checklist...');
+    await initializeTemplate();
+    console.log('🚀 Démarrage des tâches CRON...');
+    startCronJobs();
+});
+
 
 
 // Route de test (page d'accueil du backend)

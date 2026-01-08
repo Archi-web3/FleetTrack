@@ -1,0 +1,13 @@
+\u003c!-- Section de carte \u00e0 ajouter dans le dialogue de consolidation --\u003e
+\u003c!-- \u00c0 ins\u00e9rer AVANT les boutons Annuler/Confirmer dans consolidation-mouvements.component.html --\u003e
+
+\u003c!-- NOUVEAU: Carte de visualisation --\u003e
+\u003ch4 style="margin-top: 25px; color: #1976d2;"\u003e\ud83d\uddfa\ufe0f Aper\u00e7u de l'itin\u00e9raire
+consolid\u00e9 :\u003c/h4\u003e
+\u003cp style="color: #666; font-size: 0.9em; font-style: italic;"\u003e
+Visualisez le parcours complet avec toutes les \u00e9tapes (pins bleus)
+\u003c/p\u003e
+\u003cdiv style="height: 400px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin-bottom:
+20px;"\u003e
+\u003capp-map-mouvements [mouvements]="consolidationMapEvents"\u003e\u003c/app-map-mouvements\u003e
+\u003c/div\u003e

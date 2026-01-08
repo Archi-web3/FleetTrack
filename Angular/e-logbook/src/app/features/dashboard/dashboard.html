@@ -67,6 +67,17 @@
             </mat-card-content>
         </mat-card>
 
+        <!-- NOUVEAU: Weekly Checklist Card -->
+        <mat-card class="dashboard-card checklist-card" (click)="navigateTo('/weekly-checklist')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon">checklist</mat-icon>
+                </div>
+                <h3>Checklist Hebdo</h3>
+                <p class="card-description">Maintenance hebdomadaire</p>
+            </mat-card-content>
+        </mat-card>
+
         <!-- Trips Card -->
         <mat-card class="dashboard-card trips-card" (click)="navigateTo('/trips')">
             <mat-card-content>

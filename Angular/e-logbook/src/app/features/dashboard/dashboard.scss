@@ -171,6 +171,20 @@
     }
 }
 
+// NOUVEAU: Checklist Card - Orange
+.checklist-card {
+    background: linear-gradient(135deg, rgb(255, 152, 0) 0%, rgb(230, 120, 0) 100%);
+    color: white;
+
+    .card-icon {
+        color: white;
+    }
+
+    .card-description {
+        color: rgba(255, 255, 255, 0.9);
+    }
+}
+
 .trips-card {
     // Bleu ACF: rgb(0, 95, 182)
     background: linear-gradient(135deg, rgb(0, 95, 182) 0%, rgb(0, 70, 140) 100%);

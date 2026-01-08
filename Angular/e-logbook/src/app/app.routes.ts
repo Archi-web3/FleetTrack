@@ -27,6 +27,9 @@ export const routes: Routes = [
     { path: 'maintenance-form', component: MaintenanceFormComponent },
     { path: 'incident-form', component: IncidentFormComponent },
 
+    // Maintenance System
+    { path: 'weekly-checklist', loadComponent: () => import('./features/weekly-checklist/weekly-checklist').then(m => m.WeeklyChecklistComponent) },
+
     // Fleet Management
     { path: 'fleet', loadComponent: () => import('./features/fleet-recap/fleet-recap').then(m => m.FleetRecapComponent) },
     { path: 'vehicle/new', loadComponent: () => import('./features/vehicle-form/vehicle-form').then(m => m.VehicleFormComponent) },
