@@ -22,6 +22,11 @@
           [(ngModel)]="newVehicule.immatriculation" required style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
+        <label for="newVehiculeAcfCode">Numéro de véhicule ACF:</label>
+        <input type="text" id="newVehiculeAcfCode" name="newVehiculeAcfCode" [(ngModel)]="newVehicule.acfCode"
+          style="width: 100%; padding: 8px;" placeholder="Ex: ACF-001">
+      </div>
+      <div style="margin-bottom: 10px;">
         <label for="newVehiculeType">Type:</label>
         <select id="newVehiculeType" name="newVehiculeType" [(ngModel)]="newVehicule.type" required
           style="width: 100%; padding: 8px;">
@@ -127,6 +132,11 @@
           [(ngModel)]="selectedVehicule.immatriculation" required style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
+        <label for="editVehiculeAcfCode">Numéro de véhicule ACF:</label>
+        <input type="text" id="editVehiculeAcfCode" name="editVehiculeAcfCode" [(ngModel)]="selectedVehicule.acfCode"
+          style="width: 100%; padding: 8px;" placeholder="Ex: ACF-001">
+      </div>
+      <div style="margin-bottom: 10px;">
         <label for="editVehiculeType">Type:</label>
         <select id="editVehiculeType" name="editVehiculeType" [(ngModel)]="selectedVehicule.type" required
           style="width: 100%; padding: 8px;">
@@ -210,8 +220,10 @@
     <li *ngFor="let vehicule of vehicules"
       style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
       <div>
-        <strong>{{ vehicule.marque }} {{ vehicule.modele }}</strong> ({{ vehicule.immatriculation }}) - Type: {{
-        vehicule.type }}, Capacité: {{ vehicule.capacitePassagers }}
+        <strong>{{ vehicule.marque }} {{ vehicule.modele }}</strong> ({{ vehicule.immatriculation }})
+        <span *ngIf="vehicule.acfCode" style="color: #005fb6; font-weight: 600;"> - N° ACF: {{ vehicule.acfCode
+          }}</span>
+        - Type: {{ vehicule.type }}, Capacité: {{ vehicule.capacitePassagers }}
         <span *ngIf="!vehicule.enService" style="color: red; margin-left: 10px;">(Hors service)</span>
         <br>
         <!-- Badges environnementaux -->
