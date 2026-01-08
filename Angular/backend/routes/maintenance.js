@@ -381,4 +381,32 @@ router.put('/template/:id', auth(), async (req, res) => {
     }
 });
 
+// DELETE /api/maintenance/config/:id - Supprimer configuration
+router.delete('/config/:id', auth(), async (req, res) => {
+    try {
+        const config = await MaintenanceConfig.findByIdAndDelete(req.params.id);
+        if (!config) {
+            return res.status(404).json({ message: 'Configuration non trouvée' });
+        }
+        res.json({ message: 'Configuration supprimée' });
+    } catch (error) {
+        console.error('Erreur suppression config:', error);
+        res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    }
+});
+
+// DELETE /api/maintenance/template/:id - Supprimer template
+router.delete('/template/:id', auth(), async (req, res) => {
+    try {
+        const template = await ChecklistTemplate.findByIdAndDelete(req.params.id);
+        if (!template) {
+            return res.status(404).json({ message: 'Template non trouvé' });
+        }
+        res.json({ message: 'Template supprimé' });
+    } catch (error) {
+        console.error('Erreur suppression template:', error);
+        res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    }
+});
+
 module.exports = router;
