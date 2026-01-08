@@ -150,6 +150,16 @@ router.get('/par-projet', auth(), async (req, res) => {
         // Pipeline d'agrégation par projet
         const pipeline = [
             { $match: matchFilter },
+            // Lookup pour récupérer les infos du véhicule (capacité)
+            {
+                $lookup: {
+                    from: 'vehicules',
+                    localField: 'vehicule',
+                    foreignField: '_id',
+                    as: 'vehiculeInfo'
+                }
+            },
+            { $unwind: { path: '$vehiculeInfo', preserveNullAndEmptyArrays: true } },
             {
                 $group: {
                     _id: { $ifNull: ['$projet', 'Non assigné'] }, // Utiliser le projet du mouvement
@@ -164,7 +174,37 @@ router.get('/par-projet', auth(), async (req, res) => {
                     },
                     nombreMouvements: { $sum: 1 },
                     // Collecter tous les projetsPassagers pour détecter les multi-projets
-                    allProjetsPassagers: { $push: '$projetsPassagers' }
+                    allProjetsPassagers: { $push: '$projetsPassagers' },
+                    // NOUVEAU: Calculer le taux de remplissage moyen
+                    tauxRemplissageTotal: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $and: [
+                                        { $gt: ['$vehiculeInfo.capacitePassagers', 0] },
+                                        { $isArray: '$passagers' }
+                                    ]
+                                },
+                                {
+                                    $multiply: [
+                                        { $divide: [{ $size: '$passagers' }, '$vehiculeInfo.capacitePassagers'] },
+                                        100
+                                    ]
+                                },
+                                0
+                            ]
+                        }
+                    },
+                    // Compter les mouvements avec véhicule valide pour la moyenne
+                    mouvementsAvecVehicule: {
+                        $sum: {
+                            $cond: [
+                                { $gt: ['$vehiculeInfo.capacitePassagers', 0] },
+                                1,
+                                0
+                            ]
+                        }
+                    }
                 }
             },
             { $sort: { kmTotaux: -1 } }
@@ -187,6 +227,11 @@ router.get('/par-projet', auth(), async (req, res) => {
             const uniqueProjects = [...new Set(allProjects)];
             const isMultiProjet = uniqueProjects.length > 1;
 
+            // Calculer le taux de remplissage moyen
+            const tauxRemplissageMoyen = r.mouvementsAvecVehicule > 0
+                ? r.tauxRemplissageTotal / r.mouvementsAvecVehicule
+                : 0;
+
             return {
                 projet: r._id,
                 kmTotaux: Math.round(r.kmTotaux),
@@ -196,6 +241,7 @@ router.get('/par-projet', auth(), async (req, res) => {
                 ratioKm: totalKm > 0 ? (r.kmTotaux / totalKm * 100) : 0,
                 ratioCO2: totalCO2 > 0 ? (co2 / totalCO2 * 100) : 0,
                 ratioConsommation: totalConsommation > 0 ? (consommation / totalConsommation * 100) : 0,
+                tauxRemplissageMoyen: Math.round(tauxRemplissageMoyen * 10) / 10, // Arrondi à 1 décimale
                 isMultiProjet: isMultiProjet,
                 projetsInvolves: isMultiProjet ? uniqueProjects : []
             };
