@@ -39,6 +39,7 @@ module.exports = function (roles = []) { // Accepte un tableau de rôles
       }
 
       req.utilisateur = user; // req.utilisateur contient maintenant .base (ObjectId) et .pays (ObjectId)
+      req.userId = user._id; // Pour compatibilité avec les routes qui utilisent req.userId
 
       // ===== FILTRAGE PAR PAYS =====
       // Extraire le pays sélectionné du header (pour SuperAdmin)
