@@ -36,13 +36,16 @@ export class DashboardComponent implements OnInit {
         incidents: 0
     };
     pendingMissionsCount = 0;
-    showResetButton = false; // NOUVEAU: Pour afficher le bouton Reset
+    alertsCount = 0;
+    showResetButton = false;
 
     constructor(
         private router: Router,
         private offlineService: OfflineService,
         private authService: AuthService,
-        private http: HttpClient
+        private http: HttpClient,
+        private maintenanceService: MaintenanceService,
+        private snackBar: MatSnackBar
     ) { }
 
     async ngOnInit() {
@@ -71,9 +74,22 @@ export class DashboardComponent implements OnInit {
         if (!this.selectedVehicle?._id) return;
 
         try {
-            // Utiliser le service maintenance existant ou l'injecter s'il manque
-            // Note: Il faut injecter MaintenanceService dans le constructeur
-            // Je vais supposer qu'il faut l'ajouter
+            this.maintenanceService.getNextService(this.selectedVehicle._id).subscribe({
+                next: (service) => {
+                    if (service && (service.statut === 'Dû' || service.statut === 'En retard')) {
+                        this.alertsCount = 1;
+                        this.snackBar.open(`Service ${service.typeService} est ${service.statut}`, 'VOIR', {
+                            duration: 5000,
+                            verticalPosition: 'top'
+                        }).onAction().subscribe(() => {
+                            this.router.navigate(['/scheduled-service']);
+                        });
+                    } else {
+                        this.alertsCount = 0;
+                    }
+                },
+                error: (err) => console.error('Erreur chargement alertes:', err)
+            });
         } catch (error) {
             console.error('Erreur chargement alertes:', error);
         }
