@@ -21,12 +21,21 @@
   </div>
   <br />
 
-  <!-- Calendrier -->
-  <!-- ASSUREZ-VOUS QUE LE > EST BIEN PRÉSENT À LA FIN DE CETTE LIGNE -->
+  <!-- Calendrier avec template personnalisé pour les tooltips -->
   <mwl-calendar-week-view [viewDate]="viewDate" [events]="events" [locale]="locale" [hourSegments]="1"
     [dayStartHour]="6" [dayEndHour]="22" [weekStartsOn]="1" (eventClicked)="handleEvent('Clicked', $event.event)"
-    [refresh]="refresh"> <!-- <<< LE > FINAL EST TRÈS IMPORTANT ICI -->
+    [refresh]="refresh" [eventTemplate]="eventTemplate">
   </mwl-calendar-week-view>
+
+  <!-- Template personnalisé pour afficher les événements avec tooltip -->
+  <ng-template #eventTemplate let-weekEvent="weekEvent" let-tooltipPlacement="tooltipPlacement"
+    let-eventClicked="eventClicked">
+    <div class="cal-event" [style.backgroundColor]="weekEvent.event.color?.primary"
+      [style.borderColor]="weekEvent.event.color?.primary" [matTooltip]="weekEvent.event.meta.tooltip"
+      [matTooltipClass]="'event-tooltip'" matTooltipPosition="above" (click)="eventClicked.emit()">
+      <div class="cal-event-title">{{ weekEvent.event.title }}</div>
+    </div>
+  </ng-template>
 
   <!-- Légende des couleurs -->
   <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">

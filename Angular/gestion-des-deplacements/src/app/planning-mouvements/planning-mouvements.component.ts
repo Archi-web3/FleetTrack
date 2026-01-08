@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Imports pour angular-calendar
 import {
@@ -34,7 +35,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
 @Component({
   selector: 'app-planning-mouvements',
   standalone: true,
-  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MapMouvementsComponent, MatButtonModule],
+  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MapMouvementsComponent, MatButtonModule, MatTooltipModule],
   templateUrl: './planning-mouvements.component.html',
   styleUrls: ['./planning-mouvements.component.css'],
   providers: [
@@ -124,15 +125,9 @@ export class PlanningMouvementsComponent implements OnInit {
         console.log('🗺️ Mouvements affichés sur la carte:', this.mapEvents.length);
 
         this.events = data.map((mouvement: any) => {
-          // Construire le titre avec les infos de véhicule et chauffeur
-          let title = `${mouvement.objectif} (${mouvement.demandeur?.nom})`;
-          if (mouvement.vehicule) {
-            title += ` - Voiture: ${mouvement.vehicule.marque} (${mouvement.vehicule.immatriculation})`;
-          }
-          if (mouvement.chauffeur) {
-            title += ` - Chauffeur: ${mouvement.chauffeur.prenom} ${mouvement.chauffeur.nom}`;
-          }
-
+          // Générer le titre simplifié et le tooltip détaillé
+          const title = this.getEventTitle(mouvement);
+          const tooltip = this.getEventTooltip(mouvement);
           const colors = this.getColorByStatus(mouvement.statut);
 
           return {
@@ -146,7 +141,10 @@ export class PlanningMouvementsComponent implements OnInit {
               afterEnd: true,
             },
             draggable: true,
-            meta: mouvement
+            meta: {
+              ...mouvement,
+              tooltip: tooltip // Ajouter le tooltip dans meta
+            }
           };
         });
         this.refresh.next(true);
@@ -156,6 +154,124 @@ export class PlanningMouvementsComponent implements OnInit {
         console.error('Erreur chargement planning des mouvements:', error);
       }
     );
+  }
+
+  // NOUVEAU: Générer un titre simplifié pour l'événement
+  getEventTitle(mouvement: any): string {
+    // Récupérer la destination (dernier stop)
+    let destination = 'Destination inconnue';
+    if (mouvement.stops && mouvement.stops.length > 0) {
+      const lastStop = mouvement.stops[mouvement.stops.length - 1];
+      destination = lastStop.lieu?.nom || 'Destination inconnue';
+    }
+
+    // Pour les mouvements regroupés, afficher max 2 destinations
+    if (mouvement.statut === 'regroupé' && mouvement.enfantsMouvements && mouvement.enfantsMouvements.length > 0) {
+      const destinations: string[] = [];
+
+      // Ajouter la destination du mouvement parent
+      destinations.push(destination);
+
+      // Ajouter les destinations des enfants (max 1 de plus pour avoir 2 au total)
+      for (let i = 0; i < Math.min(1, mouvement.enfantsMouvements.length); i++) {
+        const enfant = mouvement.enfantsMouvements[i];
+        if (enfant.stops && enfant.stops.length > 0) {
+          const enfantDest = enfant.stops[enfant.stops.length - 1].lieu?.nom;
+          if (enfantDest && !destinations.includes(enfantDest)) {
+            destinations.push(enfantDest);
+          }
+        }
+      }
+
+      destination = destinations.slice(0, 2).join(' + ');
+      if (mouvement.enfantsMouvements.length > 1) {
+        destination += ` (+${mouvement.enfantsMouvements.length - 1})`;
+      }
+    }
+
+    // Récupérer le véhicule
+    const vehicule = mouvement.vehicule
+      ? `Véh. ${mouvement.vehicule.immatriculation || mouvement.vehicule.marque}`
+      : 'Pas de véhicule';
+
+    // Récupérer le chauffeur
+    const chauffeur = mouvement.chauffeur
+      ? `${mouvement.chauffeur.prenom} ${mouvement.chauffeur.nom}`
+      : 'Pas de chauffeur';
+
+    return `${destination} • ${vehicule} • ${chauffeur}`;
+  }
+
+  // NOUVEAU: Générer un tooltip détaillé pour l'événement
+  getEventTooltip(mouvement: any): string {
+    const lines: string[] = [];
+
+    // Objectif
+    lines.push(`📍 Objectif: ${mouvement.objectif || 'Non spécifié'}`);
+
+    // Horaires
+    const heureDepart = mouvement.dateDepart ? new Date(mouvement.dateDepart).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+    const heureArrivee = mouvement.dateArrivee ? new Date(mouvement.dateArrivee).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+    lines.push(`🕐 Horaires: ${heureDepart} → ${heureArrivee}`);
+
+    // Demandeur
+    if (mouvement.demandeur) {
+      lines.push(`👤 Demandeur: ${mouvement.demandeur.prenom} ${mouvement.demandeur.nom}`);
+    }
+
+    // Véhicule
+    if (mouvement.vehicule) {
+      lines.push(`🚗 Véhicule: ${mouvement.vehicule.marque} (${mouvement.vehicule.immatriculation})`);
+    }
+
+    // Chauffeur
+    if (mouvement.chauffeur) {
+      lines.push(`👨‍✈️ Chauffeur: ${mouvement.chauffeur.prenom} ${mouvement.chauffeur.nom}`);
+    }
+
+    // Passagers
+    if (mouvement.passagers && mouvement.passagers.length > 0) {
+      const passagersList = mouvement.passagers.map((p: any) => `${p.prenom} ${p.nom}`).join(', ');
+      lines.push(`👥 Passagers: ${passagersList}`);
+    }
+
+    // Projet
+    if (mouvement.projet) {
+      lines.push(`📁 Projet: ${mouvement.projet}`);
+    }
+
+    // Matériel
+    if (mouvement.materiel && mouvement.materiel.length > 0) {
+      lines.push(`📦 Matériel: ${mouvement.materiel.join(', ')}`);
+    }
+
+    // Statut
+    lines.push(`📊 Statut: ${mouvement.statut}`);
+
+    // Pour les mouvements regroupés, afficher toutes les destinations
+    if (mouvement.statut === 'regroupé' && mouvement.enfantsMouvements && mouvement.enfantsMouvements.length > 0) {
+      const allDestinations: string[] = [];
+
+      // Destination du parent
+      if (mouvement.stops && mouvement.stops.length > 0) {
+        const parentDest = mouvement.stops[mouvement.stops.length - 1].lieu?.nom;
+        if (parentDest) allDestinations.push(parentDest);
+      }
+
+      // Destinations des enfants
+      mouvement.enfantsMouvements.forEach((enfant: any) => {
+        if (enfant.stops && enfant.stops.length > 0) {
+          const enfantDest = enfant.stops[enfant.stops.length - 1].lieu?.nom;
+          if (enfantDest && !allDestinations.includes(enfantDest)) {
+            allDestinations.push(enfantDest);
+          }
+        }
+      });
+
+      lines.push(`🎯 Toutes destinations: ${allDestinations.join(', ')}`);
+    }
+
+    return lines.join('\n');
   }
 
   previousWeek(): void {
