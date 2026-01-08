@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -44,7 +44,8 @@ export class WeeklyChecklistComponent implements OnInit {
 
     constructor(
         private maintenanceService: MaintenanceService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -74,10 +75,14 @@ export class WeeklyChecklistComponent implements OnInit {
                 this.loading = false;
                 console.log('🎬 [WEEKLY CHECKLIST] Loading set to false, checklist:', this.checklist ? 'EXISTS' : 'NULL');
                 console.log('🎬 [WEEKLY CHECKLIST] Categories count:', this.categories.length);
+                console.log('🔄 [WEEKLY CHECKLIST] Forcing change detection...');
+                this.cdr.detectChanges();
+                console.log('✅ [WEEKLY CHECKLIST] Change detection triggered!');
             },
             error: (error) => {
                 console.error('❌ [WEEKLY CHECKLIST] Erreur chargement checklist:', error);
                 this.loading = false;
+                this.cdr.detectChanges();
             }
         });
     }
