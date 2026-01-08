@@ -30,7 +30,7 @@ import { MaintenanceService, WeeklyChecklist, Task } from '../../core/services/m
         MatTooltipModule,
         MatDialogModule
     ],
-    templateUrl: './weekly-checklist-test.html',
+    templateUrl: './weekly-checklist.html',
     styleUrls: ['./weekly-checklist.scss']
 })
 export class WeeklyChecklistComponent implements OnInit {
