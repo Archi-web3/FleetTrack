@@ -1,27 +1,18 @@
-<div style="padding: 20px; background: white;">
-    <h1>TEST CHECKLIST</h1>
+<div style="padding: 20px; background: red; color: white; font-size: 30px;">
+    <h1>CHECKLIST TEST - SI VOUS VOYEZ CECI, LE COMPOSANT FONCTIONNE</h1>
 
-    <div *ngIf="loading">
-        <p>LOADING...</p>
+    <p>Loading: {{loading}}</p>
+    <p>Checklist exists: {{checklist ? 'OUI' : 'NON'}}</p>
+    <p>Categories: {{categories?.length || 0}}</p>
+
+    <div style="background: yellow; color: black; padding: 10px; margin: 10px 0;">
+        <h2>LISTE DES CATÉGORIES:</h2>
+        <ul>
+            <li *ngFor="let cat of categories">{{cat}}</li>
+        </ul>
     </div>
 
-    <div *ngIf="!loading && checklist">
-        <h2>Checklist Semaine {{checklist.semaine}} - {{checklist.annee}}</h2>
-        <p>Taux: {{checklist.tauxCompletion}}%</p>
-        <p>Nombre de catégories: {{categories.length}}</p>
-
-        <div *ngFor="let categorie of categories" style="margin: 10px 0; padding: 10px; border: 1px solid #ccc;">
-            <h3>{{categorie}}</h3>
-            <div *ngFor="let tache of tachesParCategorie[categorie]">
-                <label style="display: block; padding: 5px;">
-                    <input type="checkbox" [(ngModel)]="tache.validee">
-                    {{tache.description}}
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <div *ngIf="!loading && !checklist">
-        <p>PAS DE CHECKLIST</p>
+    <div style="background: green; color: white; padding: 10px;">
+        <h2>SI VOUS NE VOYEZ PAS CECI, IL Y A UN PROBLÈME DE RENDU ANGULAR</h2>
     </div>
 </div>
