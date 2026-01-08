@@ -48,28 +48,33 @@ export class WeeklyChecklistComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        console.log('🔍 [WEEKLY CHECKLIST] Component initialized');
         // Récupérer l'ID du véhicule depuis localStorage
         this.selectedVehicleId = localStorage.getItem('selectedVehicleId');
+        console.log('🔍 [WEEKLY CHECKLIST] selectedVehicleId from localStorage:', this.selectedVehicleId);
 
         if (this.selectedVehicleId) {
+            console.log('✅ [WEEKLY CHECKLIST] Vehicle ID found, loading checklist...');
             this.loadChecklist();
         } else {
-            console.error('Aucun véhicule sélectionné');
+            console.error('❌ [WEEKLY CHECKLIST] Aucun véhicule sélectionné dans localStorage');
         }
     }
 
     loadChecklist() {
         if (!this.selectedVehicleId) return;
 
+        console.log('📡 [WEEKLY CHECKLIST] Calling API with vehicleId:', this.selectedVehicleId);
         this.loading = true;
         this.maintenanceService.getCurrentWeeklyChecklist(this.selectedVehicleId).subscribe({
             next: (data) => {
+                console.log('✅ [WEEKLY CHECKLIST] Data received:', data);
                 this.checklist = data;
                 this.groupTasksByCategory();
                 this.loading = false;
             },
             error: (error) => {
-                console.error('Erreur chargement checklist:', error);
+                console.error('❌ [WEEKLY CHECKLIST] Erreur chargement checklist:', error);
                 this.loading = false;
             }
         });
