@@ -10,7 +10,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService } from '../../core/services/maintenance.service';
+import { ManualViewerComponent } from '../../shared/components/manual-viewer/manual-viewer';
 
 interface ServiceSchedule {
     _id: string;
