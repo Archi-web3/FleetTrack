@@ -87,7 +87,24 @@ export class MonthlyReportComponent implements OnInit {
         private maintenanceService: MaintenanceService
     ) { }
 
-    // ... (ngOnInit unchanged)
+    ngOnInit() {
+        // Initialize filter form
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+        this.filterForm = this.fb.group({
+            startDate: [firstDay],
+            endDate: [lastDay],
+            vehicleId: ['all']
+        });
+
+        // Load vehicles
+        this.vehiculeService.getVehicules().subscribe(vehicles => {
+            this.vehicles = vehicles;
+            this.generateReport();
+        });
+    }
 
     async generateReport() {
         const { startDate, endDate, vehicleId } = this.filterForm.value;
