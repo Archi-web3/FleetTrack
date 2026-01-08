@@ -1,0 +1,113 @@
+<div class="config-container">
+    <h2>Configuration de la Maintenance</h2>
+
+    <div class="content-grid">
+        <!-- Formulaire -->
+        <mat-card class="form-card">
+            <mat-card-header>
+                <mat-card-title>{{ selectedConfig ? 'Modifier Configuration' : 'Nouvelle Configuration'
+                    }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="configForm" (ngSubmit)="saveConfig()">
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Type de Véhicule</mat-label>
+                        <mat-select formControlName="typeVehicule">
+                            <mat-option value="Land Cruiser">Land Cruiser</mat-option>
+                            <mat-option value="Hilux">Hilux</mat-option>
+                            <mat-option value="Hiace">Hiace</mat-option>
+                            <mat-option value="Prado">Prado</mat-option>
+                            <mat-option value="Hardtop">Hardtop</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Conditions de Route</mat-label>
+                        <mat-select formControlName="conditionsRoute">
+                            <mat-option value="Normale">Normale (Asphalte)</mat-option>
+                            <mat-option value="Difficile">Difficile (Piste)</mat-option>
+                            <mat-option value="Extrême">Extrême (Boue/Sable)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <h3>Intervalles (km)</h3>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Intervalle Service Général</mat-label>
+                        <input matInput type="number" formControlName="intervalleService">
+                        <mat-hint>Ex: 5000 km</mat-hint>
+                    </mat-form-field>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Vidange (Bonne Qualité)</mat-label>
+                            <input matInput type="number" formControlName="intervalleVidangeBonne">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Vidange (Mauvaise Qualité)</mat-label>
+                            <input matInput type="number" formControlName="intervalleVidangeMauvaise">
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Qualité Carburant Attendue</mat-label>
+                        <mat-select formControlName="qualiteCarburant">
+                            <mat-option value="Bonne">Bonne</mat-option>
+                            <mat-option value="Mauvaise">Mauvaise</mat-option>
+                            <mat-option value="Inconnue">Inconnue</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div class="actions">
+                        <button mat-button type="button" (click)="resetForm()">Annuler</button>
+                        <button mat-raised-button color="primary" type="submit" [disabled]="configForm.invalid">
+                            {{ selectedConfig ? 'Mettre à jour' : 'Créer' }}
+                        </button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Liste -->
+        <mat-card class="list-card">
+            <mat-card-header>
+                <mat-card-title>Configurations Existantes</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <table mat-table [dataSource]="configs" class="config-table">
+                    <ng-container matColumnDef="typeVehicule">
+                        <th mat-header-cell *matHeaderCellDef> Type </th>
+                        <td mat-cell *matCellDef="let element"> {{element.typeVehicule}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="conditions">
+                        <th mat-header-cell *matHeaderCellDef> Conditions </th>
+                        <td mat-cell *matCellDef="let element"> {{element.conditionsRoute}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="intervalle">
+                        <th mat-header-cell *matHeaderCellDef> Intervalle </th>
+                        <td mat-cell *matCellDef="let element"> {{element.intervalleService}} km </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                        <td mat-cell *matCellDef="let element">
+                            <button mat-icon-button color="primary" (click)="selectConfig(element)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="warn" (click)="deleteConfig(element)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+<div class="manager-container">
+    <div class="header-actions">
+        <h2>Gestion des Templates de Checklist</h2>
+        <button mat-raised-button color="primary" (click)="createTemplate()">
+            <mat-icon>add</mat-icon> Nouveau Template
+        </button>
+    </div>
+
+    <div class="content-grid">
+        <!-- Liste des Templates -->
+        <mat-card class="list-card">
+            <mat-card-header>
+                <mat-card-title>Templates Disponibles</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="template-list">
+                    <div *ngFor="let tmpl of templates" class="template-item"
+                        [class.active]="selectedTemplate?._id === tmpl._id" (click)="selectTemplate(tmpl)">
+                        <div class="tmpl-info">
+                            <span class="tmpl-name">{{ tmpl.nom }}</span>
+                            <span class="tmpl-type">{{ tmpl.taches.length }} tâches • {{ tmpl.type }}</span>
+                        </div>
+                        <button mat-icon-button color="warn" (click)="$event.stopPropagation(); deleteTemplate(tmpl)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Éditeur -->
+        <mat-card class="editor-card">
+            <mat-card-header>
+                <mat-card-title>{{ selectedTemplate ? 'Modifier Template' : 'Nouveau Template' }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="templateForm" (ngSubmit)="saveTemplate()">
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Nom du Template</mat-label>
+                            <input matInput formControlName="nom" placeholder="Ex: Checklist Hebdo Land Cruiser">
+                        </mat-form-field>
+
+                        <div class="checkbox-wrapper">
+                            <mat-checkbox formControlName="actif">Actif</mat-checkbox>
+                        </div>
+                    </div>
+
+                    <h3>Tâches ({{ taches.length }})</h3>
+
+                    <div formArrayName="taches" class="tasks-container">
+                        <mat-accordion displayMode="flat" multi>
+                            <mat-expansion-panel *ngFor="let task of taches.controls; let i=index" [formGroupName]="i"
+                                expanded>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        Tâche {{ i + 1 }} : {{ task.get('categorie')?.value }}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <div class="task-form">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Catégorie</mat-label>
+                                        <mat-select formControlName="categorie">
+                                            <mat-option *ngFor="let cat of categories" [value]="cat">
+                                                {{ cat }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+
+                                    <mat-form-field appearance="outline" class="description-field">
+                                        <mat-label>Description</mat-label>
+                                        <input matInput formControlName="description">
+                                    </mat-form-field>
+
+                                    <mat-form-field appearance="outline" class="manual-field">
+                                        <mat-label>Réf. Manuel</mat-label>
+                                        <input matInput formControlName="numeroTacheManuel">
+                                    </mat-form-field>
+
+                                    <button mat-icon-button color="warn" type="button" (click)="removeTask(i)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+
+                    <div class="form-actions">
+                        <button mat-stroked-button color="primary" type="button" (click)="addTask()">
+                            <mat-icon>add_task</mat-icon> Ajouter Tâche
+                        </button>
+
+                        <span class="spacer"></span>
+
+                        <button mat-raised-button color="primary" type="submit" [disabled]="templateForm.invalid">
+                            <mat-icon>save</mat-icon> Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

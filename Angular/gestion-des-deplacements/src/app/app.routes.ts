@@ -138,6 +138,24 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin'] }
   },
   {
+    path: 'gestion-maintenance',
+    loadComponent: () => import('./gestion-maintenance/maintenance-dashboard/maintenance-dashboard').then(m => m.MaintenanceDashboardComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+  },
+  {
+    path: 'gestion-maintenance/config',
+    loadComponent: () => import('./gestion-maintenance/service-config/service-config').then(m => m.ServiceConfigComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin'] }
+  },
+  {
+    path: 'gestion-maintenance/templates',
+    loadComponent: () => import('./gestion-maintenance/template-manager/template-manager').then(m => m.TemplateManagerComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin'] }
+  },
+  {
     path: 'logbook',
     component: LogbookDashboardComponent,
     canActivate: [AuthGuard],

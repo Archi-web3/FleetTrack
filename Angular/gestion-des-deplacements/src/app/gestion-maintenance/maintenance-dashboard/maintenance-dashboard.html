@@ -1,0 +1,114 @@
+<div class="maintenance-dashboard">
+    <div class="header">
+        <h1>Suivi Maintenance de la Flotte</h1>
+        <div class="actions">
+            <button mat-raised-button color="primary" routerLink="/gestion-maintenance/config">
+                <mat-icon>settings</mat-icon> Configuration
+            </button>
+            <button mat-stroked-button color="primary" routerLink="/gestion-maintenance/templates">
+                <mat-icon>assignment</mat-icon> Templates
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <mat-card class="stat-card alert">
+            <mat-card-content>
+                <div class="stat-icon warn">
+                    <mat-icon>notification_important</mat-icon>
+                </div>
+                <div class="stat-info">
+                    <span class="value">{{ stats.servicesDus }}</span>
+                    <span class="label">Services Dus</span>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+            <mat-card-content>
+                <div class="stat-icon accent">
+                    <mat-icon>checklist</mat-icon>
+                </div>
+                <div class="stat-info">
+                    <span class="value">{{ stats.checklistsRetard }}</span>
+                    <span class="label">Checklists Incomplètes</span>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Alertes Services Table -->
+    <mat-card class="table-card">
+        <mat-card-header>
+            <mat-card-title>Services à Planifier ({{ alerts.length }})</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="loading-shade" *ngIf="loading">
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </div>
+
+            <table mat-table [dataSource]="alerts" class="alerts-table">
+                <!-- Véhicule Column -->
+                <ng-container matColumnDef="vehicule">
+                    <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="vehicule-name">{{ element.vehicule?.marque }} {{ element.vehicule?.modele }}</span>
+                        <span class="vehicule-immat">{{ element.vehicule?.immatriculation }}</span>
+                    </td>
+                </ng-container>
+
+                <!-- Type Column -->
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef> Type Service </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-chip-set>
+                            <mat-chip>Service {{ element.typeService }}</mat-chip>
+                        </mat-chip-set>
+                    </td>
+                </ng-container>
+
+                <!-- Statut Column -->
+                <ng-container matColumnDef="statut">
+                    <th mat-header-cell *matHeaderCellDef> Statut </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-bde" [class]="element.statut.toLowerCase().replace(' ', '-')">
+                            {{ element.statut }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <!-- Km Column -->
+                <ng-container matColumnDef="km">
+                    <th mat-header-cell *matHeaderCellDef> Kilométrage </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="km-info">
+                            <span>Actuel: {{ element.kilometrageActuel }} km</span>
+                            <span class="km-prevu">Prévu: {{ element.kilometragePrevu }} km</span>
+                            <span class="km-remaining" [class.warn]="getKmRemaining(element) === 0">
+                                {{ getKmRemaining(element) }} km restants
+                            </span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button color="primary">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell no-data" colspan="5">Aucun service dû pour le moment</td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+</div>

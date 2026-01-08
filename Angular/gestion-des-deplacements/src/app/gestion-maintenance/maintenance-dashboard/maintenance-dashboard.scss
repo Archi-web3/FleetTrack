@@ -1,0 +1,172 @@
+.maintenance-dashboard {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h1 {
+        font-size: 24px;
+        font-weight: 500;
+        color: #333;
+        margin: 0;
+    }
+
+    .actions {
+        display: flex;
+        gap: 12px;
+    }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+
+    .stat-card {
+        .mat-card-content {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .stat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 16px;
+
+            mat-icon {
+                font-size: 24px;
+                width: 24px;
+                height: 24px;
+                color: white;
+            }
+
+            &.warn {
+                background-color: #f44336;
+            }
+
+            &.accent {
+                background-color: #ff9800;
+            }
+
+            &.primary {
+                background-color: #3f51b5;
+            }
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+
+            .value {
+                font-size: 24px;
+                font-weight: 700;
+                color: #333;
+            }
+
+            .label {
+                font-size: 14px;
+                color: #666;
+            }
+        }
+    }
+}
+
+.table-card {
+    .loading-shade {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.05);
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    table {
+        width: 100%;
+
+        th {
+            color: #666;
+            font-weight: 500;
+        }
+
+        td {
+            padding: 16px 8px;
+        }
+    }
+}
+
+.vehicule-name {
+    display: block;
+    font-weight: 500;
+    color: #333;
+}
+
+.vehicule-immat {
+    display: block;
+    font-size: 12px;
+    color: #666;
+}
+
+.status-bde {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+
+    &.dû {
+        background-color: #ffebee;
+        color: #c62828;
+    }
+
+    &.en-retard {
+        background-color: #b71c1c;
+        color: white;
+    }
+
+    &.à-venir {
+        background-color: #e3f2fd;
+        color: #1565c0;
+    }
+}
+
+.km-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+
+    .km-prevu {
+        color: #666;
+    }
+
+    .km-remaining {
+        font-weight: 500;
+        color: #4caf50;
+
+        &.warn {
+            color: #f44336;
+        }
+    }
+}
+
+.no-data {
+    text-align: center;
+    padding: 24px;
+    color: #666;
+    font-style: italic;
+}

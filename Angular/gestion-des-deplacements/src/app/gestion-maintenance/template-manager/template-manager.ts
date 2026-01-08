@@ -1,0 +1,168 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MaintenanceService } from '../../maintenance.service';
+
+@Component({
+    selector: 'app-template-manager',
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSelectModule,
+        MatExpansionModule,
+        MatCheckboxModule,
+        MatSnackBarModule
+    ],
+    templateUrl: './template-manager.html',
+    styleUrls: ['./template-manager.scss']
+})
+export class TemplateManagerComponent implements OnInit {
+    templates: any[] = [];
+    selectedTemplate: any | null = null;
+    templateForm: FormGroup;
+
+    categories = [
+        'Sous le Capot',
+        'Extérieur',
+        'Intérieur/Cabine',
+        'Roues/Pneus',
+        'Sécurité/Documents',
+        'Éclairage',
+        'Batterie/Élec',
+        'Test Routier'
+    ];
+
+    constructor(
+        private maintenanceService: MaintenanceService,
+        private fb: FormBuilder,
+        private snackBar: MatSnackBar
+    ) {
+        this.templateForm = this.fb.group({
+            nom: ['', Validators.required],
+            type: ['Hebdomadaire', Validators.required],
+            actif: [true],
+            taches: this.fb.array([])
+        });
+    }
+
+    ngOnInit() {
+        this.loadTemplates();
+    }
+
+    get taches() {
+        return this.templateForm.get('taches') as FormArray;
+    }
+
+    loadTemplates() {
+        this.maintenanceService.getTemplates().subscribe({
+            next: (data) => this.templates = data,
+            error: (err) => console.error('Erreur chargement templates:', err)
+        });
+    }
+
+    selectTemplate(template: any) {
+        this.selectedTemplate = template;
+
+        // Clear existing tasks
+        while (this.taches.length) {
+            this.taches.removeAt(0);
+        }
+
+        // Add tasks from template
+        template.taches.forEach((t: any) => {
+            this.taches.push(this.fb.group({
+                categorie: [t.categorie, Validators.required],
+                description: [t.description, Validators.required],
+                numeroTacheManuel: [t.numeroTacheManuel || ''],
+                numero: [t.numero]
+            }));
+        });
+
+        this.templateForm.patchValue({
+            nom: template.nom,
+            type: template.type,
+            actif: template.actif
+        });
+    }
+
+    createTemplate() {
+        this.selectedTemplate = null;
+        this.templateForm.reset({
+            nom: 'Nouvelle Checklist',
+            type: 'Hebdomadaire',
+            actif: true
+        });
+        while (this.taches.length) {
+            this.taches.removeAt(0);
+        }
+    }
+
+    addTask() {
+        this.taches.push(this.fb.group({
+            categorie: [this.categories[0], Validators.required],
+            description: ['', Validators.required],
+            numeroTacheManuel: [''],
+            numero: [this.taches.length + 1]
+        }));
+    }
+
+    removeTask(index: number) {
+        this.taches.removeAt(index);
+    }
+
+    saveTemplate() {
+        if (this.templateForm.invalid) return;
+
+        const templateData = this.templateForm.value;
+
+        if (this.selectedTemplate) {
+            this.maintenanceService.updateTemplate(this.selectedTemplate._id, templateData).subscribe({
+                next: () => {
+                    this.snackBar.open('Template mis à jour', 'OK', { duration: 3000 });
+                    this.loadTemplates();
+                },
+                error: (err) => console.error('Erreur MAJ:', err)
+            });
+        } else {
+            this.maintenanceService.createTemplate(templateData).subscribe({
+                next: () => {
+                    this.snackBar.open('Template créé', 'OK', { duration: 3000 });
+                    this.loadTemplates();
+                    this.createTemplate(); // Reset form
+                },
+                error: (err) => console.error('Erreur création:', err)
+            });
+        }
+    }
+
+    deleteTemplate(template: any) {
+        if (confirm(`Supprimer le template "${template.nom}" ?`)) {
+            this.maintenanceService.deleteTemplate(template._id).subscribe({
+                next: () => {
+                    this.snackBar.open('Template supprimé', 'OK', { duration: 3000 });
+                    this.loadTemplates();
+                    if (this.selectedTemplate?._id === template._id) {
+                        this.createTemplate();
+                    }
+                },
+                error: (err) => console.error('Erreur suppression:', err)
+            });
+        }
+    }
+}

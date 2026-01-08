@@ -1,0 +1,66 @@
+.config-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    h2 {
+        margin-bottom: 24px;
+        color: #333;
+        font-weight: 500;
+    }
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+
+    @media (max-width: 960px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-card {
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    h3 {
+        margin: 16px 0 8px 0;
+        font-size: 16px;
+        color: #666;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+
+    .row {
+        display: flex;
+        gap: 16px;
+
+        mat-form-field {
+            flex: 1;
+        }
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 16px;
+    }
+}
+
+.list-card {
+    table {
+        width: 100%;
+        margin-top: 16px;
+
+        th {
+            color: #666;
+            font-weight: 500;
+        }
+    }
+}
