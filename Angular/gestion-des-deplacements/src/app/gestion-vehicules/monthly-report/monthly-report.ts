@@ -240,6 +240,20 @@ export class MonthlyReportComponent implements OnInit {
                     }
                 }
 
+                // --- DEBUG LOGGING ---
+                if (vehicle.immatriculation.includes('CD-FG-HJ') || vehicle.immatriculation.includes('MOB-002')) {
+                    console.group(`[Report Debug] Vehicle ${vehicle.immatriculation}`);
+                    console.log('Date Range:', startDate, endDate);
+                    console.log('Initial Mileage:', vehicle.initialMileage);
+                    console.log('Fuels Count:', fuels?.length);
+                    console.log('Movements Total:', vehicleMovements.length);
+                    console.log('Movements in Period:', periodMovements.map(m => `${m.kilometrageDebut}->${m.kilometrageFin} (${m.dateFin})`));
+                    console.log('Events Before:', eventsBefore);
+                    console.log('Start Mileage (Calculated):', startMileage);
+                    console.log('End Mileage (Calculated):', endMileage);
+                    console.groupEnd();
+                }
+
                 reportRows.push({
                     month: this.formatMonth(startDate),
                     acfCode: vehicle.acfCode || '-',
