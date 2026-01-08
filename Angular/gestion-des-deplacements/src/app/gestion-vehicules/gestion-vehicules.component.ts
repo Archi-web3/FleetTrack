@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { VehiculeService } from '../vehicule.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'app-gestion-vehicules',
@@ -28,7 +29,7 @@ export class GestionVehiculesComponent implements OnInit {
     consommation: { valeur: null, source: 'Constructeur', dateTest: null }
   };
   selectedVehicule: any = null;
-  vehicleTypes = ['Voiture', 'Camionnette', 'Moto', 'Autre'];
+  vehicleTypes: string[] = [];
   userProfile: string | null = null;
   userPaysId: string | null = null;
   userBaseId: string | null = null;
@@ -43,13 +44,16 @@ export class GestionVehiculesComponent implements OnInit {
   constructor(
     private vehiculeService: VehiculeService,
     private authService: AuthService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private settingsService: SettingsService
   ) { }
 
   ngOnInit(): void {
     this.userProfile = this.authService.getUserProfile();
     this.userPaysId = this.authService.getUserPaysId();
     this.userBaseId = this.authService.getUserBaseId();
+
+    this.settingsService.getVehicleTypes().subscribe(types => this.vehicleTypes = types || []);
 
     if (this.userProfile === 'SuperAdmin') {
       this.loadPays();
