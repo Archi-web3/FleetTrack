@@ -17,7 +17,7 @@
                 <div class="progress-info">
                     <span class="progress-text">
                         {{checklist.tauxCompletion}}% complété
-                        ({{checklist.taches.filter(t => t.validee).length}}/{{checklist.taches.length}} tâches)
+                        ({{getTotalValidatedTasks()}}/{{checklist.taches.length}} tâches)
                     </span>
                     <mat-icon *ngIf="checklist.completee" class="completed-icon">check_circle</mat-icon>
                 </div>

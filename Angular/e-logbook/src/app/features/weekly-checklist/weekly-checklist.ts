@@ -135,6 +135,11 @@ export class WeeklyChecklistComponent implements OnInit {
         return this.tachesParCategorie[categorie].filter(t => t.validee).length;
     }
 
+    getTotalValidatedTasks(): number {
+        if (!this.checklist) return 0;
+        return this.checklist.taches.filter(t => t.validee).length;
+    }
+
     getCategoryColor(categorie: string): string {
         const colors: { [key: string]: string } = {
             'Détection': '#005fb6',
