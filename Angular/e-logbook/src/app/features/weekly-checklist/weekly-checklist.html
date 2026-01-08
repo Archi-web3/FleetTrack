@@ -52,7 +52,7 @@
                         </mat-icon>
                         <span class="category-title">{{categorie}}</span>
                         <span class="category-badge">
-                          {{tachesParCategorie[categorie].filter(t => t.validee).length}}/{{tachesParCategorie[categorie].length}}
+                            {{getValidatedTasksCount(categorie)}}/{{tachesParCategorie[categorie].length}}
                         </span>
                     </mat-panel-title>
                 </mat-expansion-panel-header>

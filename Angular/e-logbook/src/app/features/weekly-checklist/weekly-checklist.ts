@@ -130,6 +130,11 @@ export class WeeklyChecklistComponent implements OnInit {
         return icons[categorie] || 'task';
     }
 
+    getValidatedTasksCount(categorie: string): number {
+        if (!this.tachesParCategorie[categorie]) return 0;
+        return this.tachesParCategorie[categorie].filter(t => t.validee).length;
+    }
+
     getCategoryColor(categorie: string): string {
         const colors: { [key: string]: string } = {
             'Détection': '#005fb6',
