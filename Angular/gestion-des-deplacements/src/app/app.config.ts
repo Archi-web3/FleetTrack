@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { countryInterceptor } from './interceptors/country.interceptor';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 // Imports spécifiques pour angular-calendar
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -31,7 +32,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([countryInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, countryInterceptor])),
     provideAnimations(), // Nécessaire pour les animations du calendrier
     // NOUVEAU : Fournir le CalendarModule via importProvidersFrom
     importProvidersFrom(CalendarModule.forRoot({
