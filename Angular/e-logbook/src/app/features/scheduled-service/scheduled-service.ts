@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -68,8 +69,13 @@ export class ScheduledServiceComponent implements OnInit {
     constructor(
         private maintenanceService: MaintenanceService,
         private cdr: ChangeDetectorRef,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private router: Router
     ) { }
+
+    goBack() {
+        this.router.navigate(['/dashboard']);
+    }
 
     ngOnInit() {
         console.log('🔧 [SCHEDULED SERVICE] Component initialized');

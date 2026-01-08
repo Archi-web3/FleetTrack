@@ -53,7 +53,11 @@
                     </mat-form-field>
                     <mat-form-field appearance="fill">
                         <mat-label>Type (ex: 4x4, Minibus)</mat-label>
-                        <input matInput formControlName="type">
+                        <mat-select formControlName="type">
+                            <mat-option *ngFor="let type of vehicleTypes" [value]="type">
+                                {{ type }}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </div>
 

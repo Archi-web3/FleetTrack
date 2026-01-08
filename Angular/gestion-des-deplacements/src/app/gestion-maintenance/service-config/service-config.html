@@ -14,11 +14,9 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Type de Véhicule</mat-label>
                         <mat-select formControlName="typeVehicule">
-                            <mat-option value="Land Cruiser">Land Cruiser</mat-option>
-                            <mat-option value="Hilux">Hilux</mat-option>
-                            <mat-option value="Hiace">Hiace</mat-option>
-                            <mat-option value="Prado">Prado</mat-option>
-                            <mat-option value="Hardtop">Hardtop</mat-option>
+                            <mat-option *ngFor="let type of vehicleTypes" [value]="type">
+                                {{ type }}
+                            </mat-option>
                         </mat-select>
                     </mat-form-field>
 

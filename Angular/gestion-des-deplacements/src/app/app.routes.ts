@@ -144,6 +144,12 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
   {
+    path: 'admin/settings',
+    loadComponent: () => import('./general-settings/general-settings').then(m => m.GeneralSettingsComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin'] }
+  },
+  {
     path: 'gestion-maintenance/config',
     loadComponent: () => import('./gestion-maintenance/service-config/service-config').then(m => m.ServiceConfigComponent),
     canActivate: [AuthGuard],

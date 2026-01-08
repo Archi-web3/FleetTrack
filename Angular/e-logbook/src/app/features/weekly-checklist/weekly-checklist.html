@@ -1,7 +1,10 @@
 <div class="checklist-container">
     <!-- En-tête -->
     <mat-card class="header-card">
-        <mat-card-header>
+        <mat-card-header class="header-with-back">
+            <button mat-icon-button (click)="goBack()" class="back-button">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
             <mat-card-title>
                 <mat-icon>checklist</mat-icon>
                 Checklist Hebdomadaire

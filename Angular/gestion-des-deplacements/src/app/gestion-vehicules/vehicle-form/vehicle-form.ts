@@ -11,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { VehiculeService } from '../../vehicule.service';
+import { SettingsService } from '../../settings.service';
 
 @Component({
     selector: 'app-vehicle-form',
@@ -34,15 +35,19 @@ export class VehicleFormComponent implements OnInit {
     vehicleForm!: FormGroup;
     isEditMode = false;
     vehicleId: string | null = null;
+    vehicleTypes: string[] = [];
 
     constructor(
         private fb: FormBuilder,
         private vehiculeService: VehiculeService,
+        private settingsService: SettingsService,
         private router: Router,
         private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
+        this.loadVehicleTypes();
+
         this.vehicleForm = this.fb.group({
             // Identification
             immatriculation: ['', Validators.required],
@@ -96,6 +101,10 @@ export class VehicleFormComponent implements OnInit {
                 this.loadVehicle(this.vehicleId);
             }
         });
+    }
+
+    loadVehicleTypes() {
+        this.settingsService.getVehicleTypes().subscribe(types => this.vehicleTypes = types || []);
     }
 
     loadVehicle(id: string) {

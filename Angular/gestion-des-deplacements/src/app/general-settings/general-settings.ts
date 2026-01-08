@@ -1,0 +1,93 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { SettingsService } from '../settings.service';
+
+@Component({
+    selector: 'app-general-settings',
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatListModule,
+        MatSnackBarModule
+    ],
+    templateUrl: './general-settings.html',
+    styleUrls: ['./general-settings.scss']
+})
+export class GeneralSettingsComponent implements OnInit {
+    vehicleTypes: string[] = [];
+    newType: string = '';
+    loading = false;
+
+    constructor(
+        private settingsService: SettingsService,
+        private snackBar: MatSnackBar
+    ) { }
+
+    ngOnInit() {
+        this.loadTypes();
+    }
+
+    loadTypes() {
+        this.loading = true;
+        this.settingsService.getVehicleTypes(true).subscribe({
+            next: (types) => {
+                this.vehicleTypes = types || [];
+                // map response correctly if service returns raw object, but service handles it
+                if (!Array.isArray(this.vehicleTypes)) {
+                    // Fallback hack if service returns object
+                    this.vehicleTypes = (this.vehicleTypes as any).value || [];
+                }
+                this.loading = false;
+            },
+            error: () => this.loading = false
+        });
+    }
+
+    addType() {
+        if (!this.newType.trim()) return;
+
+        const type = this.newType.trim();
+        if (this.vehicleTypes.includes(type)) {
+            this.snackBar.open('Ce type existe déjà', 'OK', { duration: 3000 });
+            return;
+        }
+
+        const updatedList = [...this.vehicleTypes, type];
+        this.saveList(updatedList);
+        this.newType = '';
+    }
+
+    removeType(type: string) {
+        if (!confirm(`Supprimer le type "${type}" ?`)) return;
+
+        const updatedList = this.vehicleTypes.filter(t => t !== type);
+        this.saveList(updatedList);
+    }
+
+    saveList(list: string[]) {
+        this.settingsService.saveVehicleTypes(list).subscribe({
+            next: () => {
+                this.vehicleTypes = list;
+                this.snackBar.open('Liste mise à jour', 'OK', { duration: 2000 });
+            },
+            error: (err) => {
+                console.error(err);
+                this.snackBar.open('Erreur lors de la sauvegarde', 'Fermer');
+            }
+        });
+    }
+}

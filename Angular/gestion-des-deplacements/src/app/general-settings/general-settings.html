@@ -1,0 +1,43 @@
+<div class="settings-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                <mat-icon>settings</mat-icon>
+                Paramètres Généraux
+            </mat-card-title>
+            <mat-card-subtitle>Gestion des listes déroulantes de l'application</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            <div class="settings-section">
+                <h3>Types de Véhicules</h3>
+                <p class="description">Liste des types disponibles lors de la création d'un véhicule et de la
+                    configuration de maintenance.</p>
+
+                <div class="add-row">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Nouveau type</mat-label>
+                        <input matInput [(ngModel)]="newType" (keyup.enter)="addType()"
+                            placeholder="Ex: Quad, Bateau...">
+                        <button mat-icon-button matSuffix (click)="addType()" [disabled]="!newType" color="primary">
+                            <mat-icon>add_circle</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+
+                <mat-list role="list">
+                    <mat-list-item *ngFor="let type of vehicleTypes" role="listitem">
+                        <mat-icon matListItemIcon>directions_car</mat-icon>
+                        <div matListItemTitle>{{ type }}</div>
+                        <button mat-icon-button matListItemMeta (click)="removeType(type)" color="warn">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-list-item>
+                    <mat-list-item *ngIf="vehicleTypes.length === 0">
+                        <div matListItemTitle class="empty-list">Aucun type défini</div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

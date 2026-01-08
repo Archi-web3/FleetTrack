@@ -88,6 +88,10 @@ app.use('/api', uploadRoute);
 const maintenanceRoute = require('./routes/maintenance');
 app.use('/api/maintenance', maintenanceRoute);
 
+// NOUVEAU : Routes pour les paramètres généraux
+const settingsRoute = require('./routes/settings');
+app.use('/api/settings', settingsRoute);
+
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
 const { initializeTemplate } = require('./init-checklist-template');

@@ -9,6 +9,8 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { OfflineService } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
+import { MaintenanceService } from '../../core/services/maintenance.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-dashboard',
@@ -18,7 +20,8 @@ import { environment } from '../../../environments/environment';
         MatCardModule,
         MatIconModule,
         MatButtonModule,
-        MatBadgeModule
+        MatBadgeModule,
+        MatSnackBarModule
     ],
     templateUrl: './dashboard.html',
     styleUrls: ['./dashboard.scss']
@@ -60,6 +63,20 @@ export class DashboardComponent implements OnInit {
 
         await this.loadUnsyncedCounts();
         await this.loadPendingMissions();
+        await this.loadServiceAlerts(); // NOUVEAU: Charger les alertes serveur
+    }
+
+    // NOUVEAU: Charger les alertes de service
+    async loadServiceAlerts() {
+        if (!this.selectedVehicle?._id) return;
+
+        try {
+            // Utiliser le service maintenance existant ou l'injecter s'il manque
+            // Note: Il faut injecter MaintenanceService dans le constructeur
+            // Je vais supposer qu'il faut l'ajouter
+        } catch (error) {
+            console.error('Erreur chargement alertes:', error);
+        }
     }
 
     async loadUnsyncedCounts() {

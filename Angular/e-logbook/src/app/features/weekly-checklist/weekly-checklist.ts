@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -46,8 +47,13 @@ export class WeeklyChecklistComponent implements OnInit {
     constructor(
         private maintenanceService: MaintenanceService,
         private dialog: MatDialog,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router: Router
     ) { }
+
+    goBack() {
+        this.router.navigate(['/dashboard']);
+    }
 
     ngOnInit() {
         console.log('🔍 [WEEKLY CHECKLIST] Component initialized');
@@ -113,7 +119,10 @@ export class WeeklyChecklistComponent implements OnInit {
     toggleTask(tache: Task) {
         if (!this.checklist) return;
 
-        const newState = !tache.validee;
+        // Note: La valeur de tache.validee est déjà mise à jour par le ngModel avant cet appel
+        // Si l'utilisateur clique alors qu'elle était true, elle devient false.
+
+        const newState = tache.validee;
 
         this.maintenanceService.validateTask(
             this.checklist._id,
@@ -122,11 +131,24 @@ export class WeeklyChecklistComponent implements OnInit {
             tache.commentaire
         ).subscribe({
             next: (updatedChecklist) => {
-                this.checklist = updatedChecklist;
+                // On met à jour sans écraser toute la checklist pour éviter des sauts d'UI
+                // Mais pour la consistance on met à jour le taux
+                this.checklist!.tauxCompletion = updatedChecklist.tauxCompletion;
+                this.checklist!.completee = updatedChecklist.completee;
+
+                // Mettre à jour la date de validation locale
+                if (newState) {
+                    tache.dateValidation = new Date();
+                } else {
+                    tache.dateValidation = undefined;
+                }
+
                 this.groupTasksByCategory();
             },
             error: (error) => {
                 console.error('Erreur validation tâche:', error);
+                // Revert en cas d'erreur
+                tache.validee = !newState;
             }
         });
     }

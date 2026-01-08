@@ -10,6 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MaintenanceService, MaintenanceConfig } from '../../maintenance.service';
+import { SettingsService } from '../../settings.service';
+
+/* const VEHICLE_TYPES removed */
+/* const VEHICLE_TYPES removed */
 
 @Component({
     selector: 'app-service-config',
@@ -35,15 +39,17 @@ export class ServiceConfigComponent implements OnInit {
     configForm: FormGroup;
     selectedConfig: MaintenanceConfig | null = null;
     displayedColumns: string[] = ['typeVehicule', 'conditions', 'intervalle', 'actions'];
+    vehicleTypes: string[] = [];
 
     constructor(
         private maintenanceService: MaintenanceService,
+        private settingsService: SettingsService,
         private fb: FormBuilder,
         private snackBar: MatSnackBar
     ) {
         this.configForm = this.fb.group({
             typeVehicule: ['', Validators.required],
-            conditionsRoute: ['Normale', Validators.required], // Normale, Difficile, Extrême
+            conditionsRoute: ['Normale', Validators.required],
             intervalleService: [5000, [Validators.required, Validators.min(1000)]],
             intervalleVidangeBonne: [5000, Validators.required],
             intervalleVidangeMauvaise: [2500, Validators.required],
@@ -54,6 +60,11 @@ export class ServiceConfigComponent implements OnInit {
 
     ngOnInit() {
         this.loadConfigs();
+        this.loadVehicleTypes();
+    }
+
+    loadVehicleTypes() {
+        this.settingsService.getVehicleTypes().subscribe(types => this.vehicleTypes = types || []);
     }
 
     loadConfigs() {
