@@ -167,7 +167,18 @@ export class MonthlyReportComponent implements OnInit {
 
                 // Determine effective start mileage (max of all events before period)
                 // If no events before, it defaults to initialMileage (or 0)
-                let startMileage = eventsBefore.length > 0 ? Math.max(...eventsBefore) : (vehicle.initialMileage || 0);
+                let startMileage = 0;
+                if (eventsBefore.length > 0) {
+                    startMileage = Math.max(...eventsBefore);
+                } else {
+                    // Fallback: If no history BEFORE, look for the EARLIEST EVENT START during the period
+                    const startsDuring = periodMovements.map(m => m.kilometrageDebut).filter(k => k !== undefined && k !== null);
+                    if (startsDuring.length > 0) {
+                        startMileage = Math.min(...startsDuring);
+                    } else if (vehicle.initialMileage) {
+                        startMileage = vehicle.initialMileage;
+                    }
+                }
 
                 // 2. Find max mileage within the period
                 const eventsDuring: number[] = [];
@@ -218,10 +229,15 @@ export class MonthlyReportComponent implements OnInit {
                 const currency = 'USD';
                 const totalEUR = totalCost;
 
-                // Handle Base display (check if object or string)
+                // Handle Base display safely
                 let baseDisplay = '-';
                 if (vehicle.base) {
-                    baseDisplay = typeof vehicle.base === 'object' && vehicle.base.name ? vehicle.base.name : vehicle.base.toString();
+                    if (typeof vehicle.base === 'string') {
+                        baseDisplay = vehicle.base;
+                    } else if (typeof vehicle.base === 'object') {
+                        baseDisplay = vehicle.base.name || vehicle.base.nom || JSON.stringify(vehicle.base);
+                        if (baseDisplay.startsWith('{')) baseDisplay = 'Base Inconnue';
+                    }
                 }
 
                 reportRows.push({
