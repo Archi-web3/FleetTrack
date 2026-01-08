@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -48,11 +48,12 @@ export class WeeklyChecklistComponent implements OnInit {
         private maintenanceService: MaintenanceService,
         private dialog: MatDialog,
         private cdr: ChangeDetectorRef,
-        private router: Router
+        private router: Router,
+        private location: Location
     ) { }
 
     goBack() {
-        this.router.navigate(['/dashboard']);
+        this.location.back();
     }
 
     ngOnInit() {
