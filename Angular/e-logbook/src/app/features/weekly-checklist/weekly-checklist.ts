@@ -72,6 +72,8 @@ export class WeeklyChecklistComponent implements OnInit {
                 this.checklist = data;
                 this.groupTasksByCategory();
                 this.loading = false;
+                console.log('🎬 [WEEKLY CHECKLIST] Loading set to false, checklist:', this.checklist ? 'EXISTS' : 'NULL');
+                console.log('🎬 [WEEKLY CHECKLIST] Categories count:', this.categories.length);
             },
             error: (error) => {
                 console.error('❌ [WEEKLY CHECKLIST] Erreur chargement checklist:', error);
