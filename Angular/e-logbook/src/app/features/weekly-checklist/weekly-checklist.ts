@@ -9,6 +9,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService, WeeklyChecklist, Task } from '../../core/services/maintenance.service';
 
@@ -26,6 +27,7 @@ import { MaintenanceService, WeeklyChecklist, Task } from '../../core/services/m
         MatExpansionModule,
         MatFormFieldModule,
         MatInputModule,
+        MatTooltipModule,
         MatDialogModule
     ],
     templateUrl: './weekly-checklist.html',
