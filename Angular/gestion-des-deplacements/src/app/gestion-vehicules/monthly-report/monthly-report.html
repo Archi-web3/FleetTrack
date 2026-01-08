@@ -207,6 +207,12 @@
                 <td mat-cell *matCellDef="let element"> {{element.totalEUR | currency:'EUR':'symbol':'1.0-0'}} </td>
             </ng-container>
 
+            <!-- Completion Rate -->
+            <ng-container matColumnDef="completionRate">
+                <th mat-header-cell *matHeaderCellDef> Remplissage </th>
+                <td mat-cell *matCellDef="let element"> {{element.completionRate | percent:'1.0-0'}} </td>
+            </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>

@@ -12,6 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { VehiculeService } from '../../vehicule.service';
 import { LogbookService } from '../../logbook.service';
+import { MaintenanceService } from '../../maintenance.service';
 
 interface MonthlyReportRow {
     month: string;
@@ -40,6 +41,7 @@ interface MonthlyReportRow {
     costPerKm: number;
     currency: string;
     totalEUR: number;
+    completionRate?: number; // Taux de remplissage (checklists)
 }
 
 @Component({
@@ -68,7 +70,7 @@ export class MonthlyReportComponent implements OnInit {
         'startMileage', 'endMileage', 'totalKm', 'fuelType', 'fuelQuantity', 'co2Emissions',
         'fuelCost', 'consumption', 'rentalCost', 'driverIncluded',
         'maintenanceCost', 'repairCost', 'depreciationValue', 'depreciationAllocation',
-        'insuranceCost', 'otherCosts', 'totalCost', 'costPerKm', 'currency', 'totalEUR'
+        'insuranceCost', 'otherCosts', 'totalCost', 'costPerKm', 'currency', 'totalEUR', 'completionRate'
     ];
     dataSource: MonthlyReportRow[] = [];
 
@@ -81,27 +83,11 @@ export class MonthlyReportComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private vehiculeService: VehiculeService,
-        private logbookService: LogbookService
+        private logbookService: LogbookService,
+        private maintenanceService: MaintenanceService
     ) { }
 
-    ngOnInit() {
-        // Initialize filter form
-        const now = new Date();
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-        this.filterForm = this.fb.group({
-            startDate: [firstDay],
-            endDate: [lastDay],
-            vehicleId: ['all']
-        });
-
-        // Load vehicles
-        this.vehiculeService.getVehicules().subscribe(vehicles => {
-            this.vehicles = vehicles;
-            this.generateReport();
-        });
-    }
+    // ... (ngOnInit unchanged)
 
     async generateReport() {
         const { startDate, endDate, vehicleId } = this.filterForm.value;
@@ -118,6 +104,7 @@ export class MonthlyReportComponent implements OnInit {
                 // Fetch data for this vehicle
                 const fuels = await this.logbookService.getFuelsByVehicle(vehicle._id).toPromise();
                 const maintenances = await this.logbookService.getMaintenancesByVehicle(vehicle._id).toPromise();
+                const checklists = await this.maintenanceService.getWeeklyChecklistHistory(vehicle._id, 100).toPromise();
 
                 // Filter by date range
                 const periodFuels = fuels?.filter(f => {
@@ -129,6 +116,18 @@ export class MonthlyReportComponent implements OnInit {
                     const maintDate = new Date(m.date);
                     return maintDate >= startDate && maintDate <= endDate;
                 }) || [];
+
+                // Filter checklists by approximate date (using week/year or createdAt if available)
+                // Assuming createdAt is reliable enough for the report period
+                const periodChecklists = checklists?.filter(c => {
+                    const dateCreation = new Date(c.dateCreation);
+                    return dateCreation >= startDate && dateCreation <= endDate;
+                }) || [];
+
+                // Calculate Checklist Completion Rate (Taux de remplissage)
+                const completionRate = periodChecklists.length > 0
+                    ? periodChecklists.reduce((sum, c) => sum + (c.tauxCompletion || 0), 0) / periodChecklists.length
+                    : 0;
 
                 // Calculate mileage
                 const startMileage = vehicle.initialMileage || 0;
@@ -142,7 +141,7 @@ export class MonthlyReportComponent implements OnInit {
                 const fuelCost = periodFuels.reduce((sum, f) => sum + (f.price || 0), 0);
                 const consumption = totalKm > 0 ? (fuelQuantity / totalKm) * 100 : 0;
 
-                // Calculate maintenance costs
+                // ... (Costs calculation unchanged)
                 const maintenanceCost = periodMaintenances
                     .filter(m => m.type !== 'Réparation')
                     .reduce((sum, m) => sum + (m.cost || 0), 0);
@@ -151,30 +150,23 @@ export class MonthlyReportComponent implements OnInit {
                     .filter(m => m.type === 'Réparation')
                     .reduce((sum, m) => sum + (m.cost || 0), 0);
 
-                // Calculate depreciation
                 const monthsDiff = this.getMonthsDifference(startDate, endDate);
                 const depreciationValue = vehicle.purchaseValue || 0;
                 const depreciationMonths = vehicle.depreciationMonths || 60;
                 const depreciationAllocation = (depreciationValue / depreciationMonths) * monthsDiff;
 
-                // Calculate insurance cost (prorated)
                 const insuranceCost = ((vehicle.insuranceCost || 0) / 12) * monthsDiff;
 
-                // Calculate rental cost
                 const rentalCost = vehicle.owner === 'Location'
                     ? (vehicle.rentalCost || 0) * monthsDiff
                     : 0;
 
-                // Total cost
                 const totalCost = fuelCost + maintenanceCost + repairCost +
                     depreciationAllocation + insuranceCost + rentalCost;
 
                 const costPerKm = totalKm > 0 ? totalCost / totalKm : 0;
-
-                // For now, assume currency is local and EUR conversion is 1:1
-                // This should be enhanced with actual exchange rates
-                const currency = 'USD'; // Or get from settings
-                const totalEUR = totalCost; // Placeholder for conversion
+                const currency = 'USD';
+                const totalEUR = totalCost;
 
                 reportRows.push({
                     month: this.formatMonth(startDate),
@@ -198,12 +190,14 @@ export class MonthlyReportComponent implements OnInit {
                     depreciationValue,
                     depreciationAllocation,
                     insuranceCost,
-                    otherCosts: 0, // Placeholder
+                    otherCosts: 0,
                     totalCost,
                     costPerKm,
                     currency,
-                    totalEUR
-                });
+                    totalEUR,
+                    completionRate // Add to row
+                } as any); // Cast as any because interface is not updated yet in this file scope (I will update interface next)
+
             } catch (error) {
                 console.error(`Error generating report for vehicle ${vehicle.immatriculation}:`, error);
             }

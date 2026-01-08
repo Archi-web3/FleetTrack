@@ -72,6 +72,10 @@ export class MaintenanceService {
         return this.http.get<ServiceSchedule[]>(`${this.apiUrl}/service/alerts`, this.getHeaders());
     }
 
+    getWeeklyChecklistHistory(vehiculeId: string, limit: number = 50): Observable<WeeklyChecklist[]> {
+        return this.http.get<WeeklyChecklist[]>(`${this.apiUrl}/weekly/history?vehicule=${vehiculeId}&limit=${limit}`, this.getHeaders());
+    }
+
     // ============================================
     // CONFIGURATION
     // ============================================
