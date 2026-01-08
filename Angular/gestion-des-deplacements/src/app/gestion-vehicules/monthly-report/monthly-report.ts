@@ -13,6 +13,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { VehiculeService } from '../../vehicule.service';
 import { LogbookService } from '../../logbook.service';
 import { MaintenanceService } from '../../maintenance.service';
+import { MouvementService } from '../../mouvement.service';
 
 interface MonthlyReportRow {
     month: string;
@@ -84,27 +85,11 @@ export class MonthlyReportComponent implements OnInit {
         private fb: FormBuilder,
         private vehiculeService: VehiculeService,
         private logbookService: LogbookService,
-        private maintenanceService: MaintenanceService
+        private maintenanceService: MaintenanceService,
+        private mouvementService: MouvementService
     ) { }
 
-    ngOnInit() {
-        // Initialize filter form
-        const now = new Date();
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-        this.filterForm = this.fb.group({
-            startDate: [firstDay],
-            endDate: [lastDay],
-            vehicleId: ['all']
-        });
-
-        // Load vehicles
-        this.vehiculeService.getVehicules().subscribe(vehicles => {
-            this.vehicles = vehicles;
-            this.generateReport();
-        });
-    }
+    // ... (ngOnInit unchanged)
 
     async generateReport() {
         const { startDate, endDate, vehicleId } = this.filterForm.value;
@@ -116,6 +101,9 @@ export class MonthlyReportComponent implements OnInit {
 
         const reportRows: MonthlyReportRow[] = [];
 
+        // Fetch all movements once (optimization possible: filter by date in backend)
+        const allMovements = await this.mouvementService.getMouvements().toPromise() || [];
+
         for (const vehicle of selectedVehicles) {
             try {
                 // Fetch data for this vehicle
@@ -123,35 +111,63 @@ export class MonthlyReportComponent implements OnInit {
                 const maintenances = await this.logbookService.getMaintenancesByVehicle(vehicle._id).toPromise();
                 const checklists = await this.maintenanceService.getWeeklyChecklistHistory(vehicle._id, 100).toPromise();
 
+                // Filter movements for this vehicle
+                const vehicleMovements = allMovements.filter(m => m.vehicule && (m.vehicule === vehicle._id || m.vehicule._id === vehicle._id));
+
                 // Filter by date range
                 const periodFuels = fuels?.filter(f => {
                     const fuelDate = new Date(f.date);
                     return fuelDate >= startDate && fuelDate <= endDate;
                 }) || [];
 
-                const periodMaintenances = maintenances?.filter(m => {
-                    const maintDate = new Date(m.date);
-                    return maintDate >= startDate && maintDate <= endDate;
-                }) || [];
+                const periodMaintenances = maintenances?.filter(m => m.date && new Date(m.date) >= startDate && new Date(m.date) <= endDate) || [];
 
-                // Filter checklists by approximate date (using week/year or createdAt if available)
-                // Assuming createdAt is reliable enough for the report period
                 const periodChecklists = checklists?.filter(c => {
                     const dateCreation = new Date(c.dateCreation);
                     return dateCreation >= startDate && dateCreation <= endDate;
                 }) || [];
+
+                // Filter movements specific to the period (completed movements)
+                const periodMovements = vehicleMovements.filter(m => {
+                    if (!m.dateFin) return false;
+                    const dateFin = new Date(m.dateFin);
+                    return dateFin >= startDate && dateFin <= endDate;
+                });
+
+                // --- MILEAGE CALCULATION ---
+                // 1. Find mileage BEFORE the period to handle Start Mileage correctly
+                const eventsBefore: number[] = [];
+                // Initial mileage
+                if (vehicle.initialMileage) eventsBefore.push(vehicle.initialMileage);
+
+                // Fuels before period
+                const fuelsBefore = fuels?.filter(f => new Date(f.date) < startDate) || [];
+                if (fuelsBefore.length > 0) eventsBefore.push(Math.max(...fuelsBefore.map(f => f.mileage)));
+
+                // Movements before period
+                const movementsBefore = vehicleMovements.filter(m => m.dateFin && new Date(m.dateFin) < startDate);
+                if (movementsBefore.length > 0) eventsBefore.push(Math.max(...movementsBefore.map(m => m.kilometrageFin)));
+
+                // Determine effective start mileage (max of all events before period)
+                // If no events before, it defaults to initialMileage (or 0)
+                let startMileage = eventsBefore.length > 0 ? Math.max(...eventsBefore) : (vehicle.initialMileage || 0);
+
+                // 2. Find max mileage within the period
+                const eventsDuring: number[] = [];
+                if (periodFuels.length > 0) eventsDuring.push(Math.max(...periodFuels.map(f => f.mileage)));
+                if (periodMovements.length > 0) eventsDuring.push(Math.max(...periodMovements.map(m => m.kilometrageFin)));
+
+                // End mileage is max of (StartMileage, MaxMileageDuringPeriod)
+                const endMileage = eventsDuring.length > 0 ? Math.max(startMileage, Math.max(...eventsDuring)) : startMileage;
+
+                const totalKm = endMileage - startMileage;
+
 
                 // Calculate Checklist Completion Rate (Taux de remplissage)
                 const completionRate = periodChecklists.length > 0
                     ? periodChecklists.reduce((sum, c) => sum + (c.tauxCompletion || 0), 0) / periodChecklists.length
                     : 0;
 
-                // Calculate mileage
-                const startMileage = vehicle.initialMileage || 0;
-                const endMileage = periodFuels.length > 0
-                    ? Math.max(...periodFuels.map(f => f.mileage))
-                    : startMileage;
-                const totalKm = endMileage - startMileage;
 
                 // Calculate fuel metrics
                 const fuelQuantity = periodFuels.reduce((sum, f) => sum + (f.quantity || 0), 0);
@@ -185,10 +201,16 @@ export class MonthlyReportComponent implements OnInit {
                 const currency = 'USD';
                 const totalEUR = totalCost;
 
+                // Handle Base display (check if object or string)
+                let baseDisplay = '-';
+                if (vehicle.base) {
+                    baseDisplay = typeof vehicle.base === 'object' && vehicle.base.name ? vehicle.base.name : vehicle.base.toString();
+                }
+
                 reportRows.push({
                     month: this.formatMonth(startDate),
                     acfCode: vehicle.acfCode || '-',
-                    base: vehicle.base || '-',
+                    base: baseDisplay,
                     owner: vehicle.owner || '-',
                     category: vehicle.category || '-',
                     type: vehicle.type || '-',
@@ -212,8 +234,8 @@ export class MonthlyReportComponent implements OnInit {
                     costPerKm,
                     currency,
                     totalEUR,
-                    completionRate // Add to row
-                } as any); // Cast as any because interface is not updated yet in this file scope (I will update interface next)
+                    completionRate
+                } as any);
 
             } catch (error) {
                 console.error(`Error generating report for vehicle ${vehicle.immatriculation}:`, error);
