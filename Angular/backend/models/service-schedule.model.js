@@ -8,8 +8,7 @@ const serviceScheduleSchema = new mongoose.Schema({
     },
     typeService: {
         type: String,
-        required: true,
-        enum: ['A', 'B', 'C']
+        required: true
     },
     kilometragePrevu: {
         type: Number,
@@ -58,8 +57,7 @@ const serviceScheduleSchema = new mongoose.Schema({
     dateCompletion: Date,
     prochainService: {
         type: {
-            type: String,
-            enum: ['A', 'B', 'C']
+            type: String
         },
         kilometrage: Number
     }
