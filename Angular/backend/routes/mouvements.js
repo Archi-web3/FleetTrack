@@ -308,7 +308,7 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
 
 // MISE À JOUR D'UN MOUVEMENT (PROTÉGÉE PAR RÔLE : Admin ou Superviseur peuvent valider/refuser/AFFECTER)
-router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), countryFilter, async (req, res) => {
+router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité']), countryFilter, async (req, res) => {
   try {
     console.log('=== DEBUG: PUT /mouvements/:id ===');
     console.log('Body reçu:', JSON.stringify(req.body, null, 2));

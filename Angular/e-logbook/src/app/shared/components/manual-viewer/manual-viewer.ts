@@ -40,10 +40,15 @@ export class ManualViewerComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        if (this.data && this.data.page) {
-            this.page = typeof this.data.page === 'string' ? parseInt(this.data.page, 10) : this.data.page;
+        if (this.data) {
+            if (this.data.page) {
+                this.page = typeof this.data.page === 'string' ? parseInt(this.data.page, 10) : this.data.page;
+            }
+            if ((this.data as any).fileName) {
+                this.pdfSrc = 'assets/manuals/' + (this.data as any).fileName;
+            }
         }
-        console.log('PDF Viewer initialized with page:', this.page);
+        console.log('PDF Viewer initialized with page:', this.page, 'file:', this.pdfSrc);
     }
 
     onProgress(progressData: any) {

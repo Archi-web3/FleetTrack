@@ -56,17 +56,22 @@ export class ValidationMouvementsComponent implements OnInit {
         this.mouvementsPourValidationSecurite = []; // Réinitialiser pour chaque chargement
         this.mouvementsPourValidationLogistique = []; // Réinitialiser pour chaque chargement
 
-        if (this.userProfile === 'SuperAdmin' || this.userProfile === 'Admin' || this.userProfile === 'Superviseur') {
-          // Un SuperAdmin/Admin/Superviseur peut voir les mouvements qui attendent la sécurité
-          // et ceux qui attendent la logistique (car il couvre les deux rôles pour la démo)
+        if (this.userProfile === 'SuperAdmin' || this.userProfile === 'Admin') {
+          // SuperAdmin/Admin voit TOUT
           this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
           this.mouvementsPourValidationLogistique = data.filter(m => m.statut === 'en attente');
-
-          console.log('✅ [VALIDATION] Mouvements pour validation sécurité:', this.mouvementsPourValidationSecurite.length);
-          console.log('✅ [VALIDATION] Mouvements pour validation logistique:', this.mouvementsPourValidationLogistique.length);
+        } else if (this.userProfile === 'Superviseur Sécurité') {
+          // Superviseur Sécurité voit SEULEMENT la sécurité
+          this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
+        } else if (this.userProfile === 'Superviseur') {
+          // Superviseur (classique) voit SEULEMENT la logistique
+          this.mouvementsPourValidationLogistique = data.filter(m => m.statut === 'en attente');
         } else {
           console.log('⚠️ [VALIDATION] Profil non autorisé pour la validation:', this.userProfile);
         }
+
+        console.log('✅ [VALIDATION] Mouvements pour validation sécurité:', this.mouvementsPourValidationSecurite.length);
+        console.log('✅ [VALIDATION] Mouvements pour validation logistique:', this.mouvementsPourValidationLogistique.length);
         // Si nous avions un rôle 'CoordinateurTerrain' distinct, ce serait ici:
         // else if (this.userProfile === 'CoordinateurTerrain') {
         //   this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');

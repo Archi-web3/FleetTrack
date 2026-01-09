@@ -2,7 +2,7 @@
   <h2>Validation des Mouvements (Profil: {{ userProfile || 'Non connecté' }})</h2>
 
   <!-- Section pour les mouvements en attente de validation SECURITE -->
-  <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'">
+  <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur Sécurité'">
     <!-- Ajustez le rôle si vous avez 'CoordinateurTerrain' -->
     <h3>Mouvements à valider par la Sécurité</h3>
     <p *ngIf="mouvementsPourValidationSecurite.length === 0">Aucun mouvement en attente de validation sécurité.</p>
