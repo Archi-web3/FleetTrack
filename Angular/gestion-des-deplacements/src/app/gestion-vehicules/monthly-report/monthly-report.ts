@@ -144,11 +144,13 @@ export class MonthlyReportComponent implements OnInit {
                     return dateCreation >= startDate && dateCreation <= endDate;
                 }) || [];
 
-                // Filter movements specific to the period (completed movements)
+                // Filter movements specific to the period (completed movements with valid mileage)
                 const periodMovements = vehicleMovements.filter(m => {
-                    if (!m.dateFin) return false;
-                    const dateFin = new Date(m.dateFin);
-                    return dateFin >= startDate && dateFin <= endDate;
+                    if (!m.dateArrivee) return false;
+                    const dateArrivee = new Date(m.dateArrivee);
+                    // Also ensure it has mileage data (completed trips)
+                    const hasMileage = m.endMileage !== undefined && m.endMileage !== null;
+                    return dateArrivee >= startDate && dateArrivee <= endDate && hasMileage;
                 });
 
                 // --- MILEAGE CALCULATION ---
@@ -162,17 +164,16 @@ export class MonthlyReportComponent implements OnInit {
                 if (fuelsBefore.length > 0) eventsBefore.push(Math.max(...fuelsBefore.map(f => f.mileage)));
 
                 // Movements before period
-                const movementsBefore = vehicleMovements.filter(m => m.dateFin && new Date(m.dateFin) < startDate);
-                if (movementsBefore.length > 0) eventsBefore.push(Math.max(...movementsBefore.map(m => m.kilometrageFin)));
+                const movementsBefore = vehicleMovements.filter(m => m.dateArrivee && new Date(m.dateArrivee) < startDate && m.endMileage);
+                if (movementsBefore.length > 0) eventsBefore.push(Math.max(...movementsBefore.map(m => m.endMileage)));
 
-                // Determine effective start mileage (max of all events before period)
-                // If no events before, it defaults to initialMileage (or 0)
+                // Determine effective start mileage
                 let startMileage = 0;
                 if (eventsBefore.length > 0) {
                     startMileage = Math.max(...eventsBefore);
                 } else {
                     // Fallback: If no history BEFORE, look for the EARLIEST EVENT START during the period
-                    const startsDuring = periodMovements.map(m => m.kilometrageDebut).filter(k => k !== undefined && k !== null);
+                    const startsDuring = periodMovements.map(m => m.startMileage).filter(k => k !== undefined && k !== null);
                     if (startsDuring.length > 0) {
                         startMileage = Math.min(...startsDuring);
                     } else if (vehicle.initialMileage) {
@@ -183,7 +184,7 @@ export class MonthlyReportComponent implements OnInit {
                 // 2. Find max mileage within the period
                 const eventsDuring: number[] = [];
                 if (periodFuels.length > 0) eventsDuring.push(Math.max(...periodFuels.map(f => f.mileage)));
-                if (periodMovements.length > 0) eventsDuring.push(Math.max(...periodMovements.map(m => m.kilometrageFin)));
+                if (periodMovements.length > 0) eventsDuring.push(Math.max(...periodMovements.map(m => m.endMileage)));
 
                 // End mileage is max of (StartMileage, MaxMileageDuringPeriod)
                 const endMileage = eventsDuring.length > 0 ? Math.max(startMileage, Math.max(...eventsDuring)) : startMileage;
@@ -247,7 +248,8 @@ export class MonthlyReportComponent implements OnInit {
                     console.log('Initial Mileage:', vehicle.initialMileage);
                     console.log('Fuels Count:', fuels?.length);
                     console.log('Movements Total:', vehicleMovements.length);
-                    console.log('Movements in Period:', periodMovements.map(m => `${m.kilometrageDebut}->${m.kilometrageFin} (${m.dateFin})`));
+                    // Updated debug log for new properties
+                    console.log('Movements in Period:', periodMovements.map(m => `${m.startMileage}->${m.endMileage} (${m.dateArrivee})`));
                     console.log('Events Before:', eventsBefore);
                     console.log('Start Mileage (Calculated):', startMileage);
                     console.log('End Mileage (Calculated):', endMileage);
