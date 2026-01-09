@@ -47,6 +47,7 @@ export interface MaintenanceConfig {
 })
 export class MaintenanceService {
     private apiUrl = 'https://fleettrack-api.onrender.com/api/maintenance';
+    // private apiUrl = 'http://localhost:3000/api/maintenance';
 
     constructor(private http: HttpClient) { }
 
@@ -65,7 +66,7 @@ export class MaintenanceService {
     // ============================================
 
     getDashboardStats(): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/stats/global`, this.getHeaders());
+        return this.http.get<any>(`${this.apiUrl}/stats`, this.getHeaders());
     }
 
     getAllServiceAlerts(): Observable<ServiceSchedule[]> {

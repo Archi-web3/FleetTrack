@@ -13,6 +13,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService } from '../../core/services/maintenance.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ManualViewerComponent } from '../../shared/components/manual-viewer/manual-viewer';
 
 interface ServiceSchedule {
@@ -68,17 +69,127 @@ export class ScheduledServiceComponent implements OnInit {
 
     constructor(
         private maintenanceService: MaintenanceService,
+        private authService: AuthService,
         private cdr: ChangeDetectorRef,
         private dialog: MatDialog,
         private router: Router,
         private location: Location
     ) { }
 
+    ngOnInit() {
+        // Get vehicle from current user or local storage
+        const user = this.authService.getCurrentUser();
+        const storedVehicle = localStorage.getItem('selectedVehicle');
+
+        if (user && user.vehicule) {
+            this.selectedVehicleId = typeof user.vehicule === 'object' ? user.vehicule._id : user.vehicule;
+        } else if (storedVehicle) {
+            try {
+                const v = JSON.parse(storedVehicle);
+                this.selectedVehicleId = v._id || v;
+            } catch (e) {
+                this.selectedVehicleId = storedVehicle;
+            }
+        }
+
+        if (this.selectedVehicleId) {
+            this.loadNextService();
+            this.loadServiceHistory();
+        } else {
+            console.warn('No vehicle selected or assigned for scheduled service view.');
+        }
+    }
+
     goBack() {
         this.location.back();
     }
 
-    // ... (existing code)
+    loadNextService() {
+        if (!this.selectedVehicleId) return;
+        this.loading = true;
+        this.maintenanceService.getNextService(this.selectedVehicleId).subscribe({
+            next: (data) => {
+                this.nextService = data;
+                this.loading = false;
+                this.cdr.detectChanges();
+            },
+            error: (err) => {
+                console.error('Error loading next service:', err);
+                this.loading = false;
+            }
+        });
+    }
+
+    loadServiceHistory() {
+        // Feature not yet available in frontend service, stubbing for now to prevent errors
+        // or we could implement it if we add the method to MaintenanceService
+        // For now, let's just log
+        console.log('Service history loading not yet fully implemented in frontend service.');
+        this.serviceHistory = [];
+    }
+
+    // --- Template Helpers ---
+
+    getServiceTypeColor(): string {
+        switch (this.nextService?.typeService) {
+            case 'A': return '#4caf50'; // Green
+            case 'B': return '#2196f3'; // Blue
+            case 'C': return '#ff9800'; // Orange
+            default: return '#757575'; // Grey
+        }
+    }
+
+    getServiceTypeLabel(): string {
+        if (!this.nextService) return '';
+        switch (this.nextService.typeService) {
+            case 'A': return 'Service A (Petit entretien)';
+            case 'B': return 'Service B (Grand entretien)';
+            case 'C': return 'Service C (Entretien majeur)';
+            default: return 'Service inconnu';
+        }
+    }
+
+    getStatusColor(): string {
+        switch (this.nextService?.statut) {
+            case 'À venir': return 'primary';
+            case 'Dû': return 'accent'; // Yellow/Orange
+            case 'En retard': return 'warn'; // Red
+            case 'Complété': return 'primary'; // Greenish usually
+            default: return '';
+        }
+    }
+
+    getStatusIcon(): string {
+        switch (this.nextService?.statut) {
+            case 'À venir': return 'schedule';
+            case 'Dû': return 'priority_high';
+            case 'En retard': return 'warning';
+            case 'Complété': return 'check_circle';
+            default: return 'help';
+        }
+    }
+
+    getKmRemaining(): number {
+        if (!this.nextService) return 0;
+        return Math.max(0, this.nextService.kilometragePrevu - this.nextService.kilometrageActuel);
+    }
+
+    getProgressPercentage(): number {
+        if (!this.nextService) return 0;
+        // Simple progress based on tasks completed
+        const total = this.nextService.taches.length;
+        if (total === 0) return 0;
+        const validated = this.nextService.taches.filter(t => t.validee).length;
+        return (validated / total) * 100;
+    }
+
+    getValidatedTasksCount(): number {
+        return this.nextService?.taches.filter(t => t.validee).length || 0;
+    }
+
+    getTotalTasksCount(): number {
+        return this.nextService?.taches.length || 0;
+    }
 
     toggleTask(task: ServiceTask) {
         // ngModel a déjà mis à jour task.validee
@@ -101,7 +212,8 @@ export class ScheduledServiceComponent implements OnInit {
         console.log('✅ [SCHEDULED SERVICE] Completing service...');
 
         // TODO: Implémenter une vraie signature électronique
-        const signature = 'Validé électroniquement par ' + (localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')!).nom : 'Utilisateur');
+        const user = this.authService.getCurrentUser();
+        const signature = 'Validé électroniquement par ' + (user ? user.nom : 'Utilisateur');
 
         this.maintenanceService.completeService(this.nextService._id, signature).subscribe({
             next: (result) => {
@@ -112,7 +224,6 @@ export class ScheduledServiceComponent implements OnInit {
             },
             error: (error) => {
                 console.error('❌ [SCHEDULED SERVICE] Error completing service:', error);
-                console.error('❌ [SCHEDULEED SERVICE] Error completing service:', error);
                 alert('Erreur lors de la validation du service : ' + (error.error?.message || error.message));
             }
         });
@@ -121,8 +232,17 @@ export class ScheduledServiceComponent implements OnInit {
     openManual(numeroTache?: string) {
         if (!numeroTache) return;
 
-        // Logique de mapping tâche -> page
-        const page = 1;
+        // Try to parse the task manual number as a page number
+        let page = 1;
+
+        // If the manual number is simple (e.g., "7", "12"), use it directly
+        const parsedPage = parseInt(numeroTache, 10);
+        if (!isNaN(parsedPage) && parsedPage > 0) {
+            page = parsedPage;
+        } else {
+            // Fallback checking for known patterns or keeping default
+            console.warn(`Manual Task Number '${numeroTache}' is not a valid page number. Defaulting to page 1.`);
+        }
 
         this.dialog.open(ManualViewerComponent, {
             width: '95vw',

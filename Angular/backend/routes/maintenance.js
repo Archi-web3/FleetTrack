@@ -139,6 +139,48 @@ router.get('/weekly/history', auth(), async (req, res) => {
     }
 });
 
+// GET /api/maintenance/stats - Statistiques globales maintenance
+router.get('/stats', auth(), async (req, res) => {
+    try {
+        // 1. Total Véhicules Actifs
+        const totalVehicules = await Vehicule.countDocuments({ enService: true });
+        console.log('📊 [STATS] Véhicules Actifs:', totalVehicules);
+
+        // 2. Services Dus (Dû ou En retard)
+        const servicesDus = await ServiceSchedule.countDocuments({
+            statut: { $in: ['Dû', 'En retard'] }
+        });
+
+        // 3. Checklists Incomplètes (Véhicules actifs - Checklists complétées cette semaine)
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const days = Math.floor((now - startOfYear) / (24 * 60 * 60 * 1000));
+        const semaine = Math.ceil((days + startOfYear.getDay() + 1) / 7);
+        const annee = now.getFullYear();
+
+        const checklistsCompletees = await WeeklyChecklist.countDocuments({
+            semaine: semaine,
+            annee: annee,
+            completee: true
+        });
+        console.log(`📊 [STATS] Semaine ${semaine}/${annee} - Checklists Complétées: ${checklistsCompletees}`);
+
+        // "Incomplètes" = Tout véhicule qui n'a PA encore sa checklist complétée pour la semaine
+        const checklistsRetard = Math.max(0, totalVehicules - checklistsCompletees);
+        console.log('📊 [STATS] Checklists Incomplètes (Calculé):', checklistsRetard);
+
+        res.json({
+            totalVehicules,
+            servicesDus,
+            checklistsRetard,
+            coutMoyen: 0 // TODO: Implémenter logique coûts
+        });
+    } catch (error) {
+        console.error('Erreur stats maintenance:', error);
+        res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    }
+});
+
 // ============================================
 // SERVICE SCHEDULE ROUTES
 // ============================================

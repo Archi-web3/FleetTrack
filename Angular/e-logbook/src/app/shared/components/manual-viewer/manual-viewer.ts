@@ -23,7 +23,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     styleUrls: ['./manual-viewer.scss']
 })
 export class ManualViewerComponent implements OnInit {
-    pdfSrc = 'assets/manual.pdf'; // Path to manual in assets
+    pdfSrc = 'assets/manuals/manual.pdf'; // Path to manual in assets
     page = 1;
     zoom = 1.0;
     rotation = 0;
@@ -43,6 +43,7 @@ export class ManualViewerComponent implements OnInit {
         if (this.data && this.data.page) {
             this.page = typeof this.data.page === 'string' ? parseInt(this.data.page, 10) : this.data.page;
         }
+        console.log('PDF Viewer initialized with page:', this.page);
     }
 
     onProgress(progressData: any) {

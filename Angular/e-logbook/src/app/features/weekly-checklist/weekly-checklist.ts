@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService, WeeklyChecklist, Task } from '../../core/services/maintenance.service';
 import { ManualViewerComponent } from '../../shared/components/manual-viewer/manual-viewer';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-weekly-checklist',
@@ -46,6 +47,7 @@ export class WeeklyChecklistComponent implements OnInit {
 
     constructor(
         private maintenanceService: MaintenanceService,
+        private authService: AuthService,
         private dialog: MatDialog,
         private cdr: ChangeDetectorRef,
         private router: Router,
@@ -137,11 +139,16 @@ export class WeeklyChecklistComponent implements OnInit {
                 this.checklist!.tauxCompletion = updatedChecklist.tauxCompletion;
                 this.checklist!.completee = updatedChecklist.completee;
 
-                // Mettre à jour la date de validation locale
+                // Mettre à jour la date de validation locale et le nom du validateur
                 if (newState) {
                     tache.dateValidation = new Date();
+                    const currentUser = this.authService.getCurrentUser();
+                    if (currentUser) {
+                        tache.validatorName = `${currentUser.prenom} ${currentUser.nom}`;
+                    }
                 } else {
                     tache.dateValidation = undefined;
+                    tache.validatorName = undefined;
                 }
 
                 this.groupTasksByCategory();
@@ -157,9 +164,17 @@ export class WeeklyChecklistComponent implements OnInit {
     openManual(numeroTache: string) {
         if (!numeroTache) return;
 
-        // Convertir numéro de tâche en numéro de page si nécessaire
-        // Pour l'instant on ouvre juste le manuel
-        const page = 1; // Par défaut page 1, ou logique de mapping ici
+        // Try to parse the task manual number as a page number
+        let page = 1;
+
+        // If the manual number is simple (e.g., "7", "12"), use it directly
+        const parsedPage = parseInt(numeroTache, 10);
+        if (!isNaN(parsedPage) && parsedPage > 0) {
+            page = parsedPage;
+        } else {
+            // Fallback checking for known patterns or keeping default
+            console.warn(`Manual Task Number '${numeroTache}' is not a valid page number. Defaulting to page 1.`);
+        }
 
         this.dialog.open(ManualViewerComponent, {
             width: '95vw',

@@ -49,25 +49,23 @@ export class MaintenanceDashboardComponent implements OnInit {
         this.maintenanceService.getAllServiceAlerts().subscribe({
             next: (data) => {
                 this.alerts = data;
-
-                // Simuler des stats pour l'instant (TODO: endpoint stats)
-                this.stats = {
-                    totalVehicules: 25, // Mock
-                    servicesDus: data.length,
-                    checklistsRetard: 3, // Mock
-                    coutMoyen: 0
-                };
-
                 this.loading = false;
             },
             error: (error) => {
-                console.error('Erreur chargement dashboard:', error);
+                console.error('Erreur chargement alertes:', error);
                 this.loading = false;
             }
         });
 
-        // TODO: Charger les vraies stats quand l'endpoint sera prêt
-        // this.maintenanceService.getDashboardStats().subscribe(...)
+        // Charger les statistiques réelles
+        this.maintenanceService.getDashboardStats().subscribe({
+            next: (stats) => {
+                this.stats = stats;
+            },
+            error: (error) => {
+                console.error('Erreur chargement stats:', error);
+            }
+        });
     }
 
     getStatusColor(statut: string): string {

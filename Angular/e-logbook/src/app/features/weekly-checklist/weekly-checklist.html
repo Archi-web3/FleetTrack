@@ -78,7 +78,8 @@
 
                         <!-- Date de validation -->
                         <span *ngIf="tache.validee && tache.dateValidation" class="validation-date">
-                            ✓ {{tache.dateValidation | date:'dd/MM HH:mm'}}
+                            ✓ {{tache.dateValidation | date:'dd/MM HH:mm'}} <span
+                                *ngIf="tache.validatorName">({{tache.validatorName}})</span>
                         </span>
                     </div>
                 </div>

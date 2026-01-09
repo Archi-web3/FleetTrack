@@ -24,6 +24,7 @@ export interface Task {
     numeroTacheManuel: string;
     validee: boolean;
     dateValidation?: Date;
+    validatorName?: string;
     commentaire?: string;
 }
 
