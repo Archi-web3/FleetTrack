@@ -297,9 +297,23 @@ export class OfflineService extends Dexie {
             }
         }
 
-        const maxMileage = mileages.length > 0 ? Math.max(...mileages) : 0;
-        console.log('🎯 [getLastMileage] Kilométrage maximum trouvé:', maxMileage, 'parmi:', mileages);
-        return maxMileage;
+        const maxMileageStr = mileages.length > 0 ? Math.max(...mileages) : 0;
+
+        // NOUVEAU: Vérifier le kilométrage initial du véhicule
+        try {
+            const vehicle = await this.vehicles.get(vehicleId);
+            if (vehicle && (vehicle.initialMileage || (vehicle as any).kilometrageInitial)) {
+                // Gérer les deux noms de propriétés possibles (mappage)
+                const initialKm = vehicle.initialMileage || (vehicle as any).kilometrageInitial;
+                console.log('🚗 [getLastMileage] Véhicule Km Initial:', initialKm);
+                return Math.max(maxMileageStr, initialKm);
+            }
+        } catch (e) {
+            console.error('Erreur lecture véhicule Dexie:', e);
+        }
+
+        console.log('🎯 [getLastMileage] Kilométrage maximum trouvé:', maxMileageStr, 'parmi:', mileages);
+        return maxMileageStr;
     }
 
     // Calculate fuel consumption for a vehicle

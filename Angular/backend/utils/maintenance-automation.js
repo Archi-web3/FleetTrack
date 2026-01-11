@@ -34,6 +34,20 @@ async function generateServiceSchedules(vehiculeId, currentKm) {
         console.log(`   - Intervalle: ${serviceInterval} km (${config ? 'Configuré' : 'Fallback'})`);
 
         // 3. Récupérer les services déjà existants
+        // 3. Récupérer les services déjà existants
+        // NOUVEAU: Nettoyage des services obsolètes (inférieurs au km initial)
+        // ex: Si on change le km initial de 0 à 150000, on supprime les services prévus à 5000, 10000...
+        if (initialKm > 0) {
+            const deleted = await ServiceSchedule.deleteMany({
+                vehicule: vehiculeId,
+                kilometragePrevu: { $lt: initialKm }, // Strictement inférieur, car celui à "initialKm" pourrait être dû
+                statut: { $ne: 'Complété' }
+            });
+            if (deleted.deletedCount > 0) {
+                console.log(`   🧹 Nettoyage: ${deleted.deletedCount} service(s) obsolètes supprimés (< ${initialKm} km)`);
+            }
+        }
+
         const existingServices = await ServiceSchedule.find({
             vehicule: vehiculeId
         }).sort({ kilometragePrevu: 1 });

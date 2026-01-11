@@ -7,7 +7,10 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.get('/', authMiddleware(), async (req, res) => {
     try {
         let query = {};
-        if (req.query.pays) {
+        // NOUVEAU: Si Admin, on force le pays de l'utilisateur
+        if (req.utilisateur.profil === 'Admin' || req.utilisateur.profil === 'Superviseur') {
+            query.pays = req.utilisateur.pays;
+        } else if (req.query.pays) {
             query.pays = req.query.pays;
         }
         const bases = await Base.find(query).populate('pays', 'nom code').sort('nom');
