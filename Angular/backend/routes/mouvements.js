@@ -514,7 +514,19 @@ router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), countryFilter, a
     if (mouvement == null) {
       return res.status(404).json({ message: 'Cannot find movement' });
     }
+    const vehiculeId = mouvement.vehicule;
     await mouvement.deleteOne();
+
+    // Recalculer le kilométrage du véhicule après suppression
+    if (vehiculeId) {
+      try {
+        const { recalculateVehicleMileage } = require('../utils/mileage-sync');
+        await recalculateVehicleMileage(vehiculeId);
+      } catch (syncErr) {
+        console.error('Erreur lors de la synchro kilométrage après suppression:', syncErr);
+      }
+    }
+
     res.json({ message: 'Mouvement supprimé' });
   } catch (err) {
     console.error("Erreur DELETE /mouvements/:id:", err);
