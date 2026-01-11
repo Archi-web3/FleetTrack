@@ -65,11 +65,18 @@ export class MaintenanceTrackingComponent implements OnInit {
         let countryId = undefined;
 
         if (storedCountry) {
-            try {
-                const countryObj = JSON.parse(storedCountry);
-                countryId = countryObj._id || countryObj.id;
-            } catch (e) {
-                console.error('Erreur lecture pays selectionné:', e);
+            // Le service stocke directement l'ID (string), pas un objet JSON
+            // Mais on vérifie quand même si c'est un objet JSON au cas où (legacy)
+            if (storedCountry.startsWith('{')) {
+                try {
+                    const countryObj = JSON.parse(storedCountry);
+                    countryId = countryObj._id || countryObj.id;
+                } catch (e) {
+                    // Fallback: raw string
+                    countryId = storedCountry;
+                }
+            } else {
+                countryId = storedCountry;
             }
         }
 
