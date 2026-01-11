@@ -79,8 +79,14 @@ router.put('/vehicules/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async
     const oldKilometrage = vehicule.kilometrage;
     const oldInitialKm = vehicule.kilometrageInitial || 0;
 
-    // Update all fields from body
+    // STAGE 1: Update fields from body
     Object.assign(vehicule, req.body);
+
+    // 🔧 AUTO-CORRECTION: Kilométrage actuel ne peut jamais être inférieur au kilométrage initial
+    if (vehicule.kilometrageInitial && vehicule.kilometrage < vehicule.kilometrageInitial) {
+      console.log(`🚗 [AUTO-FIX] Km Actuel (${vehicule.kilometrage}) < Km Initial (${vehicule.kilometrageInitial}). Ajustement...`);
+      vehicule.kilometrage = vehicule.kilometrageInitial;
+    }
 
     const vehiculeMisAJour = await vehicule.save();
 
