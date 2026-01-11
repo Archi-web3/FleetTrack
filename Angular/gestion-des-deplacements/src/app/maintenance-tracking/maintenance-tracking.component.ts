@@ -37,6 +37,7 @@ export class MaintenanceTrackingComponent implements OnInit {
     alerts: any[] = [];
     bases: any[] = [];
     loading = false;
+    Math = Math; // Expose Math to template
 
     // Filtres
     selectedBase: string = '';
