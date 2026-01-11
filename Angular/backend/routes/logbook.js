@@ -158,6 +158,28 @@ router.post('/take-charge/:id', async (req, res) => {
     }
 });
 
+// --- DELETE /trips/:id ---
+// Supprimer un trajet (Admin/SuperAdmin seulement)
+router.delete('/trips/:id', async (req, res) => {
+    try {
+        const trip = await Mouvement.findById(req.params.id);
+        if (!trip) return res.status(404).json({ message: 'Trip not found' });
+
+        const vehicleId = trip.vehicule;
+        await trip.deleteOne();
+
+        // Recalculer le kilométrage du véhicule après suppression
+        if (vehicleId) {
+            const { recalculateVehicleMileage } = require('../utils/mileage-sync');
+            await recalculateVehicleMileage(vehicleId);
+        }
+
+        res.json({ message: 'Trip deleted' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // --- GET /fuels/:vehicleId ---
 router.get('/fuels/:vehicleId', async (req, res) => {
     try {

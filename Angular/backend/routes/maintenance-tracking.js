@@ -47,10 +47,12 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                 vehiculeFilter.base = { $in: allowedBaseIds };
             }
         }
-        // SUPER ADMIN (sans pays sélectionné)
         else if (req.utilisateur.profil === 'SuperAdmin') {
             // Peut tout voir, ou filtrer par base s'il le souhaite
             if (base) vehiculeFilter.base = base;
+        } else {
+            // SÉCURITÉ PAR DÉFAUT: Si aucun critère ne correspond (ex: Admin sans pays), on ne montre rien.
+            return res.json([]);
         }
 
         if (typeVehicule) vehiculeFilter.type = typeVehicule;
