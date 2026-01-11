@@ -1,5 +1,6 @@
 <div style="padding: 20px;">
-  <h2>Validation des Mouvements (Profil: {{ userProfile || 'Non connecté' }})</h2>
+  <h2>Validation des Mouvements (Profil: {{ userProfile || 'Non connecté' }}) <small
+      style="font-size: 0.6em; color: gray;">[v2.2]</small></h2>
 
   <!-- Section pour les mouvements en attente de validation SECURITE -->
   <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur Sécurité'">

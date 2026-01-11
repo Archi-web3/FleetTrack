@@ -56,7 +56,7 @@ export class GestionUtilisateursComponent implements OnInit {
     projet: 'Support'
   };
   selectedUser: any = null; // Pour la modification
-  profiles = ['Admin', 'Superviseur', 'Technicien', 'Guest', 'Chauffeur']; // Profils possibles
+  profiles = ['Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur']; // Profils possibles
   userProfile: string | null = null;
   userPaysId: string | null = null;
   bases: any[] = []; // Liste des bases
