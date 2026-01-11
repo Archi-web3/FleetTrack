@@ -79,11 +79,11 @@ export class GestionUtilisateursComponent implements OnInit {
 
     // Adapter les profils disponibles
     if (this.userProfile === 'SuperAdmin') {
-      this.profiles = ['SuperAdmin', 'Admin', 'Superviseur', 'Technicien', 'Guest', 'Chauffeur'];
+      this.profiles = ['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur'];
       this.loadPays();
       // On ne charge pas les bases tout de suite, on attend la sélection du pays
     } else if (this.userProfile === 'Admin') {
-      this.profiles = ['Superviseur', 'Technicien', 'Guest', 'Chauffeur']; // Admin ne crée pas Admin
+      this.profiles = ['Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur']; // Admin ne crée pas Admin
       this.newUser.pays = this.userPaysId; // Force le pays
       this.loadBases(this.userPaysId!);
     } else {
