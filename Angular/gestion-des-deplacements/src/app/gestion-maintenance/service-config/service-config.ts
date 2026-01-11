@@ -51,8 +51,7 @@ export class ServiceConfigComponent implements OnInit {
             typeVehicule: ['', Validators.required],
             conditionsRoute: ['Route mixte/urbaine', Validators.required],
             intervalleService: [5000, [Validators.required, Validators.min(1000)]],
-            intervalleVidangeBonne: [5000, Validators.required],
-            intervalleVidangeMauvaise: [2500, Validators.required],
+            // Vidange fields removed
             qualiteCarburant: ['Bonne', Validators.required],
             actif: [true]
         });
@@ -80,8 +79,7 @@ export class ServiceConfigComponent implements OnInit {
             typeVehicule: config.typeVehicule,
             conditionsRoute: config.conditionsRoute,
             intervalleService: config.intervalleService,
-            intervalleVidangeBonne: config.intervalleVidange.bonneQualite,
-            intervalleVidangeMauvaise: config.intervalleVidange.mauvaiseQualite,
+            // Vidange fields removed
             qualiteCarburant: config.qualiteCarburant,
             actif: config.actif
         });
@@ -93,8 +91,7 @@ export class ServiceConfigComponent implements OnInit {
             typeVehicule: '',
             conditionsRoute: 'Route mixte/urbaine',
             intervalleService: 5000,
-            intervalleVidangeBonne: 5000,
-            intervalleVidangeMauvaise: 2500,
+            // Vidange fields removed
             qualiteCarburant: 'Bonne',
             actif: true
         });
@@ -108,10 +105,7 @@ export class ServiceConfigComponent implements OnInit {
             typeVehicule: formValue.typeVehicule,
             conditionsRoute: formValue.conditionsRoute,
             intervalleService: formValue.intervalleService,
-            intervalleVidange: {
-                bonneQualite: formValue.intervalleVidangeBonne,
-                mauvaiseQualite: formValue.intervalleVidangeMauvaise
-            },
+            // Vidange fields removed
             qualiteCarburant: formValue.qualiteCarburant,
             actif: formValue.actif
         };

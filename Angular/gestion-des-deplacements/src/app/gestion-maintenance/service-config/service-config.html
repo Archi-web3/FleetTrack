@@ -39,15 +39,7 @@
                     </mat-form-field>
 
                     <div class="row">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Vidange (Bonne Qualité)</mat-label>
-                            <input matInput type="number" formControlName="intervalleVidangeBonne">
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline">
-                            <mat-label>Vidange (Mauvaise Qualité)</mat-label>
-                            <input matInput type="number" formControlName="intervalleVidangeMauvaise">
-                        </mat-form-field>
+                        <!-- Vidange fields removed -->
                     </div>
 
                     <mat-form-field appearance="outline">
@@ -94,7 +86,10 @@
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef> Actions </th>
                         <td mat-cell *matCellDef="let element">
-
+                            <button mat-icon-button color="primary" (click)="selectConfig(element)"
+                                style="margin-right: 8px;">
+                                <mat-icon>edit</mat-icon>
+                            </button>
                             <button mat-icon-button color="warn" (click)="deleteConfig(element)">
                                 <mat-icon>delete</mat-icon>
                             </button>

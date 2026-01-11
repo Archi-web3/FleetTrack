@@ -34,10 +34,7 @@ export interface MaintenanceConfig {
     typeVehicule: string;
     conditionsRoute: string;
     intervalleService: number;
-    intervalleVidange: {
-        bonneQualite: number;
-        mauvaiseQualite: number;
-    };
+    // intervalleVidange removed
     qualiteCarburant: 'Bonne' | 'Mauvaise' | 'Inconnue';
     actif: boolean;
 }
