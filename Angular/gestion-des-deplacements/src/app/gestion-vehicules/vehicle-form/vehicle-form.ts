@@ -66,7 +66,7 @@ export class VehicleFormComponent implements OnInit {
             year: [null],
             startDate: [null],
             capacitePassagers: [1, [Validators.required, Validators.min(1)]],
-            initialMileage: [0, Validators.min(0)],
+            kilometrageInitial: [0, Validators.min(0)],
 
             // Données environnementales
             emissionsCO2: this.fb.group({

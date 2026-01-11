@@ -55,7 +55,7 @@ const vehiculeSchema = new mongoose.Schema({
   driverIncluded: { type: Boolean, default: false }, // Location inclut chauffeur ?
 
   // Mileage
-  initialMileage: { type: Number, default: 0 }, // KM initial
+
 
   // Status
   enService: { type: Boolean, default: true },

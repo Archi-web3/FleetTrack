@@ -18,26 +18,38 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
         let vehiculeFilter = { enService: true };
 
         // 1. Filtrage par Pays/Base (Role-Based)
-        let allowedBases = [];
-        if (req.selectedCountry) {
-            // Si un pays est sélectionné (Admin Pays ou SuperAdmin avec header), on filtre les bases de ce pays
+
+        // SUPERVISEUR : Restriction stricte à sa base
+        if (req.utilisateur.profil === 'Superviseur') {
+            if (req.utilisateur.base) {
+                vehiculeFilter.base = req.utilisateur.base;
+            } else {
+                // Si un superviseur n'a pas de base, il ne doit rien voir
+                return res.json([]);
+            }
+        }
+        // ADMIN PAYS (Force sa zone) & SUPER ADMIN (si pays sélectionné)
+        else if (req.selectedCountry) {
+            // Récupérer les bases du pays
             const basesInCountry = await Base.find({ pays: req.selectedCountry }).select('_id');
-            allowedBases = basesInCountry.map(b => b._id.toString());
+            const allowedBaseIds = basesInCountry.map(b => b._id.toString());
 
             if (base) {
-                // Si la base demandée fait partie des bases autorisées, on l'utilise
-                if (allowedBases.includes(base)) {
+                // Si une base spécifique est demandée
+                if (allowedBaseIds.includes(base)) {
                     vehiculeFilter.base = base;
                 } else {
-                    // Sinon, on renvoie vide (tentative d'accès non autorisé ou incohérence)
+                    // Base demandée hors du pays autorisé -> Rejet
                     return res.json([]);
                 }
             } else {
-                // Si pas de base spécifique demandée, on prend toutes les bases du pays
-                vehiculeFilter.base = { $in: allowedBases };
+                // Sinon, toutes les bases du pays
+                vehiculeFilter.base = { $in: allowedBaseIds };
             }
-        } else {
-            // SuperAdmin sans filtre pays : peut tout voir
+        }
+        // SUPER ADMIN (sans pays sélectionné)
+        else if (req.utilisateur.profil === 'SuperAdmin') {
+            // Peut tout voir, ou filtrer par base s'il le souhaite
             if (base) vehiculeFilter.base = base;
         }
 

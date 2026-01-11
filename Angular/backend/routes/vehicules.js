@@ -38,6 +38,12 @@ router.get('/vehicules/:id', auth(), async (req, res) => { // <<< AJOUTÉ auth()
 
 // CREATE one vehicle
 router.post('/vehicules', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, res) => {
+
+  // ✅ AUTO-INIT: Si kilométrage initial fourni mais pas le kilométrage actuel, on l'initialise
+  if (req.body.kilometrageInitial && !req.body.kilometrage) {
+    req.body.kilometrage = req.body.kilometrageInitial;
+  }
+
   const vehicule = new Vehicule({
     ...req.body // Use spread operator to include all fields from body
   });

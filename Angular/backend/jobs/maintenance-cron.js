@@ -85,7 +85,7 @@ const checkServicesDus = cron.schedule('0 7 * * *', async () => {
             }).sort({ kilometragePrevu: 1 });
 
             if (service) {
-                const kmActuel = vehicule.initialMileage || 0;
+                const kmActuel = vehicule.kilometrage || 0;
                 service.kilometrageActuel = kmActuel;
 
                 const oldStatut = service.statut;

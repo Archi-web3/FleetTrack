@@ -218,7 +218,7 @@ router.get('/service/next', auth(), async (req, res) => {
                 vehicule: vehiculeId,
                 typeService: 'A',
                 kilometragePrevu: intervalleService,
-                kilometrageActuel: vehicule.initialMileage || 0,
+                kilometrageActuel: vehicule.kilometrage || 0,
                 statut: 'À venir',
                 prochainService: {
                     type: 'B',
@@ -228,7 +228,7 @@ router.get('/service/next', auth(), async (req, res) => {
         }
 
         // Mettre à jour le statut basé sur le kilométrage actuel
-        const kmActuel = vehicule.initialMileage || 0;
+        const kmActuel = vehicule.kilometrage || 0;
         service.kilometrageActuel = kmActuel;
 
         if (kmActuel >= service.kilometragePrevu + 200) {
