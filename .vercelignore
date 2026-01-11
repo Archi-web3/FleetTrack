@@ -1,0 +1,14 @@
+**/node_modules
+node_modules
+*/node_modules
+Angular/node_modules
+Angular/backend
+Angular/backend/node_modules
+Angular/gestion-des-deplacements/node_modules
+.git
+.env
+.env.local
+.DS_Store
+Thumbs.db
+*.log
+tmp
