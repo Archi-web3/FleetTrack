@@ -66,6 +66,14 @@ export class MaintenanceService {
         return this.http.get<any>(`${this.apiUrl}/stats`, this.getHeaders());
     }
 
+    getMaintenanceOverview(params: any = {}): Observable<any[]> {
+        // Note: Route is in 'maintenance-tracking', not 'maintenance'
+        // Need to handle URL difference or update base URL logic if they allow it.
+        // Assuming /api/maintenance-tracking is accessible.
+        const baseUrl = this.apiUrl.replace('/maintenance', '/maintenance-tracking');
+        return this.http.get<any[]>(`${baseUrl}/overview`, { ...this.getHeaders(), params });
+    }
+
     getAllServiceAlerts(): Observable<ServiceSchedule[]> {
         return this.http.get<ServiceSchedule[]>(`${this.apiUrl}/service/alerts`, this.getHeaders());
     }

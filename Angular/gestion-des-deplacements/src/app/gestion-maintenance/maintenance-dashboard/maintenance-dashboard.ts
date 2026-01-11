@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MaintenanceTrackingComponent } from '../../maintenance-tracking/maintenance-tracking.component';
 import { ServiceConfigComponent } from '../service-config/service-config';
 import { TemplateManagerComponent } from '../template-manager/template-manager';
+import { WeeklyChecklistTracker } from '../weekly-checklist-tracker/weekly-checklist-tracker';
 
 @Component({
     selector: 'app-maintenance-dashboard',
@@ -15,7 +16,8 @@ import { TemplateManagerComponent } from '../template-manager/template-manager';
         MatIconModule,
         MaintenanceTrackingComponent,
         ServiceConfigComponent,
-        TemplateManagerComponent
+        TemplateManagerComponent,
+        WeeklyChecklistTracker
     ],
     templateUrl: './maintenance-dashboard.html',
     styleUrls: ['./maintenance-dashboard.scss']
