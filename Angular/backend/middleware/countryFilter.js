@@ -13,11 +13,11 @@
 
 const countryFilter = (req, res, next) => {
     console.log('🌍 [countryFilter] Vérification filtrage pays');
-    console.log('🌍 [countryFilter] User:', req.user?.nom, '- Profil:', req.user?.profil);
+    console.log('🌍 [countryFilter] User:', req.utilisateur?.nom, '- Profil:', req.utilisateur?.profil);
     console.log('🌍 [countryFilter] Pays sélectionné:', req.selectedCountry);
 
     // SuperAdmin : Aucun filtre (peut voir tous les pays)
-    if (req.user?.profil === 'SuperAdmin') {
+    if (req.utilisateur?.profil === 'SuperAdmin') {
         req.countryFilter = {};
         console.log('✅ [countryFilter] SuperAdmin détecté - Pas de filtre pays');
         return next();
