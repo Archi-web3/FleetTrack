@@ -12,6 +12,7 @@ import { ConsolidationMouvementsComponent } from './consolidation-mouvements/con
 import { ModifierMouvementComponent } from './modifier-mouvement/modifier-mouvement.component';
 import { TableauBordComponent } from './tableau-bord/tableau-bord.component';
 import { LogbookDashboardComponent } from './logbook-dashboard/logbook-dashboard.component';
+import { MaintenanceTrackingComponent } from './maintenance-tracking/maintenance-tracking.component';
 import { AuthGuard } from './auth-guard';
 
 export const routes: Routes = [
@@ -35,12 +36,18 @@ export const routes: Routes = [
     path: 'valider-mouvements',
     component: ValidationMouvementsComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité'] }
   },
   {
     path: 'planning',
     component: PlanningMouvementsComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'suivi-maintenance',
+    component: MaintenanceTrackingComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
   {
     path: 'gestion-utilisateurs',
