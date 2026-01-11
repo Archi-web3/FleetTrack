@@ -7,6 +7,44 @@ const MaintenanceConfig = require('../models/maintenance-config.model');
 const Vehicule = require('../models/vehicule.model');
 const auth = require('../middleware/authMiddleware');
 
+// 🔄 HELPER: Synchroniser la maintenance quand une config change
+async function syncMaintenanceForConfig(config) {
+    if (!config) return;
+    try {
+        const { generateServiceSchedules } = require('../utils/maintenance-automation');
+        const Vehicule = require('../models/vehicule.model');
+        const ServiceSchedule = require('../models/service-schedule.model');
+
+        console.log(`🔄 [CONFIG SYNC] Configuration "${config.typeVehicule}" (${config.conditionsRoute}) modifiée/créée/supprimée.`);
+        console.log('   - Recalcul des maintenances pour les véhicules concernés...');
+
+        // Trouver les véhicules qui utilisent cette config
+        const vehicules = await Vehicule.find({ type: config.typeVehicule });
+
+        let updatedCount = 0;
+        for (const v of vehicules) {
+            // Vérifier si le véhicule utilise bien cette condition (ou la default)
+            const vCondition = v.conditionsRoute || 'Route mixte/urbaine';
+            const cCondition = config.conditionsRoute || 'Route mixte/urbaine';
+
+            if (vCondition === cCondition) {
+                // 1. Supprimer les services futurs (non complétés) car l'intervalle a changé
+                await ServiceSchedule.deleteMany({
+                    vehicule: v._id,
+                    statut: { $ne: 'Complété' }
+                });
+
+                // 2. Régénérer (utilise la NOUVELLE config, ou la DEFAULT si config supprimée)
+                await generateServiceSchedules(v._id, v.kilometrage);
+                updatedCount++;
+            }
+        }
+        console.log(`✅ [CONFIG SYNC] ${updatedCount} véhicules mis à jour.`);
+    } catch (syncError) {
+        console.error('⚠️ [CONFIG SYNC] Erreur resync maintenance:', syncError);
+    }
+}
+
 // ============================================
 // WEEKLY CHECKLIST ROUTES
 // ============================================
@@ -360,6 +398,10 @@ router.get('/config', auth(), async (req, res) => {
 router.post('/config', auth(), async (req, res) => {
     try {
         const config = await MaintenanceConfig.create(req.body);
+
+        // 🔄 SYNC
+        syncMaintenanceForConfig(config);
+
         res.status(201).json(config);
     } catch (error) {
         console.error('Erreur création config:', error);
@@ -376,42 +418,8 @@ router.put('/config/:id', auth(), async (req, res) => {
             { new: true }
         );
 
-        // 🔄 SYNC: Recalculer le planning pour les véhicules affectés
-        if (config) {
-            try {
-                const { generateServiceSchedules } = require('../utils/maintenance-automation');
-
-                console.log(`🔄 [CONFIG UPDATE] Configuration "${config.typeVehicule}" (${config.conditionsRoute}) mise à jour.`);
-                console.log('   - Recalcul des maintenances pour les véhicules concernés...');
-
-                // Trouver les véhicules qui utilisent cette config
-                const vehicules = await Vehicule.find({ type: config.typeVehicule });
-
-                let updatedCount = 0;
-                for (const v of vehicules) {
-                    // Vérifier si le véhicule utilise bien cette condition (ou la default)
-                    const vCondition = v.conditionsRoute || 'Route mixte/urbaine';
-                    const cCondition = config.conditionsRoute || 'Route mixte/urbaine';
-
-                    if (vCondition === cCondition) {
-                        // 1. Supprimer les services futurs (non complétés) car l'intervalle a changé
-                        await ServiceSchedule.deleteMany({
-                            vehicule: v._id,
-                            statut: { $ne: 'Complété' }
-                        });
-
-                        // 2. Régénérer
-                        await generateServiceSchedules(v._id, v.kilometrage);
-                        updatedCount++;
-                    }
-                }
-                console.log(`✅ [CONFIG UPDATE] ${updatedCount} véhicules mis à jour.`);
-
-            } catch (syncError) {
-                console.error('⚠️ [CONFIG UPDATE] Erreur resync maintenance:', syncError);
-                // On ne bloque pas la réponse, c'est un processus d'arrière-plan
-            }
-        }
+        // 🔄 SYNC
+        syncMaintenanceForConfig(config);
 
         res.json(config);
     } catch (error) {
@@ -468,6 +476,10 @@ router.delete('/config/:id', auth(), async (req, res) => {
         if (!config) {
             return res.status(404).json({ message: 'Configuration non trouvée' });
         }
+
+        // 🔄 SYNC (Va régénérer avec les valeurs par défaut ou une autre config correspondante)
+        syncMaintenanceForConfig(config);
+
         res.json({ message: 'Configuration supprimée' });
     } catch (error) {
         console.error('Erreur suppression config:', error);
