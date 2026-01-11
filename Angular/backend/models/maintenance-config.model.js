@@ -15,15 +15,6 @@ const maintenanceConfigSchema = new mongoose.Schema({
         required: true,
         min: 0
     }, // en km
-    intervalleVidange: {
-        bonneQualite: { type: Number, required: true, min: 0 },
-        mauvaiseQualite: { type: Number, required: true, min: 0 }
-    },
-    qualiteCarburant: {
-        type: String,
-        enum: ['Bonne', 'Mauvaise', 'Inconnue'],
-        default: 'Inconnue'
-    },
     actif: {
         type: Boolean,
         default: true

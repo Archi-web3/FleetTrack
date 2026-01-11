@@ -59,10 +59,43 @@ router.put('/vehicules/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async
       return res.status(404).json({ message: 'Cannot find vehicle' });
     }
 
+    // Stocker l'ancien kilométrage pour détecter les changements
+    const oldKilometrage = vehicule.kilometrage;
+
     // Update all fields from body
     Object.assign(vehicule, req.body);
 
     const vehiculeMisAJour = await vehicule.save();
+
+    // 🔧 AUTO-GÉNÉRATION: Si le km a changé, générer/mettre à jour les services
+    if (req.body.kilometrage && req.body.kilometrage !== oldKilometrage) {
+      try {
+        const { generateServiceSchedules, updateServiceStatuses } = require('../utils/maintenance-automation');
+
+        console.log(`🚗 [VEHICULE UPDATE] Km changé: ${oldKilometrage} → ${vehiculeMisAJour.kilometrage}`);
+
+        // Générer les nouveaux services manquants
+        const createdServices = await generateServiceSchedules(vehiculeMisAJour._id, vehiculeMisAJour.kilometrage);
+
+        // Mettre à jour les statuts des services existants
+        await updateServiceStatuses(vehiculeMisAJour._id, vehiculeMisAJour.kilometrage);
+
+        // Retourner le véhicule + info sur les services créés
+        return res.json({
+          vehicule: vehiculeMisAJour,
+          servicesGeneres: createdServices.length,
+          services: createdServices
+        });
+      } catch (maintenanceError) {
+        console.error('⚠️ [VEHICULE UPDATE] Erreur génération maintenance:', maintenanceError);
+        // On retourne quand même le véhicule mis à jour, mais avec un warning
+        return res.json({
+          vehicule: vehiculeMisAJour,
+          maintenanceWarning: maintenanceError.message
+        });
+      }
+    }
+
     res.json(vehiculeMisAJour);
   } catch (err) {
     console.error("Erreur UPDATE /vehicules/:id:", err);

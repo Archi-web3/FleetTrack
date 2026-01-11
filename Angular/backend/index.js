@@ -11,6 +11,8 @@ const lieuxRoute = require('./routes/lieux');
 const paysRoute = require('./routes/pays');
 const basesRoute = require('./routes/bases');
 const projetsRoute = require('./routes/projets');
+const maintenanceRoute = require('./routes/maintenance'); // Route maintenance existante
+const maintenanceTrackingRoute = require('./routes/maintenance-tracking'); // Nouvelle route tracking
 // const auth = require('./middleware/authMiddleware'); // <<< Ne pas l'importer ici
 
 
@@ -87,6 +89,7 @@ app.use('/api', uploadRoute);
 // NOUVEAU : Routes pour la maintenance
 const maintenanceRoute = require('./routes/maintenance');
 app.use('/api/maintenance', maintenanceRoute);
+app.use('/api/maintenance-tracking', maintenanceTrackingRoute);
 
 // NOUVEAU : Routes pour les paramètres généraux
 const settingsRoute = require('./routes/settings');

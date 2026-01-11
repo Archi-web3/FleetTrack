@@ -18,6 +18,10 @@ const vehiculeSchema = new mongoose.Schema({
   // Details
   year: { type: Number }, // Année de fabrication
   startDate: { type: Date }, // Date de 1ère utilisation
+  // Kilométrage
+  kilometrage: { type: Number, required: true, default: 0, min: 0 },
+  kilometrageInitial: { type: Number, default: 0, min: 0 }, // Km lors de l'acquisition du véhicule
+  derniereMiseAJourKm: { type: Date, default: Date.now },
   capacitePassagers: { type: Number, required: true, default: 1 },
   fuelType: { type: String, enum: ['Diesel', 'Essence', 'Hybride', 'Electrique'], default: 'Diesel' },
 
