@@ -75,22 +75,28 @@ router.put('/vehicules/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async
       return res.status(404).json({ message: 'Cannot find vehicle' });
     }
 
-    // Stocker l'ancien kilométrage pour détecter les changements
+    // Stocker l'ancien kilométrage et km initial pour détecter les changements
     const oldKilometrage = vehicule.kilometrage;
+    const oldInitialKm = vehicule.kilometrageInitial || 0;
 
     // Update all fields from body
     Object.assign(vehicule, req.body);
 
     const vehiculeMisAJour = await vehicule.save();
 
-    // 🔧 AUTO-GÉNÉRATION: Si le km a changé, générer/mettre à jour les services
-    if (req.body.kilometrage && req.body.kilometrage !== oldKilometrage) {
+    // 🔧 AUTO-GÉNÉRATION: Si le km a changé OU si le km initial a changé
+    const kmHasChanged = req.body.kilometrage && req.body.kilometrage !== oldKilometrage;
+    const initialKmHasChanged = req.body.kilometrageInitial && req.body.kilometrageInitial !== oldInitialKm;
+
+    if (kmHasChanged || initialKmHasChanged) {
       try {
         const { generateServiceSchedules, updateServiceStatuses } = require('../utils/maintenance-automation');
 
-        console.log(`🚗 [VEHICULE UPDATE] Km changé: ${oldKilometrage} → ${vehiculeMisAJour.kilometrage}`);
+        console.log(`🚗 [VEHICULE UPDATE] Déclencheur: ${kmHasChanged ? 'Km Actuel' : ''} ${initialKmHasChanged ? 'Km Initial' : ''}`);
+        console.log(`   - Km: ${oldKilometrage} → ${vehiculeMisAJour.kilometrage}`);
+        console.log(`   - Initial: ${oldInitialKm} → ${vehiculeMisAJour.kilometrageInitial}`);
 
-        // Générer les nouveaux services manquants
+        // Générer les nouveaux services manquants (et nettoyer les anciens si kmInitial augmente)
         const createdServices = await generateServiceSchedules(vehiculeMisAJour._id, vehiculeMisAJour.kilometrage);
 
         // Mettre à jour les statuts des services existants
