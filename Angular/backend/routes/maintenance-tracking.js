@@ -5,6 +5,9 @@ const Vehicule = require('../models/vehicule.model');
 const ServiceSchedule = require('../models/service-schedule.model');
 const MaintenanceConfig = require('../models/maintenance-config.model');
 
+const WeeklyChecklist = require('../models/weekly-checklist.model');
+const Base = require('../models/base.model');
+
 /**
  * GET /api/maintenance-tracking/overview
  * Vue d'ensemble de tous les véhicules avec leur statut de maintenance
@@ -12,10 +15,32 @@ const MaintenanceConfig = require('../models/maintenance-config.model');
 router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, res) => {
     try {
         const { base, statut, typeVehicule } = req.query;
-
-        // Filtrer les véhicules selon les critères
         let vehiculeFilter = { enService: true };
-        if (base) vehiculeFilter.base = base;
+
+        // 1. Filtrage par Pays/Base (Role-Based)
+        let allowedBases = [];
+        if (req.selectedCountry) {
+            // Si un pays est sélectionné (Admin Pays ou SuperAdmin avec header), on filtre les bases de ce pays
+            const basesInCountry = await Base.find({ pays: req.selectedCountry }).select('_id');
+            allowedBases = basesInCountry.map(b => b._id.toString());
+
+            if (base) {
+                // Si la base demandée fait partie des bases autorisées, on l'utilise
+                if (allowedBases.includes(base)) {
+                    vehiculeFilter.base = base;
+                } else {
+                    // Sinon, on renvoie vide (tentative d'accès non autorisé ou incohérence)
+                    return res.json([]);
+                }
+            } else {
+                // Si pas de base spécifique demandée, on prend toutes les bases du pays
+                vehiculeFilter.base = { $in: allowedBases };
+            }
+        } else {
+            // SuperAdmin sans filtre pays : peut tout voir
+            if (base) vehiculeFilter.base = base;
+        }
+
         if (typeVehicule) vehiculeFilter.type = typeVehicule;
 
         const vehicules = await Vehicule.find(vehiculeFilter)
@@ -35,6 +60,20 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                 vehicule: vehicule._id,
                 statut: 'Complété'
             }).sort({ dateCompletion: -1 });
+
+            // Checklists Hebdo (Dernière validée)
+            const lastChecklist = await WeeklyChecklist.findOne({
+                vehicule: vehicule._id,
+                status: 'Validated' // On suppose que 'Validated' est le statut final
+            }).sort({ submissionDate: -1 });
+
+            let checklistStatus = 'ok';
+            if (lastChecklist) {
+                const daysSinceLastCheck = (new Date() - new Date(lastChecklist.submissionDate)) / (1000 * 60 * 60 * 24);
+                if (daysSinceLastCheck > 7) checklistStatus = 'late';
+            } else {
+                checklistStatus = 'never'; // Jamais fait
+            }
 
             // Calculer l'écart km
             let ecartKm = null;
@@ -66,6 +105,10 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                     kmPrevu: prochainService.kilometragePrevu,
                     statut: prochainService.statut
                 } : null,
+                checklist: {
+                    status: checklistStatus,
+                    lastDate: lastChecklist ? lastChecklist.submissionDate : null
+                },
                 ecartKm,
                 statusCode
             };

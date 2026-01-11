@@ -306,6 +306,21 @@ router.post('/sync', async (req, res) => {
                         }
 
                         await plannedMvt.save();
+
+                        // ✅ METTRE À JOUR LE KILOMÉTRAGE DU VÉHICULE
+                        if (tripData.endMileage) {
+                            try {
+                                const vehiculeToUpdate = await Vehicule.findById(plannedMvt.vehicule);
+                                if (vehiculeToUpdate && tripData.endMileage > vehiculeToUpdate.kilometrage) {
+                                    vehiculeToUpdate.kilometrage = tripData.endMileage;
+                                    await vehiculeToUpdate.save();
+                                    console.log(`Updated vehicle ${vehiculeToUpdate.immatriculation} mileage to ${tripData.endMileage} km via planned trip`);
+                                }
+                            } catch (vErr) {
+                                console.error('Error updating vehicle mileage:', vErr);
+                            }
+                        }
+
                         results.trips.success++;
                         results.trips.items.push({ _id: plannedMvt._id, status: 'updated' });
                         continue; // Done with this one
@@ -384,6 +399,20 @@ router.post('/sync', async (req, res) => {
                 });
 
                 await newMouvement.save();
+
+                // ✅ METTRE À JOUR LE KILOMÉTRAGE DU VÉHICULE
+                if (tripData.endMileage) {
+                    try {
+                        const vehiculeToUpdate = await Vehicule.findById(tripData.vehicleId);
+                        if (vehiculeToUpdate && tripData.endMileage > vehiculeToUpdate.kilometrage) {
+                            vehiculeToUpdate.kilometrage = tripData.endMileage;
+                            await vehiculeToUpdate.save();
+                            console.log(`Updated vehicle ${vehiculeToUpdate.immatriculation} mileage to ${tripData.endMileage} km via new trip`);
+                        }
+                    } catch (vErr) {
+                        console.error('Error updating vehicle mileage:', vErr);
+                    }
+                }
                 console.log(`Created new trip for vehicle ${tripData.vehicleId} (${tripData.startMileage}km → ${tripData.endMileage}km)`);
                 results.trips.success++;
                 results.trips.items.push({ _id: newMouvement._id, status: 'created' }); // ✅ Return ID
