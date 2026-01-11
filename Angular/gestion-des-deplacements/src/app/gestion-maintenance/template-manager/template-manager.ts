@@ -48,6 +48,13 @@ export class TemplateManagerComponent implements OnInit {
         'Test Routier'
     ];
 
+    templateTypes = [
+        'Hebdomadaire',
+        'Service A',
+        'Service B',
+        'Service C'
+    ];
+
     constructor(
         private maintenanceService: MaintenanceService,
         private fb: FormBuilder,

@@ -41,6 +41,15 @@
                             <input matInput formControlName="nom" placeholder="Ex: Checklist Hebdo Land Cruiser">
                         </mat-form-field>
 
+                        <mat-form-field appearance="outline" style="width: 200px; margin-left: 16px;">
+                            <mat-label>Type</mat-label>
+                            <mat-select formControlName="type">
+                                <mat-option *ngFor="let type of templateTypes" [value]="type">
+                                    {{ type }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
                         <div class="checkbox-wrapper">
                             <mat-checkbox formControlName="actif">Actif</mat-checkbox>
                         </div>
