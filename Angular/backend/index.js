@@ -87,7 +87,7 @@ const uploadRoute = require('./routes/upload');
 app.use('/api', uploadRoute);
 
 // NOUVEAU : Routes pour la maintenance
-const maintenanceRoute = require('./routes/maintenance');
+// const maintenanceRoute = require('./routes/maintenance'); // DEJA IMPORTE LIGNE 14
 app.use('/api/maintenance', maintenanceRoute);
 app.use('/api/maintenance-tracking', maintenanceTrackingRoute);
 
