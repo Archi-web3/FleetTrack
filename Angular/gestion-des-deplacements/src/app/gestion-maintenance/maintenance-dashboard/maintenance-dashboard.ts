@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { MaintenanceTrackingComponent } from '../../../maintenance-tracking/maintenance-tracking.component';
+import { MaintenanceTrackingComponent } from '../../maintenance-tracking/maintenance-tracking.component';
 import { ServiceConfigComponent } from '../service-config/service-config';
 import { TemplateManagerComponent } from '../template-manager/template-manager';
 
