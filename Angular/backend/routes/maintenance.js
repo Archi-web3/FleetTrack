@@ -375,6 +375,44 @@ router.put('/config/:id', auth(), async (req, res) => {
             req.body,
             { new: true }
         );
+
+        // 🔄 SYNC: Recalculer le planning pour les véhicules affectés
+        if (config) {
+            try {
+                const { generateServiceSchedules } = require('../utils/maintenance-automation');
+
+                console.log(`🔄 [CONFIG UPDATE] Configuration "${config.typeVehicule}" (${config.conditionsRoute}) mise à jour.`);
+                console.log('   - Recalcul des maintenances pour les véhicules concernés...');
+
+                // Trouver les véhicules qui utilisent cette config
+                const vehicules = await Vehicule.find({ type: config.typeVehicule });
+
+                let updatedCount = 0;
+                for (const v of vehicules) {
+                    // Vérifier si le véhicule utilise bien cette condition (ou la default)
+                    const vCondition = v.conditionsRoute || 'Route mixte/urbaine';
+                    const cCondition = config.conditionsRoute || 'Route mixte/urbaine';
+
+                    if (vCondition === cCondition) {
+                        // 1. Supprimer les services futurs (non complétés) car l'intervalle a changé
+                        await ServiceSchedule.deleteMany({
+                            vehicule: v._id,
+                            statut: { $ne: 'Complété' }
+                        });
+
+                        // 2. Régénérer
+                        await generateServiceSchedules(v._id, v.kilometrage);
+                        updatedCount++;
+                    }
+                }
+                console.log(`✅ [CONFIG UPDATE] ${updatedCount} véhicules mis à jour.`);
+
+            } catch (syncError) {
+                console.error('⚠️ [CONFIG UPDATE] Erreur resync maintenance:', syncError);
+                // On ne bloque pas la réponse, c'est un processus d'arrière-plan
+            }
+        }
+
         res.json(config);
     } catch (error) {
         console.error('Erreur modification config:', error);
