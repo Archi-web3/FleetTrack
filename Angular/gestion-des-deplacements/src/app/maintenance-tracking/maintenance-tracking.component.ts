@@ -60,7 +60,20 @@ export class MaintenanceTrackingComponent implements OnInit {
     }
 
     loadBases() {
-        this.adminService.getBases().subscribe(
+        // NOUVEAU: Récupérer le pays sélectionné (pour SuperAdmin)
+        const storedCountry = localStorage.getItem('selectedCountry');
+        let countryId = undefined;
+
+        if (storedCountry) {
+            try {
+                const countryObj = JSON.parse(storedCountry);
+                countryId = countryObj._id || countryObj.id;
+            } catch (e) {
+                console.error('Erreur lecture pays selectionné:', e);
+            }
+        }
+
+        this.adminService.getBases(countryId).subscribe(
             data => this.bases = data,
             error => console.error('Erreur chargement bases:', error)
         );

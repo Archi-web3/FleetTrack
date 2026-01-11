@@ -50,6 +50,16 @@ router.post('/vehicules', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (r
   try {
     const nouveauVehicule = await vehicule.save();
     console.log("Nouveau véhicule créé:", nouveauVehicule);
+
+    // 🔧 AUTO-GÉNÉRATION: Initialiser les services de maintenance
+    try {
+      const { generateServiceSchedules } = require('../utils/maintenance-automation');
+      await generateServiceSchedules(nouveauVehicule._id, nouveauVehicule.kilometrage);
+      console.log('✅ Services de maintenance initialisés pour le nouveau véhicule');
+    } catch (maintenanceError) {
+      console.error('⚠️ [VEHICULE CREATE] Erreur init maintenance:', maintenanceError);
+    }
+
     res.status(201).json(nouveauVehicule);
   } catch (err) {
     console.error("Erreur CREATE /vehicules:", err);
