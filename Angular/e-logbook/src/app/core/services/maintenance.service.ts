@@ -122,6 +122,12 @@ export class MaintenanceService {
         return this.http.get<ServiceSchedule[]>(`${this.apiUrl}/service/alerts`, this.getHeaders());
     }
 
+    updateServiceTasks(serviceId: string, taches: Task[]): Observable<ServiceSchedule> {
+        return this.http.put<ServiceSchedule>(`${this.apiUrl}/service/${serviceId}/tasks`, {
+            taches
+        }, this.getHeaders());
+    }
+
     // ============================================
     // CONFIGURATION
     // ============================================

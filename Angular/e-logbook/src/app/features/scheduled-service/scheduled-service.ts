@@ -34,6 +34,9 @@ interface ServiceSchedule {
 }
 
 interface ServiceTask {
+    _id?: string;
+    numero?: string;
+    categorie?: string;
     description: string;
     numeroTacheManuel?: string;
     validee: boolean;
@@ -198,7 +201,25 @@ export class ScheduledServiceComponent implements OnInit {
         } else {
             task.dateValidation = undefined;
         }
-        // TODO: Sauvegarder sur le backend
+
+        // Sauvegarder sur le backend
+        if (this.nextService) {
+            this.maintenanceService.updateServiceTasks(
+                this.nextService._id,
+                this.nextService.taches as any
+            ).subscribe({
+                next: () => {
+                    console.log('✅ [SCHEDULED SERVICE] Task updated successfully');
+                },
+                error: (err) => {
+                    console.error('❌ [SCHEDULED SERVICE] Error updating task:', err);
+                    // Revert the change on error
+                    task.validee = !task.validee;
+                    task.dateValidation = undefined;
+                }
+            });
+        }
+
         this.cdr.detectChanges();
     }
 

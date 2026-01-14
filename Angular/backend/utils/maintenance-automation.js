@@ -1,6 +1,7 @@
 const ServiceSchedule = require('../models/service-schedule.model');
 const MaintenanceConfig = require('../models/maintenance-config.model');
 const Vehicule = require('../models/vehicule.model');
+const ChecklistTemplate = require('../models/checklist-template.model');
 
 /**
  * Génère automatiquement les services planifiés pour un véhicule
@@ -67,13 +68,39 @@ async function generateServiceSchedules(vehiculeId, currentKm) {
             if (!exists) {
                 console.log(`   ✅ Création: Service ${requiredService.type} à ${requiredService.km} km`);
 
+                // Charger le template correspondant pour copier les tâches
+                let taches = [];
+                try {
+                    const template = await ChecklistTemplate.findOne({
+                        type: `Service ${requiredService.type}`,
+                        actif: true
+                    });
+
+                    if (template && template.taches && template.taches.length > 0) {
+                        // Copier les tâches du template
+                        taches = template.taches.map(t => ({
+                            description: t.description,
+                            numeroTacheManuel: t.numeroTacheManuel,
+                            categorie: t.categorie,
+                            validee: false,
+                            dateValidation: null,
+                            commentaire: ''
+                        }));
+                        console.log(`      📋 ${taches.length} tâches chargées depuis le template "${template.nom}"`);
+                    } else {
+                        console.log(`      ⚠️  Aucun template trouvé pour "Service ${requiredService.type}"`);
+                    }
+                } catch (templateError) {
+                    console.error(`      ❌ Erreur chargement template:`, templateError.message);
+                }
+
                 const newService = await ServiceSchedule.create({
                     vehicule: vehiculeId,
                     typeService: requiredService.type,
                     kilometragePrevu: requiredService.km,
                     kilometrageActuel: currentKm,
                     statut: determineStatut(currentKm, requiredService.km),
-                    taches: [] // Les tâches seront ajoutées manuellement ou depuis un template
+                    taches: taches
                 });
                 createdServices.push(newService);
             }

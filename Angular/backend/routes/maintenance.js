@@ -365,6 +365,29 @@ router.post('/service/complete', auth(), async (req, res) => {
     }
 });
 
+// PUT /api/maintenance/service/:id/tasks - Mettre à jour les tâches d'un service
+router.put('/service/:id/tasks', auth(), async (req, res) => {
+    try {
+        const { taches } = req.body;
+
+        const service = await ServiceSchedule.findByIdAndUpdate(
+            req.params.id,
+            { taches },
+            { new: true }
+        ).populate('vehicule');
+
+        if (!service) {
+            return res.status(404).json({ message: 'Service non trouvé' });
+        }
+
+        console.log(`✅ [SERVICE TASKS] Tâches mises à jour pour service ${service._id}`);
+        res.json(service);
+    } catch (error) {
+        console.error('Erreur mise à jour tâches service:', error);
+        res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    }
+});
+
 // GET /api/maintenance/service/alerts - Alertes services
 router.get('/service/alerts', auth(), async (req, res) => {
     try {
