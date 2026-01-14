@@ -402,6 +402,63 @@ router.get('/service/alerts', auth(), async (req, res) => {
     }
 });
 
+// POST /api/maintenance/service/populate-tasks - Peupler tous les services existants avec les tâches des templates
+router.post('/service/populate-tasks', auth(), async (req, res) => {
+    try {
+        const ChecklistTemplate = require('../models/checklist-template.model');
+
+        // Récupérer tous les services non complétés sans tâches
+        const services = await ServiceSchedule.find({
+            statut: { $ne: 'Complété' },
+            $or: [
+                { taches: { $exists: false } },
+                { taches: { $size: 0 } }
+            ]
+        });
+
+        console.log(`📋 [POPULATE TASKS] Trouvé ${services.length} service(s) à mettre à jour`);
+
+        let updated = 0;
+        let skipped = 0;
+
+        for (const service of services) {
+            // Charger le template correspondant
+            const template = await ChecklistTemplate.findOne({
+                type: `Service ${service.typeService}`,
+                actif: true
+            });
+
+            if (!template || !template.taches || template.taches.length === 0) {
+                console.log(`   ⚠️  Pas de template pour Service ${service.typeService}`);
+                skipped++;
+                continue;
+            }
+
+            // Copier les tâches
+            service.taches = template.taches.map(t => ({
+                description: t.description,
+                numeroTacheManuel: t.numeroTacheManuel,
+                categorie: t.categorie,
+                validee: false
+            }));
+
+            await service.save();
+            console.log(`   ✅ Service ${service._id} (${service.typeService}) - ${service.taches.length} tâches ajoutées`);
+            updated++;
+        }
+
+        res.json({
+            message: 'Services mis à jour',
+            updated,
+            skipped,
+            total: services.length
+        });
+    } catch (error) {
+        console.error('Erreur population tâches:', error);
+        res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    }
+});
+
 // ============================================
 // CONFIGURATION ROUTES
 // ============================================
