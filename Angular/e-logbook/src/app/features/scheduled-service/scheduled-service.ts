@@ -265,19 +265,10 @@ export class ScheduledServiceComponent implements OnInit {
             console.warn(`Manual Task Number '${numeroTache}' is not a valid page number. Defaulting to page 1.`);
         }
 
-        // Determine PDF file based on service type
-        let pdfFile = 'manual.pdf'; // Default fallback
-        if (this.nextService) {
-            const type = this.nextService.typeService;
-            if (type === 'A') pdfFile = 'Liste_Service_A.pdf';
-            else if (type === 'B') pdfFile = 'Liste_Service_B.pdf';
-            else if (type === 'C') pdfFile = 'Liste_Service_C.pdf';
-            // Check for 50K/100K (loose matching to be safe)
-            else if (type === '50K' || (type as string).includes('50K')) pdfFile = 'Liste_Service_50K.pdf';
-            else if (type === '100K' || (type as string).includes('100K')) pdfFile = 'Liste_Service_100K.pdf';
-        }
+        // Always use Manual.pdf for all services
+        const pdfFile = 'Manual.pdf';
 
-        console.log('📖 Opening manual:', pdfFile, 'for service type:', this.nextService?.typeService);
+        console.log('📖 Opening manual:', pdfFile, 'at page:', page);
 
         this.dialog.open(ManualViewerComponent, {
             width: '95vw',
