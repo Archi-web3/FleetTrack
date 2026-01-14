@@ -3,6 +3,35 @@ const router = express.Router();
 const Setting = require('../models/setting.model');
 const auth = require('../middleware/authMiddleware');
 
+// @route   GET /api/settings/vehicleTypes
+// @desc    Get list of vehicle types
+// @access  Private
+router.get('/vehicleTypes', auth(), async (req, res) => {
+    try {
+        // Try to get from settings first
+        const setting = await Setting.findOne({ key: 'vehicleTypes' });
+
+        if (setting && setting.value) {
+            return res.json(setting.value);
+        }
+
+        // Default vehicle types if not configured
+        const defaultTypes = [
+            'Land Cruiser',
+            'Hilux',
+            'Corolla',
+            'Moto',
+            'Camion',
+            'Autre'
+        ];
+
+        res.json(defaultTypes);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route   GET /api/settings/:key
 // @desc    Get a specific setting by key
 // @access  Private
