@@ -38,14 +38,23 @@ export class TemplateManagerComponent implements OnInit {
     templateForm: FormGroup;
 
     categories = [
+        'Détection',
+        'Moteur',
+        'Roues/Pneus',
+        'Pneus',
+        'Batterie/Élec',
+        'Électricité',
+        'Éclairage',
+        'Sécurité/Documents',
+        'Sécurité',
+        'Communication',
+        'Nettoyage',
+        'Finalisation',
         'Sous le Capot',
         'Extérieur',
         'Intérieur/Cabine',
-        'Roues/Pneus',
-        'Sécurité/Documents',
-        'Éclairage',
-        'Batterie/Élec',
-        'Test Routier'
+        'Test Routier',
+        'Autre'
     ];
 
     templateTypes = [
