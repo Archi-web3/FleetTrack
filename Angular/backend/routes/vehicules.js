@@ -102,7 +102,7 @@ router.put('/vehicules/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async
 
     // 🔧 AUTO-GÉNÉRATION: Si le km a changé OU si le km initial a changé
     const kmHasChanged = req.body.kilometrage && req.body.kilometrage !== oldKilometrage;
-    const initialKmHasChanged = req.body.kilometrageInitial && req.body.kilometrageInitial !== oldInitialKm;
+    // initialKmHasChanged already declared above
 
     if (kmHasChanged || initialKmHasChanged) {
       try {
