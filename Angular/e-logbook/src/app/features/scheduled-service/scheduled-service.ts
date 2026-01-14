@@ -256,13 +256,16 @@ export class ScheduledServiceComponent implements OnInit {
         // Try to parse the task manual number as a page number
         let page = 1;
 
-        // If the manual number is simple (e.g., "7", "12"), use it directly
-        const parsedPage = parseInt(numeroTache, 10);
-        if (!isNaN(parsedPage) && parsedPage > 0) {
-            page = parsedPage;
+        // Extract first number from string (e.g. "Page 15" -> 15, "Ref 7" -> 7, "12" -> 12)
+        const match = numeroTache.match(/(\d+)/);
+        if (match) {
+            const parsedPage = parseInt(match[0], 10);
+            if (!isNaN(parsedPage) && parsedPage > 0) {
+                page = parsedPage;
+            }
         } else {
             // Fallback checking for known patterns or keeping default
-            console.warn(`Manual Task Number '${numeroTache}' is not a valid page number. Defaulting to page 1.`);
+            console.warn(`Manual Task Number '${numeroTache}' does not contain a valid page number. Defaulting to page 1.`);
         }
 
         // Always use manual.pdf for all services
