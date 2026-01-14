@@ -82,6 +82,16 @@ router.put('/vehicules/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async
     // STAGE 1: Update fields from body
     Object.assign(vehicule, req.body);
 
+    // 🔧 AUTO-RESET: Si le km initial a changé et qu'on ne met pas à jour le km actuel explicitement,
+    // réinitialiser le km actuel au nouveau km initial
+    const initialKmHasChanged = req.body.kilometrageInitial && req.body.kilometrageInitial !== oldInitialKm;
+    const kmNotExplicitlySet = !req.body.kilometrage || req.body.kilometrage === oldKilometrage;
+
+    if (initialKmHasChanged && kmNotExplicitlySet) {
+      console.log(`🔄 [AUTO-RESET] Km Initial changé (${oldInitialKm} → ${vehicule.kilometrageInitial}). Réinitialisation du Km Actuel...`);
+      vehicule.kilometrage = vehicule.kilometrageInitial;
+    }
+
     // 🔧 AUTO-CORRECTION: Kilométrage actuel ne peut jamais être inférieur au kilométrage initial
     if (vehicule.kilometrageInitial && vehicule.kilometrage < vehicule.kilometrageInitial) {
       console.log(`🚗 [AUTO-FIX] Km Actuel (${vehicule.kilometrage}) < Km Initial (${vehicule.kilometrageInitial}). Ajustement...`);
