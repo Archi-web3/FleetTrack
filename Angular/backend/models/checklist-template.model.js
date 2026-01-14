@@ -19,7 +19,7 @@ const checklistTemplateSchema = new mongoose.Schema({
             numero: String,
             categorie: {
                 type: String,
-                enum: ['Détection', 'Moteur', 'Pneus', 'Électricité', 'Sécurité', 'Communication', 'Nettoyage', 'Finalisation', 'Autre']
+                enum: ['Détection', 'Moteur', 'Roues/Pneus', 'Pneus', 'Batterie/Élec', 'Électricité', 'Éclairage', 'Sécurité/Documents', 'Sécurité', 'Communication', 'Nettoyage', 'Finalisation', 'Sous le Capot', 'Extérieur', 'Intérieur/Cabine', 'Test Routier', 'Autre']
             },
             description: {
                 type: String,
