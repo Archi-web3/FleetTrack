@@ -84,7 +84,11 @@ export class FleetRecapComponent implements OnInit {
             // Note: This might be slow for many vehicles. 
             // Ideally backend should provide this, but for now we loop.
             for (const v of vehicles) {
-                const recap: VehicleRecap = { ...v };
+                const recap: VehicleRecap = {
+                    ...v,
+                    // Map backend field names to frontend field names
+                    initialMileage: (v as any).kilometrageInitial || v.initialMileage
+                };
 
                 try {
                     // We convert Observable to Promise for easier async/await loop
