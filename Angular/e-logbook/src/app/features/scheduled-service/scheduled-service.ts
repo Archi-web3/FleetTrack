@@ -265,8 +265,8 @@ export class ScheduledServiceComponent implements OnInit {
             console.warn(`Manual Task Number '${numeroTache}' is not a valid page number. Defaulting to page 1.`);
         }
 
-        // Always use Manual.pdf for all services
-        const pdfFile = 'Manual.pdf';
+        // Always use manual.pdf for all services
+        const pdfFile = 'manual.pdf';
 
         console.log('📖 Opening manual:', pdfFile, 'at page:', page);
 
