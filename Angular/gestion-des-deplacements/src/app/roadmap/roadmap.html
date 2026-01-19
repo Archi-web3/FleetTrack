@@ -1,0 +1,112 @@
+<div class="roadmap-container">
+    <div class="roadmap-header">
+        <mat-icon class="header-icon">rocket_launch</mat-icon>
+        <h1>🚀 Roadmap FleetTrack</h1>
+        <p class="subtitle">Découvrez les futures fonctionnalités et améliorations prévues pour Gestion des déplacements
+            et e-logbook</p>
+        <p class="version">Mise à jour : Janvier 2026</p>
+    </div>
+
+    <div class="roadmap-content">
+        <!-- Introduction -->
+        <div class="intro-section">
+            <p>
+                Cette roadmap présente notre vision pour l'évolution de FleetTrack. Chaque fonctionnalité a été
+                soigneusement
+                planifiée pour améliorer votre expérience et optimiser la gestion de votre flotte.
+            </p>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend-section">
+            <h3>Légende</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="status-badge status-planned">Planifié</span>
+                    <span class="legend-text">Fonctionnalité en phase de conception</span>
+                </div>
+                <div class="legend-item">
+                    <span class="status-badge status-progress">En cours</span>
+                    <span class="legend-text">Développement actif</span>
+                </div>
+                <div class="legend-item">
+                    <span class="status-badge status-completed">Terminé</span>
+                    <span class="legend-text">Déployé en production</span>
+                </div>
+            </div>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="priority-badge priority-high">Priorité Haute</span>
+                </div>
+                <div class="legend-item">
+                    <span class="priority-badge priority-medium">Priorité Moyenne</span>
+                </div>
+                <div class="legend-item">
+                    <span class="priority-badge priority-low">Priorité Basse</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+            <div class="timeline-line"></div>
+
+            <div *ngFor="let item of roadmapItems; let i = index" class="timeline-item"
+                [class.timeline-item-left]="i % 2 === 0" [class.timeline-item-right]="i % 2 !== 0">
+
+                <div class="timeline-dot">
+                    <mat-icon>{{ item.categoryIcon }}</mat-icon>
+                </div>
+
+                <div class="timeline-card">
+                    <div class="card-header">
+                        <div class="card-category">
+                            <mat-icon class="category-icon">{{ item.categoryIcon }}</mat-icon>
+                            <span class="category-name">{{ item.category }}</span>
+                        </div>
+                        <div class="card-badges">
+                            <span class="status-badge" [ngClass]="getStatusClass(item.status)">
+                                {{ item.status }}
+                            </span>
+                            <span class="priority-badge" [ngClass]="getPriorityClass(item.priority)">
+                                {{ item.priority }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <h3 class="card-title">{{ item.title }}</h3>
+
+                    <p class="card-description">{{ item.description }}</p>
+
+                    <div class="card-footer">
+                        <div class="app-badge" [ngClass]="getAppClass(item.targetApp)">
+                            <mat-icon class="app-icon">
+                                {{ item.targetApp === 'e-logbook' ? 'phone_android' :
+                                item.targetApp === 'Gestion des déplacements' ? 'computer' : 'devices' }}
+                            </mat-icon>
+                            <span>{{ item.targetApp }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <mat-icon class="cta-icon">lightbulb</mat-icon>
+            <h3>Vous avez une suggestion ?</h3>
+            <p>
+                Votre feedback est précieux ! Si vous avez des idées pour améliorer FleetTrack,
+                n'hésitez pas à contacter l'équipe de développement.
+            </p>
+            <p class="contact-info">
+                <mat-icon>email</mat-icon>
+                <a href="mailto:kitlog@actioncontrelafaim.org">kitlog@actioncontrelafaim.org</a>
+            </p>
+        </div>
+    </div>
+
+    <footer class="roadmap-footer">
+        <p>© 2026 FleetTrack - Roadmap mise à jour régulièrement</p>
+    </footer>
+</div>

@@ -174,5 +174,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
+  {
+    path: 'roadmap',
+    loadComponent: () => import('./roadmap/roadmap').then(m => m.RoadmapComponent),
+    canActivate: [AuthGuard]
+  },
   { path: '**', redirectTo: 'login' }
 ];

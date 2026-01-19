@@ -61,6 +61,11 @@
         <mat-icon>menu_book</mat-icon>
         <span>Guide Utilisateur</span>
       </button>
+      <button mat-menu-item routerLink="/roadmap"
+        *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
+        <mat-icon>rocket_launch</mat-icon>
+        <span>Roadmap</span>
+      </button>
       <mat-divider></mat-divider>
       <button mat-menu-item routerLink="/gestion-chauffeurs">
         <mat-icon>people_alt</mat-icon>
