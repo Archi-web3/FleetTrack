@@ -131,6 +131,16 @@ export class RoadmapComponent {
             targetApp: 'Gestion des déplacements',
             status: 'Planifié',
             priority: 'Haute'
+        },
+        {
+            id: 12,
+            title: 'Journal d\'activité (Audit Log)',
+            description: 'Historique complet des actions sensibles (créations, modifications, suppressions) pour une traçabilité totale.',
+            category: 'Sécurité & Admin',
+            categoryIcon: 'security',
+            targetApp: 'Gestion des déplacements',
+            status: 'Planifié',
+            priority: 'Haute'
         }
     ];
 
