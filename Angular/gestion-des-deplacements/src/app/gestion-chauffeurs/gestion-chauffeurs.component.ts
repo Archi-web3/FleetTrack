@@ -121,6 +121,11 @@ export class GestionChauffeursComponent implements OnInit {
     } else if (this.userProfile === 'Admin' && this.userPaysId) {
       this.loadBases(this.userPaysId);
     }
+
+    // Initialiser formationEcoConduite si manquant
+    if (!this.selectedChauffeur.formationEcoConduite) {
+      this.selectedChauffeur.formationEcoConduite = { effectuee: false, date: null };
+    }
   }
 
   onEditPaysChange(paysId: string) {

@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Importe le thème personnalisé ACF */
-@import 'custom-theme.scss';
+@use 'custom-theme';
 
 /* Les styles angular-calendar sont chargés via angular.json, on ne les importe pas ici pour éviter l'erreur d'export */
 

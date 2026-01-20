@@ -55,10 +55,7 @@
               Formation éco-conduite
             </label>
 
-            <!-- Initialisation de l'objet s'il n'existe pas -->
-            <span *ngIf="!selectedChauffeur.formationEcoConduite" [hidden]="true">
-              {{ selectedChauffeur.formationEcoConduite = { effectuee: false, date: null } }}
-            </span>
+            <!-- Initialisation de l'objet faite dans le TS -->
 
             <mat-radio-group name="editChauffeurFormationEffectuee"
               [(ngModel)]="selectedChauffeur.formationEcoConduite.effectuee"
