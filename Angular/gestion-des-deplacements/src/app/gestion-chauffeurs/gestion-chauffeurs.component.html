@@ -1,82 +1,134 @@
 <div style="padding: 20px;">
   <h2>Gestion des Chauffeurs</h2>
 
-  <!-- Formulaire de création de chauffeur -->
-  <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'"
-    style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-    <h3>Créer un nouveau chauffeur</h3>
-    <form (ngSubmit)="addChauffeur()" #chauffeurForm="ngForm">
-      <div style="margin-bottom: 10px;">
-        <label for="newChauffeurNom">Nom:</label>
-        <input type="text" id="newChauffeurNom" name="newChauffeurNom" [(ngModel)]="newChauffeur.nom" required
-          style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label for="newChauffeurPrenom">Prénom:</label>
-        <input type="text" id="newChauffeurPrenom" name="newChauffeurPrenom" [(ngModel)]="newChauffeur.prenom" required
-          style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label for="newChauffeurTelephone">Téléphone:</label>
-        <input type="text" id="newChauffeurTelephone" name="newChauffeurTelephone" [(ngModel)]="newChauffeur.telephone"
-          required style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label for="newChauffeurPermis">Permis:</label>
-        <input type="text" id="newChauffeurPermis" name="newChauffeurPermis" [(ngModel)]="newChauffeur.permis" required
-          style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <input type="checkbox" id="newChauffeurDisponible" name="newChauffeurDisponible"
-          [(ngModel)]="newChauffeur.disponible">
-        <label for="newChauffeurDisponible">Disponible</label>
-      </div>
-      <button type="submit" [disabled]="!chauffeurForm.form.valid"
-        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Créer
-        Chauffeur</button>
-    </form>
-  </div>
+  <!-- MIGRATION NOTE: La création est désactivée ici, se fait via Gestion Utilisateurs -->
 
-  <!-- Formulaire de modification de chauffeur -->
-  <div *ngIf="selectedChauffeur"
-    style="border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #fff3cd;">
-    <h3>Modifier chauffeur: {{ selectedChauffeur.prenom }} {{ selectedChauffeur.nom }}</h3>
-    <form (ngSubmit)="updateChauffeur()" #editChauffeurForm="ngForm">
-      <div style="margin-bottom: 10px;">
-        <label for="editChauffeurNom">Nom:</label>
-        <input type="text" id="editChauffeurNom" name="editChauffeurNom" [(ngModel)]="selectedChauffeur.nom" required
-          style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label for="editChauffeurPrenom">Prénom:</label>
-        <input type="text" id="editChauffeurPrenom" name="editChauffeurPrenom" [(ngModel)]="selectedChauffeur.prenom"
-          required style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label for="editChauffeurTelephone">Téléphone:</label>
-        <input type="text" id="editChauffeurTelephone" name="editChauffeurTelephone"
-          [(ngModel)]="selectedChauffeur.telephone" required style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label for="editChauffeurPermis">Permis:</label>
-        <input type="text" id="editChauffeurPermis" name="editChauffeurPermis" [(ngModel)]="selectedChauffeur.permis"
-          required style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
-        <input type="checkbox" id="editChauffeurDisponible" name="editChauffeurDisponible"
-          [(ngModel)]="selectedChauffeur.disponible">
-        <label for="editChauffeurDisponible">Disponible</label>
-      </div>
-      <button type="submit" [disabled]="!editChauffeurForm.form.valid"
-        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Mettre
-        à jour</button>
-      <button type="button" (click)="selectedChauffeur = null"
-        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">Annuler</button>
-    </form>
-  </div>
+  <!-- Formulaire de modification de chauffeur (Copie adaptée de Gestion Utilisateurs) -->
+  <mat-card *ngIf="selectedChauffeur" style="margin-bottom: 20px; border-left: 5px solid orange;">
+    <mat-card-title>Modifier chauffeur: {{ selectedChauffeur.nom }}</mat-card-title>
+    <mat-card-content>
+      <form (ngSubmit)="updateChauffeur()" #editChauffeurForm="ngForm">
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Nom</mat-label>
+          <input matInput type="text" name="editChauffeurNom" [(ngModel)]="selectedChauffeur.nom" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Prénom</mat-label>
+          <input matInput type="text" name="editChauffeurPrenom" [(ngModel)]="selectedChauffeur.prenom" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Numéro de téléphone</mat-label>
+          <input matInput type="tel" name="editChauffeurTelephone" [(ngModel)]="selectedChauffeur.telephone" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" name="editChauffeurEmail" [(ngModel)]="selectedChauffeur.email" required email>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Nouveau mot de passe (laisser vide si inchangé)</mat-label>
+          <input matInput type="password" name="editChauffeurPassword" [(ngModel)]="selectedChauffeur.motDePasse">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
+          <mat-label>Profil</mat-label>
+          <!-- On laisse le choix du profil au cas où on voudrait promouvoir un chauffeur -->
+          <mat-select name="editChauffeurProfile" [(ngModel)]="selectedChauffeur.profil" required>
+            <mat-option *ngFor="let profile of profiles" [value]="profile">{{ profile }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- === CHAMPS SPÉCIFIQUES CHAUFFEUR === -->
+        <div class="chauffeur-fields">
+          <h4>Informations Chauffeur</h4>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+            <mat-label>Numéro de permis</mat-label>
+            <input matInput type="text" name="editChauffeurPermis" [(ngModel)]="selectedChauffeur.permis" required>
+          </mat-form-field>
+
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #1976D2;">
+              Formation éco-conduite
+            </label>
+
+            <!-- Initialisation de l'objet s'il n'existe pas -->
+            <span *ngIf="!selectedChauffeur.formationEcoConduite" [hidden]="true">
+              {{ selectedChauffeur.formationEcoConduite = { effectuee: false, date: null } }}
+            </span>
+
+            <mat-radio-group name="editChauffeurFormationEffectuee"
+              [(ngModel)]="selectedChauffeur.formationEcoConduite.effectuee"
+              style="display: flex; gap: 20px; margin-bottom: 10px;">
+              <mat-radio-button [value]="true">Oui</mat-radio-button>
+              <mat-radio-button [value]="false">Non</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-form-field *ngIf="selectedChauffeur.formationEcoConduite.effectuee" appearance="outline"
+              style="width: 100%; margin-top: 10px;">
+              <mat-label>Date de la formation</mat-label>
+              <input matInput type="date" name="editChauffeurFormationDate"
+                [(ngModel)]="selectedChauffeur.formationEcoConduite.date">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+            <mat-label>Véhicule attitré (optionnel)</mat-label>
+            <mat-select name="editChauffeurVehicule" [(ngModel)]="selectedChauffeur.vehiculeAttitre">
+              <mat-option value="">Aucun</mat-option>
+              <mat-option *ngFor="let v of vehicules" [value]="v._id">
+                {{ v.immatriculation }} - {{ v.marque }} {{ v.modele }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div style="margin-bottom: 15px;">
+            <mat-checkbox name="editChauffeurDisponible" [(ngModel)]="selectedChauffeur.disponible">
+              Disponible
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <!-- Sélecteur de pays (SuperAdmin uniquement) -->
+        <mat-form-field *ngIf="userProfile === 'SuperAdmin'" appearance="outline"
+          style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Pays</mat-label>
+          <mat-select name="editChauffeurPays" [(ngModel)]="selectedChauffeur.pays"
+            (selectionChange)="onEditPaysChange($event.value)" required>
+            <mat-option *ngFor="let p of paysList" [value]="p._id">{{ p.nom }} ({{ p.code }})</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Base -->
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Base d'affectation</mat-label>
+          <mat-select name="editChauffeurBase" [(ngModel)]="selectedChauffeur.base" required>
+            <mat-option *ngFor="let b of bases" [value]="b._id">{{ b.nom }} ({{ b.pays?.code }})</mat-option>
+          </mat-select>
+          <mat-hint *ngIf="bases.length === 0">Sélectionnez d'abord un pays</mat-hint>
+        </mat-form-field>
+
+        <!-- Projet -->
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
+          <mat-label>Projet/Programme</mat-label>
+          <mat-select name="editChauffeurProjet" [(ngModel)]="selectedChauffeur.projet">
+            <mat-option *ngFor="let p of projets" [value]="p.code">{{ p.code }} - {{ p.nom }}</mat-option>
+          </mat-select>
+          <mat-hint>Sélectionnez le code du projet</mat-hint>
+        </mat-form-field>
+
+        <button mat-raised-button color="accent" type="submit" [disabled]="!editChauffeurForm.form.valid"
+          style="margin-right: 10px;">Mettre à jour</button>
+        <button mat-button type="button" (click)="selectedChauffeur = null">Annuler</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
 
   <!-- Liste des chauffeurs existants -->
-  <h3>Chauffeurs existants</h3>
+  <h3>Liste des Chauffeurs</h3>
   <div *ngIf="chauffeurs.length === 0">Aucun chauffeur enregistré.</div>
   <ul style="list-style-type: none; padding: 0;">
     <li *ngFor="let chauffeur of chauffeurs"
