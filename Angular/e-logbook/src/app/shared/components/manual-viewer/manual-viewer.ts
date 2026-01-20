@@ -92,4 +92,8 @@ export class ManualViewerComponent implements OnInit {
     close() {
         this.dialogRef.close();
     }
+
+    openExternal() {
+        window.open(this.pdfSrc, '_blank');
+    }
 }
