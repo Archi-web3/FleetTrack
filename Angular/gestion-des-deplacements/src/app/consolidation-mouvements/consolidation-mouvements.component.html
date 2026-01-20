@@ -197,10 +197,18 @@ font-size: 1em; font-weight: 500;">
   <br />
 
   <!-- Historique des mouvements consolidés/affectés -->
-  <h3 (click)="showConsolidesHistory = !showConsolidesHistory"
-    style="cursor: pointer; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
-    Historique des mouvements consolidés/affectés (cliquer pour {{ showConsolidesHistory ? 'masquer' : 'afficher' }})
-  </h3>
+  <div
+    style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+    <h3 (click)="showConsolidesHistory = !showConsolidesHistory" style="cursor: pointer; margin: 0; flex-grow: 1;">
+      Historique des mouvements consolidés/affectés (cliquer pour {{ showConsolidesHistory ? 'masquer' : 'afficher' }})
+    </h3>
+
+    <!-- Bouton de nettoyage (visible seulement pour Admin/SuperAdmin) -->
+    <button *ngIf="['Admin', 'SuperAdmin'].includes(userProfile || '')" (click)="cleanGhosts()"
+      style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8em;">
+      🧹 Nettoyer Fantômes
+    </button>
+  </div>
 
   <div *ngIf="showConsolidesHistory" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
     <!-- Filtres de date pour l'historique -->

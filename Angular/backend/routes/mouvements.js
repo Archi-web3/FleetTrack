@@ -534,4 +534,57 @@ router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), countryFilter, a
   }
 });
 
+// NETTOYAGE DES MOUVEMENTS FANTÔMES (Mouvements 'regroupé' sans parent valide)
+router.delete('/mouvements/cleanup/ghosts', auth(['SuperAdmin', 'Admin']), async (req, res) => {
+  try {
+    console.log('🧹 [CLEANUP GHOSTS] Démarrage du nettoyage des mouvements regroupés orphelins...');
+
+    // 1. Trouver les mouvements potentiellement orphelins (statut 'regroupé')
+    // Populating parentMouvement permet de voir s'il est null (car supprimé) ou présent
+    const mouvementsGroupes = await Mouvement.find({ statut: 'regroupé' }).populate('parentMouvement');
+
+    console.log(`🧹 [CLEANUP GHOSTS] ${mouvementsGroupes.length} mouvements regroupés trouvés au total.`);
+
+    const ghostsToDelete = [];
+
+    for (const m of mouvementsGroupes) {
+      // Un mouvement est orphelin si:
+      // - Il a un parentMouvement ID défini
+      // - MAIS le document parent n'a pas été trouvé par le populate (donc null)
+      // - OU s'il n'a carrément pas de parentMouvement alors qu'il est 'regroupé'
+
+      // Note: mongoose populate retourne null si l'ID référencé n'existe plus
+      if (!m.parentMouvement && m.parentMouvement !== undefined) {
+        // Double vérification par ID brut au cas où populate n'a pas été demandé explicitement pour certains champs
+        // Mais ici on l'a demandé donc m.parentMouvement est l'objet ou null.
+
+        /* Cas subtil: si le champ parentMouvement n'existe pas du tout sur le doc, c'est aussi un fantôme
+           car un 'regroupé' doit avoir un parent.
+        */
+
+        ghostsToDelete.push(m._id);
+      }
+    }
+
+    console.log(`🧹 [CLEANUP GHOSTS] ${ghostsToDelete.length} orphelins détectés (fantômes) à supprimer.`);
+
+    if (ghostsToDelete.length > 0) {
+      const result = await Mouvement.deleteMany({ _id: { $in: ghostsToDelete } });
+      console.log(`✅ [CLEANUP GHOSTS] ${result.deletedCount} mouvements supprimés.`);
+      return res.json({
+        message: 'Nettoyage terminé',
+        deletedCount: result.deletedCount,
+        ghostsFound: ghostsToDelete.length
+      });
+    } else {
+      console.log('✅ [CLEANUP GHOSTS] Aucun fantôme trouvé.');
+      return res.json({ message: 'Aucun mouvement fantôme trouvé', deletedCount: 0 });
+    }
+
+  } catch (err) {
+    console.error("❌ [CLEANUP GHOSTS] Erreur:", err);
+    return res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

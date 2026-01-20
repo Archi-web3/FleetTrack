@@ -493,4 +493,24 @@ export class ConsolidationMouvementsComponent implements OnInit {
     }
     return '';
   }
+
+  // NETTOYAGE DES FANTÔMES (ADMIN)
+  cleanGhosts(): void {
+    if (!confirm('⚠️ ATTENTION : Cette action va scanner et supprimer tous les mouvements "regroupés" orphelins (dont le parent n\'existe plus). Êtes-vous sûr de vouloir continuer ?')) {
+      return;
+    }
+
+    console.log('🧹 [CLEANUP] Lancement du nettoyage manuel...');
+    this.mouvementService.cleanGhosts().subscribe(
+      (response) => {
+        console.log('✅ [CLEANUP] Résultat:', response);
+        alert(`Nettoyage terminé !\n${response.deletedCount} mouvements fantômes supprimés.`);
+        this.loadDataForConsolidation(); // Recharger pour voir la différence
+      },
+      (error) => {
+        console.error('❌ [CLEANUP] Erreur:', error);
+        alert('Erreur lors du nettoyage : ' + (error.error?.message || error.message));
+      }
+    );
+  }
 }
