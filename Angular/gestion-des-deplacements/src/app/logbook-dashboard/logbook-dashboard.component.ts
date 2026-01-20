@@ -110,6 +110,7 @@ export class LogbookDashboardComponent implements OnInit {
             case 'fuel': observable = this.logbookService.deleteFuel(id); break;
             case 'maintenance': observable = this.logbookService.deleteMaintenance(id); break;
             case 'incident': observable = this.logbookService.deleteIncident(id); break;
+            case 'trips': observable = this.mouvementService.deleteMouvement(id); break; // NOUVEAU
         }
 
         if (observable) {

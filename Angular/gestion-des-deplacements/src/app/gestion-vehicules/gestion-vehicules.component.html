@@ -38,6 +38,12 @@
         <input type="number" id="newVehiculeCapacite" name="newVehiculeCapacite"
           [(ngModel)]="newVehicule.capacitePassagers" required style="width: 100%; padding: 8px;">
       </div>
+      <div style="margin-bottom: 10px;">
+        <label for="newVehiculeKilometrageInitial">Kilométrage Initial:</label>
+        <input type="number" id="newVehiculeKilometrageInitial" name="newVehiculeKilometrageInitial"
+          [(ngModel)]="newVehicule.kilometrageInitial" min="0" style="width: 100%; padding: 8px;"
+          placeholder="Ex: 120000">
+      </div>
       <!-- Sélecteurs Pays et Base pour SuperAdmin -->
       <div *ngIf="userProfile === 'SuperAdmin'" style="margin-bottom: 10px;">
         <label for="newVehiculePays">Pays:</label>
@@ -147,6 +153,11 @@
         <label for="editVehiculeCapacite">Capacité Passagers:</label>
         <input type="number" id="editVehiculeCapacite" name="editVehiculeCapacite"
           [(ngModel)]="selectedVehicule.capacitePassagers" required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculeKilometrageInitial">Kilométrage Initial:</label>
+        <input type="number" id="editVehiculeKilometrageInitial" name="editVehiculeKilometrageInitial"
+          [(ngModel)]="selectedVehicule.kilometrageInitial" min="0" style="width: 100%; padding: 8px;">
       </div>
 
       <!-- Données Environnementales (Edit) -->

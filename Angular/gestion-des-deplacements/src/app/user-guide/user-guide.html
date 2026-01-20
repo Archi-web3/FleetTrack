@@ -1,7 +1,7 @@
 <div class="user-guide-container">
     <div class="guide-header">
         <h1>📖 Guide Utilisateur FleetTrack</h1>
-        <p class="version">Version 1.0 - Décembre 2025</p>
+        <p class="version">Version 2.4 - Janvier 2026</p>
     </div>
 
     <div class="guide-content">
@@ -11,7 +11,7 @@
             <ul>
                 <li><a href="#introduction">Introduction</a></li>
                 <li><a href="#acces">Accès aux Applications</a></li>
-                <li><a href="#web">Interface Web de Gestion</a></li>
+                <li><a href="#web">Interface Web</a></li>
                 <li><a href="#mobile">E-Logbook Mobile (PWA)</a></li>
                 <li><a href="#faq">FAQ et Dépannage</a></li>
             </ul>
@@ -20,12 +20,12 @@
         <!-- Introduction -->
         <section id="introduction">
             <h2>1. Introduction</h2>
-            <p>FleetTrack est une solution complète de gestion de flotte automobile comprenant :</p>
+            <p>FleetTrack est la solution de gestion de flotte optimisée pour ACF, comprenant :</p>
             <ul>
-                <li><strong>Interface Web</strong> : Gestion administrative des véhicules, mouvements, utilisateurs et
-                    planification</li>
-                <li><strong>E-Logbook Mobile</strong> : Application mobile pour les chauffeurs (carnet de bord
-                    électronique)</li>
+                <li><strong>Interface Web</strong> : Pour gérer les véhicules, planifier les mouvements et configurer la
+                    maintenance.</li>
+                <li><strong>E-Logbook Mobile (Chauffeur)</strong> : Carnet de bord numérique pour les trajets, pleins de
+                    carburant et exécution des services de maintenance.</li>
             </ul>
 
             <h3>Rôles Utilisateurs</h3>
@@ -44,24 +44,29 @@
                         <td>Gestion complète : pays, bases, utilisateurs, véhicules</td>
                     </tr>
                     <tr>
-                        <td><strong>Admin</strong></td>
+                        <td><strong>Admin (Pays)</strong></td>
                         <td>Interface Web</td>
                         <td>Gestion de sa base : utilisateurs, véhicules, mouvements</td>
                     </tr>
                     <tr>
-                        <td><strong>Gestionnaire</strong></td>
+                        <td><strong>Superviseur (Base)</strong></td>
                         <td>Interface Web</td>
-                        <td>Consultation et création de mouvements</td>
+                        <td>Validation des mouvements et gestion de la flotte de sa base</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Superviseur Sécurité</strong></td>
+                        <td>Interface Web</td>
+                        <td>Validation sécuritaire des mouvements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Technicien (RP/Demandeur)</strong></td>
+                        <td>Interface Web</td>
+                        <td>Consultation et création de demandes de mouvements (Responsable Programme)</td>
                     </tr>
                     <tr>
                         <td><strong>Chauffeur</strong></td>
                         <td>E-Logbook Mobile</td>
                         <td>Enregistrement des trajets, carburant, incidents</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Technicien</strong></td>
-                        <td>E-Logbook Mobile</td>
-                        <td>Maintenance des véhicules</td>
                     </tr>
                 </tbody>
             </table>
@@ -82,139 +87,139 @@
                 <h3>📱 E-Logbook Mobile (PWA)</h3>
                 <p><strong>URL :</strong> <a href="https://fleettrack-mobile.vercel.app"
                         target="_blank">https://fleettrack-mobile.vercel.app</a></p>
-
-                <h4>Installation sur Android :</h4>
-                <ol>
-                    <li>Ouvrir Chrome</li>
-                    <li>Aller sur https://fleettrack-mobile.vercel.app</li>
-                    <li>Cliquer sur "Ajouter à l'écran d'accueil"</li>
-                    <li>L'icône FleetTrack apparaît sur l'écran d'accueil</li>
-                </ol>
-
-                <h4>Installation sur iPhone/iPad :</h4>
-                <ol>
-                    <li>Ouvrir Safari</li>
-                    <li>Aller sur https://fleettrack-mobile.vercel.app</li>
-                    <li>Cliquer sur Partager → "Sur l'écran d'accueil"</li>
-                    <li>Cliquer sur "Ajouter"</li>
-                </ol>
+                <p>Ouvrez l'URL sur votre téléphone et choisissez <strong>"Ajouter à l'écran d'accueil"</strong> pour
+                    l'utiliser comme une application native.</p>
             </div>
         </section>
 
         <!-- Interface Web -->
         <section id="web">
-            <h2>3. Interface Web de Gestion</h2>
+            <h2>3. Interface Web</h2>
 
             <h3>3.1 Planning Global</h3>
-            <p>Le planning permet de visualiser tous les mouvements planifiés sur un calendrier.</p>
-            <img src="assets/screenshots/planning_page.png" alt="Planning Global" class="screenshot">
+            <p>Le planning permet de visualiser tous les mouvements planifiés.</p>
             <div class="features">
                 <h4>Fonctionnalités :</h4>
                 <ul>
-                    <li>✅ Vue calendrier mensuelle</li>
-                    <li>✅ Filtrage par pays/base</li>
-                    <li>✅ Création rapide de mouvements</li>
-                    <li>✅ Modification par glisser-déposer</li>
+                    <li>✅ <strong>Visualisation des mouvements à la semaine.</strong></li>
+                    <li>✅ Passez votre souris sur un mouvement pour voir plus de détails (Passagers, Motif, etc.).</li>
                 </ul>
+                <div class="status-legend">
+                    <h4>Légende des status :</h4>
+                    <ul>
+                        <li>🟡 <strong>En attente</strong> : Demande soumise.</li>
+                        <li>🟢 <strong>Validé</strong> : Approuvé par l'administrateur.</li>
+                        <li>🔵 <strong>Pris en charge</strong> : Chauffeur/Véhicule assigné et confirmé.</li>
+                        <li>🚙 <strong>En cours</strong> : Trajet démarré.</li>
+                        <li>✅ <strong>Terminé</strong> : Trajet clôturé.</li>
+                        <li>❌ <strong>Annulé</strong> : Demande annulée.</li>
+                    </ul>
+                </div>
             </div>
 
-            <h3>3.2 Gestion des Véhicules</h3>
-            <p>Gérez l'ensemble de votre flotte automobile.</p>
-            <img src="assets/screenshots/vehicles_page.png" alt="Gestion des Véhicules" class="screenshot">
+            <h3>3.2 Tableau de Bord</h3>
+            <p>Vue d'ensemble de l'activité du jour et indicateurs clés.</p>
+
+            <h3>3.3 Nouvelle Demande</h3>
+            <p>Formulaire pour créer un nouveau mouvement.</p>
+            <ul>
+                <li>Remplissez les détails : Projet, Date/Heure, Itinéraire, Passagers, Motif.</li>
+                <li>Soumettez pour validation.</li>
+            </ul>
+
+            <h3>3.4 Mes Mouvements</h3>
+            <p>Espace dédié au demandeur (Technicien RP) pour suivre ses propres demandes.</p>
+            <ul>
+                <li>Visualiser la liste de vos demandes.</li>
+                <li>Vérifier le statut en temps réel (En attente, Validé, etc.).</li>
+                <li>Consulter l'historique des mouvements terminés.</li>
+            </ul>
+
+            <h3>3.5 Validation</h3>
+            <p><em>(Réservé aux Admin/Superviseurs)</em></p>
+            <p>Interface pour valider ou refuser les demandes de mouvements en attente.</p>
+
+            <h3>3.6 Consolidation</h3>
+            <p><em>(Réservé aux Admin/Dispatch)</em></p>
+            <p>Outil pour attribuer les véhicules et les chauffeurs aux mouvements validés et organiser le planning.</p>
+
+            <h3>3.7 Gestion des Véhicules</h3>
+            <p>Gestion des véhicules et de leurs données techniques.</p>
+            <div class="tip">
+                <strong>Kilométrage Initial :</strong>
+                Lors de l'ajout d'un véhicule, ce champ est crucial. Si modifié sans trajets existants, le kilométrage
+                actuel s'ajuste automatiquement.
+            </div>
+
+            <h3>3.8 Suivi Maintenance</h3>
+            <p>Module pour assurer le suivi préventif de la flotte.</p>
+
             <div class="features">
-                <h4>Ajouter un véhicule :</h4>
-                <ol>
-                    <li>Cliquer sur <strong>"+ Nouveau Véhicule"</strong></li>
-                    <li>Remplir les informations (immatriculation, marque, modèle, type, kilométrage, base)</li>
-                    <li>Cliquer sur <strong>"Enregistrer"</strong></li>
-                </ol>
+                <h4>Onglet Suivi Hebdo</h4>
+                <p>Permet de consulter l'état des checklist hebdomadaires effectuées par les chauffeurs.</p>
+
+                <h4>Onglet Configuration Intervalles</h4>
+                <p>Définissez les fréquences de maintenance (ex: Vidange tous les 5000 km) pour générer les alertes.</p>
+
+                <h4>Templates de Service</h4>
+                <p>Configuration des listes de tâches.</p>
+                <div class="note">
+                    <em>Note : Pour l'instant, la référence des instructions techniques provient du manuel MSF et cible
+                        principalement les Land Cruiser.</em>
+                </div>
             </div>
 
-            <h3>3.3 Mes Mouvements</h3>
-            <p>Consultez et gérez vos demandes de mouvements.</p>
-            <img src="assets/screenshots/movements_page.png" alt="Mes Mouvements" class="screenshot">
-            <div class="status-legend">
-                <h4>Statuts des mouvements :</h4>
-                <ul>
-                    <li>🟡 <strong>En attente</strong> : Demande soumise, en attente de validation</li>
-                    <li>🟢 <strong>Validé</strong> : Approuvé par l'administrateur</li>
-                    <li>🔵 <strong>En cours</strong> : Trajet en cours d'exécution</li>
-                    <li>✅ <strong>Terminé</strong> : Trajet complété</li>
-                    <li>❌ <strong>Annulé</strong> : Demande annulée</li>
-                </ul>
-            </div>
-
-            <h3>3.4 Récapitulatif de la Flotte</h3>
-            <p>Vue d'ensemble de l'état de votre flotte.</p>
-            <img src="assets/screenshots/dashboard_page.png" alt="Récapitulatif Flotte" class="screenshot">
+            <h3>3.9 Administration</h3>
+            <p>Configuration avancée de l'application.</p>
+            <ul>
+                <li><strong>Gestion des utilisateurs</strong> : Création et gestion des comptes et rôles.</li>
+                <li><strong>Gestion des projets</strong> : Codes projets pour l'analytique.</li>
+                <li><strong>Gestion des chauffeurs</strong> : Liste spécifique des conducteurs.</li>
+                <li><strong>Gestion des lieux</strong> : Points de départ/arrivée fréquents.</li>
+                <li><strong>Paramètres généraux</strong> : Configuration globale.</li>
+                <li><strong>Rapport mensuel</strong> : Export des données d'activité.</li>
+            </ul>
         </section>
 
         <!-- E-Logbook Mobile -->
         <section id="mobile">
             <h2>4. E-Logbook Mobile (PWA)</h2>
 
-            <h3>4.1 Sélection du Véhicule</h3>
-            <p>Au premier lancement, sélectionnez votre véhicule.</p>
-            <img src="assets/screenshots/mobile_vehicle_selector.png" alt="Sélection Véhicule"
-                class="screenshot mobile">
+            <h3>4.1 Utilisation Quotidienne</h3>
+            <ul>
+                <li><strong>Sélection Véhicule</strong> : Choisissez votre véhicule au démarrage.</li>
+                <li><strong>Trajets</strong> : Démarrez et arrêtez vos trajets.</li>
+                <li><strong>Carburant</strong> : Saisie des pleins.</li>
+            </ul>
 
-            <h3>4.2 Menu Principal</h3>
-            <p>Accédez rapidement à toutes les fonctionnalités.</p>
-            <img src="assets/screenshots/mobile_main_menu.png" alt="Menu Principal" class="screenshot mobile">
-            <div class="features">
-                <h4>Fonctionnalités disponibles :</h4>
-                <ul>
-                    <li>📅 <strong>Mon Planning</strong> : Consultez vos missions assignées</li>
-                    <li>🚗 <strong>Trajet Actif</strong> : Démarrez et enregistrez un nouveau trajet</li>
-                    <li>📋 <strong>Mes Trajets</strong> : Historique de tous vos trajets</li>
-                    <li>⛽ <strong>Carburant</strong> : Enregistrez les pleins de carburant</li>
-                    <li>🔧 <strong>Maintenance</strong> : Signalez les maintenances et réparations</li>
-                    <li>⚠️ <strong>Incidents</strong> : Déclarez les incidents et accidents</li>
-                </ul>
-            </div>
+            <h3>4.2 Services Programmés (Maintenance)</h3>
+            <p>Exécution des maintenances via l'application.</p>
+            <ol>
+                <li>Allez dans <strong>"Maintenance" > "Services Programmés"</strong>.</li>
+                <li>Cochez les tâches réalisées.</li>
+                <li>Utilisez l'icône livre 📖 pour consulter le <strong>Manuel Atelier (PDF)</strong>.</li>
+                <li>Validez le service une fois terminé.</li>
+            </ol>
 
-            <h3>4.3 Mon Planning</h3>
-            <p>Visualisez vos missions assignées par l'administrateur.</p>
-            <img src="assets/screenshots/mobile_planning_page.png" alt="Mon Planning" class="screenshot mobile">
-            <div class="tip">
-                <strong>💡 Astuce :</strong> L'application fonctionne en mode offline. Les données seront synchronisées
-                automatiquement lorsque vous serez connecté.
-            </div>
+            <h3>4.3 Signalement</h3>
+            <p>Utilisez le menu <strong>"Incidents"</strong> pour déclarer accidents ou pannes.</p>
         </section>
 
         <!-- FAQ -->
         <section id="faq">
             <h2>5. FAQ et Dépannage</h2>
-
             <div class="faq-item">
-                <h4>Q : J'ai oublié mon mot de passe, que faire ?</h4>
-                <p>R : Contactez votre administrateur pour réinitialiser votre mot de passe.</p>
+                <h4>Q : Le manuel PDF ne s'ouvre pas à la bonne page ?</h4>
+                <p>R : Vérifiez la configuration du Template sur l'interface Web (N° Page manuel).</p>
             </div>
-
-            <div class="faq-item">
-                <h4>Q : L'application mobile fonctionne-t-elle sans internet ?</h4>
-                <p>R : Oui ! Le e-logbook fonctionne en mode offline. Les données seront synchronisées automatiquement.
-                </p>
-            </div>
-
-            <div class="faq-item">
-                <h4>Q : Comment changer de véhicule dans le e-logbook ?</h4>
-                <p>R : Ouvrez le menu (☰) → Paramètres → Changer de véhicule</p>
-            </div>
-
-            <h3>Support Technique</h3>
             <div class="support-card">
-                <p><strong>En cas de problème technique :</strong></p>
-                <ul>
-                    <li>📧 Email : <a href="mailto:kitlog@actioncontrelafaim.org">kitlog&#64;actioncontrelafaim.org</a>
-                    </li>
-                    <li>📞 Téléphone : [À définir]</li>
-                </ul>
+                <p><strong>Support Technique :</strong> <a
+                        href="mailto:kitlog@actioncontrelafaim.org">kitlog&#64;actioncontrelafaim.org</a></p>
             </div>
         </section>
     </div>
 
     <footer class="guide-footer">
-        <p>© 2025 FleetTrack - Tous droits réservés</p>
+        <p>© 2026 FleetTrack - Tous droits réservés</p>
     </footer>
 </div>

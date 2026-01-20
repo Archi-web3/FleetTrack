@@ -68,6 +68,7 @@
                         <th>Distance</th>
                         <th>Photos</th>
                         <th>Statut</th>
+                        <th *ngIf="isAdmin()">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,9 +101,13 @@
                                 {{ trip.statut }}
                             </span>
                         </td>
+                        <td *ngIf="isAdmin()">
+                            <button (click)="deleteItem('trips', trip._id)" class="btn-delete"
+                                title="Supprimer">🗑️</button>
+                        </td>
                     </tr>
                     <tr *ngIf="trips.length === 0">
-                        <td colspan="8">Aucun trajet enregistré.</td>
+                        <td [attr.colspan]="isAdmin() ? 9 : 8">Aucun trajet enregistré.</td>
                     </tr>
                 </tbody>
             </table>

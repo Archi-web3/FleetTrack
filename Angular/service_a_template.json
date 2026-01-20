@@ -1,0 +1,176 @@
+{
+  "nom": "Service A - Maintenance Légère Land Cruiser",
+  "type": "Service A",
+  "typeVehicule": "Land Cruiser",
+  "actif": true,
+  "taches": [
+    {
+      "numero": "1",
+      "numeroTacheManuel": "1",
+      "description": "Fuites sous le véhicule",
+      "categorie": "Détection",
+      "obligatoire": true
+    },
+    {
+      "numero": "2",
+      "numeroTacheManuel": "2",
+      "description": "État des pneus : contrôle visuel (pression, craquelures/fissures, dégâts, usure normale, roues de secours)",
+      "categorie": "Roues/Pneus",
+      "obligatoire": true
+    },
+    {
+      "numero": "3",
+      "numeroTacheManuel": "BAT-",
+      "description": "Véhicule équipé d'Airbag: Débrancher la Batterie! (En commençant par le câble négatif NOIR)",
+      "categorie": "Batterie/Élec",
+      "obligatoire": true
+    },
+    {
+      "numero": "4",
+      "numeroTacheManuel": "4",
+      "description": "Niveau du liquide de refroidissement",
+      "categorie": "Moteur",
+      "obligatoire": true
+    },
+    {
+      "numero": "5",
+      "numeroTacheManuel": "6",
+      "description": "Niveau du liquide de lave glace, contrôler le fonctionnement des gicleurs et des essuies glace",
+      "categorie": "Nettoyage",
+      "obligatoire": true
+    },
+    {
+      "numero": "6",
+      "numeroTacheManuel": "15",
+      "description": "Nettoyer le filtre à air et le bol (remplacer si nécessaire)",
+      "categorie": "Moteur",
+      "obligatoire": true
+    },
+    {
+      "numero": "7",
+      "numeroTacheManuel": "8",
+      "description": "Propreté du radiateur (principal et climatiseur), état/fixation de la moustiquaire",
+      "categorie": "Moteur",
+      "obligatoire": true
+    },
+    {
+      "numero": "8",
+      "numeroTacheManuel": "27",
+      "description": "Changer le préfiltre à carburant",
+      "categorie": "Moteur",
+      "obligatoire": true
+    },
+    {
+      "numero": "9",
+      "numeroTacheManuel": "29",
+      "description": "Contrôler les courroies ventilateur/alternateur et climatiseur",
+      "categorie": "Moteur",
+      "obligatoire": true
+    },
+    {
+      "numero": "10",
+      "numeroTacheManuel": "16",
+      "description": "Contrôler la suspension: ressorts (état, alignements des lames de ressorts) silentbloc (ressorts arrière, barre stabilisatrice, levier principal), amortisseurs (fuites, fixation des bagues)",
+      "categorie": "Roues/Pneus",
+      "obligatoire": true
+    },
+    {
+      "numero": "11",
+      "numeroTacheManuel": "20",
+      "description": "Graisser les arbres de transmission (6 graisseurs) et le système de direction (2 graisseurs)",
+      "categorie": "Roues/Pneus",
+      "obligatoire": true
+    },
+    {
+      "numero": "12",
+      "numeroTacheManuel": "33",
+      "description": "Contrôler le jeu de tous les roulements de roue",
+      "categorie": "Roues/Pneus",
+      "obligatoire": true
+    },
+    {
+      "numero": "13",
+      "numeroTacheManuel": "35",
+      "description": "Intervertir/alterner les roues (y compris roues de secours)",
+      "categorie": "Roues/Pneus",
+      "obligatoire": true
+    },
+    {
+      "numero": "14",
+      "numeroTacheManuel": "23",
+      "description": "Nettoyer et lubrifier le cric Hi lift",
+      "categorie": "Nettoyage",
+      "obligatoire": true
+    },
+    {
+      "numero": "15",
+      "numeroTacheManuel": "19",
+      "description": "Contrôler et nettoyer les reniflards (pont Av et Arr.)",
+      "categorie": "Détection",
+      "obligatoire": true
+    },
+    {
+      "numero": "16",
+      "numeroTacheManuel": "BAT+",
+      "description": "Véhicule équipé d'Airbag: Rebrancher la Batterie. (En commençant par le câble Positif ROUGE)",
+      "categorie": "Batterie/Élec",
+      "obligatoire": true
+    },
+    {
+      "numero": "17",
+      "numeroTacheManuel": "7",
+      "description": "Fixation de la batterie, niveau d'eau, cosses",
+      "categorie": "Batterie/Élec",
+      "obligatoire": true
+    },
+    {
+      "numero": "18",
+      "numeroTacheManuel": "18",
+      "description": "Contrôler le bon fonctionnement des portes, des serrures, des vitres et des ceintures de sécurité",
+      "categorie": "Sécurité/Documents",
+      "obligatoire": true
+    },
+    {
+      "numero": "19",
+      "numeroTacheManuel": "9",
+      "description": "Présence et inventaire des équipements de bord",
+      "categorie": "Sécurité/Documents",
+      "obligatoire": true
+    },
+    {
+      "numero": "20",
+      "numeroTacheManuel": "10",
+      "description": "Voyants lumineux du tableau de bord, éclairages intérieurs et extérieurs",
+      "categorie": "Éclairage",
+      "obligatoire": true
+    },
+    {
+      "numero": "21",
+      "numeroTacheManuel": "11",
+      "description": "Bruits anormaux du moteur (grincements et vibrations, ou bruits de moteur différents de la normale)",
+      "categorie": "Moteur",
+      "obligatoire": true
+    },
+    {
+      "numero": "22",
+      "numeroTacheManuel": "38",
+      "description": "Contrôler le jeu au volant",
+      "categorie": "Autre",
+      "obligatoire": true
+    },
+    {
+      "numero": "23",
+      "numeroTacheManuel": "12",
+      "description": "Contrôle fonctionnel radio HF /VHF avec la base. Vérifiez si les antennes sont présentes, droites et non cassées.",
+      "categorie": "Communication",
+      "obligatoire": true
+    },
+    {
+      "numero": "24",
+      "numeroTacheManuel": "13",
+      "description": "Contrôle des câbles microphones HF / VHF",
+      "categorie": "Communication",
+      "obligatoire": true
+    }
+  ]
+}

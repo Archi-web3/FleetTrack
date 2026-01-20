@@ -78,3 +78,5 @@ Thumbs.db
 ~$*.docx
 ~$*.xlsx
 ~$*.pptx
+.vercel
+.env*.local
