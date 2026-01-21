@@ -19,7 +19,7 @@
 
   <!-- NOUVEAU Menu Validation -->
   <ng-container
-    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')">
+    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin')">
     <button mat-button [matMenuTriggerFor]="validationMenu">
       Validation <mat-icon>arrow_drop_down</mat-icon>
     </button>
