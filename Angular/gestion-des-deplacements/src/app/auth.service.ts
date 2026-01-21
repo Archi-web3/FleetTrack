@@ -169,6 +169,11 @@ export class AuthService {
       this._userBase.next(decoded?.utilisateur?.base?.nom || null);
       this._userPaysId.next(decoded?.utilisateur?.pays?.id || null);
       this._userBaseId.next(decoded?.utilisateur?.base?.id || null);
+
+      // Fix: Automatically set selectedCountry in localStorage if user has a country assigned
+      if (decoded?.utilisateur?.pays?.id) {
+        localStorage.setItem('selectedCountry', decoded.utilisateur.pays.id);
+      }
     } else {
       this._userProfile.next(null);
       this._userName.next(null);
@@ -177,6 +182,8 @@ export class AuthService {
       this._userBase.next(null);
       this._userPaysId.next(null);
       this._userBaseId.next(null);
+      // We do not clear selectedCountry here to allow SuperAdmins to keep their selection across reloads if needed,
+      // or we handle logout explicitly.
     }
   }
 
@@ -216,6 +223,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('selectedCountry'); // Clear selected country
     this._isAuthenticated.next(false);
     this._userProfile.next(null);
     this._userName.next(null);
