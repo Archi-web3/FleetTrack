@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
       this.isAuthenticated = status;
     });
     this.authService.userProfile$.subscribe(profile => {
+      console.log('[AppComponent] Current Profile:', profile);
       this.userProfile = profile;
     });
     this.authService.userName$.subscribe(name => {
