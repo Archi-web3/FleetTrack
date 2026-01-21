@@ -1,6 +1,6 @@
 {
   "name": "gestion-des-deplacements",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "set NODE_OPTIONS=--max-old-space-size=4096 && ng serve",
