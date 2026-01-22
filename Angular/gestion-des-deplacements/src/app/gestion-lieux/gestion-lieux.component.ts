@@ -26,11 +26,11 @@ export class GestionLieuxComponent implements OnInit {
 
   // Niveaux de sécurité
   securityLevels = [
-    { level: 1, color: '#4CAF50', label: '1 - Stable (Vert)' },
-    { level: 2, color: '#FFEB3B', label: '2 - Modéré (Jaune)' },
-    { level: 3, color: '#FF9800', label: '3 - Difficile (Orange)' },
-    { level: 4, color: '#F44336', label: '4 - Élevé (Rouge)' },
-    { level: 5, color: '#000000', label: '5 - Extrême (Noir)' }
+    { level: 1, color: '#4CAF50', label: '1 - Stable' },
+    { level: 2, color: '#FFEB3B', label: '2 - Modéré' },
+    { level: 3, color: '#FF9800', label: '3 - Difficile' },
+    { level: 4, color: '#F44336', label: '4 - Élevé' },
+    { level: 5, color: '#000000', label: '5 - Extrême' }
   ];
 
   // Pour filtrage

@@ -64,6 +64,7 @@ router.post('/lieux', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, 
       adresse: req.body.adresse,
       coordonnees: req.body.coordonnees,
       estSensible: req.body.estSensible,
+      niveauSecurite: req.body.niveauSecurite,
       pays: pays,
       base: base
     });
@@ -88,6 +89,7 @@ router.put('/lieux/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (re
     if (req.body.adresse != null) lieu.adresse = req.body.adresse;
     if (req.body.coordonnees != null) lieu.coordonnees = req.body.coordonnees;
     if (req.body.estSensible != null) lieu.estSensible = req.body.estSensible;
+    if (req.body.niveauSecurite != null) lieu.niveauSecurite = req.body.niveauSecurite;
 
     const lieuMisAJour = await lieu.save();
     res.json(lieuMisAJour);
