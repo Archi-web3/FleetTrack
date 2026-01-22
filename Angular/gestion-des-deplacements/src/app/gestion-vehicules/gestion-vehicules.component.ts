@@ -20,6 +20,9 @@ export class GestionVehiculesComponent implements OnInit {
     modele: '',
     immatriculation: '',
     acfCode: '',
+    typePropriete: 'ACF',
+    locationDetails: { nomLoueur: '', dateDebut: null, dateFin: null },
+    achatDetails: { dateAchat: null, valeurAchat: null },
     type: 'Voiture',
     capacitePassagers: 1,
     kilometrageInitial: 0,
@@ -33,6 +36,7 @@ export class GestionVehiculesComponent implements OnInit {
   };
   selectedVehicule: any = null;
   vehicleTypes: string[] = [];
+  ownershipTypes: string[] = ['ACF', 'Location'];
   statuses: string[] = ['En Service', 'Hors Service', 'Vendu', 'Archivé', 'Restitué'];
   userProfile: string | null = null;
   userPaysId: string | null = null;
@@ -134,6 +138,9 @@ export class GestionVehiculesComponent implements OnInit {
           modele: '',
           immatriculation: '',
           acfCode: '',
+          typePropriete: 'ACF',
+          locationDetails: { nomLoueur: '', dateDebut: null, dateFin: null },
+          achatDetails: { dateAchat: null, valeurAchat: null },
           type: 'Voiture',
           capacitePassagers: 1,
           kilometrageInitial: 0,
@@ -157,6 +164,17 @@ export class GestionVehiculesComponent implements OnInit {
 
   selectVehicule(vehicule: any): void {
     this.selectedVehicule = { ...vehicule };
+    // Initialiser les champs manquants (migration ou anciennes données)
+    if (!this.selectedVehicule.typePropriete) {
+      // Fallback: si 'owner' existe (ancien champ), l'utiliser, sinon 'ACF'
+      this.selectedVehicule.typePropriete = this.selectedVehicule.owner || 'ACF';
+    }
+    if (!this.selectedVehicule.locationDetails) {
+      this.selectedVehicule.locationDetails = { nomLoueur: '', dateDebut: null, dateFin: null };
+    }
+    if (!this.selectedVehicule.achatDetails) {
+      this.selectedVehicule.achatDetails = { dateAchat: null, valeurAchat: null };
+    }
     // Initialiser les champs environnementaux s'ils n'existent pas
     if (!this.selectedVehicule.emissionsCO2) {
       this.selectedVehicule.emissionsCO2 = { valeur: null, source: 'Constructeur' };

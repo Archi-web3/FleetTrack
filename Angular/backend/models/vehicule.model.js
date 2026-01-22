@@ -11,7 +11,16 @@ const vehiculeSchema = new mongoose.Schema({
   pays: { type: mongoose.Schema.Types.ObjectId, ref: 'Pays' }, // Pays du véhicule
 
   // Classification
-  owner: { type: String, enum: ['ACF', 'Location'], default: 'ACF' },
+  typePropriete: { type: String, enum: ['ACF', 'Location'], default: 'ACF' },
+  locationDetails: {
+    nomLoueur: { type: String },
+    dateDebut: { type: Date },
+    dateFin: { type: Date }
+  },
+  achatDetails: {
+    dateAchat: { type: Date },
+    valeurAchat: { type: Number }
+  },
   category: { type: String, enum: ['Voiture', 'Camion', 'Moto'], default: 'Voiture' },
   type: { type: String }, // Ex: City car, Minibus, 4x4 léger, 4x4 pickup, 4x4 lourd, 100cc, 125cc...
 
@@ -72,28 +81,38 @@ const vehiculeSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Hook pour générer automatiquement l'ID (acfCode)
+// Hook pour générer automatiquement l'ID (acfCode) - Séquence par PAYS
 vehiculeSchema.pre('save', async function (next) {
   if (!this.acfCode) {
     try {
-      // Trouver le dernier véhicule créé qui a un acfCode commençant par "MOB-"
-      const lastVehicule = await this.constructor.findOne({ acfCode: { $regex: /^MOB-/ } })
+      const Denomination = 'MOB';
+
+      // Trouver le dernier véhicule DE CE PAYS qui a un code commençant par 'MOB-'
+      // Note: this.pays est un ObjectId, donc la requête doit matcher cet ID.
+      const lastVehicule = await this.constructor.findOne({
+        pays: this.pays,
+        acfCode: { $regex: new RegExp(`^${Denomination}-\\d+$`) }
+      })
         .sort({ acfCode: -1 })
         .limit(1);
 
       let nextNum = 1;
       if (lastVehicule && lastVehicule.acfCode) {
         const parts = lastVehicule.acfCode.split('-');
-        if (parts.length === 2 && !isNaN(parts[1])) {
-          nextNum = parseInt(parts[1]) + 1;
+        if (parts.length === 2) {
+          const numPart = parseInt(parts[1], 10);
+          if (!isNaN(numPart)) {
+            nextNum = numPart + 1;
+          }
         }
       }
 
-      // Formater avec 3 chiffres (ex: MOB-005)
-      this.acfCode = `MOB-${nextNum.toString().padStart(3, '0')}`;
-      console.log(`[Auto-ID] Code généré pour le nouveau véhicule: ${this.acfCode}`);
+      // Formater avec 3 chiffres (ex: MOB-001)
+      this.acfCode = `${Denomination}-${nextNum.toString().padStart(3, '0')}`;
+      console.log(`[Auto-ID] Code généré pour le nouveau véhicule (Pays: ${this.pays}): ${this.acfCode}`);
     } catch (err) {
       console.error("[Auto-ID] Erreur lors de la génération de l'ID:", err);
-      // Ne pas bloquer la sauvegarde, mais le code sera manquant (à gérer)
+      return next(err);
     }
   }
   next();

@@ -22,9 +22,48 @@
           [(ngModel)]="newVehicule.immatriculation" required style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeAcfCode">Numéro de véhicule ACF:</label>
+        <label for="newVehiculeAcfCode">Numéro de véhicule ACF (Généré auto par Pays):</label>
         <input type="text" id="newVehiculeAcfCode" name="newVehiculeAcfCode" [(ngModel)]="newVehicule.acfCode"
-          style="width: 100%; padding: 8px;" placeholder="Ex: ACF-001">
+          style="width: 100%; padding: 8px; background-color: #e9ecef;" placeholder="Généré automatiquement (MOB-XXX)"
+          readonly disabled>
+      </div>
+
+      <!-- Propriété -->
+      <div style="margin-bottom: 10px;">
+        <label for="newVehiculePropriete">Propriété:</label>
+        <select id="newVehiculePropriete" name="newVehiculePropriete" [(ngModel)]="newVehicule.typePropriete" required
+          style="width: 100%; padding: 8px;">
+          <option *ngFor="let type of ownershipTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <!-- Champs dynamiques -->
+      <div *ngIf="newVehicule.typePropriete === 'Location'"
+        style="margin-bottom: 10px; border-left: 3px solid #ffc107; padding-left: 10px;">
+        <div style="margin-bottom: 10px;">
+          <label>Nom du Loueur:</label>
+          <input type="text" name="newNomLoueur" [(ngModel)]="newVehicule.locationDetails.nomLoueur"
+            class="form-control" style="width: 100%; padding: 8px;" required>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;">
+            <label>Début Location:</label>
+            <input type="date" name="newDateDebutLoc" [(ngModel)]="newVehicule.locationDetails.dateDebut"
+              class="form-control" style="width: 100%; padding: 8px;">
+          </div>
+          <div style="flex: 1;">
+            <label>Fin Location:</label>
+            <input type="date" name="newDateFinLoc" [(ngModel)]="newVehicule.locationDetails.dateFin"
+              class="form-control" style="width: 100%; padding: 8px;">
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="newVehicule.typePropriete === 'ACF'"
+        style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
+        <label>Date d'achat:</label>
+        <input type="date" name="newDateAchat" [(ngModel)]="newVehicule.achatDetails.dateAchat" class="form-control"
+          style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
         <label for="newVehiculeType">Type:</label>
@@ -168,7 +207,50 @@
       <div style="margin-bottom: 10px;">
         <label for="editVehiculeAcfCode">Numéro de véhicule ACF:</label>
         <input type="text" id="editVehiculeAcfCode" name="editVehiculeAcfCode" [(ngModel)]="selectedVehicule.acfCode"
-          style="width: 100%; padding: 8px;" placeholder="Ex: ACF-001">
+          style="width: 100%; padding: 8px; background-color: #e9ecef;" readonly disabled>
+      </div>
+
+      <!-- Propriété (Edit) -->
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculePropriete">Propriété:</label>
+        <select id="editVehiculePropriete" name="editVehiculePropriete" [(ngModel)]="selectedVehicule.typePropriete"
+          required style="width: 100%; padding: 8px;">
+          <option *ngFor="let type of ownershipTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <!-- Champs dynamiques (Edit) -->
+      <div *ngIf="selectedVehicule.typePropriete === 'Location'"
+        style="margin-bottom: 10px; border-left: 3px solid #ffc107; padding-left: 10px;">
+        <div style="margin-bottom: 10px;">
+          <label>Nom du Loueur:</label>
+          <input type="text" name="editNomLoueur" [(ngModel)]="selectedVehicule.locationDetails.nomLoueur"
+            class="form-control" style="width: 100%; padding: 8px;" required>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;">
+            <label>Début Location:</label>
+            <input type="date" name="editDateDebutLoc"
+              [ngModel]="selectedVehicule.locationDetails.dateDebut | date:'yyyy-MM-dd'"
+              (ngModelChange)="selectedVehicule.locationDetails.dateDebut = $event" class="form-control"
+              style="width: 100%; padding: 8px;">
+          </div>
+          <div style="flex: 1;">
+            <label>Fin Location:</label>
+            <input type="date" name="editDateFinLoc"
+              [ngModel]="selectedVehicule.locationDetails.dateFin | date:'yyyy-MM-dd'"
+              (ngModelChange)="selectedVehicule.locationDetails.dateFin = $event" class="form-control"
+              style="width: 100%; padding: 8px;">
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedVehicule.typePropriete === 'ACF'"
+        style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
+        <label>Date d'achat:</label>
+        <input type="date" name="editDateAchat" [ngModel]="selectedVehicule.achatDetails.dateAchat | date:'yyyy-MM-dd'"
+          (ngModelChange)="selectedVehicule.achatDetails.dateAchat = $event" class="form-control"
+          style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
         <label for="editVehiculeType">Type:</label>
