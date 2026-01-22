@@ -59,6 +59,17 @@
             </li>
           </ul>
         </ng-container>
+
+        <!-- NOUVEAU : Affichage de la Ventilation Financière -->
+        <div *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0"
+          style="margin-bottom: 10px; background-color: #f1f8e9; padding: 10px; border-radius: 5px; border: 1px solid #c5e1a5;">
+          <strong>💰 Ventilation Financière (Calculée):</strong>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li *ngFor="let item of mouvement.projetsVentilation">
+              <strong>{{ item.projet }}:</strong> {{ item.percentage }}%
+            </li>
+          </ul>
+        </div>
         <!-- NOUVEAU : Affichage du niveau de risque -->
         <div *ngIf="mouvement.validationLevelRequired" style="margin-bottom: 5px;">
           <strong>Niveau de Risque:</strong>

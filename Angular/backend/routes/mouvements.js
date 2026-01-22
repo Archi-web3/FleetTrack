@@ -310,6 +310,31 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
         if (projetsUniques.length > 1) {
           console.log(`🆕 [CREATE MOUVEMENT] Mouvement multi-projets détecté: ${projetsUniques.join(', ')}`);
         }
+
+        // --- CALCUL VENTILATION FINANCIÈRE (Module 2) ---
+        // Algorithme : Répartition équitable basée sur le nombre de passagers par projet
+        const totalPassagers = passagers.length;
+        if (totalPassagers > 0) {
+          const ventilation = [];
+          const projectCounts = {};
+
+          // Compter les occurrences de chaque projet
+          passagers.forEach(p => {
+            const proj = p.projet || 'NON_AFFECTÉ';
+            projectCounts[proj] = (projectCounts[proj] || 0) + 1;
+          });
+
+          // Calculer les pourcentages
+          for (const [proj, count] of Object.entries(projectCounts)) {
+            ventilation.push({
+              projet: proj,
+              percentage: parseFloat(((count / totalPassagers) * 100).toFixed(2))
+            });
+          }
+
+          console.log('💰 [CREATE MOUVEMENT] Ventilation calculée:', ventilation);
+          mouvement.projetsVentilation = ventilation;
+        }
       } catch (err) {
         console.error('❌ [CREATE MOUVEMENT] Erreur lors de la récupération des projets des passagers:', err);
       }
