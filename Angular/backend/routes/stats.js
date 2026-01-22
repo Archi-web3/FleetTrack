@@ -17,12 +17,15 @@ router.get('/global', auth(), async (req, res) => {
 
         // Filtre par période
         if (dateDebut && dateFin) {
+            const startDate = new Date(dateDebut);
             const endDate = new Date(dateFin);
             endDate.setHours(23, 59, 59, 999); // Include entire end date
-            matchFilter.dateDepart = {
-                $gte: new Date(dateDebut),
-                $lte: endDate
-            };
+
+            // Priorité à realDepartureTime (si le trajet a eu lieu), sinon dateDepart (planifié)
+            matchFilter.$or = [
+                { realDepartureTime: { $gte: startDate, $lte: endDate } },
+                { dateDepart: { $gte: startDate, $lte: endDate }, realDepartureTime: null }
+            ];
         }
 
         // Filtre par véhicule
@@ -134,12 +137,14 @@ router.get('/par-projet', auth(), async (req, res) => {
 
         // Filtre par période
         if (dateDebut && dateFin) {
+            const startDate = new Date(dateDebut);
             const endDate = new Date(dateFin);
-            endDate.setHours(23, 59, 59, 999); // Include entire end date
-            matchFilter.dateDepart = {
-                $gte: new Date(dateDebut),
-                $lte: endDate
-            };
+            endDate.setHours(23, 59, 59, 999);
+
+            matchFilter.$or = [
+                { realDepartureTime: { $gte: startDate, $lte: endDate } },
+                { dateDepart: { $gte: startDate, $lte: endDate }, realDepartureTime: null }
+            ];
         }
 
         // Filtre par véhicule
