@@ -105,227 +105,229 @@
             [(ngModel)]="newVehicule.consommation.dateTest" style="width: 100%; padding: 8px;">
         </div>
       </div>
-  </div>
-
-  <!-- Assurance -->
-  <div style="border: 2px solid #2196F3; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E3F2FD;">
-    <h4 style="margin-top: 0; color: #1565C0;">🛡️ Assurance</h4>
-    <div style="margin-bottom: 10px;">
-      <label for="newVehiculeAssureur">Assureur:</label>
-      <input type="text" id="newVehiculeAssureur" name="newVehiculeAssureur"
-        [(ngModel)]="newVehicule.assurance.nomAssureur" style="width: 100%; padding: 8px;"
-        placeholder="Nom de l'assurance">
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="newVehiculeDateFinAssurance">Date fin d'assurance:</label>
-      <input type="date" id="newVehiculeDateFinAssurance" name="newVehiculeDateFinAssurance"
-        [(ngModel)]="newVehicule.assurance.dateFin" style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="newVehiculeCertificat">Lien Certificat:</label>
-      <input type="text" id="newVehiculeCertificat" name="newVehiculeCertificat"
-        [(ngModel)]="newVehicule.assurance.certificatUrl" style="width: 100%; padding: 8px;"
-        placeholder="URL du document">
-    </div>
-  </div>
-
-  <div style="margin-bottom: 10px;">
-    <label for="newVehiculeStatut">Statut:</label>
-    <select id="newVehiculeStatut" name="newVehiculeStatut" [(ngModel)]="newVehicule.statut" required
-      style="width: 100%; padding: 8px;">
-      <option *ngFor="let s of statuses" [value]="s">{{s}}</option>
-    </select>
-  </div>
 
 
-  <button type="submit" [disabled]="!vehiculeForm.form.valid"
-    style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Créer
-    Véhicule</button>
-  </form>
-</div>
-
-<!-- Formulaire de modification de véhicule -->
-<div *ngIf="selectedVehicule"
-  style="border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #fff3cd;">
-  <h3>Modifier véhicule: {{ selectedVehicule.marque }} {{ selectedVehicule.modele }}</h3>
-  <form (ngSubmit)="updateVehicule()" #editVehiculeForm="ngForm">
-    <div style="margin-bottom: 10px;">
-      <label for="editVehiculeMarque">Marque:</label>
-      <input type="text" id="editVehiculeMarque" name="editVehiculeMarque" [(ngModel)]="selectedVehicule.marque"
-        required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="editVehiculeModele">Modèle:</label>
-      <input type="text" id="editVehiculeModele" name="editVehiculeModele" [(ngModel)]="selectedVehicule.modele"
-        required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="editVehiculeImmatriculation">Immatriculation:</label>
-      <input type="text" id="editVehiculeImmatriculation" name="editVehiculeImmatriculation"
-        [(ngModel)]="selectedVehicule.immatriculation" required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="editVehiculeAcfCode">Numéro de véhicule ACF:</label>
-      <input type="text" id="editVehiculeAcfCode" name="editVehiculeAcfCode" [(ngModel)]="selectedVehicule.acfCode"
-        style="width: 100%; padding: 8px;" placeholder="Ex: ACF-001">
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="editVehiculeType">Type:</label>
-      <select id="editVehiculeType" name="editVehiculeType" [(ngModel)]="selectedVehicule.type" required
-        style="width: 100%; padding: 8px;">
-        <option *ngFor="let type of vehicleTypes" [value]="type">{{ type }}</option>
-      </select>
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="editVehiculeCapacite">Capacité Passagers:</label>
-      <input type="number" id="editVehiculeCapacite" name="editVehiculeCapacite"
-        [(ngModel)]="selectedVehicule.capacitePassagers" required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-      <label for="editVehiculeKilometrageInitial">Kilométrage Initial:</label>
-      <input type="number" id="editVehiculeKilometrageInitial" name="editVehiculeKilometrageInitial"
-        [(ngModel)]="selectedVehicule.kilometrageInitial" min="0" style="width: 100%; padding: 8px;">
-    </div>
-
-    <!-- Données Environnementales (Edit) -->
-    <div
-      style="border: 2px solid #4CAF50; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E8F5E9;">
-      <h4 style="margin-top: 0; color: #2E7D32;">🌱 Données Environnementales</h4>
-
-      <div style="margin-bottom: 10px;">
-        <label for="editVehiculeEmissionsCO2">Émissions CO2 (g/km):</label>
-        <input type="number" id="editVehiculeEmissionsCO2" name="editVehiculeEmissionsCO2"
-          [(ngModel)]="selectedVehicule.emissionsCO2.valeur" min="0" step="1" style="width: 100%; padding: 8px;"
-          placeholder="Ex: 120">
+      <!-- Assurance -->
+      <div
+        style="border: 2px solid #2196F3; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E3F2FD;">
+        <h4 style="margin-top: 0; color: #1565C0;">🛡️ Assurance</h4>
+        <div style="margin-bottom: 10px;">
+          <label for="newVehiculeAssureur">Assureur:</label>
+          <input type="text" id="newVehiculeAssureur" name="newVehiculeAssureur"
+            [(ngModel)]="newVehicule.assurance.nomAssureur" style="width: 100%; padding: 8px;"
+            placeholder="Nom de l'assurance">
+        </div>
+        <div style="margin-bottom: 10px;">
+          <label for="newVehiculeDateFinAssurance">Date fin d'assurance:</label>
+          <input type="date" id="newVehiculeDateFinAssurance" name="newVehiculeDateFinAssurance"
+            [(ngModel)]="newVehicule.assurance.dateFin" style="width: 100%; padding: 8px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+          <label for="newVehiculeCertificat">Lien Certificat:</label>
+          <input type="text" id="newVehiculeCertificat" name="newVehiculeCertificat"
+            [(ngModel)]="newVehicule.assurance.certificatUrl" style="width: 100%; padding: 8px;"
+            placeholder="URL du document">
+        </div>
       </div>
 
       <div style="margin-bottom: 10px;">
-        <label for="editVehiculeEmissionsSource">Source données CO2:</label>
-        <select id="editVehiculeEmissionsSource" name="editVehiculeEmissionsSource"
-          [(ngModel)]="selectedVehicule.emissionsCO2.source" style="width: 100%; padding: 8px;">
-          <option value="Constructeur">🏭 Constructeur</option>
-          <option value="Test Manuel">🔬 Test Manuel</option>
+        <label for="newVehiculeStatut">Statut:</label>
+        <select id="newVehiculeStatut" name="newVehiculeStatut" [(ngModel)]="newVehicule.statut" required
+          style="width: 100%; padding: 8px;">
+          <option *ngFor="let s of statuses" [value]="s">{{s}}</option>
         </select>
       </div>
 
+
+      <button type="submit" [disabled]="!vehiculeForm.form.valid"
+        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Créer
+        Véhicule</button>
+    </form>
+  </div>
+
+  <!-- Formulaire de modification de véhicule -->
+  <div *ngIf="selectedVehicule"
+    style="border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #fff3cd;">
+    <h3>Modifier véhicule: {{ selectedVehicule.marque }} {{ selectedVehicule.modele }}</h3>
+    <form (ngSubmit)="updateVehicule()" #editVehiculeForm="ngForm">
       <div style="margin-bottom: 10px;">
-        <label for="editVehiculeConsommation">Consommation (L/100km):</label>
-        <input type="number" id="editVehiculeConsommation" name="editVehiculeConsommation"
-          [(ngModel)]="selectedVehicule.consommation.valeur" min="0" step="0.1" style="width: 100%; padding: 8px;"
-          placeholder="Ex: 7.5">
+        <label for="editVehiculeMarque">Marque:</label>
+        <input type="text" id="editVehiculeMarque" name="editVehiculeMarque" [(ngModel)]="selectedVehicule.marque"
+          required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculeModele">Modèle:</label>
+        <input type="text" id="editVehiculeModele" name="editVehiculeModele" [(ngModel)]="selectedVehicule.modele"
+          required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculeImmatriculation">Immatriculation:</label>
+        <input type="text" id="editVehiculeImmatriculation" name="editVehiculeImmatriculation"
+          [(ngModel)]="selectedVehicule.immatriculation" required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculeAcfCode">Numéro de véhicule ACF:</label>
+        <input type="text" id="editVehiculeAcfCode" name="editVehiculeAcfCode" [(ngModel)]="selectedVehicule.acfCode"
+          style="width: 100%; padding: 8px;" placeholder="Ex: ACF-001">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculeType">Type:</label>
+        <select id="editVehiculeType" name="editVehiculeType" [(ngModel)]="selectedVehicule.type" required
+          style="width: 100%; padding: 8px;">
+          <option *ngFor="let type of vehicleTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculeCapacite">Capacité Passagers:</label>
+        <input type="number" id="editVehiculeCapacite" name="editVehiculeCapacite"
+          [(ngModel)]="selectedVehicule.capacitePassagers" required style="width: 100%; padding: 8px;">
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label for="editVehiculeKilometrageInitial">Kilométrage Initial:</label>
+        <input type="number" id="editVehiculeKilometrageInitial" name="editVehiculeKilometrageInitial"
+          [(ngModel)]="selectedVehicule.kilometrageInitial" min="0" style="width: 100%; padding: 8px;">
+      </div>
+
+      <!-- Données Environnementales (Edit) -->
+      <div
+        style="border: 2px solid #4CAF50; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E8F5E9;">
+        <h4 style="margin-top: 0; color: #2E7D32;">🌱 Données Environnementales</h4>
+
+        <div style="margin-bottom: 10px;">
+          <label for="editVehiculeEmissionsCO2">Émissions CO2 (g/km):</label>
+          <input type="number" id="editVehiculeEmissionsCO2" name="editVehiculeEmissionsCO2"
+            [(ngModel)]="selectedVehicule.emissionsCO2.valeur" min="0" step="1" style="width: 100%; padding: 8px;"
+            placeholder="Ex: 120">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label for="editVehiculeEmissionsSource">Source données CO2:</label>
+          <select id="editVehiculeEmissionsSource" name="editVehiculeEmissionsSource"
+            [(ngModel)]="selectedVehicule.emissionsCO2.source" style="width: 100%; padding: 8px;">
+            <option value="Constructeur">🏭 Constructeur</option>
+            <option value="Test Manuel">🔬 Test Manuel</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label for="editVehiculeConsommation">Consommation (L/100km):</label>
+          <input type="number" id="editVehiculeConsommation" name="editVehiculeConsommation"
+            [(ngModel)]="selectedVehicule.consommation.valeur" min="0" step="0.1" style="width: 100%; padding: 8px;"
+            placeholder="Ex: 7.5">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label for="editVehiculeConsommationSource">Source données consommation:</label>
+          <select id="editVehiculeConsommationSource" name="editVehiculeConsommationSource"
+            [(ngModel)]="selectedVehicule.consommation.source" style="width: 100%; padding: 8px;">
+            <option value="Constructeur">🏭 Constructeur</option>
+            <option value="Test Manuel">🔬 Test Manuel (2 pleins sur 100km)</option>
+          </select>
+        </div>
+
+        <div *ngIf="selectedVehicule.consommation.source === 'Test Manuel'" style="margin-bottom: 10px;">
+          <label for="editVehiculeConsommationDate">Date du test:</label>
+          <input type="date" id="editVehiculeConsommationDate" name="editVehiculeConsommationDate"
+            [(ngModel)]="selectedVehicule.consommation.dateTest" style="width: 100%; padding: 8px;">
+        </div>
+
+      </div>
+
+      <!-- Assurance (Edit) -->
+      <div
+        style="border: 2px solid #2196F3; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E3F2FD;">
+        <h4 style="margin-top: 0; color: #1565C0;">🛡️ Assurance</h4>
+        <div style="margin-bottom: 10px;">
+          <label for="editVehiculeAssureur">Assureur:</label>
+          <input type="text" id="editVehiculeAssureur" name="editVehiculeAssureur"
+            [(ngModel)]="selectedVehicule.assurance.nomAssureur" style="width: 100%; padding: 8px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+          <label for="editVehiculeDateFinAssurance">Date fin d'assurance:</label>
+          <input type="date" id="editVehiculeDateFinAssurance" name="editVehiculeDateFinAssurance"
+            [ngModel]="selectedVehicule.assurance.dateFin | date:'yyyy-MM-dd'"
+            (ngModelChange)="selectedVehicule.assurance.dateFin = $event" style="width: 100%; padding: 8px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+          <label for="editVehiculeCertificat">Lien Certificat:</label>
+          <input type="text" id="editVehiculeCertificat" name="editVehiculeCertificat"
+            [(ngModel)]="selectedVehicule.assurance.certificatUrl" style="width: 100%; padding: 8px;">
+        </div>
       </div>
 
       <div style="margin-bottom: 10px;">
-        <label for="editVehiculeConsommationSource">Source données consommation:</label>
-        <select id="editVehiculeConsommationSource" name="editVehiculeConsommationSource"
-          [(ngModel)]="selectedVehicule.consommation.source" style="width: 100%; padding: 8px;">
-          <option value="Constructeur">🏭 Constructeur</option>
-          <option value="Test Manuel">🔬 Test Manuel (2 pleins sur 100km)</option>
+        <label for="editVehiculeStatut">Statut:</label>
+        <select id="editVehiculeStatut" name="editVehiculeStatut" [(ngModel)]="selectedVehicule.statut" required
+          style="width: 100%; padding: 8px;">
+          <option *ngFor="let s of statuses" [value]="s">{{s}}</option>
         </select>
       </div>
 
-      <div *ngIf="selectedVehicule.consommation.source === 'Test Manuel'" style="margin-bottom: 10px;">
-        <label for="editVehiculeConsommationDate">Date du test:</label>
-        <input type="date" id="editVehiculeConsommationDate" name="editVehiculeConsommationDate"
-          [(ngModel)]="selectedVehicule.consommation.dateTest" style="width: 100%; padding: 8px;">
+
+      <button type="submit" [disabled]="!editVehiculeForm.form.valid"
+        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Mettre
+        à jour</button>
+      <button type="button" (click)="selectedVehicule = null"
+        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">Annuler</button>
+    </form>
+  </div>
+
+
+  <!-- Liste des véhicules existants -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <h3>Véhicules existants</h3>
+    <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" (click)="toggleShowAllBasesInPays()"
+      style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
+      {{ showAllBasesInPays ? 'Afficher ma base uniquement' : 'Afficher tout le pays' }}
+    </button>
+  </div>
+  <div *ngIf="vehicules.length === 0">Aucun véhicule enregistré.</div>
+  <ul style="list-style-type: none; padding: 0;">
+    <li *ngFor="let vehicule of vehicules"
+      style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <strong>{{ vehicule.marque }} {{ vehicule.modele }}</strong> ({{ vehicule.immatriculation }})
+        <span *ngIf="vehicule.acfCode" style="color: #005fb6; font-weight: 600;"> - N° ACF: {{ vehicule.acfCode
+          }}</span>
+        - Type: {{ vehicule.type }}, Capacité: {{ vehicule.capacitePassagers }}
+        <span *ngIf="!vehicule.enService" style="color: red; margin-left: 10px;">(Hors service)</span>
+        <br>
+        <!-- Badges environnementaux -->
+        <span *ngIf="vehicule.emissionsCO2?.valeur"
+          style="display: inline-block; background-color: #E8F5E9; color: #2E7D32; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; margin-top: 5px;">
+          🌱 {{ vehicule.emissionsCO2.valeur }} g CO2/km
+          <span style="font-size: 10px;"
+            [title]="vehicule.emissionsCO2.source === 'Constructeur' ? 'Données constructeur' : 'Test manuel'">
+            {{ vehicule.emissionsCO2.source === 'Constructeur' ? '🏭' : '🔬' }}
+          </span>
+        </span>
+        <span *ngIf="vehicule.statut"
+          [ngStyle]="{'background-color': vehicule.statut === 'Archivé' ? '#9E9E9E' : (vehicule.statut === 'En Service' ? '#4CAF50' : '#FF9800')}"
+          style="display: inline-block; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; margin-top: 5px;">
+          {{ vehicule.statut }}
+        </span>
+        <span *ngIf="vehicule.consommation?.valeur"
+          style="display: inline-block; background-color: #E3F2FD; color: #1976D2; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-top: 5px;">
+          ⛽ {{ vehicule.consommation.valeur }} L/100km
+          <span style="font-size: 10px;"
+            [title]="vehicule.consommation.source === 'Constructeur' ? 'Données constructeur' : 'Test manuel'">
+            {{ vehicule.consommation.source === 'Constructeur' ? '🏭' : '🔬' }}
+          </span>
+        </span>
       </div>
-    </div>
-</div>
+      <div>
+        <button (click)="selectVehicule(vehicule)"
+          style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">Modifier</button>
 
-<!-- Assurance (Edit) -->
-<div style="border: 2px solid #2196F3; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E3F2FD;">
-  <h4 style="margin-top: 0; color: #1565C0;">🛡️ Assurance</h4>
-  <div style="margin-bottom: 10px;">
-    <label for="editVehiculeAssureur">Assureur:</label>
-    <input type="text" id="editVehiculeAssureur" name="editVehiculeAssureur"
-      [(ngModel)]="selectedVehicule.assurance.nomAssureur" style="width: 100%; padding: 8px;">
-  </div>
-  <div style="margin-bottom: 10px;">
-    <label for="editVehiculeDateFinAssurance">Date fin d'assurance:</label>
-    <input type="date" id="editVehiculeDateFinAssurance" name="editVehiculeDateFinAssurance"
-      [ngModel]="selectedVehicule.assurance.dateFin | date:'yyyy-MM-dd'"
-      (ngModelChange)="selectedVehicule.assurance.dateFin = $event" style="width: 100%; padding: 8px;">
-  </div>
-  <div style="margin-bottom: 10px;">
-    <label for="editVehiculeCertificat">Lien Certificat:</label>
-    <input type="text" id="editVehiculeCertificat" name="editVehiculeCertificat"
-      [(ngModel)]="selectedVehicule.assurance.certificatUrl" style="width: 100%; padding: 8px;">
-  </div>
-</div>
+        <button *ngIf="vehicule.statut !== 'Archivé'" (click)="archiveVehicule(vehicule)"
+          style="padding: 5px 10px; background-color: #607d8b; color: white; border: none; cursor: pointer; margin-right: 5px;">Archiver</button>
 
-<div style="margin-bottom: 10px;">
-  <label for="editVehiculeStatut">Statut:</label>
-  <select id="editVehiculeStatut" name="editVehiculeStatut" [(ngModel)]="selectedVehicule.statut" required
-    style="width: 100%; padding: 8px;">
-    <option *ngFor="let s of statuses" [value]="s">{{s}}</option>
-  </select>
-</div>
+        <button *ngIf="vehicule.statut === 'Archivé'" (click)="unarchiveVehicule(vehicule)"
+          style="padding: 5px 10px; background-color: #ff9800; color: white; border: none; cursor: pointer; margin-right: 5px;">Désarchiver</button>
 
-
-<button type="submit" [disabled]="!editVehiculeForm.form.valid"
-  style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Mettre
-  à jour</button>
-<button type="button" (click)="selectedVehicule = null"
-  style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">Annuler</button>
-</form>
-</div>
-
-
-<!-- Liste des véhicules existants -->
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-  <h3>Véhicules existants</h3>
-  <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" (click)="toggleShowAllBasesInPays()"
-    style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
-    {{ showAllBasesInPays ? 'Afficher ma base uniquement' : 'Afficher tout le pays' }}
-  </button>
-</div>
-<div *ngIf="vehicules.length === 0">Aucun véhicule enregistré.</div>
-<ul style="list-style-type: none; padding: 0;">
-  <li *ngFor="let vehicule of vehicules"
-    style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
-    <div>
-      <strong>{{ vehicule.marque }} {{ vehicule.modele }}</strong> ({{ vehicule.immatriculation }})
-      <span *ngIf="vehicule.acfCode" style="color: #005fb6; font-weight: 600;"> - N° ACF: {{ vehicule.acfCode
-        }}</span>
-      - Type: {{ vehicule.type }}, Capacité: {{ vehicule.capacitePassagers }}
-      <span *ngIf="!vehicule.enService" style="color: red; margin-left: 10px;">(Hors service)</span>
-      <br>
-      <!-- Badges environnementaux -->
-      <span *ngIf="vehicule.emissionsCO2?.valeur"
-        style="display: inline-block; background-color: #E8F5E9; color: #2E7D32; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; margin-top: 5px;">
-        🌱 {{ vehicule.emissionsCO2.valeur }} g CO2/km
-        <span style="font-size: 10px;"
-          [title]="vehicule.emissionsCO2.source === 'Constructeur' ? 'Données constructeur' : 'Test manuel'">
-          {{ vehicule.emissionsCO2.source === 'Constructeur' ? '🏭' : '🔬' }}
-        </span>
-      </span>
-      <span *ngIf="vehicule.statut"
-        [ngStyle]="{'background-color': vehicule.statut === 'Archivé' ? '#9E9E9E' : (vehicule.statut === 'En Service' ? '#4CAF50' : '#FF9800')}"
-        style="display: inline-block; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; margin-top: 5px;">
-        {{ vehicule.statut }}
-      </span>
-      <span *ngIf="vehicule.consommation?.valeur"
-        style="display: inline-block; background-color: #E3F2FD; color: #1976D2; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-top: 5px;">
-        ⛽ {{ vehicule.consommation.valeur }} L/100km
-        <span style="font-size: 10px;"
-          [title]="vehicule.consommation.source === 'Constructeur' ? 'Données constructeur' : 'Test manuel'">
-          {{ vehicule.consommation.source === 'Constructeur' ? '🏭' : '🔬' }}
-        </span>
-      </span>
-    </div>
-    <div>
-      <button (click)="selectVehicule(vehicule)"
-        style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">Modifier</button>
-
-      <button *ngIf="vehicule.statut !== 'Archivé'" (click)="archiveVehicule(vehicule)"
-        style="padding: 5px 10px; background-color: #607d8b; color: white; border: none; cursor: pointer; margin-right: 5px;">Archiver</button>
-
-      <button *ngIf="vehicule.statut === 'Archivé'" (click)="unarchiveVehicule(vehicule)"
-        style="padding: 5px 10px; background-color: #ff9800; color: white; border: none; cursor: pointer; margin-right: 5px;">Désarchiver</button>
-
-      <button (click)="deleteVehicule(vehicule._id)"
-        style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Supprimer</button>
-    </div>
-  </li>
-</ul>
+        <button (click)="deleteVehicule(vehicule._id)"
+          style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Supprimer</button>
+      </div>
+    </li>
+  </ul>
 </div>
