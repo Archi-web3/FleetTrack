@@ -61,6 +61,9 @@ router.post('/utilisateurs', auth(['SuperAdmin', 'Admin']), async (req, res) => 
       profil: req.body.profil,
       pays: req.body.pays, // Assigné auto pour Admin
       base: req.body.base,
+      // Info Pro
+      numeroEmploye: req.body.numeroEmploye,
+      niveauValidationSecu: req.body.niveauValidationSecu,
       // Champs spécifiques aux chauffeurs
       prenom: req.body.prenom,
       telephone: req.body.telephone,
@@ -90,6 +93,8 @@ router.put('/utilisateurs/:id', auth(['SuperAdmin', 'Admin']), async (req, res) 
     if (req.body.profil != null) utilisateur.profil = req.body.profil;
     if (req.body.base !== undefined) utilisateur.base = req.body.base; // Accepter null pour désassigner
     if (req.body.projet !== undefined) utilisateur.projet = req.body.projet; // Mise à jour du projet
+    if (req.body.numeroEmploye !== undefined) utilisateur.numeroEmploye = req.body.numeroEmploye;
+    if (req.body.niveauValidationSecu !== undefined) utilisateur.niveauValidationSecu = req.body.niveauValidationSecu;
 
     // Champs spécifiques aux chauffeurs
     if (req.body.prenom != null) utilisateur.prenom = req.body.prenom;
