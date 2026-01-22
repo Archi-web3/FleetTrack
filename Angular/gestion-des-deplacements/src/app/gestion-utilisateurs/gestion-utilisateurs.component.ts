@@ -53,10 +53,14 @@ export class GestionUtilisateursComponent implements OnInit {
       date: null
     },
     vehiculeAttitre: '',
-    projet: 'Support'
+    projet: 'Support',
+    numeroEmploye: '',
+    niveauValidationSecu: 1
   };
   selectedUser: any = null; // Pour la modification
   profiles = ['Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur']; // Profils possibles
+
+  securityLevels = [1, 2, 3, 4, 5]; // Niveaux de validation sécurité
   userProfile: string | null = null;
   userPaysId: string | null = null;
   bases: any[] = []; // Liste des bases
@@ -197,7 +201,9 @@ export class GestionUtilisateursComponent implements OnInit {
             date: null
           },
           vehiculeAttitre: '',
-          projet: 'Support'
+          projet: 'Support',
+          numeroEmploye: '',
+          niveauValidationSecu: 1
         };
         if (this.userProfile === 'Admin') {
           this.loadBases(this.userPaysId!);

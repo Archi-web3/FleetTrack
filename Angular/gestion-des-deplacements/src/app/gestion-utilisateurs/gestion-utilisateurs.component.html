@@ -18,6 +18,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Numéro Employé</mat-label>
+          <input matInput type="text" name="newUserNumeroEmploye" [(ngModel)]="newUser.numeroEmploye">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>Numéro de téléphone</mat-label>
           <input matInput type="tel" name="newUserTelephone" [(ngModel)]="newUser.telephone"
             [required]="newUser.profil === 'Chauffeur'">
@@ -38,6 +43,14 @@
           <mat-select name="newUserProfile" [(ngModel)]="newUser.profil" (selectionChange)="onProfilChange()" required>
             <mat-option *ngFor="let profile of profiles" [value]="profile">{{ profile }}</mat-option>
           </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Niveau Validation Sécurité</mat-label>
+          <mat-select name="newUserSecurityLevel" [(ngModel)]="newUser.niveauValidationSecu" required>
+            <mat-option *ngFor="let level of securityLevels" [value]="level">{{ level }}</mat-option>
+          </mat-select>
+          <mat-hint>Niveau maximum que cet utilisateur peut valider</mat-hint>
         </mat-form-field>
 
         <!-- Sélecteur de Pays pour SuperAdmin -->
@@ -135,6 +148,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Numéro Employé</mat-label>
+          <input matInput type="text" name="editUserNumeroEmploye" [(ngModel)]="selectedUser.numeroEmploye">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>Numéro de téléphone</mat-label>
           <input matInput type="tel" name="editUserTelephone" [(ngModel)]="selectedUser.telephone"
             [required]="selectedUser.profil === 'Chauffeur'">
@@ -155,6 +173,14 @@
           <mat-select name="editUserProfile" [(ngModel)]="selectedUser.profil" required>
             <mat-option *ngFor="let profile of profiles" [value]="profile">{{ profile }}</mat-option>
           </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
+          <mat-label>Niveau Validation Sécurité</mat-label>
+          <mat-select name="editUserSecurityLevel" [(ngModel)]="selectedUser.niveauValidationSecu" required>
+            <mat-option *ngFor="let level of securityLevels" [value]="level">{{ level }}</mat-option>
+          </mat-select>
+          <mat-hint>Niveau maximum que cet utilisateur peut valider</mat-hint>
         </mat-form-field>
 
         <!-- === CHAMPS SPÉCIFIQUES CHAUFFEUR (EDIT) === -->
@@ -256,6 +282,10 @@
       style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
       <div>
         <strong>{{ user.nom }} {{ user.prenom }}</strong> ({{ user.email }}) - {{ user.profil }}
+        <span *ngIf="user.numeroEmploye" style="color: #666; font-size: 0.9em;"> [ID: {{ user.numeroEmploye }}]</span>
+        <span
+          style="display:inline-block; background-color: #eee; padding: 2px 5px; border-radius: 4px; font-size: 0.8em; margin-left: 5px;"
+          title="Niveau Validation Sécurité">Sec: {{ user.niveauValidationSecu || 1 }}</span>
         <span *ngIf="user.projet" style="color: #005fb6; font-weight: 500;"> - Projet: {{ user.projet }}</span>
         <span *ngIf="user.telephone"> - Tel: {{ user.telephone }}</span>
         <span *ngIf="user.profil === 'Chauffeur' && user.permis"> - Permis: {{ user.permis }}</span>

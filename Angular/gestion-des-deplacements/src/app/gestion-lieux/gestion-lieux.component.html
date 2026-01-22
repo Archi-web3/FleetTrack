@@ -53,8 +53,14 @@
         <small style="color: #666;">Le lieu sera automatiquement affecté à votre base</small>
       </div>
       <div style="margin-bottom: 10px;">
-        <input type="checkbox" id="newLieuSensible" name="newLieuSensible" [(ngModel)]="newLieu.estSensible">
-        <label for="newLieuSensible">Lieu sensible</label>
+        <label for="newLieuSensible">Niveau de sécurité:</label>
+        <select id="newLieuSensible" name="newLieuSensible" [(ngModel)]="newLieu.niveauSecurite" required
+          style="width: 100%; padding: 8px;">
+          <option *ngFor="let level of securityLevels" [value]="level.level" [style.background-color]="level.color"
+            [style.color]="level.level === 5 ? 'white' : 'black'">
+            {{ level.label }}
+          </option>
+        </select>
       </div>
       <button type="submit" [disabled]="!lieuForm.form.valid"
         style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Créer
@@ -86,8 +92,14 @@
           [(ngModel)]="selectedLieu.coordonnees.longitude" required style="width: 48%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <input type="checkbox" id="editLieuSensible" name="editLieuSensible" [(ngModel)]="selectedLieu.estSensible">
-        <label for="editLieuSensible">Lieu sensible</label>
+        <label for="editLieuSensible">Niveau de sécurité:</label>
+        <select id="editLieuSensible" name="editLieuSensible" [(ngModel)]="selectedLieu.niveauSecurite" required
+          style="width: 100%; padding: 8px;">
+          <option *ngFor="let level of securityLevels" [value]="level.level" [style.background-color]="level.color"
+            [style.color]="level.level === 5 ? 'white' : 'black'">
+            {{ level.label }}
+          </option>
+        </select>
       </div>
       <button type="submit" [disabled]="!editLieuForm.form.valid"
         style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Mettre
@@ -113,7 +125,13 @@
       <div>
         <strong>{{ lieu.nom }}</strong> ({{ lieu.adresse }}) - Lat: {{ lieu.coordonnees.latitude }}, Long: {{
         lieu.coordonnees.longitude }}
-        <span *ngIf="lieu.estSensible" style="color: red; margin-left: 10px;">(Sensible)</span>
+        <span *ngFor="let level of securityLevels">
+          <span *ngIf="lieu.niveauSecurite === level.level" [style.background-color]="level.color"
+            [style.color]="level.level === 5 ? 'white' : 'black'"
+            style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; font-weight: bold;">
+            {{ level.label }}
+          </span>
+        </span>
       </div>
       <div>
         <button (click)="selectLieu(lieu)"

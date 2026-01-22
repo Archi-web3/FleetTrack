@@ -14,6 +14,10 @@ const utilisateurSchema = new mongoose.Schema({
   pays: { type: mongoose.Schema.Types.ObjectId, ref: 'Pays' },
   base: { type: mongoose.Schema.Types.ObjectId, ref: 'Base' },
 
+  // Info Pro
+  numeroEmploye: { type: String },
+  niveauValidationSecu: { type: Number, enum: [1, 2, 3, 4, 5], default: 1 }, // Jusqu'à quel niveau cet utilisateur peut valider (ex: 3 = peut valider 1, 2 et 3)
+
   // Champs spécifiques aux chauffeurs
   prenom: { type: String },
   telephone: { type: String },

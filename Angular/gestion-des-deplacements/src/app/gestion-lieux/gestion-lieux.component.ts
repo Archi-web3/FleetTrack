@@ -14,7 +14,7 @@ import { AdminService } from '../admin.service';
 })
 export class GestionLieuxComponent implements OnInit {
   lieux: any[] = [];
-  newLieu: any = { nom: '', adresse: '', coordonnees: { latitude: 0, longitude: 0 }, estSensible: false, pays: '', base: '' };
+  newLieu: any = { nom: '', adresse: '', coordonnees: { latitude: 0, longitude: 0 }, estSensible: false, niveauSecurite: 1, pays: '', base: '' };
   selectedLieu: any = null;
   userProfile: string | null = null;
   userPaysId: string | null = null;
@@ -23,6 +23,15 @@ export class GestionLieuxComponent implements OnInit {
   // Pour SuperAdmin
   paysList: any[] = [];
   basesList: any[] = [];
+
+  // Niveaux de sécurité
+  securityLevels = [
+    { level: 1, color: '#4CAF50', label: '1 - Stable (Vert)' },
+    { level: 2, color: '#FFEB3B', label: '2 - Modéré (Jaune)' },
+    { level: 3, color: '#FF9800', label: '3 - Difficile (Orange)' },
+    { level: 4, color: '#F44336', label: '4 - Élevé (Rouge)' },
+    { level: 5, color: '#000000', label: '5 - Extrême (Noir)' }
+  ];
 
   // Pour filtrage
   showAllBasesInPays: boolean = false; // Option pour voir les lieux d'autres bases du même pays
@@ -134,6 +143,7 @@ export class GestionLieuxComponent implements OnInit {
           adresse: '',
           coordonnees: { latitude: 0, longitude: 0 },
           estSensible: false,
+          niveauSecurite: 1,
           pays: this.userProfile === 'SuperAdmin' ? '' : this.userPaysId,
           base: this.userProfile === 'SuperAdmin' ? '' : this.userBaseId
         };

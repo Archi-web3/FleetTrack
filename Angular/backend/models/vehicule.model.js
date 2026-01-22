@@ -57,10 +57,47 @@ const vehiculeSchema = new mongoose.Schema({
   // Mileage
 
 
-  // Status
-  enService: { type: Boolean, default: true },
+  // Status / Archivage
+  statut: { type: String, enum: ['En Service', 'Hors Service', 'Vendu', 'Archivé', 'Restitué'], default: 'En Service' },
+  archivedAt: { type: Date }, // Date d'archivage
+
+  // Insurance
+  assurance: {
+    nomAssureur: { type: String },
+    dateFin: { type: Date },
+    certificatUrl: { type: String } // Lien vers le fichier uploadé
+  },
+
   remarks: { type: String }
 }, { timestamps: true });
+
+// Hook pour générer automatiquement l'ID (acfCode)
+vehiculeSchema.pre('save', async function (next) {
+  if (!this.acfCode) {
+    try {
+      // Trouver le dernier véhicule créé qui a un acfCode commençant par "MOB-"
+      const lastVehicule = await this.constructor.findOne({ acfCode: { $regex: /^MOB-/ } })
+        .sort({ acfCode: -1 })
+        .limit(1);
+
+      let nextNum = 1;
+      if (lastVehicule && lastVehicule.acfCode) {
+        const parts = lastVehicule.acfCode.split('-');
+        if (parts.length === 2 && !isNaN(parts[1])) {
+          nextNum = parseInt(parts[1]) + 1;
+        }
+      }
+
+      // Formater avec 3 chiffres (ex: MOB-005)
+      this.acfCode = `MOB-${nextNum.toString().padStart(3, '0')}`;
+      console.log(`[Auto-ID] Code généré pour le nouveau véhicule: ${this.acfCode}`);
+    } catch (err) {
+      console.error("[Auto-ID] Erreur lors de la génération de l'ID:", err);
+      // Ne pas bloquer la sauvegarde, mais le code sera manquant (à gérer)
+    }
+  }
+  next();
+});
 
 const Vehicule = mongoose.model('Vehicule', vehiculeSchema);
 

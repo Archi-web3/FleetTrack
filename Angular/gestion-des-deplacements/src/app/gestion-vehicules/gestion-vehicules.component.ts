@@ -23,14 +23,17 @@ export class GestionVehiculesComponent implements OnInit {
     type: 'Voiture',
     capacitePassagers: 1,
     kilometrageInitial: 0,
-    enService: true,
+    statut: 'En Service', // Remplacera 'enService'
+    enService: true, // Garder pour compatibilité temporaire
     pays: '',
     base: '',
     emissionsCO2: { valeur: null, source: 'Constructeur' },
-    consommation: { valeur: null, source: 'Constructeur', dateTest: null }
+    consommation: { valeur: null, source: 'Constructeur', dateTest: null },
+    assurance: { nomAssureur: '', dateFin: null, certificatUrl: '' }
   };
   selectedVehicule: any = null;
   vehicleTypes: string[] = [];
+  statuses: string[] = ['En Service', 'Hors Service', 'Vendu', 'Archivé', 'Restitué'];
   userProfile: string | null = null;
   userPaysId: string | null = null;
   userBaseId: string | null = null;
@@ -138,7 +141,9 @@ export class GestionVehiculesComponent implements OnInit {
           pays: this.userProfile === 'SuperAdmin' ? '' : this.userPaysId,
           base: this.userProfile === 'SuperAdmin' ? '' : this.userBaseId,
           emissionsCO2: { valeur: null, source: 'Constructeur' },
-          consommation: { valeur: null, source: 'Constructeur', dateTest: null }
+          consommation: { valeur: null, source: 'Constructeur', dateTest: null },
+          assurance: { nomAssureur: '', dateFin: null, certificatUrl: '' },
+          statut: 'En Service'
         };
         this.loadVehicules();
       },
@@ -158,6 +163,12 @@ export class GestionVehiculesComponent implements OnInit {
     }
     if (!this.selectedVehicule.consommation) {
       this.selectedVehicule.consommation = { valeur: null, source: 'Constructeur', dateTest: null };
+    }
+    if (!this.selectedVehicule.assurance) {
+      this.selectedVehicule.assurance = { nomAssureur: '', dateFin: null, certificatUrl: '' };
+    }
+    if (!this.selectedVehicule.statut) {
+      this.selectedVehicule.statut = this.selectedVehicule.enService ? 'En Service' : 'Hors Service';
     }
   }
 
@@ -189,6 +200,45 @@ export class GestionVehiculesComponent implements OnInit {
           if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à supprimer des véhicules.');
           else alert('Erreur lors de la suppression du véhicule.');
         }
+      );
+    }
+  }
+
+  archiveVehicule(vehicule: any): void {
+    if (confirm('Voulez-vous vraiment archiver ce véhicule ? (Il ne sera plus sélectionnable pour les missions)')) {
+      const updatedVehicule = { ...vehicule, statut: 'Archivé', enService: false };
+      this.vehiculeService.updateVehicule(vehicule._id, updatedVehicule).subscribe(
+        () => {
+          alert('Véhicule archivé avec succès.');
+          this.loadVehicules();
+        },
+        error => console.error('Erreur archivage:', error)
+      );
+    }
+  }
+
+  unarchiveVehicule(vehicule: any): void {
+    const newKmStr = prompt('Pour réactiver ce véhicule, veuillez confirmer son kilométrage ACTUEL (compteur) :', vehicule.kilometrage);
+    if (newKmStr !== null) {
+      const newKm = parseFloat(newKmStr);
+      if (isNaN(newKm) || newKm < vehicule.kilometrage) {
+        alert('Kilométrage invalide. Le nouveau kilométrage doit être supérieur ou égal à l\'ancien.');
+        return;
+      }
+
+      const updatedVehicule = {
+        ...vehicule,
+        statut: 'En Service',
+        enService: true,
+        kilometrage: newKm
+      };
+
+      this.vehiculeService.updateVehicule(vehicule._id, updatedVehicule).subscribe(
+        () => {
+          alert('Véhicule désarchivé et remis en service.');
+          this.loadVehicules();
+        },
+        error => console.error('Erreur désarchivage:', error)
       );
     }
   }
