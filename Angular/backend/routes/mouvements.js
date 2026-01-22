@@ -493,6 +493,7 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     if (req.body.parentMouvement != null) mouvement.parentMouvement = req.body.parentMouvement;
     if (req.body.enfantsMouvements != null) mouvement.enfantsMouvements = req.body.enfantsMouvements;
     if (req.body.isRoundTrip != null) mouvement.isRoundTrip = req.body.isRoundTrip; // NOUVEAU
+    if (req.body.projetsVentilation != null) mouvement.projetsVentilation = req.body.projetsVentilation; // NOUVEAU : Correction manuelle ventilation
 
     const mouvementMisAJour = await mouvement.save();
     res.json(mouvementMisAJour);

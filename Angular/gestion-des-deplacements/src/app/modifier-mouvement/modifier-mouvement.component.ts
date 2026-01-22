@@ -116,6 +116,26 @@ export class ModifierMouvementComponent implements OnInit {
     return date.toISOString().slice(0, 16);
   }
 
+  // --- Gestion de la Ventilation Financière ---
+  addVentilationItem(): void {
+    if (!this.mouvement.projetsVentilation) {
+      this.mouvement.projetsVentilation = [];
+    }
+    this.mouvement.projetsVentilation.push({ projet: '', percentage: 0 });
+  }
+
+  removeVentilationItem(index: number): void {
+    if (this.mouvement.projetsVentilation) {
+      this.mouvement.projetsVentilation.splice(index, 1);
+    }
+  }
+
+  get totalVentilation(): number {
+    if (!this.mouvement.projetsVentilation) return 0;
+    return this.mouvement.projetsVentilation.reduce((acc: number, item: any) => acc + item.percentage, 0);
+  }
+
+
   onSubmit(): void {
     if (!this.mouvementId) return;
 

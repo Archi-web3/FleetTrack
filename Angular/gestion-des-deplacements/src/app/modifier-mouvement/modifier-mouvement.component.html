@@ -93,6 +93,40 @@
       </select>
     </div>
 
+    <!-- Ventilation Financière (Module 2) -->
+    <div
+      style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background-color: #fafafa;">
+      <h3 style="margin-top: 0; font-size: 1.1em; color: #333;">💰 Ventilation Financière</h3>
+      <p style="font-size: 0.9em; color: #666;">Répartition automatique basée sur les passagers. Vous pouvez corriger
+        manuellement.</p>
+
+      <div *ngFor="let item of mouvement.projetsVentilation; let i = index; trackBy: index"
+        style="display: flex; gap: 10px; margin-bottom: 5px; align-items: center;">
+        <div style="flex: 1;">
+          <input type="text" [(ngModel)]="item.projet" name="projet_{{i}}" placeholder="Nom du projet"
+            style="width: 100%; padding: 5px;">
+        </div>
+        <div style="width: 80px;">
+          <input type="number" [(ngModel)]="item.percentage" name="percent_{{i}}" placeholder="%" min="0" max="100"
+            style="width: 100%; padding: 5px;">
+        </div>
+        <button type="button" (click)="removeVentilationItem(i)"
+          style="background: #ff5252; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">X</button>
+      </div>
+
+      <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" (click)="addVentilationItem()"
+          style="background: #4caf50; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">+
+          Ajouter Projet</button>
+        <div [style.color]="totalVentilation !== 100 ? 'red' : 'green'" style="font-weight: bold;">
+          Total: {{ totalVentilation }}%
+        </div>
+      </div>
+      <div *ngIf="totalVentilation !== 100" style="color: red; font-size: 0.8em; margin-top: 5px;">
+        ⚠️ Le total doit être égal à 100%.
+      </div>
+    </div>
+
     <!-- Statut (visible seulement pour Admin/Superviseur) -->
     <div *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur'"
       style="margin-bottom: 10px;">
