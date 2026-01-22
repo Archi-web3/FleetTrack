@@ -33,6 +33,24 @@ const mouvementSchema = new mongoose.Schema({
   // Liste des projets de tous les passagers (pour mouvements consolidés multi-projets)
   projetsPassagers: [{ type: String }], // Array des codes projets uniques des passagers
 
+  // Mode de Transport (Module 2)
+  modeTransport: { type: String, enum: ['Routier', 'Aérien', 'Maritime'], default: 'Routier' },
+
+  // Validation Avancée (Module 2)
+  validationLevelRequired: { type: Number, default: 0 }, // 0 = Pas de restriction, 1-5 = Niveau de danger max du trajet
+  validationHistory: [{
+    validatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
+    validatedAt: { type: Date, default: Date.now },
+    level: { type: Number }, // Niveau de sécurité que l'utilisateur avait le droit de valider
+    status: { type: String } // 'validé' ou 'refusé'
+  }],
+
+  // Gestion Financière (Module 2)
+  projetsVentilation: [{
+    projet: { type: String },
+    percentage: { type: Number }
+  }],
+
   isRoundTrip: { type: Boolean, default: false }, // NOUVEAU CHAMP : Indique si c'est un aller-retour simple
 
   // Ces champs sont dérivés des stops, mais maintenus pour des recherches rapides ou des affichages sommaires

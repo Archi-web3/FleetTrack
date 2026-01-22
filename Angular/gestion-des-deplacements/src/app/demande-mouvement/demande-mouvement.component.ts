@@ -29,8 +29,11 @@ export class DemandeMouvementComponent implements OnInit {
     chauffeur: null as string | null, // <<< MODIFIÉ : Peut être null
     passagers: [] as string[], // NOUVEAU : Champ pour les passagers (IDs)
     materiel: '', // Exemple, si vous voulez l'ajouter au formulaire
-    objectif: ''
+    objectif: '',
+    modeTransport: 'Routier' // Module 2 : Mode de transport par défaut
   };
+
+  transportModes: string[] = ['Routier', 'Aérien', 'Maritime'];
 
   utilisateurs: any[] = [];
   vehicules: any[] = [];
@@ -284,5 +287,55 @@ export class DemandeMouvementComponent implements OnInit {
       console.error('Erreur générale dans onSubmit (création lieu ou mouvement):', error);
       alert('Une erreur est survenue lors du processus de soumission: ' + (error.message || ''));
     }
+  }
+  // Helper pour obtenir les infos de sécurité d'un lieu
+  getLieuSecurityInfo(lieuId: string): { level: number, label: string, color: string } | null {
+    if (!lieuId) return null;
+    const lieu = this.lieux.find(l => l._id === lieuId);
+    if (!lieu) return null;
+
+    // Si le lieu a un niveau défini, l'utiliser. Sinon, baser sur estSensible
+    const level = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
+
+    let label = 'Inconnu';
+    let color = '#757575'; // Gris
+
+    switch (level) {
+      case 1: label = 'Stable'; color = '#4CAF50'; break; // Vert
+      case 2: label = 'Modéré'; color = '#FFC107'; break; // Jaune
+      case 3: label = 'Difficile'; color = '#FF9800'; break; // Orange
+      case 4: label = 'Élevé'; color = '#F44336'; break; // Rouge
+      case 5: label = 'Extrême'; color = '#212121'; break; // Noir
+    }
+
+    return { level, label, color };
+  }
+
+  // Calcul du niveau max du trajet (pour info utilisateur)
+  getMaxSecurityLevel(): { level: number, label: string, color: string } | null {
+    let maxLevel = 0;
+    let maxInfo = null;
+
+    // Vérifier depart et arrivée
+    const idsToCheck = [];
+    if (this.mouvement.lieuDepart) idsToCheck.push(this.mouvement.lieuDepart);
+    if (this.mouvement.lieuArrivee) idsToCheck.push(this.mouvement.lieuArrivee);
+
+    // Vérifier les étapes
+    if (this.etapes) {
+      this.etapes.forEach(e => {
+        if (e.lieu) idsToCheck.push(e.lieu);
+      });
+    }
+
+    idsToCheck.forEach(id => {
+      const info = this.getLieuSecurityInfo(id);
+      if (info && info.level > maxLevel) {
+        maxLevel = info.level;
+        maxInfo = info;
+      }
+    });
+
+    return maxInfo;
   }
 }

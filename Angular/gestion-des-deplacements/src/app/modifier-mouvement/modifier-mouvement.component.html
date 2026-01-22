@@ -84,6 +84,15 @@
         style="width: 100%; padding: 8px;">
     </div>
 
+    <!-- Mode de Transport (Module 2) -->
+    <div style="margin-bottom: 10px;">
+      <label for="modeTransport">Mode de Transport:</label>
+      <select id="modeTransport" name="modeTransport" [(ngModel)]="mouvement.modeTransport" required
+        style="width: 100%; padding: 8px;">
+        <option *ngFor="let mode of transportModes" [value]="mode">{{ mode }}</option>
+      </select>
+    </div>
+
     <!-- Statut (visible seulement pour Admin/Superviseur) -->
     <div *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur'"
       style="margin-bottom: 10px;">

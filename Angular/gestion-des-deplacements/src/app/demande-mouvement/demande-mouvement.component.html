@@ -158,6 +158,25 @@
     </div>
  ... -->
     <div style="margin-bottom: 10px;">
+      <label for="modeTransport">Mode de Transport:</label>
+      <select id="modeTransport" name="modeTransport" [(ngModel)]="mouvement.modeTransport" required
+        style="width: 100%; padding: 8px;">
+        <option *ngFor="let mode of transportModes" [value]="mode">{{ mode }}</option>
+      </select>
+    </div>
+
+    <!-- Alerte Niveau de Risque Trajet -->
+    <div *ngIf="getMaxSecurityLevel() as risk" [style.background-color]="risk.level >= 3 ? '#fff3cd' : '#d4edda'"
+      style="padding: 10px; margin-bottom: 10px; border-radius: 5px; border-left: 5px solid;"
+      [style.border-left-color]="risk.color">
+      <strong>Niveau de risque du trajet :</strong>
+      <span [style.color]="risk.color" style="font-weight: bold;"> {{ risk.level }} - {{ risk.label }}</span>
+      <div *ngIf="risk.level >= 3" style="font-size: 0.9em; margin-top: 5px;">
+        ⚠️ Ce trajet nécessite une validation sécuritaire renforcée.
+      </div>
+    </div>
+
+    <div style="margin-bottom: 10px;">
       <label for="objectif">Objectif du déplacement:</label>
       <input type="text" id="objectif" name="objectif" [(ngModel)]="mouvement.objectif" required
         style="width: 100%; padding: 8px;">

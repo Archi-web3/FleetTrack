@@ -40,6 +40,13 @@ export class MouvementService {
     return this.http.put<any>(`${this.apiUrl}/${id}`, mouvementData, { headers });
   }
 
+  // VALIDATION SÉCURISÉE (MODULE 2)
+  validateMouvement(id: string): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.put<any>(`${this.apiUrl}/${id}/validate`, {}, { headers });
+  }
+
   deleteMouvement(id: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');

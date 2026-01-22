@@ -104,24 +104,39 @@ export class ValidationMouvementsComponent implements OnInit {
   }
 
   validerMouvement(mouvementId: string, currentStatut: string): void {
-    let nouveauStatut = 'validé'; // Statut par défaut après validation logistique
 
-    // Si le mouvement est en attente de validation sécurité, le prochain statut est 'en attente' pour la logistique
+    // CAS 1 : Validation SÉCURITÉ (Module 2)
     if (currentStatut === 'en attente validation sécurité') {
-      nouveauStatut = 'en attente';
+      console.log('🛡️ [VALIDATION] Tentative de validation sécurisée...');
+      this.mouvementService.validateMouvement(mouvementId).subscribe(
+        (response) => {
+          alert('Validation de sécurité effectuée avec succès ! Le mouvement est maintenant en attente logistique.');
+          this.loadMouvementsPourValidation();
+        },
+        (error) => {
+          console.error('Erreur validation sécurité:', error);
+          if (error.status === 403) {
+            alert('⛔ REFUSÉ : ' + (error.error?.message || 'Votre niveau de validation est insuffisant pour ce trajet à risque.'));
+          } else {
+            alert('Erreur lors de la validation sécurité. Vérifiez la console.');
+          }
+        }
+      );
     }
-
-    this.mouvementService.updateMouvement(mouvementId, { statut: nouveauStatut }).subscribe(
-      (response) => {
-        alert(`Mouvement ${nouveauStatut === 'validé' ? 'validé' : 'passé en attente logistique'} avec succès !`);
-        this.loadMouvementsPourValidation(); // Recharger les listes après l'action
-      },
-      (error) => {
-        console.error('Erreur validation mouvement:', error);
-        if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à valider ce mouvement.');
-        else alert('Erreur lors de la validation. Vérifiez la console.');
-      }
-    );
+    // CAS 2 : Validation LOGISTIQUE (Classique)
+    else {
+      const nouveauStatut = 'validé';
+      this.mouvementService.updateMouvement(mouvementId, { statut: nouveauStatut }).subscribe(
+        (response) => {
+          alert(`Mouvement validé logistiquement avec succès !`);
+          this.loadMouvementsPourValidation();
+        },
+        (error) => {
+          console.error('Erreur validation logistique:', error);
+          alert('Erreur lors de la validation. Vérifiez la console.');
+        }
+      );
+    }
   }
 
   refuserMouvement(mouvementId: string): void {

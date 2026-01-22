@@ -38,6 +38,7 @@ export class ModifierMouvementComponent implements OnInit {
   vehicules: any[] = [];
   chauffeurs: any[] = [];
   lieux: any[] = [];
+  transportModes: string[] = ['Routier', 'Aérien', 'Maritime'];
   mouvementStatuts = ['en attente', 'en attente validation sécurité', 'validé', 'en cours', 'terminé', 'annulé', 'refusé'];
 
   // Ces variables sont pour gérer les nouveaux lieux, mais ici on les désactive

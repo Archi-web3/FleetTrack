@@ -14,6 +14,20 @@
       <p><strong>ID Mouvement:</strong> {{ mouvement._id }}</p>
       <p><strong>Statut:</strong> {{ mouvement.statut | titlecase }}</p>
 
+      <!-- NOUVEAU: Affichage du niveau de risque -->
+      <div *ngIf="mouvement.validationLevelRequired" style="margin-bottom: 10px;">
+        <strong>Niveau de Risque:</strong>
+        <span
+          [ngStyle]="{'color': mouvement.validationLevelRequired >= 3 ? '#d32f2f' : '#388e3c', 'font-weight': 'bold'}">
+          {{ mouvement.validationLevelRequired }}
+          <span *ngIf="mouvement.validationLevelRequired === 1">(Stable)</span>
+          <span *ngIf="mouvement.validationLevelRequired === 2">(Modéré)</span>
+          <span *ngIf="mouvement.validationLevelRequired === 3">(Difficile)</span>
+          <span *ngIf="mouvement.validationLevelRequired === 4">(Élevé)</span>
+          <span *ngIf="mouvement.validationLevelRequired === 5">(Extrême)</span>
+        </span>
+      </div>
+
       <!-- Affichage des lieux via stops -->
       <p *ngIf="mouvement.stops && mouvement.stops.length > 0">
         <strong>Départ:</strong> {{ mouvement.stops[0].lieu?.nom }} ({{ mouvement.stops[0].lieu?.adresse }})

@@ -219,14 +219,33 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       console.log(`  - Lieu: ${lieu.nom}, Sensible: ${lieu.estSensible}`);
     });
 
-    const estLieuSensible = lieuxImpliques.some(lieu => lieu.estSensible);
-    console.log('🆕 [CREATE MOUVEMENT] Contient un lieu sensible?', estLieuSensible);
+    // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ (Module 2) ---
+    // Calculer le niveau de risque maximum du trajet
+    let maxSecurityLevel = 0;
+    lieuxImpliques.forEach(lieu => {
+      // Si niveauSecurite n'existe pas encore sur le lieu, on assume 1 (Stable)
+      const niveau = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
+      if (niveau > maxSecurityLevel) {
+        maxSecurityLevel = niveau;
+      }
+    });
 
-    if (estLieuSensible) {
+    console.log(`🔒 [CREATE MOUVEMENT] Niveau de sécurité MAX du trajet: ${maxSecurityLevel}`);
+
+    // Si niveau > 1 (Stable), ça nécessite une validation sécurité spécifique si configuré ainsi. 
+    // Pour l'instant, on garde la logique que tout ce qui est sensible (>1 ?) nécessite validation secu.
+    // Ou alors on stocke le niveau requis et le flow dépendra de ça.
+
+    // Si le niveau est élevé (> 1), on peut forcer un statut spécial ou juste stocker le niveau.
+    const validationLevelRequired = maxSecurityLevel;
+
+    // Logique simplifiée temporaire compatible avec l'existant :
+    // Si niveau >= 3 (Difficile/Sensible ancien), on met en attente validation sécu
+    if (validationLevelRequired >= 3) { // 3 correspond à "Difficile" ou ancien "Sensible"
       statutInitial = 'en attente validation sécurité';
-      console.log('🔒 [CREATE MOUVEMENT] Statut assigné: "en attente validation sécurité"');
+      console.log('🔒 [CREATE MOUVEMENT] Risque élevé détecté -> Statut: "en attente validation sécurité"');
     } else {
-      console.log('✅ [CREATE MOUVEMENT] Statut assigné: "en attente"');
+      console.log('✅ [CREATE MOUVEMENT] Risque faible/moyen -> Statut: "en attente"');
     }
     // --- FIN NOUVELLE LOGIQUE ---
 
@@ -240,7 +259,11 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       objectif: req.body.objectif,
       projet: req.body.projet,
       statut: statutInitial, // Utiliser le statut déterminé par la logique de sécurité
-      isRoundTrip: req.body.isRoundTrip // Récupérer l'information aller-retour
+      isRoundTrip: req.body.isRoundTrip, // Récupérer l'information aller-retour
+      // Nouveaux champs Module 2
+      modeTransport: req.body.modeTransport,
+      validationLevelRequired: maxSecurityLevel, // On stocke le niveau max calculé
+      projetsVentilation: req.body.projetsVentilation
     });
 
     if (!mouvement.demandeur) {
@@ -492,99 +515,142 @@ router.put('/mouvements/:id/start', auth(), countryFilter, async (req, res) => {
     console.error('❌ [START MOUVEMENT] Erreur:', err);
     return res.status(500).json({ message: err.message });
   }
-});
+  // VALIDATION SÉCURISÉE (MODULE 2)
+  router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) => {
+    try {
+      console.log('🛡️ [VALIDATE MOUVEMENT] Tentative de validation:', req.params.id);
+      console.log('🛡️ [VALIDATE MOUVEMENT] Valideur:', req.utilisateur.nom, 'Niveau:', req.utilisateur.niveauValidationSecu);
 
-// GET /api/mouvements/suggestions/:id - Suggestions de regroupement (placeholder)
-router.get('/mouvements/suggestions/:id', auth(), async (req, res) => {
-  try {
-    // Pour l'instant, retourner un tableau vide
-    // Cette fonctionnalité pourrait être implémentée plus tard pour suggérer
-    // des mouvements similaires à regrouper
-    res.json([]);
-  } catch (err) {
-    console.error("Erreur GET /mouvements/suggestions/:id:", err);
-    return res.status(500).json({ message: err.message });
-  }
-});
-
-// SUPPRESSION D'UN MOUVEMENT (PROTÉGÉE PAR RÔLE : Admin et SuperAdmin peuvent supprimer)
-router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), countryFilter, async (req, res) => {
-  try {
-    const mouvement = await Mouvement.findById(req.params.id);
-    if (mouvement == null) {
-      return res.status(404).json({ message: 'Cannot find movement' });
-    }
-    const vehiculeId = mouvement.vehicule;
-    await mouvement.deleteOne();
-
-    // Recalculer le kilométrage du véhicule après suppression
-    if (vehiculeId) {
-      try {
-        const { recalculateVehicleMileage } = require('../utils/mileage-sync');
-        await recalculateVehicleMileage(vehiculeId);
-      } catch (syncErr) {
-        console.error('Erreur lors de la synchro kilométrage après suppression:', syncErr);
+      const mouvement = await Mouvement.findById(req.params.id);
+      if (!mouvement) {
+        return res.status(404).json({ message: 'Mouvement non trouvé' });
       }
-    }
 
-    res.json({ message: 'Mouvement supprimé' });
-  } catch (err) {
-    console.error("Erreur DELETE /mouvements/:id:", err);
-    return res.status(500).json({ message: err.message });
-  }
-});
+      // 1. Vérifier si le mouvement nécessite une validation spéciale
+      const requiredLevel = mouvement.validationLevelRequired || 1; // Défaut à 1 (Stable)
+      console.log('🛡️ [VALIDATE MOUVEMENT] Niveau requis:', requiredLevel);
 
-// NETTOYAGE DES MOUVEMENTS FANTÔMES (Mouvements 'regroupé' sans parent valide)
-router.delete('/mouvements/cleanup/ghosts', auth(['SuperAdmin', 'Admin']), async (req, res) => {
-  try {
-    console.log('🧹 [CLEANUP GHOSTS] Démarrage du nettoyage des mouvements regroupés orphelins...');
-
-    // 1. Trouver les mouvements potentiellement orphelins (statut 'regroupé')
-    // Populating parentMouvement permet de voir s'il est null (car supprimé) ou présent
-    const mouvementsGroupes = await Mouvement.find({ statut: 'regroupé' }).populate('parentMouvement');
-
-    console.log(`🧹 [CLEANUP GHOSTS] ${mouvementsGroupes.length} mouvements regroupés trouvés au total.`);
-
-    const ghostsToDelete = [];
-
-    for (const m of mouvementsGroupes) {
-      // Un mouvement est orphelin si:
-      // - Il a un parentMouvement ID défini
-      // - MAIS le document parent n'a pas été trouvé par le populate (donc null)
-      // - OU s'il n'a carrément pas de parentMouvement alors qu'il est 'regroupé'
-
-      // Note: mongoose populate retourne null si l'ID référencé n'existe plus
-      if (!m.parentMouvement && m.parentMouvement !== undefined) {
-        // Double vérification par ID brut au cas où populate n'a pas été demandé explicitement pour certains champs
-        // Mais ici on l'a demandé donc m.parentMouvement est l'objet ou null.
-
-        /* Cas subtil: si le champ parentMouvement n'existe pas du tout sur le doc, c'est aussi un fantôme
-           car un 'regroupé' doit avoir un parent.
-        */
-
-        ghostsToDelete.push(m._id);
+      // 2. Vérifier si l'utilisateur a le droit de valider ce niveau
+      // Le niveau de l'utilisateur doit être >= au niveau de risque du trajet
+      if (req.utilisateur.niveauValidationSecu < requiredLevel) {
+        console.warn('⛔ [VALIDATE MOUVEMENT] Accès refusé: Niveau insuffisant.');
+        return res.status(403).json({
+          message: `Validation impossible. Ce trajet de niveau ${requiredLevel} nécessite une habilitation de sécurité supérieure à la vôtre (${req.utilisateur.niveauValidationSecu}).`
+        });
       }
-    }
 
-    console.log(`🧹 [CLEANUP GHOSTS] ${ghostsToDelete.length} orphelins détectés (fantômes) à supprimer.`);
+      // 3. Procéder à la validation
+      mouvement.statut = 'validé';
 
-    if (ghostsToDelete.length > 0) {
-      const result = await Mouvement.deleteMany({ _id: { $in: ghostsToDelete } });
-      console.log(`✅ [CLEANUP GHOSTS] ${result.deletedCount} mouvements supprimés.`);
-      return res.json({
-        message: 'Nettoyage terminé',
-        deletedCount: result.deletedCount,
-        ghostsFound: ghostsToDelete.length
+      // Historique de validation (Tracing)
+      mouvement.validationHistory.push({
+        validatedBy: req.utilisateur.id,
+        validatedAt: new Date(),
+        level: requiredLevel,
+        status: 'validé'
       });
-    } else {
-      console.log('✅ [CLEANUP GHOSTS] Aucun fantôme trouvé.');
-      return res.json({ message: 'Aucun mouvement fantôme trouvé', deletedCount: 0 });
+
+      const mouvementValide = await mouvement.save();
+      console.log('✅ [VALIDATE MOUVEMENT] Validé avec succès par:', req.utilisateur.nom);
+
+      res.json(mouvementValide);
+    } catch (err) {
+      console.error('❌ [VALIDATE MOUVEMENT] Erreur:', err);
+      return res.status(500).json({ message: err.message });
     }
+  });
 
-  } catch (err) {
-    console.error("❌ [CLEANUP GHOSTS] Erreur:", err);
-    return res.status(500).json({ message: err.message });
-  }
-});
+  // GET /api/mouvements/suggestions/:id - Suggestions de regroupement (placeholder)
+  router.get('/mouvements/suggestions/:id', auth(), async (req, res) => {
+    try {
+      // Pour l'instant, retourner un tableau vide
+      // Cette fonctionnalité pourrait être implémentée plus tard pour suggérer
+      // des mouvements similaires à regrouper
+      res.json([]);
+    } catch (err) {
+      console.error("Erreur GET /mouvements/suggestions/:id:", err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
 
-module.exports = router;
+  // SUPPRESSION D'UN MOUVEMENT (PROTÉGÉE PAR RÔLE : Admin et SuperAdmin peuvent supprimer)
+  router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), countryFilter, async (req, res) => {
+    try {
+      const mouvement = await Mouvement.findById(req.params.id);
+      if (mouvement == null) {
+        return res.status(404).json({ message: 'Cannot find movement' });
+      }
+      const vehiculeId = mouvement.vehicule;
+      await mouvement.deleteOne();
+
+      // Recalculer le kilométrage du véhicule après suppression
+      if (vehiculeId) {
+        try {
+          const { recalculateVehicleMileage } = require('../utils/mileage-sync');
+          await recalculateVehicleMileage(vehiculeId);
+        } catch (syncErr) {
+          console.error('Erreur lors de la synchro kilométrage après suppression:', syncErr);
+        }
+      }
+
+      res.json({ message: 'Mouvement supprimé' });
+    } catch (err) {
+      console.error("Erreur DELETE /mouvements/:id:", err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
+
+  // NETTOYAGE DES MOUVEMENTS FANTÔMES (Mouvements 'regroupé' sans parent valide)
+  router.delete('/mouvements/cleanup/ghosts', auth(['SuperAdmin', 'Admin']), async (req, res) => {
+    try {
+      console.log('🧹 [CLEANUP GHOSTS] Démarrage du nettoyage des mouvements regroupés orphelins...');
+
+      // 1. Trouver les mouvements potentiellement orphelins (statut 'regroupé')
+      // Populating parentMouvement permet de voir s'il est null (car supprimé) ou présent
+      const mouvementsGroupes = await Mouvement.find({ statut: 'regroupé' }).populate('parentMouvement');
+
+      console.log(`🧹 [CLEANUP GHOSTS] ${mouvementsGroupes.length} mouvements regroupés trouvés au total.`);
+
+      const ghostsToDelete = [];
+
+      for (const m of mouvementsGroupes) {
+        // Un mouvement est orphelin si:
+        // - Il a un parentMouvement ID défini
+        // - MAIS le document parent n'a pas été trouvé par le populate (donc null)
+        // - OU s'il n'a carrément pas de parentMouvement alors qu'il est 'regroupé'
+
+        // Note: mongoose populate retourne null si l'ID référencé n'existe plus
+        if (!m.parentMouvement && m.parentMouvement !== undefined) {
+          // Double vérification par ID brut au cas où populate n'a pas été demandé explicitement pour certains champs
+          // Mais ici on l'a demandé donc m.parentMouvement est l'objet ou null.
+
+          /* Cas subtil: si le champ parentMouvement n'existe pas du tout sur le doc, c'est aussi un fantôme
+             car un 'regroupé' doit avoir un parent.
+          */
+
+          ghostsToDelete.push(m._id);
+        }
+      }
+
+      console.log(`🧹 [CLEANUP GHOSTS] ${ghostsToDelete.length} orphelins détectés (fantômes) à supprimer.`);
+
+      if (ghostsToDelete.length > 0) {
+        const result = await Mouvement.deleteMany({ _id: { $in: ghostsToDelete } });
+        console.log(`✅ [CLEANUP GHOSTS] ${result.deletedCount} mouvements supprimés.`);
+        return res.json({
+          message: 'Nettoyage terminé',
+          deletedCount: result.deletedCount,
+          ghostsFound: ghostsToDelete.length
+        });
+      } else {
+        console.log('✅ [CLEANUP GHOSTS] Aucun fantôme trouvé.');
+        return res.json({ message: 'Aucun mouvement fantôme trouvé', deletedCount: 0 });
+      }
+
+    } catch (err) {
+      console.error("❌ [CLEANUP GHOSTS] Erreur:", err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
+
+  module.exports = router;

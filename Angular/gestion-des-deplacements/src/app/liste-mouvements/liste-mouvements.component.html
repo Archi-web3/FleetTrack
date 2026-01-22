@@ -59,6 +59,20 @@
             </li>
           </ul>
         </ng-container>
+        <!-- NOUVEAU : Affichage du niveau de risque -->
+        <div *ngIf="mouvement.validationLevelRequired" style="margin-bottom: 5px;">
+          <strong>Niveau de Risque:</strong>
+          <span
+            [ngStyle]="{'color': mouvement.validationLevelRequired >= 3 ? '#d32f2f' : '#388e3c', 'font-weight': 'bold'}">
+            {{ mouvement.validationLevelRequired }}
+            <span *ngIf="mouvement.validationLevelRequired === 1">(Stable)</span>
+            <span *ngIf="mouvement.validationLevelRequired === 2">(Modéré)</span>
+            <span *ngIf="mouvement.validationLevelRequired === 3">(Difficile)</span>
+            <span *ngIf="mouvement.validationLevelRequired === 4">(Élevé)</span>
+            <span *ngIf="mouvement.validationLevelRequired === 5">(Extrême)</span>
+          </span>
+        </div>
+
         <!-- NOUVEAU : Affichage du statut -->
         <strong>Statut:</strong> {{ mouvement.statut | titlecase }}<br>
         <!-- Utilise le pipe titlecase pour une meilleure présentation -->
