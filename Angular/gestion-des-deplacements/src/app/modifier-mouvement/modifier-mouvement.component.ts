@@ -101,6 +101,20 @@ export class ModifierMouvementComponent implements OnInit {
             dateArrivee: this.formatDateForInput(data.dateArrivee), // Formater pour input datetime-local
           };
           this.selectedPassagersIds = data.passagers ? data.passagers.map((p: any) => p._id) : [];
+
+          // Si pas de ventilation existante (anciens mouvements), on calcule automatiquement
+          if (!this.mouvement.projetsVentilation || this.mouvement.projetsVentilation.length === 0) {
+            // Un petit délai pour s'assurer que 'utilisateurs' sont chargés si ce n'est pas le cas, 
+            // mais loadData lance les appels en parallèle. 
+            // Idéalement on devrait attendre que tout soit chargé.
+            // On va vérifier si utilisateurs est vide, sinon on attend un peu ou on le fait après le chargement des utilisateurs.
+            if (this.utilisateurs.length > 0) {
+              this.calculateVentilation();
+            } else {
+              // Retry after short delay or wait for users
+              setTimeout(() => this.calculateVentilation(), 500);
+            }
+          }
         },
         (error) => console.error('Erreur chargement mouvement à modifier:', error)
       );
@@ -133,6 +147,58 @@ export class ModifierMouvementComponent implements OnInit {
   get totalVentilation(): number {
     if (!this.mouvement.projetsVentilation) return 0;
     return this.mouvement.projetsVentilation.reduce((acc: number, item: any) => acc + item.percentage, 0);
+  }
+
+  // Calcul automatique de la ventilation basé sur les passagers sélectionnés
+  calculateVentilation(): void {
+    if (!this.utilisateurs || this.utilisateurs.length === 0) return;
+    if (!this.selectedPassagersIds || this.selectedPassagersIds.length === 0) {
+      // Si aucun passager, peut-être remettre à 0 ou ne rien faire ? 
+      // On va dire que si pas de passagers, pas de ventilation auto.
+      return;
+    }
+
+    const passengerProjects: string[] = [];
+
+    this.selectedPassagersIds.forEach(id => {
+      const user = this.utilisateurs.find(u => u._id === id);
+      if (user && user.projet) {
+        passengerProjects.push(user.projet);
+      } else {
+        passengerProjects.push('Non assigné');
+      }
+    });
+
+    const totalPassengers = passengerProjects.length;
+    const projectCounts: { [key: string]: number } = {};
+
+    passengerProjects.forEach(proj => {
+      projectCounts[proj] = (projectCounts[proj] || 0) + 1;
+    });
+
+    const newVentilation = [];
+    for (const [projet, count] of Object.entries(projectCounts)) {
+      const percentage = Math.round((count / totalPassengers) * 100);
+      newVentilation.push({ projet, percentage });
+    }
+
+    // Corriger les arrondis pour avoir 100%
+    const currentTotal = newVentilation.reduce((sum, item) => sum + item.percentage, 0);
+    if (currentTotal !== 100 && newVentilation.length > 0) {
+      const diff = 100 - currentTotal;
+      // Ajouter la différence au premier item (ou au plus grand)
+      newVentilation[0].percentage += diff;
+    }
+
+    this.mouvement.projetsVentilation = newVentilation;
+  }
+
+  onPassengersChange(): void {
+    // Méthode appelée quand la sélection de passagers change
+    // On propose de recalculer la ventilation
+    if (confirm('Voulez-vous recalculer automatiquement la ventilation financière basée sur les nouveaux passagers ? (Cela écrasera la ventilation actuelle)')) {
+      this.calculateVentilation();
+    }
   }
 
 

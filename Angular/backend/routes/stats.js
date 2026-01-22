@@ -160,22 +160,43 @@ router.get('/par-projet', auth(), async (req, res) => {
                 }
             },
             { $unwind: { path: '$vehiculeInfo', preserveNullAndEmptyArrays: true } },
+            // NOUVEAU: Normaliser la ventilation
+            // Si le tableau projetsVentilation est vide ou inexistant, on crée une entrée par défaut avec le projet principal
             {
-                $group: {
-                    _id: { $ifNull: ['$projet', 'Non assigné'] }, // Utiliser le projet du mouvement
-                    kmTotaux: {
-                        $sum: {
-                            $cond: [
-                                { $and: [{ $ne: ['$startMileage', null] }, { $ne: ['$endMileage', null] }] },
-                                { $subtract: ['$endMileage', '$startMileage'] },
-                                0
-                            ]
+                $addFields: {
+                    effectiveVentilation: {
+                        $cond: {
+                            if: { $and: [{ $isArray: "$projetsVentilation" }, { $gt: [{ $size: "$projetsVentilation" }, 0] }] },
+                            then: "$projetsVentilation",
+                            else: [{
+                                projet: { $ifNull: ["$projet", "Non assigné"] },
+                                percentage: 100
+                            }]
                         }
                     },
-                    nombreMouvements: { $sum: 1 },
-                    // Collecter tous les projetsPassagers pour détecter les multi-projets
-                    allProjetsPassagers: { $push: '$projetsPassagers' },
-                    // NOUVEAU: Calculer le taux de remplissage moyen
+                    // Calculer le kilométrage brut du mouvement une seule fois
+                    rawKm: {
+                        $cond: [
+                            { $and: [{ $ne: ['$startMileage', null] }, { $ne: ['$endMileage', null] }] },
+                            { $subtract: ['$endMileage', '$startMileage'] },
+                            0
+                        ]
+                    }
+                }
+            },
+            // Dérouler (Unwind) par projet de ventilation
+            { $unwind: "$effectiveVentilation" },
+            {
+                $group: {
+                    _id: "$effectiveVentilation.projet",
+                    kmTotaux: {
+                        $sum: {
+                            $multiply: ["$rawKm", { $divide: ["$effectiveVentilation.percentage", 100] }]
+                        }
+                    },
+                    nombreMouvements: { $sum: 1 }, // Compte le nombre de fois que ce projet est impliqué
+                    // Taux de remplissage : on considère le taux du trajet, pondéré par rien (c'est une moyenne)
+                    // Ou alors on veut savoir si le projet optimise ses trajets.
                     tauxRemplissageTotal: {
                         $sum: {
                             $cond: [
@@ -195,7 +216,6 @@ router.get('/par-projet', auth(), async (req, res) => {
                             ]
                         }
                     },
-                    // Compter les mouvements avec véhicule valide pour la moyenne
                     mouvementsAvecVehicule: {
                         $sum: {
                             $cond: [
@@ -222,11 +242,6 @@ router.get('/par-projet', auth(), async (req, res) => {
             const consommation = (r.kmTotaux / 100) * 8;
             const co2 = consommation * 2.3;
 
-            // Détecter les mouvements multi-projets
-            const allProjects = r.allProjetsPassagers.flat().filter(p => p);
-            const uniqueProjects = [...new Set(allProjects)];
-            const isMultiProjet = uniqueProjects.length > 1;
-
             // Calculer le taux de remplissage moyen
             const tauxRemplissageMoyen = r.mouvementsAvecVehicule > 0
                 ? r.tauxRemplissageTotal / r.mouvementsAvecVehicule
@@ -242,8 +257,8 @@ router.get('/par-projet', auth(), async (req, res) => {
                 ratioCO2: totalCO2 > 0 ? (co2 / totalCO2 * 100) : 0,
                 ratioConsommation: totalConsommation > 0 ? (consommation / totalConsommation * 100) : 0,
                 tauxRemplissageMoyen: Math.round(tauxRemplissageMoyen * 10) / 10, // Arrondi à 1 décimale
-                isMultiProjet: isMultiProjet,
-                projetsInvolves: isMultiProjet ? uniqueProjects : []
+                isMultiProjet: false, // Désormais géré par la ventilation, chaque ligne est un projet unique
+                projetsInvolves: []
             };
         });
 
