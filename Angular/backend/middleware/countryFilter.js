@@ -16,10 +16,17 @@ const countryFilter = (req, res, next) => {
     console.log('🌍 [countryFilter] User:', req.utilisateur?.nom, '- Profil:', req.utilisateur?.profil);
     console.log('🌍 [countryFilter] Pays sélectionné:', req.selectedCountry);
 
-    // SuperAdmin : Aucun filtre (peut voir tous les pays)
+    // SuperAdmin : 
     if (req.utilisateur?.profil === 'SuperAdmin') {
-        req.countryFilter = {};
-        console.log('✅ [countryFilter] SuperAdmin détecté - Pas de filtre pays');
+        if (req.selectedCountry) {
+            // Si le SuperAdmin a sélectionné un pays, on filtre !
+            req.countryFilter = { pays: req.selectedCountry };
+            console.log('✅ [countryFilter] SuperAdmin avec pays sélectionné - Filtre appliqué:', req.countryFilter);
+        } else {
+            // Sinon, il voit tout
+            req.countryFilter = {};
+            console.log('✅ [countryFilter] SuperAdmin SANS pays sélectionné - Pas de filtre pays (Vue Globale)');
+        }
         return next();
     }
 
