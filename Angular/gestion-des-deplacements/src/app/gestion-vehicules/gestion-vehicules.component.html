@@ -372,7 +372,6 @@
         <span *ngIf="vehicule.acfCode" style="color: #005fb6; font-weight: 600;"> - N° ACF: {{ vehicule.acfCode
           }}</span>
         - Type: {{ vehicule.type }}, Capacité: {{ vehicule.capacitePassagers }}
-        <span *ngIf="!vehicule.enService" style="color: red; margin-left: 10px;">(Hors service)</span>
         <br>
         <!-- Badges environnementaux -->
         <span *ngIf="vehicule.emissionsCO2?.valeur"
