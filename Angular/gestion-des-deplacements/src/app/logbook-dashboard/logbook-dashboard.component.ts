@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http'; // Added
+import { environment } from '../../environments/environment'; // Added
 import { FormsModule } from '@angular/forms';
 import { LogbookService } from '../logbook.service';
 import { VehiculeService } from '../vehicule.service';
@@ -34,7 +36,8 @@ export class LogbookDashboardComponent implements OnInit {
         private vehiculeService: VehiculeService,
         private logbookService: LogbookService,
         private mouvementService: MouvementService,
-        private authService: AuthService
+        private authService: AuthService,
+        private http: HttpClient // Inject HttpClient
     ) { }
 
     ngOnInit(): void {
@@ -58,6 +61,13 @@ export class LogbookDashboardComponent implements OnInit {
 
     loadData(): void {
         if (!this.selectedVehiculeId) return;
+
+        // FIX: Trigger auto-repair of missing countries on every refresh
+        console.log('[LogbookDashboard] Triggering auto-repair of missing countries...');
+        this.http.post<any>(`${environment.apiUrl}/mouvements/fix-countries`, {}).subscribe({
+            next: (res) => console.log('[LogbookDashboard] Auto-repair result:', res),
+            error: (err) => console.warn('[LogbookDashboard] Auto-repair failed (non-blocking):', err)
+        });
 
         // Load Trips (Mouvements) for this vehicle
         this.mouvementService.getMouvements().subscribe(allMouvements => {
