@@ -15,6 +15,10 @@
     <li *ngFor="let mouvement of filteredMouvements"
       style="background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #005fb6;">
       <div>
+        <!-- ID du Mouvement -->
+        <div style="font-size: 0.8em; color: #888; margin-bottom: 5px;">
+          <strong>ID:</strong> {{ mouvement._id }}
+        </div>
         <!-- Affichage de l'itinéraire complet -->
         <div *ngIf="mouvement.stops && mouvement.stops.length > 0" style="margin-bottom: 10px;">
           <strong>Itinéraire:</strong>

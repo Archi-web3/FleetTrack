@@ -32,7 +32,7 @@ export class TripListComponent implements OnInit {
   selectedVehicle: any = null;
   currentUser: any = null;
 
-  displayedColumns: string[] = ['syncStatus', 'date', 'time', 'departure', 'arrival', 'passengers', 'purpose', 'actions'];
+  displayedColumns: string[] = ['id', 'syncStatus', 'date', 'time', 'departure', 'arrival', 'passengers', 'purpose', 'actions'];
   lieuxMap: Map<string, any> = new Map();
   usersMap: Map<string, any> = new Map();
 
@@ -68,9 +68,9 @@ export class TripListComponent implements OnInit {
     // Update columns based on screen size
     this.isHandset$.subscribe(isHandset => {
       if (isHandset) {
-        this.displayedColumns = ['syncStatus', 'date', 'departure', 'actions']; // Simplified for mobile
+        this.displayedColumns = ['id', 'syncStatus', 'date', 'departure', 'actions']; // Simplified for mobile
       } else {
-        this.displayedColumns = ['syncStatus', 'date', 'time', 'departure', 'arrival', 'passengers', 'purpose', 'actions'];
+        this.displayedColumns = ['id', 'syncStatus', 'date', 'time', 'departure', 'arrival', 'passengers', 'purpose', 'actions'];
       }
     });
   }

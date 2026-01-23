@@ -23,6 +23,21 @@
     <div class="table-container">
         <table mat-table [dataSource]="trips" class="trips-table">
 
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let trip">
+                    <span style="font-family: monospace; font-size: 0.8em; color: #666;">
+                        {{ trip._id | slice: -6 }}...
+                    </span>
+                    <!-- Tooltip avec l'ID complet -->
+                    <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle; cursor: help;"
+                        [matTooltip]="trip._id">
+                        info
+                    </mat-icon>
+                </td>
+            </ng-container>
+
             <!-- Sync Status Column -->
             <ng-container matColumnDef="syncStatus">
                 <th mat-header-cell *matHeaderCellDef>Sync</th>
