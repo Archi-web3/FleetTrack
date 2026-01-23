@@ -96,6 +96,13 @@ export class ActiveTripComponent implements OnInit {
       // Update form validation with loaded mileage
       this.startForm.get('startMileage')?.updateValueAndValidity();
 
+      // NOUVEAU: Pré-remplissage automatique du kilométrage
+      const currentStart = this.startForm.get('startMileage')?.value;
+      if (!currentStart && this.lastMileage > 0) {
+        this.startForm.patchValue({ startMileage: this.lastMileage });
+        console.log('✅ Kilométrage pré-rempli:', this.lastMileage);
+      }
+
       this.lieux = await this.offlineService.lieux.toArray();
       console.log('Lieux loaded from Dexie:', this.lieux);
 
