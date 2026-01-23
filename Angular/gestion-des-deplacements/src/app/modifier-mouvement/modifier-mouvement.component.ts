@@ -92,9 +92,9 @@ export class ModifierMouvementComponent implements OnInit {
         (data) => {
           this.mouvement = {
             ...data,
-            lieuDepart: data.lieuDepart?._id || '', // Utiliser l'ID du lieu
-            lieuArrivee: data.lieuArrivee?._id || '', // Utiliser l'ID du lieu
-            demandeur: data.demandeur?._id || '', // Utiliser l'ID du demandeur
+            lieuDepart: (data.stops && data.stops.length > 0) ? (data.stops[0].lieu?._id || data.stops[0].lieu) : '', // Fix: Read from stops
+            lieuArrivee: (data.stops && data.stops.length > 0) ? (data.stops[data.stops.length - 1].lieu?._id || data.stops[data.stops.length - 1].lieu) : '', // Fix: Read from stops
+            demandeur: data.demandeur?._id || data.demandeur, // Handle populated demandeur
             vehicule: data.vehicule?._id || null, // Utiliser l'ID du véhicule, ou null
             chauffeur: data.chauffeur?._id || null, // Utiliser l'ID du chauffeur, ou null
             dateDepart: this.formatDateForInput(data.dateDepart), // Formater pour input datetime-local
