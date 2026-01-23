@@ -13,6 +13,34 @@ const mailer = require('../utils/mailer');
 
 // Route pour créer un nouveau mouvement (pour test - NON PROTÉGÉE PAR AUTH car c'est un test simple)
 router.post('/mouvements/test', async (req, res) => {
+  // ... existing code ... (keeping it to locate the position, but I will actually INSERT BEFORE it)
+});
+
+// [DEBUG] Route de test EMAIL (Non protégée pour accès navigateur facile)
+router.get('/mouvements/debug-mail', async (req, res) => {
+  const target = req.query.email || 'jonathan.genet@gmail.com';
+  console.log('🔫 [DEBUG MAIL] Tentative envoi vers:', target);
+
+  try {
+    const result = await mailer.sendValidationRequest(target, {
+      demandeur: { nom: 'TEST DEBUGGER' },
+      stops: [{ dateDepart: new Date() }, { lieu: { nom: 'TEST DESTINATION' } }],
+      validationLevelRequired: 999,
+      vehicule: { marque: 'TEST', immatriculation: 'TEST-001' }
+    });
+
+    if (result) {
+      res.json({ success: true, message: 'Email envoyé (supposément)', info: result });
+    } else {
+      res.status(500).json({ success: false, message: 'Echec envoi (result null). Vérifiez les logs serveur.' });
+    }
+  } catch (e) {
+    console.error('❌ [DEBUG MAIL] Crash:', e);
+    res.status(500).json({ success: false, error: e.message, stack: e.stack });
+  }
+});
+
+router.post('/mouvements/test', async (req, res) => {
   console.log('Requête reçue sur /mouvements/test (non protégée)');
   try {
     const nouveauMouvement = new Mouvement({
