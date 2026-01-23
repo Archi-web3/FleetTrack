@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MouvementService } from '../mouvement.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth.service';
-import { Router, NavigationEnd, RouterLink } from '@angular/router'; // <<< AJOUT RouterLink
+import { Router, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,7 +12,7 @@ import { MouvementDetailsDialogComponent } from './mouvement-details-dialog.comp
 @Component({
   selector: 'app-liste-mouvements',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule, MatDialogModule], // <<< AJOUT MatButtonModule
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule], // <<< AJOUT MatButtonModule
   templateUrl: './liste-mouvements.component.html',
   styleUrls: ['./liste-mouvements.component.css']
 })

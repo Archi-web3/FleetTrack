@@ -69,5 +69,11 @@ export class MouvementService {
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
     return this.http.delete<any>(`${this.apiUrl}/cleanup/ghosts`, { headers });
   }
+
+  fixCountries(): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.post<any>(`${this.apiUrl}/fix-countries`, {}, { headers });
+  }
 }
 
