@@ -243,8 +243,7 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
     // Logique simplifiée temporaire compatible avec l'existant :
     // Si niveau >= 3 (Difficile/Sensible ancien), on met en attente validation sécu
-    // [DEBUG] SEUIL ABAISSÉ À 1 POUR TESTER LES EMAILS
-    if (validationLevelRequired >= 1) { // 3 correspond à "Difficile" ou ancien "Sensible"
+    if (validationLevelRequired >= 3) { // 3 correspond à "Difficile" ou ancien "Sensible"
       statutInitial = 'en attente validation sécurité';
       console.log('🔒 [CREATE MOUVEMENT] Risque élevé détecté -> Statut: "en attente validation sécurité"');
     } else {
