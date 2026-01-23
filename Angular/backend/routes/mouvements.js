@@ -9,7 +9,7 @@ const auth = require('../middleware/authMiddleware');
 const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
 const mongoose = require('mongoose');
 const mailer = require('../utils/mailer');
-const Utilisateur = require('../models/utilisateur.model'); // Ensure Utilisateur is required
+// Utilisateur declared at line 7
 
 // Route pour créer un nouveau mouvement (pour test - NON PROTÉGÉE PAR AUTH car c'est un test simple)
 router.post('/mouvements/test', async (req, res) => {
