@@ -583,6 +583,34 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     if (req.body.projetsVentilation != null) mouvement.projetsVentilation = req.body.projetsVentilation; // NOUVEAU : Correction manuelle ventilation
 
     const mouvementMisAJour = await mouvement.save();
+
+    // --- NOTIFICATION EMAIL REFUS (MODULE 2) ---
+    if (mouvementMisAJour.statut === 'refusé') {
+      try {
+        if (mouvementMisAJour.demandeur) {
+          const demandeur = await Utilisateur.findById(mouvementMisAJour.demandeur);
+          if (demandeur && demandeur.email) {
+            console.log(`📧 [UPDATE MOUVEMENT] Envoi notification REFUS au demandeur (${demandeur.email})...`);
+            // On populate pour avoir les infos nécessaires au template email
+            const mouvementPopulated = await Mouvement.findById(mouvementMisAJour._id).populate([
+              { path: 'stops.lieu' },
+              { path: 'demandeur' }
+            ]);
+
+            mailer.sendStatusUpdate(
+              demandeur.email,
+              mouvementPopulated,
+              'refusé',
+              mouvementMisAJour.motifRefus || req.body.motifRefus || req.body.commentaire
+            );
+          }
+        }
+      } catch (emailErr) {
+        console.error('❌ [UPDATE MOUVEMENT] Erreur notification email (refus):', emailErr);
+      }
+    }
+    // --- FIN NOTIFICATION EMAIL ---
+
     res.json(mouvementMisAJour);
   } catch (err) {
     console.error("Erreur UPDATE /mouvements/:id:", err);

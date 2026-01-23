@@ -92,9 +92,15 @@ module.exports = {
     /**
      * Sends a status update email to the requester
      */
-    sendStatusUpdate: async (to, movement, status) => {
-        const color = status === 'validé' ? '#4caf50' : '#f44336';
+    sendStatusUpdate: async (to, movement, status, reason = '') => {
+        const color = status === 'validé' ? '#4caf50' : (status === 'refusé' ? '#f44336' : '#ff9800');
         const subject = `[FleetTrack] Votre mouvement est ${status.toUpperCase()}`;
+
+        let reasonHtml = '';
+        if (reason && status === 'refusé') {
+            reasonHtml = `<p><strong>Motif du refus:</strong> <span style="color: #f44336;">${reason}</span></p>`;
+        }
+
         const html = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: ${color};">Votre mouvement a été ${status}</h2>
@@ -105,6 +111,7 @@ module.exports = {
                     <p><strong>Départ:</strong> ${formatDate(movement.stops[0].dateDepart)}</p>
                     <p><strong>Destination:</strong> ${getLastDestination(movement)}</p>
                     <p><strong>Nouveau statut:</strong> <strong style="color: ${color};">${status.toUpperCase()}</strong></p>
+                    ${reasonHtml}
                 </div>
 
                 <a href="${process.env.FRONTEND_URL || 'https://fleettrack-api.onrender.com'}/mes-mouvements" style="background-color: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Voir les détails</a>
