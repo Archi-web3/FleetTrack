@@ -8,6 +8,8 @@ const Utilisateur = require('../models/utilisateur.model'); // AJOUT pour vérif
 const auth = require('../middleware/authMiddleware');
 const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
 const mongoose = require('mongoose');
+const mailer = require('../utils/mailer');
+const Utilisateur = require('../models/utilisateur.model'); // Ensure Utilisateur is required
 
 // Route pour créer un nouveau mouvement (pour test - NON PROTÉGÉE PAR AUTH car c'est un test simple)
 router.post('/mouvements/test', async (req, res) => {
@@ -347,6 +349,39 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
     console.log('✅ [CREATE MOUVEMENT] Base finale:', nouveauMouvement.base);
     console.log('✅ [CREATE MOUVEMENT] Pays final:', nouveauMouvement.pays);
 
+    // --- NOTIFICATION EMAIL (MODULE 2) ---
+    if (mouvement.statut === 'en attente validation sécurité') {
+      try {
+        console.log('📧 [CREATE MOUVEMENT] Envoi des notifications aux valideurs...');
+        // Trouver les valideurs (Admin, Superviseur Sécurité, ou SuperAdmin) du même pays/base
+        // Note: C'est une simplification, on pourrait affiner selon la base
+        const queryValideurs = {
+          profil: { $in: ['Admin', 'Superviseur Sécurité', 'SuperAdmin'] },
+          $or: [
+            { pays: mouvement.pays },
+            { profil: 'SuperAdmin' } // SuperAdmin voit tout
+          ]
+        };
+
+        const valideurs = await Utilisateur.find(queryValideurs);
+        console.log(`📧 [CREATE MOUVEMENT] ${valideurs.length} valideurs trouvés.`);
+
+        for (const valideur of valideurs) {
+          if (valideur.email) {
+            // Ne pas attendre (fire and forget) pour ne pas bloquer la réponse API
+            mailer.sendValidationRequest(valideur.email, await nouveauMouvement.populate([
+              { path: 'vehicule' },
+              { path: 'stops.lieu' },
+              { path: 'demandeur' }
+            ]));
+          }
+        }
+      } catch (emailErr) {
+        console.error('❌ [CREATE MOUVEMENT] Erreur notification email:', emailErr);
+      }
+    }
+    // --- FIN NOTIFICATION EMAIL ---
+
     res.status(201).json(nouveauMouvement);
   } catch (err) {
     console.error('❌ [CREATE MOUVEMENT] Erreur lors de la création du mouvement:', err);
@@ -580,6 +615,23 @@ router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) =
 
     const mouvementValide = await mouvement.save();
     console.log('✅ [VALIDATE MOUVEMENT] Validé avec succès par:', req.utilisateur.nom);
+
+    // --- NOTIFICATION EMAIL (MODULE 2) ---
+    try {
+      if (mouvement.demandeur) {
+        const demandeur = await Utilisateur.findById(mouvement.demandeur);
+        if (demandeur && demandeur.email) {
+          console.log(`📧 [VALIDATE MOUVEMENT] Envoi notification au demandeur (${demandeur.email})...`);
+          mailer.sendStatusUpdate(demandeur.email, await mouvementValide.populate([
+            { path: 'stops.lieu' },
+            { path: 'demandeur' }
+          ]), 'validé');
+        }
+      }
+    } catch (emailErr) {
+      console.error('❌ [VALIDATE MOUVEMENT] Erreur notification email:', emailErr);
+    }
+    // --- FIN NOTIFICATION EMAIL ---
 
     res.json(mouvementValide);
   } catch (err) {
