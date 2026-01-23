@@ -39,7 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class TableauBordComponent implements OnInit {
   // Colonnes affichées dans le tableau
-  displayedColumns: string[] = ['projet', 'km', 'ratioKm', 'co2', 'ratioCO2', 'consommation', 'ratioConsommation', 'tauxRemplissage', 'mouvements'];
+  displayedColumns: string[] = ['projet', 'kmInvolved', 'km', 'ratioKm', 'co2', 'ratioCO2', 'consommation', 'ratioConsommation', 'tauxRemplissage', 'mouvements'];
   // Filtres
   dateDebut: Date | null = null;
   dateFin: Date | null = null;

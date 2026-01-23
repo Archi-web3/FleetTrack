@@ -52,29 +52,76 @@ router.get('/global', auth(), async (req, res) => {
             { $unwind: { path: '$chauffeurInfo', preserveNullAndEmptyArrays: true } }
         ];
 
-        // Filtre par projet (après lookup)
+        // LOGIQUE CHANGÉE : Si un projet est sélectionné, on utilise la VENTILATION EFFECTIVE
+        // au lieu du projet du chauffeur.
         if (projet) {
-            pipeline.push({
-                $match: { 'chauffeurInfo.projet': projet }
-            });
-        }
-
-        // Agrégation des statistiques
-        pipeline.push({
-            $group: {
-                _id: null,
-                kmTotaux: {
-                    $sum: {
-                        $cond: [
-                            { $and: [{ $ne: ['$startMileage', null] }, { $ne: ['$endMileage', null] }] },
-                            { $subtract: ['$endMileage', '$startMileage'] },
-                            0
-                        ]
+            pipeline.push(
+                // 1. Calculer la ventilation effective (même logique que par-projet)
+                {
+                    $addFields: {
+                        effectiveVentilation: {
+                            $cond: {
+                                if: { $and: [{ $isArray: "$projetsVentilation" }, { $gt: [{ $size: "$projetsVentilation" }, 0] }] },
+                                then: "$projetsVentilation",
+                                else: [{
+                                    projet: { $ifNull: ["$projet", "Non assigné"] },
+                                    percentage: 100
+                                }]
+                            }
+                        },
+                        rawKm: {
+                            $cond: [
+                                { $and: [{ $ne: ['$startMileage', null] }, { $ne: ['$endMileage', null] }] },
+                                { $subtract: ['$endMileage', '$startMileage'] },
+                                0
+                            ]
+                        }
                     }
                 },
+                // 2. Dérouler pour filtrer sur les ventilations
+                { $unwind: "$effectiveVentilation" },
+                // 3. Filtrer strictement sur le projet demandé
+                {
+                    $match: { "effectiveVentilation.projet": projet }
+                }
+            );
+        } else {
+            // Si pas de projet sélectionné, on calcule le km brut pour le total (déjà fait dans le group plus bas pour l'instant)
+            // On ajoute juste rawKm pour uniformiser si besoin, mais le group original utilisait end - start.
+            // On va laisser le group original gérer les sommes si pas de "projet" car on ne veut pas multiplier les lignes par unwind.
+        }
+
+
+        // Agrégation des statistiques
+        const groupStage = {
+            $group: {
+                _id: null,
+                kmTotaux: { $sum: 0 }, // Placeholder, défini conditionnellement ci-dessous
                 nombreMouvements: { $sum: 1 }
             }
-        });
+        };
+
+        if (projet) {
+            // Avec un projet filtre, on somme la part ventilée
+            groupStage.$group.kmTotaux = {
+                $sum: {
+                    $multiply: ["$rawKm", { $divide: ["$effectiveVentilation.percentage", 100] }]
+                }
+            };
+        } else {
+            // Sans filtre projet, on somme la distance totale des trajets
+            groupStage.$group.kmTotaux = {
+                $sum: {
+                    $cond: [
+                        { $and: [{ $ne: ['$startMileage', null] }, { $ne: ['$endMileage', null] }] },
+                        { $subtract: ['$endMileage', '$startMileage'] },
+                        0
+                    ]
+                }
+            };
+        }
+
+        pipeline.push(groupStage);
 
         const result = await Mouvement.aggregate(pipeline);
 
@@ -88,9 +135,10 @@ router.get('/global', auth(), async (req, res) => {
 
         console.log('=== DEBUG STATS GLOBALES ===');
         console.log('Filtre appliqué:', JSON.stringify(matchFilter));
+        console.log('Projet demandé:', projet);
         console.log('Total mouvements terminés (tous):', allTerminated);
         console.log('Mouvements terminés avec kilométrage:', terminatedWithMileage);
-        console.log('Nombre de mouvements trouvés (après filtre):', result.length);
+        console.log('Nombre de mouvements trouvés (après filtre):', result.length > 0 ? result[0].nombreMouvements : 0);
         console.log('Résultat agrégation:', result);
 
         if (result.length === 0) {
@@ -128,7 +176,7 @@ router.get('/global', auth(), async (req, res) => {
 // GET /api/stats/par-projet - Statistiques par projet avec filtres
 router.get('/par-projet', auth(), async (req, res) => {
     try {
-        const { dateDebut, dateFin, vehicule } = req.query;
+        const { dateDebut, dateFin, vehicule, projet } = req.query; // Ajout de projet ici
 
         // Construire le filtre de base
         const matchFilter = {
@@ -204,6 +252,10 @@ router.get('/par-projet', auth(), async (req, res) => {
                             $multiply: ["$rawKm", { $divide: ["$effectiveVentilation.percentage", 100] }]
                         }
                     },
+                    // NOUVEAU : Km Impliqués (Distance totale des trajets où le projet apparaît)
+                    kmInvolved: {
+                        $sum: "$rawKm"
+                    },
                     nombreMouvements: { $sum: 1 }, // Compte le nombre de fois que ce projet est impliqué
                     // Taux de remplissage : on considère le taux du trajet, pondéré par rien (c'est une moyenne)
                     // Ou alors on veut savoir si le projet optimise ses trajets.
@@ -240,9 +292,19 @@ router.get('/par-projet', auth(), async (req, res) => {
             { $sort: { kmTotaux: -1 } }
         ];
 
+        // Si un projet spécifique est demandé, on filtre les résultats agrégés
+        if (projet) {
+            pipeline.push({
+                $match: { _id: projet }
+            });
+        }
+
         const resultats = await Mouvement.aggregate(pipeline);
 
-        // Calculer le total pour les ratios
+        // Calculer le total pour les ratios (sur la base de TOUS les résultats ou seulement filtrés ?)
+        // Si filtre actif, les ratios seront 100% ou presque.
+        // Si on veut les ratios par rapport au GLOBAL, il faudrait le total global séparément.
+        // Pour l'instant, faisons la somme de ce qui est retourné.
         const totalKm = resultats.reduce((sum, r) => sum + r.kmTotaux, 0);
         const totalConsommation = (totalKm / 100) * 8;
         const totalCO2 = totalConsommation * 2.3;
@@ -260,6 +322,7 @@ router.get('/par-projet', auth(), async (req, res) => {
             return {
                 projet: r._id,
                 kmTotaux: Math.round(r.kmTotaux),
+                kmInvolved: Math.round(r.kmInvolved || 0), // Ajout
                 co2Total: Math.round(co2),
                 consommationTotale: Math.round(consommation),
                 nombreMouvements: r.nombreMouvements,

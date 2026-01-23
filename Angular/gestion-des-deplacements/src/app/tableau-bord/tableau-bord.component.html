@@ -108,9 +108,29 @@
 
 
 
+        <!-- Colonne Km Involved -->
+        <ng-container matColumnDef="kmInvolved">
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
+            Distance Totale (km)
+            <mat-icon
+              style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
+              matTooltip="Distance totale des trajets où ce projet est impliqué (même partiellement)">
+              info
+            </mat-icon>
+          </th>
+          <td mat-cell *matCellDef="let stat">{{stat.kmInvolved | number:'1.0-0'}}</td>
+        </ng-container>
+
         <!-- Colonne Km -->
         <ng-container matColumnDef="km">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Distance (km)</th>
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
+            Distance Ventilée (km)
+            <mat-icon
+              style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
+              matTooltip="Part de distance attribuée à ce projet selon le pourcentage de ventilation">
+              info
+            </mat-icon>
+          </th>
           <td mat-cell *matCellDef="let stat">{{stat.kmTotaux | number:'1.0-0'}}</td>
         </ng-container>
 
