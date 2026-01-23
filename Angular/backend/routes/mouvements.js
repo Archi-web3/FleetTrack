@@ -16,29 +16,7 @@ router.post('/mouvements/test', async (req, res) => {
   // ... existing code ... (keeping it to locate the position, but I will actually INSERT BEFORE it)
 });
 
-// [DEBUG] Route de test EMAIL (Non protégée pour accès navigateur facile)
-router.get('/mouvements/debug-mail', async (req, res) => {
-  const target = req.query.email || 'jonathan.genet@gmail.com';
-  console.log('🔫 [DEBUG MAIL] Tentative envoi vers:', target);
 
-  try {
-    const result = await mailer.sendValidationRequest(target, {
-      demandeur: { nom: 'TEST DEBUGGER' },
-      stops: [{ dateDepart: new Date() }, { lieu: { nom: 'TEST DESTINATION' } }],
-      validationLevelRequired: 999,
-      vehicule: { marque: 'TEST', immatriculation: 'TEST-001' }
-    });
-
-    if (result) {
-      res.json({ success: true, message: 'Email envoyé (supposément)', info: result });
-    } else {
-      res.status(500).json({ success: false, message: 'Echec envoi (result null). Vérifiez les logs serveur.' });
-    }
-  } catch (e) {
-    console.error('❌ [DEBUG MAIL] Crash:', e);
-    res.status(500).json({ success: false, error: e.message, stack: e.stack });
-  }
-});
 
 router.post('/mouvements/test', async (req, res) => {
   console.log('Requête reçue sur /mouvements/test (non protégée)');
@@ -317,8 +295,7 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
     // Logique simplifiée temporaire compatible avec l'existant :
     // Si niveau >= 3 (Difficile/Sensible ancien), on met en attente validation sécu
-    // [DEBUG] SEUIL ABAISSÉ À 1 POUR TESTER LES EMAILS
-    if (validationLevelRequired >= 1) { // 3 correspond à "Difficile" ou ancien "Sensible"
+    if (validationLevelRequired >= 3) { // 3 correspond à "Difficile" ou ancien "Sensible"
       statutInitial = 'en attente validation sécurité';
       console.log('🔒 [CREATE MOUVEMENT] Risque élevé détecté -> Statut: "en attente validation sécurité"');
     } else {
