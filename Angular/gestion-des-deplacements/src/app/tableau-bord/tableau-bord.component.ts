@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StatsService } from '../stats.service';
 import { AuthService } from '../auth.service';
+import { MouvementService } from '../mouvement.service';
 
 // Angular Material imports
 import { MatCardModule } from '@angular/material/card';
@@ -62,7 +63,8 @@ export class TableauBordComponent implements OnInit {
 
   constructor(
     private statsService: StatsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private mouvementService: MouvementService
   ) { }
 
   ngOnInit(): void {
@@ -73,6 +75,20 @@ export class TableauBordComponent implements OnInit {
     this.dateFin = today;
     this.dateDebut = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
 
+    console.log('[TableauBord] Triggering auto-repair of missing countries...');
+    this.mouvementService.fixCountries().subscribe({
+      next: (res) => {
+        console.log('[TableauBord] Auto-repair result:', res);
+        this.loadDashboardData();
+      },
+      error: (err) => {
+        console.warn('[TableauBord] Auto-repair failed (continuing anyway):', err);
+        this.loadDashboardData();
+      }
+    });
+  }
+
+  loadDashboardData(): void {
     // Charger les listes pour les filtres
     this.chargerProjets();
     this.chargerVehicules();

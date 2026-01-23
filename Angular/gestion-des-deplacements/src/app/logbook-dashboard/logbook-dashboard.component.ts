@@ -62,9 +62,19 @@ export class LogbookDashboardComponent implements OnInit {
         // FIX: Trigger auto-repair of missing countries on every refresh
         console.log('[LogbookDashboard] Triggering auto-repair of missing countries...');
         this.mouvementService.fixCountries().subscribe({
-            next: (res) => console.log('[LogbookDashboard] Auto-repair result:', res),
-            error: (err) => console.warn('[LogbookDashboard] Auto-repair failed (non-blocking):', err)
+            next: (res) => {
+                console.log('[LogbookDashboard] Auto-repair result:', res);
+                this._loadVehicleData();
+            },
+            error: (err) => {
+                console.warn('[LogbookDashboard] Auto-repair failed (non-blocking):', err);
+                this._loadVehicleData();
+            }
         });
+    }
+
+    private _loadVehicleData(): void {
+        if (!this.selectedVehiculeId) return;
 
         // Load Trips (Mouvements) for this vehicle
         this.mouvementService.getMouvements().subscribe(allMouvements => {
