@@ -407,16 +407,16 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
         console.log('📧 [CREATE MOUVEMENT] Envoi des notifications aux valideurs...');
         // Trouver les valideurs (Admin, Superviseur Sécurité, ou SuperAdmin) du même pays/base
         // Note: C'est une simplification, on pourrait affiner selon la base
+        // Trouver les valideurs (Profil "Superviseur Sécurité" UNIQUEMENT) avec niveau suffisant
+        // Règle : niveau utilisateur >= niveau requis mouvement
         const queryValideurs = {
-          profil: { $in: ['Admin', 'Superviseur Sécurité', 'SuperAdmin'] },
-          $or: [
-            { pays: mouvement.pays },
-            { profil: 'SuperAdmin' } // SuperAdmin voit tout
-          ]
+          profil: 'Superviseur Sécurité',
+          niveauValidationSecu: { $gte: mouvement.validationLevelRequired || 1 },
+          pays: mouvement.pays // Doit être du même pays
         };
 
         const valideurs = await Utilisateur.find(queryValideurs);
-        console.log(`📧 [CREATE MOUVEMENT] ${valideurs.length} valideurs trouvés.`);
+        console.log(`📧 [CREATE MOUVEMENT] ${valideurs.length} valideurs trouvés (Profil Security & Niveau suffisant).`);
 
         for (const valideur of valideurs) {
           if (valideur.email) {
