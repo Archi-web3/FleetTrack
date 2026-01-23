@@ -103,6 +103,52 @@ router.get('/mouvements/stats-by-status', auth(['SuperAdmin', 'Admin', 'Supervis
   }
 });
 
+// NOUVEAU: Statistiques par véhicule (Top 5 Kilométrage)
+router.get('/mouvements/stats-by-vehicle', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, res) => {
+  try {
+    const matchStage = req.utilisateur.base ? { base: mongoose.Types.ObjectId.createFromHexString(req.utilisateur.base) } : {};
+
+    // On ne considère que les mouvements terminés ou validés qui ont un vrai départ et arrivée kilométrique
+    matchStage.startMileage = { $exists: true, $ne: null };
+    matchStage.endMileage = { $exists: true, $ne: null };
+
+    const stats = await Mouvement.aggregate([
+      { $match: matchStage },
+      {
+        $group: {
+          _id: '$vehicule',
+          totalDistance: { $sum: { $subtract: ['$endMileage', '$startMileage'] } },
+          totalTrips: { $sum: 1 }
+        }
+      },
+      { $sort: { totalDistance: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: 'vehicules',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'vehiculeDetails'
+        }
+      },
+      { $unwind: '$vehiculeDetails' },
+      {
+        $project: {
+          vehicule: '$vehiculeDetails.immatriculation',
+          marque: '$vehiculeDetails.marque',
+          modele: '$vehiculeDetails.modele',
+          totalDistance: 1,
+          totalTrips: 1
+        }
+      }
+    ]);
+    res.json(stats);
+  } catch (err) {
+    console.error('Erreur stats vehicule:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 // Récupérer tous les mouvements (Accès pour tout utilisateur connecté)
 router.get('/mouvements', auth(), countryFilter, async (req, res) => {

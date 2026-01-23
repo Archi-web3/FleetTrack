@@ -1,0 +1,160 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+
+@Component({
+    selector: 'app-statistics',
+    standalone: true,
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatGridListModule,
+        MatIconModule,
+        BaseChartDirective
+    ],
+    template: `
+    <div class="statistics-container">
+      <h1 class="page-title">
+        <mat-icon>bar_chart</mat-icon> Tableau de Bord Statistiques
+      </h1>
+
+      <div class="charts-grid">
+        <!-- Status Distribution (Pie Chart) -->
+        <mat-card class="chart-card">
+          <mat-card-header>
+            <mat-card-title>État des Mouvements</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                [data]="pieChartData"
+                [type]="'pie'"
+                [options]="pieChartOptions">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Vehicle Usage (Bar Chart) -->
+        <mat-card class="chart-card">
+          <mat-card-header>
+            <mat-card-title>Top Véhicules (Km)</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                [data]="barChartData"
+                [type]="'bar'"
+                [options]="barChartOptions">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  `,
+    styles: [`
+    .statistics-container {
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #005FB6;
+      margin-bottom: 24px;
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px;
+    }
+    .chart-card {
+      height: 400px;
+    }
+    .chart-wrapper {
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  `]
+})
+export class StatisticsComponent implements OnInit {
+    // Pie Chart (Status)
+    public pieChartOptions: ChartConfiguration['options'] = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+        }
+    };
+    public pieChartData: ChartData<'pie', number[], string | string[]> = {
+        labels: [],
+        datasets: [{ data: [] }]
+    };
+
+    // Bar Chart (Vehicle Usage)
+    public barChartOptions: ChartConfiguration['options'] = {
+        responsive: true,
+    };
+    public barChartData: ChartData<'bar'> = {
+        labels: [],
+        datasets: [
+            { data: [], label: 'Distance Parcourue (km)', backgroundColor: '#005FB6' }
+        ]
+    };
+
+    constructor(private http: HttpClient) { }
+
+    ngOnInit(): void {
+        this.loadStatusStats();
+        this.loadVehicleStats();
+    }
+
+    loadStatusStats() {
+        this.http.get<any[]>('https://fleettrack-api.onrender.com/api/mouvements/stats-by-status')
+            .subscribe(data => {
+                // Transform API data to Chart data
+                const labels = data.map(d => d.statut.toUpperCase());
+                const counts = data.map(d => d.count);
+
+                this.pieChartData = {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: [
+                            '#4caf50', // Validé (Green)
+                            '#2196f3', // Pris en charge (Blue)
+                            '#ff9800', // En cours (Orange)
+                            '#9e9e9e', // Terminé (Grey)
+                            '#f44336'  // Refusé/Attente (Red)
+                        ]
+                    }]
+                };
+            });
+    }
+
+    loadVehicleStats() {
+        this.http.get<any[]>('https://fleettrack-api.onrender.com/api/mouvements/stats-by-vehicle')
+            .subscribe(data => {
+                const labels = data.map(d => `${d.marque} ${d.modele} (${d.vehicule})`);
+                const distances = data.map(d => d.totalDistance);
+
+                this.barChartData = {
+                    labels: labels,
+                    datasets: [
+                        { data: distances, label: 'Distance Parcourue (km)', backgroundColor: '#005FB6' }
+                    ]
+                };
+            });
+    }
+}

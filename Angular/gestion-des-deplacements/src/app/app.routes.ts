@@ -12,6 +12,7 @@ import { ConsolidationMouvementsComponent } from './consolidation-mouvements/con
 import { ModifierMouvementComponent } from './modifier-mouvement/modifier-mouvement.component';
 import { TableauBordComponent } from './tableau-bord/tableau-bord.component';
 import { LogbookDashboardComponent } from './logbook-dashboard/logbook-dashboard.component';
+import { StatisticsComponent } from './features/statistics/statistics.component';
 import { MaintenanceTrackingComponent } from './maintenance-tracking/maintenance-tracking.component';
 import { AuthGuard } from './auth-guard';
 
@@ -178,6 +179,12 @@ export const routes: Routes = [
     path: 'roadmap',
     loadComponent: () => import('./roadmap/roadmap').then(m => m.RoadmapComponent),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'statistics',
+    component: StatisticsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
   { path: '**', redirectTo: 'login' }
 ];

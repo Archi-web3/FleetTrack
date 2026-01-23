@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { registerLocaleData } from '@angular/common'; // IMPORT NÉCESSAIRE
 import localeFr from '@angular/common/locales/fr'; // IMPORT DE LA LOCALE
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts'; // NOUVEAU: Import Charts
 
 registerLocaleData(localeFr); // ENREGISTREMENT DE LA LOCALE
 
@@ -34,6 +35,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor, countryInterceptor])),
     provideAnimations(), // Nécessaire pour les animations du calendrier
+    provideCharts(withDefaultRegisterables()), // NOUVEAU: Provider Charts
     // NOUVEAU : Fournir le CalendarModule via importProvidersFrom
     importProvidersFrom(CalendarModule.forRoot({
       provide: DateAdapter,
