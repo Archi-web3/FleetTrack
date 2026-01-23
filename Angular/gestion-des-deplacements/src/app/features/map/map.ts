@@ -23,7 +23,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.initMap();
+    // Delay init slightly to ensure container is ready
+    setTimeout(() => {
+      this.initMap();
+    }, 100);
   }
 
   ngOnDestroy(): void {
@@ -34,25 +37,26 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initMap(): void {
-    // Prevent re-initialization
     if (this.map) return;
 
-    // Check if the container exists
     const mapContainer = document.getElementById('map');
     if (!mapContainer) return;
 
-    // Clean up if somehow Leaflet thinks it's strictly bound but we lost the ref
     if ((mapContainer as any)._leaflet_id) {
       (mapContainer as any)._leaflet_id = null;
     }
 
-    // Centered on Central African Republic (Bangui) by default
     this.map = L.map('map').setView([4.3947, 18.557], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
+
+    // Relayout map to ensure tiles load correctly
+    setTimeout(() => {
+      this.map?.invalidateSize();
+    }, 200);
   }
 
   private fixLeafletIcons(): void {
@@ -74,50 +78,54 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private loadMouvements(): void {
     this.mouvementService.getMouvements().subscribe({
-      next: (data) => {
-        // Filter for active/validated movements
+      next: (data: any[]) => {
         this.mouvements = data.filter(m =>
           m.statut === 'en cours' || m.statut === 'validé'
         );
+        console.log(`🗺️ Mouvements affichés sur la carte: ${this.mouvements.length}`);
         this.displayMouvements();
       },
-      error: (err) => console.error('Error loading movements for map:', err)
+      error: (err: any) => console.error('Error loading movements for map:', err)
     });
   }
 
   private displayMouvements(): void {
     if (!this.map) return;
-    const map = this.map; // Capture for callback
+    const map = this.map;
+    const allLatLngs: L.LatLngExpression[] = [];
 
     this.mouvements.forEach(m => {
-      // Ensure we have stops with coordinates
       const validStops = m.stops.filter((s: any) => s.lieu && (s.lieu as any).coordonnees);
 
       if (validStops.length >= 2) {
         const latLngs: L.LatLngExpression[] = validStops.map((s: any) => {
-          const coords = (s.lieu as any).coordonnees; // formatted as "lat,lng" string
+          const coords = (s.lieu as any).coordonnees;
           const [lat, lng] = coords.split(',').map((c: string) => parseFloat(c.trim()));
           return [lat, lng] as L.LatLngExpression;
         });
 
+        // Collect points for auto-zoom
+        latLngs.forEach(p => allLatLngs.push(p));
+
         const color = m.statut === 'validé' ? 'green' : (m.statut === 'en cours' ? 'blue' : 'gray');
 
-        // Draw Polyline
         const polyline = L.polyline(latLngs, { color: color, weight: 4 }).addTo(map);
 
-        // Add Markers for Start and End
-        // Start
         L.marker(latLngs[0]).addTo(map)
           .bindPopup(this.createPopupContent(m, 'Départ'));
 
-        // End
         L.marker(latLngs[latLngs.length - 1]).addTo(map)
           .bindPopup(this.createPopupContent(m, 'Arrivée'));
 
-        // Bind popup to line as well
         polyline.bindPopup(this.createPopupContent(m, 'Trajet'));
       }
     });
+
+    // Auto-zoom to fit all movements
+    if (allLatLngs.length > 0) {
+      const bounds = L.latLngBounds(allLatLngs);
+      map.fitBounds(bounds, { padding: [50, 50] });
+    }
   }
 
   private createPopupContent(m: any, type: string): string {
