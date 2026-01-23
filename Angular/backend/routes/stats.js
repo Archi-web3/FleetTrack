@@ -147,6 +147,11 @@ router.get('/par-projet', auth(), async (req, res) => {
             ];
         }
 
+        // Filtre MULTI-PAYS : Filtrer par pays sélectionné (comme pour stats globales)
+        if (req.selectedCountry) {
+            matchFilter.pays = req.selectedCountry;
+        }
+
         // Filtre par véhicule
         if (vehicule) {
             matchFilter.vehicule = vehicule;
