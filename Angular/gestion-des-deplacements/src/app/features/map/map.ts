@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
+import 'leaflet-routing-machine';
 import { MouvementService } from '../../mouvement.service';
 
 @Component({
@@ -13,11 +14,12 @@ import { MouvementService } from '../../mouvement.service';
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private map: L.Map | undefined;
   mouvements: any[] = [];
+  private routingControls: any[] = [];
+  private markers: L.Marker[] = [];
 
   constructor(private mouvementService: MouvementService) { }
 
   ngOnInit(): void {
-    // Icons fix for Leaflet in Angular
     this.fixLeafletIcons();
     this.loadMouvements();
   }
@@ -92,16 +94,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private displayMouvements(): void {
     if (!this.map) return;
     const map = this.map;
-    const allLatLngs: L.LatLngExpression[] = [];
+
+    // Cleanup
+    this.routingControls.forEach(control => map.removeControl(control));
+    this.routingControls = [];
+    this.markers.forEach(marker => marker.remove());
+    this.markers = [];
+
+    const allLatLngs: L.LatLng[] = [];
 
     this.mouvements.forEach(m => {
-      // Ensure we have stops with VALID coordinates (string or object)
       const validStops = m.stops.filter((s: any) => {
         const lieu = s.lieu as any;
         if (!lieu || !lieu.coordonnees) return false;
 
         const coords = lieu.coordonnees;
-        // Accept string "lat,lng" OR object { latitude, longitude }
         if (typeof coords === 'string') return true;
         if (typeof coords === 'object' && coords.latitude !== undefined && coords.longitude !== undefined) return true;
 
@@ -110,38 +117,80 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       if (validStops.length >= 2) {
-        const latLngs: L.LatLngExpression[] = validStops.map((s: any) => {
-          const coords = (s.lieu as any).coordonnees;
-          if (typeof coords === 'string') {
-            const [lat, lng] = coords.split(',').map((c: string) => parseFloat(c.trim()));
-            return [lat, lng] as L.LatLngExpression;
+        const waypoints: L.LatLng[] = [];
+
+        validStops.forEach((s: any, index: number) => {
+          // Parse coords
+          const lieu = s.lieu as any;
+          let lat: number, lng: number;
+
+          if (typeof lieu.coordonnees === 'string') {
+            const parts = lieu.coordonnees.split(',').map((c: string) => parseFloat(c.trim()));
+            lat = parts[0];
+            lng = parts[1];
           } else {
-            // Handle object format
-            return [parseFloat(coords.latitude), parseFloat(coords.longitude)] as L.LatLngExpression;
+            lat = parseFloat(lieu.coordonnees.latitude);
+            lng = parseFloat(lieu.coordonnees.longitude);
           }
+
+          waypoints.push(L.latLng(lat, lng));
+          allLatLngs.push(L.latLng(lat, lng));
+
+          // Markers
+          let iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png';
+          if (index === 0) {
+            iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png';
+          } else if (index === validStops.length - 1) {
+            iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png';
+          }
+
+          const marker = L.marker([lat, lng], {
+            icon: L.icon({
+              iconUrl: iconUrl,
+              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+              iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            })
+          }).addTo(map);
+
+          const type = index === 0 ? 'Départ' : (index === validStops.length - 1 ? 'Arrivée' : 'Étape');
+          marker.bindPopup(this.createPopupContent(m, type));
+
+          this.markers.push(marker);
         });
 
-        // Collect points for auto-zoom
-        latLngs.forEach(p => allLatLngs.push(p));
-
+        // Routing
         const color = m.statut === 'validé' ? 'green' : (m.statut === 'en cours' ? 'blue' : 'gray');
 
-        const polyline = L.polyline(latLngs, { color: color, weight: 4 }).addTo(map);
+        try {
+          const routingControl = (L as any).Routing.control({
+            waypoints: waypoints,
+            router: (L as any).Routing.osrmv1({
+              serviceUrl: 'https://router.project-osrm.org/route/v1',
+              language: 'fr'
+            }),
+            lineOptions: {
+              styles: [{ color: color, weight: 6, opacity: 0.7 }]
+            },
+            createMarker: function () { return null; },
+            addWaypoints: false,
+            draggableWaypoints: false,
+            fitSelectedRoutes: false,
+            show: false
+          }).addTo(map);
 
-        L.marker(latLngs[0]).addTo(map)
-          .bindPopup(this.createPopupContent(m, 'Départ'));
-
-        L.marker(latLngs[latLngs.length - 1]).addTo(map)
-          .bindPopup(this.createPopupContent(m, 'Arrivée'));
-
-        polyline.bindPopup(this.createPopupContent(m, 'Trajet'));
+          this.routingControls.push(routingControl);
+        } catch (e) {
+          console.error('Routing control error:', e);
+        }
       }
     });
 
-    // Auto-zoom to fit all movements
     if (allLatLngs.length > 0) {
       const bounds = L.latLngBounds(allLatLngs);
-      map.fitBounds(bounds, { padding: [50, 50] });
+      // Ensure bounds are valid
+      try {
+        map.fitBounds(bounds, { padding: [50, 50] });
+      } catch (e) { console.warn('Invalid bounds', e); }
     }
   }
 
