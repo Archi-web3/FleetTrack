@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { MouvementService } from '../../mouvement.service';
@@ -10,8 +10,8 @@ import { MouvementService } from '../../mouvement.service';
   templateUrl: './map.html',
   styleUrl: './map.css',
 })
-export class MapComponent implements OnInit, AfterViewInit {
-  private map!: L.Map;
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
+  private map: L.Map | undefined;
   mouvements: any[] = [];
 
   constructor(private mouvementService: MouvementService) { }
@@ -26,9 +26,28 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.initMap();
   }
 
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
+  }
+
   private initMap(): void {
+    // Prevent re-initialization
+    if (this.map) return;
+
+    // Check if the container exists
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) return;
+
+    // Clean up if somehow Leaflet thinks it's strictly bound but we lost the ref
+    if ((mapContainer as any)._leaflet_id) {
+      (mapContainer as any)._leaflet_id = null;
+    }
+
     // Centered on Central African Republic (Bangui) by default
-    this.map = L.map('map').setView([4.3947, 18.5582], 6);
+    this.map = L.map('map').setView([4.3947, 18.557], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -68,6 +87,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   private displayMouvements(): void {
     if (!this.map) return;
+    const map = this.map; // Capture for callback
 
     this.mouvements.forEach(m => {
       // Ensure we have stops with coordinates
@@ -83,15 +103,15 @@ export class MapComponent implements OnInit, AfterViewInit {
         const color = m.statut === 'validé' ? 'green' : (m.statut === 'en cours' ? 'blue' : 'gray');
 
         // Draw Polyline
-        const polyline = L.polyline(latLngs, { color: color, weight: 4 }).addTo(this.map);
+        const polyline = L.polyline(latLngs, { color: color, weight: 4 }).addTo(map);
 
         // Add Markers for Start and End
         // Start
-        L.marker(latLngs[0]).addTo(this.map)
+        L.marker(latLngs[0]).addTo(map)
           .bindPopup(this.createPopupContent(m, 'Départ'));
 
         // End
-        L.marker(latLngs[latLngs.length - 1]).addTo(this.map)
+        L.marker(latLngs[latLngs.length - 1]).addTo(map)
           .bindPopup(this.createPopupContent(m, 'Arrivée'));
 
         // Bind popup to line as well
