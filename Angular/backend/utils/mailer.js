@@ -40,6 +40,9 @@ if (isSmtpConfigured) {
 
 const sendEmail = async (to, subject, htmlContent) => {
     try {
+        // Fallback hardcodé si la variable d'env n'est pas définie
+        const frontendUrl = process.env.FRONTEND_URL || 'https://fleettrack-api.onrender.com';
+
         const mailOptions = {
             from: process.env.SMTP_FROM || '"FleetTrack Notification" <no-reply@fleettrack.acf>',
             to: to,
@@ -80,7 +83,7 @@ module.exports = {
 
                 <p>Veuillez vous connecter à l'application pour valider ou refuser ce mouvement.</p>
                 
-                <a href="${process.env.FRONTEND_URL || '#'}/movements" style="background-color: #005FB6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Accéder à la plateforme</a>
+                <a href="${process.env.FRONTEND_URL || 'https://fleettrack-api.onrender.com'}/valider-mouvements" style="background-color: #005FB6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Accéder à la plateforme</a>
             </div>
         `;
         return sendEmail(to, subject, html);
@@ -104,7 +107,7 @@ module.exports = {
                     <p><strong>Nouveau statut:</strong> <strong style="color: ${color};">${status.toUpperCase()}</strong></p>
                 </div>
 
-                <a href="${process.env.FRONTEND_URL || '#'}/movements" style="background-color: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Voir les détails</a>
+                <a href="${process.env.FRONTEND_URL || 'https://fleettrack-api.onrender.com'}/mes-mouvements" style="background-color: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Voir les détails</a>
             </div>
         `;
         return sendEmail(to, subject, html);
