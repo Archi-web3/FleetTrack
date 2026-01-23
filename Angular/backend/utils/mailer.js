@@ -20,6 +20,7 @@ let transporter;
 
 if (isSmtpConfigured) {
     console.log('📧 Maven configuration found. Initializing Nodemailer...');
+    console.log(`📧 SMTP Config: Host=${smtpConfig.host}, Port=${smtpConfig.port}, User=${smtpConfig.auth.user ? '***' : 'MISSING'}, From=${process.env.SMTP_FROM}`);
     transporter = nodemailer.createTransport(smtpConfig);
 } else {
     console.warn('⚠️ SMTP not configured (Missing SMTP_HOST or SMTP_USER). Using SIMULATION MODE (Logs only).');
@@ -53,6 +54,9 @@ const sendEmail = async (to, subject, htmlContent) => {
         return info;
     } catch (error) {
         console.error('❌ Error sending email:', error);
+        if (error.response) {
+            console.error('📧 SMTP Response:', error.response);
+        }
         // Don't throw error to avoid blocking the main flow
         return null;
     }
