@@ -681,4 +681,70 @@ router.delete('/mouvements/cleanup/ghosts', auth(['SuperAdmin', 'Admin']), async
   }
 });
 
+
+// FIX: Route de réparation automatique des pays manquants
+router.post('/mouvements/fix-countries', auth(), async (req, res) => {
+  try {
+    console.log('🔧 [FIX COUNTRIES] Démarrage de la réparation des pays manquants...');
+
+    // Trouver les mouvements sans pays
+    const orphanMovements = await Mouvement.find({
+      pays: { $exists: false }
+    }).populate('chauffeur'); // On a besoin du chauffeur pour déduire le pays
+
+    console.log(`🔧 [FIX COUNTRIES] ${orphanMovements.length} mouvements sans pays trouvés.`);
+
+    let fixedCount = 0;
+    const errors = [];
+
+    for (const mvt of orphanMovements) {
+      if (mvt.chauffeur) {
+        // Récupérer le pays du chauffeur (si populated n'a pas tout ramené)
+        // Note: mvt.chauffeur est l'objet Utilisateur car populated
+
+        // Si le chauffeur object n'a pas le pays populated, on doit le fetcher
+        let chauffeurPaysId = null;
+
+        // Check if chauffeur is an object and has pays
+        if (mvt.chauffeur.pays) {
+          chauffeurPaysId = mvt.chauffeur.pays; // Might be ID or Object depending on Utilisateur schema populate
+        } else {
+          // Fetch fresh user to be sure
+          const user = await Utilisateur.findById(mvt.chauffeur._id);
+          chauffeurPaysId = user ? user.pays : null;
+        }
+
+        if (chauffeurPaysId) {
+          mvt.pays = chauffeurPaysId;
+          await mvt.save();
+          fixedCount++;
+          console.log(`✅ [FIX COUNTRIES] Mouvement ${mvt._id} assigné au pays ${chauffeurPaysId}`);
+        } else {
+          console.warn(`⚠️ [FIX COUNTRIES] Mouvement ${mvt._id}: Chauffeur ${mvt.chauffeur.nom} n'a pas de pays.`);
+        }
+      } else {
+        // Fallback: Use Current User's country if user triggered it and no chauffeur
+        if (req.utilisateur.pays) {
+          mvt.pays = req.utilisateur.pays;
+          await mvt.save();
+          fixedCount++;
+          console.log(`✅ [FIX COUNTRIES] Mouvement ${mvt._id} assigné au pays de l'admin (fallback) ${req.utilisateur.pays}`);
+        } else {
+          console.warn(`⚠️ [FIX COUNTRIES] Mouvement ${mvt._id}: Pas de chauffeur et admin sans pays.`);
+        }
+      }
+    }
+
+    res.json({
+      message: 'Réparation terminée',
+      found: orphanMovements.length,
+      fixed: fixedCount
+    });
+
+  } catch (err) {
+    console.error('❌ [FIX COUNTRIES] Erreur:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
