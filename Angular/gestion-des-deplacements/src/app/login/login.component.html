@@ -12,7 +12,8 @@
       <form (ngSubmit)="onLogin()" #loginForm="ngForm">
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 15px;">
           <mat-label>Email</mat-label>
-          <input matInput type="email" id="email" name="email" [(ngModel)]="credentials.email" required email>
+          <input matInput type="email" id="email" name="email" [(ngModel)]="credentials.email" required email
+            [disabled]="isLoading">
           <mat-error *ngIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
             Veuillez entrer une adresse email valide.
           </mat-error>
@@ -21,14 +22,27 @@
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
           <mat-label>Mot de passe</mat-label>
           <input matInput type="password" id="motDePasse" name="motDePasse" [(ngModel)]="credentials.motDePasse"
-            required>
+            required [disabled]="isLoading">
           <mat-error *ngIf="loginForm.controls['motDePasse']?.invalid && loginForm.controls['motDePasse']?.touched">
             Le mot de passe est requis.
           </mat-error>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.form.valid"
-          style="width: 100%;">Se connecter</button>
+        <!-- Message d'erreur global -->
+        <div *ngIf="errorMessage"
+          style="color: #f44336; margin-bottom: 15px; text-align: center; font-size: 0.9em; padding: 10px; background: #ffebee; border-radius: 4px;">
+          <mat-icon
+            style="vertical-align: middle; font-size: 18px; margin-right: 5px; height: 18px; width: 18px;">error</mat-icon>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Indicateur de chargement -->
+        <mat-progress-bar *ngIf="isLoading" mode="indeterminate" style="margin-bottom: 15px;"></mat-progress-bar>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.form.valid || isLoading"
+          style="width: 100%;">
+          {{ isLoading ? 'Connexion en cours...' : 'Se connecter' }}
+        </button>
       </form>
     </mat-card-content>
   </mat-card>

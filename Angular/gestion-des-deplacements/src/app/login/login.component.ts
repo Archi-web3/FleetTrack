@@ -11,10 +11,12 @@ import { MatFormFieldModule } from '@angular/material/form-field'; // Pour les c
 import { MatInputModule } from '@angular/material/input'; // Pour les inputs
 import { MatButtonModule } from '@angular/material/button'; // Pour le bouton de soumission
 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 @Component({
   selector: 'app-login',
   standalone: true, // <<< DOIT ÊTRE TRUE
-  imports: [CommonModule, FormsModule, MatCardModule,MatFormFieldModule,MatInputModule,MatButtonModule ],
+  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -24,18 +26,34 @@ export class LoginComponent {
     motDePasse: ''
   };
 
+  isLoading = false;
+  errorMessage: string | null = null;
+
   constructor(private authService: AuthService, private router: Router) { }
 
   onLogin(): void {
-    this.authService.login(this.credentials).subscribe(
-      (res) => {
-        console.log('Connexion réussie', res);
+    this.isLoading = true;
+    this.errorMessage = null;
+    console.log('[Login] Tentative de connexion pour:', this.credentials.email);
+
+    this.authService.login(this.credentials).subscribe({
+      next: (res) => {
+        console.log('[Login] Connexion réussie', res);
+        this.isLoading = false;
         this.router.navigate(['/']); // Rediriger vers la page d'accueil après connexion
       },
-      (error) => {
-        console.error('Erreur de connexion', error);
-        alert('Échec de la connexion. Vérifiez vos identifiants.');
+      error: (error) => {
+        console.error('[Login] Erreur de connexion', error);
+        this.isLoading = false;
+
+        if (error.status === 401) {
+          this.errorMessage = 'Email ou mot de passe incorrect.';
+        } else if (error.status === 0 || error.status === 504) {
+          this.errorMessage = 'Le serveur est en cours de réveil (Cold Start). Veuillez réessayer dans quelques secondes...';
+        } else {
+          this.errorMessage = 'Une erreur technique est survenue. Veuillez réessayer.';
+        }
       }
-    );
+    });
   }
 }
