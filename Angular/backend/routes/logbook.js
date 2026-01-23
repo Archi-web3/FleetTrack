@@ -359,17 +359,27 @@ router.post('/sync', async (req, res) => {
                 const lieuDepartId = tripData.departurePlaceId || defaultLieu._id;
                 const lieuArriveeId = tripData.arrivalPlaceId || defaultLieu._id;
 
-                // Fetch driver to get their base
+                // Fetch driver to get their base and COUNTRY
                 const Utilisateur = require('../models/utilisateur.model');
                 let driverBase = null;
+                let driverCountry = null;
                 try {
-                    const driver = await Utilisateur.findById(tripData.driverId);
-                    if (driver && driver.base) {
-                        driverBase = driver.base;
-                        console.log(`Assigning base ${driverBase} from driver ${driver.nom} to new movement`);
+                    const driver = await Utilisateur.findById(tripData.driverId)
+                        .populate('base')
+                        .populate('pays');
+
+                    if (driver) {
+                        if (driver.base) {
+                            driverBase = driver.base._id || driver.base;
+                            console.log(`Assigning base ${driverBase} from driver ${driver.nom} to new movement`);
+                        }
+                        if (driver.pays) {
+                            driverCountry = driver.pays._id || driver.pays;
+                            console.log(`Assigning country ${driverCountry} from driver ${driver.nom} to new movement`);
+                        }
                     }
                 } catch (err) {
-                    console.error('Error fetching driver base:', err);
+                    console.error('Error fetching driver details:', err);
                 }
 
                 const newMouvement = new Mouvement({
@@ -377,7 +387,9 @@ router.post('/sync', async (req, res) => {
                     chauffeur: tripData.driverId,
                     demandeur: tripData.driverId, // Self-assigned
                     passagers: tripData.passengerIds || [], // Add passengers
+                    param: tripData.passengerIds || [], // Add passengers
                     base: driverBase, // ✅ ADD BASE FROM DRIVER
+                    pays: driverCountry, // ✅ ADD COUNTRY FROM DRIVER
 
                     // Stops are required by schema
                     stops: [
