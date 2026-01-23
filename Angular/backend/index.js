@@ -118,6 +118,18 @@ app.get('/api', (req, res) => {
 // --- SERVING FRONTEND (Production/Monolithic) ---
 // Servir les fichiers statiques du build Angular
 const angularDistPath = path.join(__dirname, '../gestion-des-deplacements/dist/gestion-des-deplacements');
+console.log('🔍 [DEBUG] angularDistPath resolved to:', angularDistPath);
+const fs = require('fs');
+if (fs.existsSync(path.join(angularDistPath, 'index.html'))) {
+    console.log('✅ [DEBUG] index.html found at angularDistPath');
+} else {
+    console.error('❌ [DEBUG] index.html NOT FOUND at angularDistPath');
+    // Debug: List contents of dist parent if possible
+    try {
+        const parentDist = path.join(__dirname, '../gestion-des-deplacements/dist');
+        console.log('📂 [DEBUG] Contents of ' + parentDist + ':', fs.readdirSync(parentDist));
+    } catch (e) { console.log('Could not list parent dist', e.message); }
+}
 app.use(express.static(angularDistPath));
 
 // Pour toutes les autres requêtes (non API), renvoyer index.html (SPA)
