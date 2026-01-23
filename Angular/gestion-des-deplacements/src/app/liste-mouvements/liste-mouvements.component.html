@@ -40,7 +40,12 @@
         date:'mediumDate' }}<br>
         <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
         <ng-container *ngIf="mouvement.projet">
-          <strong>Projet:</strong> {{ mouvement.projet }}<br>
+          <strong>Projet:</strong> {{ mouvement.projet }}
+          <span *ngIf="!mouvement.projetsVentilation || mouvement.projetsVentilation.length === 0"
+            style="color: #666; font-size: 0.9em;">(100%)</span>
+          <span *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0"
+            style="color: #d32f2f; font-size: 0.9em;">(Ventilé ci-dessous)</span>
+          <br>
         </ng-container>
         <ng-container *ngIf="mouvement.demandeur">
           <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
