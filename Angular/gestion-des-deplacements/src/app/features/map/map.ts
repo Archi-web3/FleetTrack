@@ -95,11 +95,19 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     const allLatLngs: L.LatLngExpression[] = [];
 
     this.mouvements.forEach(m => {
-      const validStops = m.stops.filter((s: any) => s.lieu && (s.lieu as any).coordonnees);
+      // Ensure we have stops with VALID coordinates (must be string)
+      const validStops = m.stops.filter((s: any) => {
+        const hasCoords = s.lieu && (s.lieu as any).coordonnees;
+        if (hasCoords && typeof (s.lieu as any).coordonnees !== 'string') {
+          console.warn(`⚠️ [MAP] Invalid coords format for movement ${m._id} stop ${s.lieu.nom}:`, (s.lieu as any).coordonnees);
+          return false;
+        }
+        return hasCoords;
+      });
 
       if (validStops.length >= 2) {
         const latLngs: L.LatLngExpression[] = validStops.map((s: any) => {
-          const coords = (s.lieu as any).coordonnees;
+          const coords = (s.lieu as any).coordonnees as string;
           const [lat, lng] = coords.split(',').map((c: string) => parseFloat(c.trim()));
           return [lat, lng] as L.LatLngExpression;
         });
