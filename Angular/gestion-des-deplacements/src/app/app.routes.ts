@@ -16,11 +16,18 @@ import { StatisticsComponent } from './features/statistics/statistics.component'
 import { MaintenanceTrackingComponent } from './maintenance-tracking/maintenance-tracking.component';
 import { AuthGuard } from './auth-guard';
 
+import { MapComponent } from './features/map/map';
+
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'planning',
     pathMatch: 'full'
+  },
+  {
+    path: 'map',
+    component: MapComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'mes-mouvements',
