@@ -116,4 +116,9 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
       data: { mouvement }
     });
   }
+
+  navigateToEdit(id: string): void {
+    console.log('🔄 [liste-mouvements] Navigating to edit:', id);
+    this.router.navigate(['/modifier-mouvement', id]);
+  }
 }

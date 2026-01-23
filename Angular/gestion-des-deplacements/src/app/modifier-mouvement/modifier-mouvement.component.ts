@@ -203,6 +203,7 @@ export class ModifierMouvementComponent implements OnInit {
 
 
   onSubmit(): void {
+    console.log('🔄 [modifier-mouvement] onSubmit called via click'); // Debug
     if (!this.mouvementId) return;
 
     // Assigner les passagers sélectionnés

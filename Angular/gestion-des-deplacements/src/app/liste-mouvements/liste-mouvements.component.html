@@ -108,7 +108,7 @@
         <button mat-raised-button color="warn" (click)="deleteMouvement(mouvement._id)" style="margin-left: 8px;">
           Supprimer
         </button>
-        <button mat-raised-button color="primary" [routerLink]="['/modifier-mouvement', mouvement._id]"
+        <button mat-raised-button color="primary" (click)="navigateToEdit(mouvement._id)"
           *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
           style="margin-left: 8px;">
           Modifier

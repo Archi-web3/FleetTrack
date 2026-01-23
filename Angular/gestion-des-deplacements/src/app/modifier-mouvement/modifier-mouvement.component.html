@@ -1,6 +1,6 @@
 <div style="padding: 20px;">
   <h2>Modifier Mouvement (ID: {{ mouvementId }})</h2>
-  <form (ngSubmit)="onSubmit()" #modifierForm="ngForm">
+  <form #modifierForm="ngForm">
 
     <!-- Lieu de Départ -->
     <div style="margin-bottom: 10px;">
@@ -192,7 +192,7 @@
     <br />
 
 
-    <button type="submit" [disabled]="!modifierForm.form.valid"
+    <button type="button" (click)="onSubmit()" [disabled]="!modifierForm.form.valid"
       style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Mettre à jour
       Mouvement</button>
     <button type="button" (click)="router.navigate(['/'])"
