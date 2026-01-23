@@ -1,6 +1,7 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../auth.service';
+import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
     // Injecter AuthService pour récupérer le token
@@ -13,8 +14,26 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                 'x-auth-token': token
             }
         });
-        return next(clonedReq);
+        return next(clonedReq).pipe(
+            catchError((error: HttpErrorResponse) => {
+                if (error.status === 401) {
+                    console.warn('[AuthInterceptor] 401 Unauthorized détecté. Déconnexion forcée.');
+                    // On doit utiliser inject(AuthService) ici car c'est une fonction
+                    authService.logout();
+                }
+                return throwError(() => error);
+            })
+        );
     }
 
-    return next(req);
+    return next(req).pipe(
+        catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+                console.warn('[AuthInterceptor] 401 Unauthorized détecté (sans token). Déconnexion forcée.');
+                const authService = inject(AuthService); // Ré-injection nécessaire ici si on passe par ce chemin
+                authService.logout();
+            }
+            return throwError(() => error);
+        })
+    );
 };

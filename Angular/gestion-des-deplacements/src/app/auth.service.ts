@@ -162,19 +162,25 @@ export class AuthService {
     if (token) {
       const decoded = this.decodeToken(token);
 
-      this._userProfile.next(decoded?.utilisateur?.profil || null);
-      this._userName.next(decoded?.utilisateur?.nom || null);
-      this._userId.next(decoded?.utilisateur?.id || null);
-      this._userPays.next(decoded?.utilisateur?.pays?.nom || null);
-      this._userBase.next(decoded?.utilisateur?.base?.nom || null);
-      this._userPaysId.next(decoded?.utilisateur?.pays?.id || null);
-      this._userBaseId.next(decoded?.utilisateur?.base?.id || null);
+      if (decoded && decoded.utilisateur) {
+        this._userProfile.next(decoded.utilisateur.profil || null);
+        this._userName.next(decoded.utilisateur.nom || null);
+        this._userId.next(decoded.utilisateur.id || null);
+        this._userPays.next(decoded.utilisateur.pays?.nom || null);
+        this._userBase.next(decoded.utilisateur.base?.nom || null);
+        this._userPaysId.next(decoded.utilisateur.pays?.id || null);
+        this._userBaseId.next(decoded.utilisateur.base?.id || null);
 
-      // Fix: Automatically set selectedCountry in localStorage if user has a country assigned
-      if (decoded?.utilisateur?.pays?.id) {
-        localStorage.setItem('selectedCountry', decoded.utilisateur.pays.id);
+        // Fix: Automatically set selectedCountry in localStorage if user has a country assigned
+        if (decoded.utilisateur.pays?.id) {
+          localStorage.setItem('selectedCountry', decoded.utilisateur.pays.id);
+        }
+      } else {
+        console.warn('[AuthService] Token present but decoding failed or structure invalid. Clearing state.');
+        this.logout(); // Safety logout if token is garbage
       }
     } else {
+      console.log('[AuthService] No token provided. clearing state.');
       this._userProfile.next(null);
       this._userName.next(null);
       this._userId.next(null);
@@ -182,14 +188,17 @@ export class AuthService {
       this._userBase.next(null);
       this._userPaysId.next(null);
       this._userBaseId.next(null);
-      // We do not clear selectedCountry here to allow SuperAdmins to keep their selection across reloads if needed,
-      // or we handle logout explicitly.
     }
   }
 
   private decodeToken(token: string): any {
     try {
-      const base64Url = token.split('.')[1];
+      if (!token) return null;
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        throw new Error('JWT must have 3 parts');
+      }
+      const base64Url = parts[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -197,7 +206,7 @@ export class AuthService {
 
       return JSON.parse(jsonPayload);
     } catch (e) {
-      console.error("Erreur de décodage du token JWT:", e);
+      console.error("Erreur de décodage du token JWT:", e, "Token (partial):", token.substring(0, 10) + '...');
       return null;
     }
   }
