@@ -103,8 +103,10 @@
       <div *ngFor="let item of mouvement.projetsVentilation; let i = index"
         style="display: flex; gap: 10px; margin-bottom: 5px; align-items: center;">
         <div style="flex: 1;">
-          <input type="text" [(ngModel)]="item.projet" name="projet_{{i}}" placeholder="Nom du projet"
-            style="width: 100%; padding: 5px;">
+          <select [(ngModel)]="item.projet" name="projet_{{i}}" required style="width: 100%; padding: 5px;">
+            <option value="" disabled selected>Sélectionner un projet</option>
+            <option *ngFor="let p of projets" [value]="p">{{ p }}</option>
+          </select>
         </div>
         <div style="width: 80px;">
           <input type="number" [(ngModel)]="item.percentage" name="percent_{{i}}" placeholder="%" min="0" max="100"

@@ -10,6 +10,7 @@ import { LieuService } from '../lieu.service';
 import { AuthService } from '../auth.service';
 
 import { MatIconModule } from '@angular/material/icon';
+import { StatsService } from '../stats.service';
 
 @Component({
   selector: 'app-modifier-mouvement',
@@ -38,6 +39,7 @@ export class ModifierMouvementComponent implements OnInit {
   vehicules: any[] = [];
   chauffeurs: any[] = [];
   lieux: any[] = [];
+  projets: string[] = []; // Liste des projets pour la ventilation
   transportModes: string[] = ['Routier', 'Aérien', 'Maritime'];
   mouvementStatuts = ['en attente', 'en attente validation sécurité', 'validé', 'en cours', 'terminé', 'annulé', 'refusé'];
 
@@ -59,6 +61,7 @@ export class ModifierMouvementComponent implements OnInit {
     private vehiculeService: VehiculeService,
     private chauffeurService: ChauffeurService,
     private lieuService: LieuService,
+    private statsService: StatsService, // NOUVEAU: Pour récupérer la liste des projets
     public authService: AuthService // Public pour le template si besoin
   ) { }
 
@@ -84,6 +87,11 @@ export class ModifierMouvementComponent implements OnInit {
     this.lieuService.getLieux().subscribe(
       (data) => this.lieux = data,
       (error) => console.error('Erreur chargement lieux:', error)
+    );
+    // Charger la liste des projets pour la ventilation
+    this.statsService.getProjets().subscribe(
+      (data) => this.projets = data,
+      (error) => console.error('Erreur chargement projets:', error)
     );
 
     // Charger le mouvement à modifier
