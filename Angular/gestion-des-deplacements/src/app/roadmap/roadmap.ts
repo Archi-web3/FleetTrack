@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 
 interface RoadmapItem {
     id: number;
@@ -13,14 +14,57 @@ interface RoadmapItem {
     priority: 'Haute' | 'Moyenne' | 'Basse';
 }
 
+interface ChangelogItem {
+    version: string;
+    date: string;
+    changes: { category: string; description: string }[];
+    type: 'major' | 'minor' | 'patch';
+}
+
 @Component({
     selector: 'app-roadmap',
     standalone: true,
-    imports: [CommonModule, MatIconModule],
+    imports: [CommonModule, MatIconModule, MatTabsModule],
     templateUrl: './roadmap.html',
     styleUrls: ['./roadmap.css']
 })
 export class RoadmapComponent {
+    changelogItems: ChangelogItem[] = [
+        {
+            version: 'v2.1.0',
+            date: '23 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Gestion Financière', description: 'Ajout d\'une liste déroulante pour la sélection des projets (Ventilation) pour plus de cohérence.' },
+                { category: 'Statistiques', description: 'Correction des filtres Dashboard Global vs Par Projet : respect strict de la ventilation financière.' },
+                { category: 'Statistiques', description: 'Ajout des colonnes "Distance Totale" (Impliquée) vs "Distance Ventilée" (Réelle) dans les rapports.' },
+                { category: 'Sécurité', description: 'Durcissement du service d\'authentification et gestion automatique des erreurs 401 (reconnexion propre).' }
+            ]
+        },
+        {
+            version: 'v2.0.1',
+            date: '21 Janvier 2026',
+            type: 'patch',
+            changes: [
+                { category: 'Correctif', description: 'Rétablissement de la visibilité du menu "Validation" pour le rôle Superviseur Sécurité.' },
+                { category: 'Architecture', description: 'Mise à jour des Interceptors pour la gestion multi-pays.' }
+            ]
+        },
+        {
+            version: 'v2.0.0',
+            date: 'Janvier 2026',
+            type: 'major',
+            changes: [
+                { category: 'Véhicules', description: 'Instauration des IDs automatiques, gestion des Assurances et distinction Propriété/Location.' },
+                { category: 'Lieux', description: 'Niveaux de sécurité (1-5) avec indicateurs visuels.' },
+                { category: 'Utilisateurs', description: 'Ajout des matricules employés et niveaux d\'habilitation sécurité.' },
+                { category: 'Mouvements', description: 'Support des modes Aérien et Maritime.' },
+                { category: 'Validation', description: 'Matrice intelligente (Niveau de risque vs Habilitation user) et historique des signatures.' },
+                { category: 'Ventilation', description: 'Algorithme de répartition automatique des coûts basé sur les passagers.' }
+            ]
+        }
+    ];
+
     roadmapItems: RoadmapItem[] = [
         {
             id: 1,

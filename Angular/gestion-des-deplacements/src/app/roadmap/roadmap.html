@@ -8,91 +8,128 @@
     </div>
 
     <div class="roadmap-content">
-        <!-- Introduction -->
-        <div class="intro-section">
-            <p>
-                Cette roadmap présente notre vision pour l'évolution de FleetTrack. Chaque fonctionnalité a été
-                soigneusement
-                planifiée pour améliorer votre expérience et optimiser la gestion de votre flotte.
-            </p>
-        </div>
+        <mat-tab-group animationDuration="0ms" class="roadmap-tabs">
+            <!-- Onglet 1 : Roadmap -->
+            <mat-tab label="Vision & Roadmap">
+                <div class="tab-content">
+                    <!-- Introduction -->
+                    <div class="intro-section">
+                        <p>
+                            Cette roadmap présente notre vision pour l'évolution de FleetTrack. Chaque fonctionnalité a
+                            été
+                            soigneusement
+                            planifiée pour améliorer votre expérience et optimiser la gestion de votre flotte.
+                        </p>
+                    </div>
 
-        <!-- Legend -->
-        <div class="legend-section">
-            <h3>Légende</h3>
-            <div class="legend-grid">
-                <div class="legend-item">
-                    <span class="status-badge status-planned">Planifié</span>
-                    <span class="legend-text">Fonctionnalité en phase de conception</span>
-                </div>
-                <div class="legend-item">
-                    <span class="status-badge status-progress">En cours</span>
-                    <span class="legend-text">Développement actif</span>
-                </div>
-                <div class="legend-item">
-                    <span class="status-badge status-completed">Terminé</span>
-                    <span class="legend-text">Déployé en production</span>
-                </div>
-            </div>
-            <div class="legend-grid">
-                <div class="legend-item">
-                    <span class="priority-badge priority-high">Priorité Haute</span>
-                </div>
-                <div class="legend-item">
-                    <span class="priority-badge priority-medium">Priorité Moyenne</span>
-                </div>
-                <div class="legend-item">
-                    <span class="priority-badge priority-low">Priorité Basse</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Timeline -->
-        <div class="timeline">
-            <div class="timeline-line"></div>
-
-            <div *ngFor="let item of roadmapItems; let i = index" class="timeline-item"
-                [class.timeline-item-left]="i % 2 === 0" [class.timeline-item-right]="i % 2 !== 0">
-
-                <div class="timeline-dot">
-                    <mat-icon>{{ item.categoryIcon }}</mat-icon>
-                </div>
-
-                <div class="timeline-card">
-                    <div class="card-header">
-                        <div class="card-category">
-                            <mat-icon class="category-icon">{{ item.categoryIcon }}</mat-icon>
-                            <span class="category-name">{{ item.category }}</span>
+                    <!-- Legend -->
+                    <div class="legend-section">
+                        <h3>Légende</h3>
+                        <div class="legend-grid">
+                            <div class="legend-item">
+                                <span class="status-badge status-planned">Planifié</span>
+                                <span class="legend-text">Fonctionnalité en phase de conception</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge status-progress">En cours</span>
+                                <span class="legend-text">Développement actif</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="status-badge status-completed">Terminé</span>
+                                <span class="legend-text">Déployé en production</span>
+                            </div>
                         </div>
-                        <div class="card-badges">
-                            <span class="status-badge" [ngClass]="getStatusClass(item.status)">
-                                {{ item.status }}
-                            </span>
-                            <span class="priority-badge" [ngClass]="getPriorityClass(item.priority)">
-                                {{ item.priority }}
-                            </span>
+                        <div class="legend-grid">
+                            <div class="legend-item">
+                                <span class="priority-badge priority-high">Priorité Haute</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="priority-badge priority-medium">Priorité Moyenne</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="priority-badge priority-low">Priorité Basse</span>
+                            </div>
                         </div>
                     </div>
 
-                    <h3 class="card-title">{{ item.title }}</h3>
+                    <!-- Timeline -->
+                    <div class="timeline">
+                        <div class="timeline-line"></div>
 
-                    <p class="card-description">{{ item.description }}</p>
+                        <div *ngFor="let item of roadmapItems; let i = index" class="timeline-item"
+                            [class.timeline-item-left]="i % 2 === 0" [class.timeline-item-right]="i % 2 !== 0">
 
-                    <div class="card-footer">
-                        <div class="app-badge" [ngClass]="getAppClass(item.targetApp)">
-                            <mat-icon class="app-icon">
-                                {{ item.targetApp === 'e-logbook' ? 'phone_android' :
-                                item.targetApp === 'Gestion des déplacements' ? 'computer' : 'devices' }}
-                            </mat-icon>
-                            <span>{{ item.targetApp }}</span>
+                            <div class="timeline-dot">
+                                <mat-icon>{{ item.categoryIcon }}</mat-icon>
+                            </div>
+
+                            <div class="timeline-card">
+                                <div class="card-header">
+                                    <div class="card-category">
+                                        <mat-icon class="category-icon">{{ item.categoryIcon }}</mat-icon>
+                                        <span class="category-name">{{ item.category }}</span>
+                                    </div>
+                                    <div class="card-badges">
+                                        <span class="status-badge" [ngClass]="getStatusClass(item.status)">
+                                            {{ item.status }}
+                                        </span>
+                                        <span class="priority-badge" [ngClass]="getPriorityClass(item.priority)">
+                                            {{ item.priority }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <h3 class="card-title">{{ item.title }}</h3>
+
+                                <p class="card-description">{{ item.description }}</p>
+
+                                <div class="card-footer">
+                                    <div class="app-badge" [ngClass]="getAppClass(item.targetApp)">
+                                        <mat-icon class="app-icon">
+                                            {{ item.targetApp === 'e-logbook' ? 'phone_android' :
+                                            item.targetApp === 'Gestion des déplacements' ? 'computer' : 'devices' }}
+                                        </mat-icon>
+                                        <span>{{ item.targetApp }}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </mat-tab>
+
+            <!-- Onglet 2 : Changelog -->
+            <mat-tab label="Nouveautés (Changelog)">
+                <div class="tab-content changelog-container">
+                    <div class="intro-section">
+                        <p>
+                            Suivez l'historique des mises à jour et des nouvelles fonctionnalités déployées sur
+                            l'application.
+                        </p>
+                    </div>
+
+                    <div class="changelog-timeline">
+                        <div *ngFor="let release of changelogItems" class="changelog-item" [ngClass]="release.type">
+                            <div class="changelog-header">
+                                <div class="version-badge" [ngClass]="release.type">{{ release.version }}</div>
+                                <div class="release-date">{{ release.date }}</div>
+                            </div>
+                            <div class="changelog-body">
+                                <ul>
+                                    <li *ngFor="let change of release.changes">
+                                        <span class="change-category">{{ change.category }} :</span>
+                                        {{ change.description }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
 
         <!-- Call to Action -->
-        <div class="cta-section">
+        <div class="cta-section" style="margin-top: 40px;">
             <mat-icon class="cta-icon">lightbulb</mat-icon>
             <h3>Vous avez une suggestion ?</h3>
             <p>
