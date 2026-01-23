@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const mouvementsRoute = require('./routes/mouvements');
@@ -109,9 +110,23 @@ mongoose.connection.once('open', async () => {
 
 
 
-// Route de test (page d'accueil du backend)
-app.get('/', (req, res) => {
-    res.send('Bienvenue sur le backend de Gestion des Déplacements!');
+// Route de test (page d'accueil du backend) - Gardée pour le root / si besoin, mais le wildcard prendra le dessus pour le reste
+app.get('/api', (req, res) => {
+    res.send('Bienvenue sur l\'API de Gestion des Déplacements!');
+});
+
+// --- SERVING FRONTEND (Production/Monolithic) ---
+// Servir les fichiers statiques du build Angular
+const angularDistPath = path.join(__dirname, '../gestion-des-deplacements/dist/gestion-des-deplacements/browser');
+app.use(express.static(angularDistPath));
+
+// Pour toutes les autres requêtes (non API), renvoyer index.html (SPA)
+app.get('*', (req, res) => {
+    // Vérifier si c'est une requête API qui a échoué (404 API) pour éviter de renvoyer du HTML
+    if (req.originalUrl.startsWith('/api')) {
+        return res.status(404).json({ message: 'API Route not found' });
+    }
+    res.sendFile(path.join(angularDistPath, 'index.html'));
 });
 
 // Démarrage du serveur
