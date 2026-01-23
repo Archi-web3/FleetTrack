@@ -117,7 +117,7 @@ app.get('/api', (req, res) => {
 
 // --- SERVING FRONTEND (Production/Monolithic) ---
 // Servir les fichiers statiques du build Angular
-const angularDistPath = path.join(__dirname, '../gestion-des-deplacements/dist/gestion-des-deplacements/browser');
+const angularDistPath = path.join(__dirname, '../gestion-des-deplacements/dist/gestion-des-deplacements');
 app.use(express.static(angularDistPath));
 
 // Pour toutes les autres requêtes (non API), renvoyer index.html (SPA)
