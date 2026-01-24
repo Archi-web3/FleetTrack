@@ -6,6 +6,7 @@ const Maintenance = require('../models/maintenance.model');
 const Incident = require('../models/incident.model');
 const Lieu = require('../models/lieu.model'); // Import Lieu model
 const Vehicule = require('../models/vehicule.model'); // Import Vehicule model
+const { calculateGpsDistance, analyzeDeviations } = require('../utils/gps-utils'); // Importer utils GPS
 // const auth = require('../middleware/authMiddleware'); // À activer plus tard
 
 console.log('🔹 LOGBOOK ROUTES LOADED 🔹');
@@ -288,7 +289,24 @@ router.post('/sync', async (req, res) => {
                         plannedMvt.startMileage = tripData.startMileage;
                         plannedMvt.endMileage = tripData.endMileage;
                         plannedMvt.driverObservations = tripData.purpose;
+
                         plannedMvt.isLocked = true;
+
+                        // NOUVEAU: Analyse GPS
+                        if (tripData.gpsTrace && tripData.gpsTrace.length > 0) {
+                            plannedMvt.gpsTrace = tripData.gpsTrace;
+
+                            // Calculer distance GPS
+                            const gpsDistance = calculateGpsDistance(tripData.gpsTrace);
+                            const odometerDistance = (tripData.endMileage - tripData.startMileage);
+
+                            // Analyser écarts
+                            const deviations = analyzeDeviations(gpsDistance, odometerDistance);
+                            if (deviations.length > 0) {
+                                plannedMvt.deviations = deviations;
+                                console.warn(`⚠️ GPS Deviation detected for trip ${tripData.plannedMovementId}:`, deviations);
+                            }
+                        }
 
                         // NOTE: We do NOT update stops dates to preserve the original planned dates
                         // The actual dates are stored in realDepartureTime and realArrivalTime
@@ -419,8 +437,22 @@ router.post('/sync', async (req, res) => {
                     endMileage: tripData.endMileage,
                     driverObservations: tripData.purpose,
                     photos: tripData.photos || [], // NOUVEAU: Copier les photos
-                    isLocked: true
+                    photos: tripData.photos || [], // NOUVEAU: Copier les photos
+                    isLocked: true,
+                    gpsTrace: tripData.gpsTrace || [] // NOUVEAU: Stocker trace
                 });
+
+                // NOUVEAU: Analyse GPS pour nouveaux mouvements
+                if (tripData.gpsTrace && tripData.gpsTrace.length > 0) {
+                    const gpsDistance = calculateGpsDistance(tripData.gpsTrace);
+                    const odometerDistance = (tripData.endMileage - tripData.startMileage);
+                    const deviations = analyzeDeviations(gpsDistance, odometerDistance);
+
+                    if (deviations.length > 0) {
+                        newMouvement.deviations = deviations;
+                        console.warn(`⚠️ GPS Deviation detected for new trip:`, deviations);
+                    }
+                }
 
                 await newMouvement.save();
 
