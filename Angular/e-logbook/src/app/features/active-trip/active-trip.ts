@@ -447,153 +447,153 @@ export class ActiveTripComponent implements OnInit {
     }
     return '';
   }
-}
 
-// Helper to get error message for end mileage
-getEndMileageError(): string {
-  const control = this.endForm.get('endMileage');
-  if (control?.hasError('required')) {
-    return 'Le kilométrage d\'arrivée est requis';
-  }
-  if (control?.hasError('min')) {
-    return 'Le kilométrage doit être positif';
-  }
-  if (control?.hasError('mileageTooLow')) {
-    const error = control.getError('mileageTooLow');
-    return `Le kilométrage ne peut pas être inférieur au dernier enregistré (${error.lastMileage} km)`;
-  }
-  if (control?.hasError('endLessThanStart')) {
-    const error = control.getError('endLessThanStart');
-    return `Le kilométrage d'arrivée (${error.endMileage} km) doit être supérieur au kilométrage de départ (${error.startMileage} km)`;
-  }
-  return '';
-}
 
-// NOUVEAU: Méthodes de gestion des photos
-takePhoto() {
-  this.fileInput.nativeElement.click();
-}
+  // Helper to get error message for end mileage
+  getEndMileageError(): string {
+    const control = this.endForm.get('endMileage');
+    if (control?.hasError('required')) {
+      return 'Le kilométrage d\'arrivée est requis';
+    }
+    if (control?.hasError('min')) {
+      return 'Le kilométrage doit être positif';
+    }
+    if (control?.hasError('mileageTooLow')) {
+      const error = control.getError('mileageTooLow');
+      return `Le kilométrage ne peut pas être inférieur au dernier enregistré (${error.lastMileage} km)`;
+    }
+    if (control?.hasError('endLessThanStart')) {
+      const error = control.getError('endLessThanStart');
+      return `Le kilométrage d'arrivée (${error.endMileage} km) doit être supérieur au kilométrage de départ (${error.startMileage} km)`;
+    }
+    return '';
+  }
 
-getPendingUploadsCount(): number {
-  return this.photos.filter(p => !p.synced).length;
-}
+  // NOUVEAU: Méthodes de gestion des photos
+  takePhoto() {
+    this.fileInput.nativeElement.click();
+  }
+
+  getPendingUploadsCount(): number {
+    return this.photos.filter(p => !p.synced).length;
+  }
 
   async onPhotoSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+    const file = event.target.files[0];
+    if (!file) return;
 
-  console.log('📸 Photo sélectionnée:', file.name);
+    console.log('📸 Photo sélectionnée:', file.name);
 
-  // Créer URL locale pour affichage immédiat
-  const localUrl = this.photoService.createLocalUrl(file);
-  const photo: Photo = {
-    localUrl,
-    file,
-    synced: false
-  };
-  this.photos.push(photo);
-  this.cdr.detectChanges();
-
-  // Upload vers Cloudinary
-  console.log('📤 Upload photo vers Cloudinary...');
-  const currentUser = this.authService.getCurrentUser();
-  const country = currentUser?.pays?.nom || 'Unknown';
-  const base = currentUser?.base?.nom || 'Unknown';
-
-  try {
-    const compressedFile = await this.photoService.compressImage(file);
-    const recordId = `temp_${Date.now()}`;
-    const result = await this.photoService.uploadPhoto(compressedFile, 'trips', recordId, country, base);
-
-    console.log('✅ Photo uploadée:', result.url);
-    photo.url = result.url;
-    photo.publicId = result.publicId;
-    photo.synced = true;
-    photo.uploadedAt = new Date();
+    // Créer URL locale pour affichage immédiat
+    const localUrl = this.photoService.createLocalUrl(file);
+    const photo: Photo = {
+      localUrl,
+      file,
+      synced: false
+    };
+    this.photos.push(photo);
     this.cdr.detectChanges();
-  } catch (error) {
-    console.error('❌ Erreur upload photo:', error);
-    photo.synced = false;
-  }
 
-  event.target.value = '';
-}
+    // Upload vers Cloudinary
+    console.log('📤 Upload photo vers Cloudinary...');
+    const currentUser = this.authService.getCurrentUser();
+    const country = currentUser?.pays?.nom || 'Unknown';
+    const base = currentUser?.base?.nom || 'Unknown';
+
+    try {
+      const compressedFile = await this.photoService.compressImage(file);
+      const recordId = `temp_${Date.now()}`;
+      const result = await this.photoService.uploadPhoto(compressedFile, 'trips', recordId, country, base);
+
+      console.log('✅ Photo uploadée:', result.url);
+      photo.url = result.url;
+      photo.publicId = result.publicId;
+      photo.synced = true;
+      photo.uploadedAt = new Date();
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('❌ Erreur upload photo:', error);
+      photo.synced = false;
+    }
+
+    event.target.value = '';
+  }
 
   async removePhoto(index: number) {
-  const photo = this.photos[index];
-  if (photo.localUrl) {
-    this.photoService.revokeLocalUrl(photo.localUrl);
+    const photo = this.photos[index];
+    if (photo.localUrl) {
+      this.photoService.revokeLocalUrl(photo.localUrl);
+    }
+    if (photo.publicId) {
+      try {
+        await this.photoService.deletePhoto(photo.publicId);
+      } catch (error) {
+        console.error('Erreur suppression photo:', error);
+      }
+    }
+    this.photos.splice(index, 1);
+    this.cdr.detectChanges();
   }
-  if (photo.publicId) {
-    try {
-      await this.photoService.deletePhoto(photo.publicId);
-    } catch (error) {
-      console.error('Erreur suppression photo:', error);
+
+  // --- GPS IMPLEMENTATION ---
+
+  startGpsTracking() {
+    if (!navigator.geolocation) {
+      console.warn('⚠️ Géolocalisation non supportée par ce navigateur');
+      return;
+    }
+
+    console.log('🛰️ Démarrage du tracking GPS...');
+    this.gpsSignalStatus = 'searching';
+
+    // Options: Haute précision, timeout 10s, maxAge 0 (pas de cache)
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+
+    this.watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        // Success
+        this.gpsSignalStatus = position.coords.accuracy < 20 ? 'good' : 'weak';
+
+        const point: GpsPoint = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          speed: position.coords.speed || 0,
+          heading: position.coords.heading || 0,
+          timestamp: position.timestamp
+        };
+
+        // Filtrage simple: ne garder que si mvt > 10m ou toutes les 30s
+        // Pour l'instant on garde tout toutes les ~10-30s selon le device, 
+        // mais on peut ajouter un filtre ici si trop de données.
+        // Simplification: On ajoute tout, on nettoiera au backend ou on throttle si besoin.
+
+        this.gpsTrace.push(point);
+
+        // Sauvegarde incrémentale (tous les 5 points par ex, ou à chaque point)
+        // Ici à chaque point pour sécurité max "Boîte Noire"
+        this.saveActiveTrip();
+        console.log(`📍 GPS Point: ${point.lat}, ${point.lng} (Acc: ${point.accuracy}m)`);
+      },
+      (error) => {
+        // Error
+        console.error('❌ Erreur GPS:', error.message);
+        this.gpsSignalStatus = 'off';
+      },
+      options
+    );
+  }
+
+  stopGpsTracking() {
+    if (this.watchId !== null) {
+      navigator.geolocation.clearWatch(this.watchId);
+      this.watchId = null;
+      this.gpsSignalStatus = 'off';
+      console.log('🛑 Arrêt du tracking GPS');
     }
   }
-  this.photos.splice(index, 1);
-  this.cdr.detectChanges();
-}
-
-// --- GPS IMPLEMENTATION ---
-
-startGpsTracking() {
-  if (!navigator.geolocation) {
-    console.warn('⚠️ Géolocalisation non supportée par ce navigateur');
-    return;
-  }
-
-  console.log('🛰️ Démarrage du tracking GPS...');
-  this.gpsSignalStatus = 'searching';
-
-  // Options: Haute précision, timeout 10s, maxAge 0 (pas de cache)
-  const options = {
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 0
-  };
-
-  this.watchId = navigator.geolocation.watchPosition(
-    (position) => {
-      // Success
-      this.gpsSignalStatus = position.coords.accuracy < 20 ? 'good' : 'weak';
-
-      const point: GpsPoint = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        accuracy: position.coords.accuracy,
-        speed: position.coords.speed || 0,
-        heading: position.coords.heading || 0,
-        timestamp: position.timestamp
-      };
-
-      // Filtrage simple: ne garder que si mvt > 10m ou toutes les 30s
-      // Pour l'instant on garde tout toutes les ~10-30s selon le device, 
-      // mais on peut ajouter un filtre ici si trop de données.
-      // Simplification: On ajoute tout, on nettoiera au backend ou on throttle si besoin.
-
-      this.gpsTrace.push(point);
-
-      // Sauvegarde incrémentale (tous les 5 points par ex, ou à chaque point)
-      // Ici à chaque point pour sécurité max "Boîte Noire"
-      this.saveActiveTrip();
-      console.log(`📍 GPS Point: ${point.lat}, ${point.lng} (Acc: ${point.accuracy}m)`);
-    },
-    (error) => {
-      // Error
-      console.error('❌ Erreur GPS:', error.message);
-      this.gpsSignalStatus = 'off';
-    },
-    options
-  );
-}
-
-stopGpsTracking() {
-  if (this.watchId !== null) {
-    navigator.geolocation.clearWatch(this.watchId);
-    this.watchId = null;
-    this.gpsSignalStatus = 'off';
-    console.log('🛑 Arrêt du tracking GPS');
-  }
-}
 }
