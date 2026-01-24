@@ -272,15 +272,19 @@ export class OfflineService extends Dexie {
         // Vérifier TOUS les trips récents pour trouver le dernier endMileage
         console.log('📊 [getLastMileage] Trips trouvés:', lastTrip.length);
         if (lastTrip.length > 0) {
+            console.log('🔍 [getLastMileage] Top 3 trips found:', lastTrip.slice(0, 3).map(t => ({ id: t.id, start: t.startDateTime, endKm: t.endMileage })));
+
             // Chercher le premier trip avec endMileage
-            const tripWithEndMileage = lastTrip.find(t => t.endMileage != null);
+            const tripWithEndMileage = lastTrip.find(t => t.endMileage != null && t.endMileage > 0);
             if (tripWithEndMileage && tripWithEndMileage.endMileage) {
-                console.log('✅ [getLastMileage] Trip avec endMileage trouvé:', tripWithEndMileage.endMileage);
+                console.log('✅ [getLastMileage] Trip avec endMileage trouvé:', tripWithEndMileage.endMileage, 'Date:', tripWithEndMileage.startDateTime);
                 mileages.push(tripWithEndMileage.endMileage);
             } else if (lastTrip[0].startMileage) {
                 console.log('⚠️ [getLastMileage] Aucun endMileage, utilisation startMileage:', lastTrip[0].startMileage);
                 mileages.push(lastTrip[0].startMileage);
             }
+        } else {
+            console.log('⚠️ [getLastMileage] Aucun trip trouvé pour ce véhicule.');
         }
 
         if (lastFuel.length > 0) {

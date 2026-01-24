@@ -349,6 +349,11 @@ export class ActiveTripComponent implements OnInit {
     // NOUVEAU: Arrêter GPS
     this.stopGpsTracking();
 
+    // --- DEBUG MOBILE ---
+    // alert(`Fin du trajet. Trace GPS: ${this.gpsTrace ? this.gpsTrace.length : 0} points. Enabled: ${this.gpsEnabled ? 'OUI' : 'NON'}`);
+    console.log(`Fin du trajet. Trace GPS: ${this.gpsTrace ? this.gpsTrace.length : 0} points. Enabled: ${this.gpsEnabled ? 'OUI' : 'NON'}`);
+    // --------------------
+
     console.log('Saving trip:', trip);
     await this.offlineService.addTrip(trip);
     console.log('Trip saved successfully');
