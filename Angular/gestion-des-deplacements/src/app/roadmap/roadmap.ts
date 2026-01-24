@@ -31,6 +31,16 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.3.0',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Alerting', description: 'Détection automatique de la surconsommation de carburant (>10% vs théorique).' },
+                { category: 'Maintenance', description: 'Calcul dynamique du statut (OK/Proche/Retard) basé sur les intervalles configurables.' },
+                { category: 'Maintenance', description: 'Intégration des configurations de maintenance par type de véhicule (Intervalles personnalisés).' }
+            ]
+        },
+        {
             version: 'v2.2.0',
             date: '24 Janvier 2026',
             type: 'minor',
