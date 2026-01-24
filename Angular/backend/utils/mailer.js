@@ -63,6 +63,11 @@ const sendEmail = async (to, subject, htmlContent) => {
 
 module.exports = {
     /**
+     * Generic send mail
+     */
+    sendMail: sendEmail,
+
+    /**
      * Sends a validation request email to supervisors/admins
      */
     sendValidationRequest: async (to, movement) => {

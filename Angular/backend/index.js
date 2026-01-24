@@ -98,6 +98,7 @@ app.use('/api/settings', settingsRoute);
 
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
+const startMaintenanceCron = require('./jobs/maintenanceCron'); // New daily email cron
 const { initializeTemplate } = require('./init-checklist-template');
 
 // Initialiser le template de checklist au démarrage
@@ -106,6 +107,7 @@ mongoose.connection.once('open', async () => {
     await initializeTemplate();
     console.log('🚀 Démarrage des tâches CRON...');
     startCronJobs();
+    startMaintenanceCron(); // Start daily email check
 });
 
 

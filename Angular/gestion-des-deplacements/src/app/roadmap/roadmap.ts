@@ -31,6 +31,14 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.3.1',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Maintenance', description: 'Notifications Email Automatiques : Envoi quotidien (08h00) aux Superviseurs pour les véhicules nécessitant une maintenance (Statut Proche ou Retard).' }
+            ]
+        },
+        {
             version: 'v2.3.0',
             date: '24 Janvier 2026',
             type: 'minor',
