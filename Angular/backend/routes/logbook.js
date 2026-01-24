@@ -215,6 +215,18 @@ router.get('/incidents/:vehicleId', async (req, res) => {
 router.post('/sync', async (req, res) => {
     console.log("--- SYNC REQUEST RECEIVED ---");
     const { trips, fuels, maintenances, incidents, vehicles } = req.body;
+
+    // --- DEBUG SYNC ---
+    if (trips && trips.length > 0) {
+        console.log(`📡 [SYNC] Reçu ${trips.length} trajets.`);
+        trips.forEach((t, i) => {
+            console.log(`   - Trajet ${i}: ServerID=${t.serverId || 'new'}, Vehicle=${t.vehicleId}, TraceLength=${t.gpsTrace ? t.gpsTrace.length : 0}`);
+        });
+    } else {
+        console.log('📡 [SYNC] Aucun trajet dans le payload.');
+    }
+    // ------------------
+
     const results = {
         trips: { success: 0, failed: 0, errors: [], items: [] },
         fuels: { success: 0, failed: 0, errors: [], items: [] },
