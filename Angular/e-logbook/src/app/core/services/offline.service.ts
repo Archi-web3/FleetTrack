@@ -262,9 +262,9 @@ export class OfflineService extends Dexie {
         console.log('🔍 [getLastMileage] Recherche dernier km pour véhicule:', vehicleId);
 
         const [lastTrip, lastFuel, lastMaintenance] = await Promise.all([
-            this.trips.where('vehicleId').equals(vehicleId).reverse().sortBy('startDateTime'),
-            this.fuels.where('vehicleId').equals(vehicleId).reverse().sortBy('date'),
-            this.maintenances.where('vehicleId').equals(vehicleId).reverse().sortBy('date')
+            this.trips.where('vehicleId').equals(vehicleId).sortBy('startDateTime').then(res => res.reverse()),
+            this.fuels.where('vehicleId').equals(vehicleId).sortBy('date').then(res => res.reverse()),
+            this.maintenances.where('vehicleId').equals(vehicleId).sortBy('date').then(res => res.reverse())
         ]);
 
         const mileages: number[] = [];

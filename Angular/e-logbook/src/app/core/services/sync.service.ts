@@ -41,10 +41,6 @@ export class SyncService {
         if (trips.length === 0 && fuels.length === 0 && maintenances.length === 0 && incidents.length === 0) {
             console.log('No local changes to push.');
         } else {
-            // DEBUG ALERT FOR MOBILE
-            const traceDebug = trips.map(t => `Trip ${t.id}: ${t.gpsTrace ? t.gpsTrace.length : 0} pts`).join('\n');
-            alert(`Pushing Data:\nTrips: ${trips.length}\nFuels: ${fuels.length}\nTraces:\n${traceDebug}`);
-
             const payload = { trips, fuels, maintenances, incidents };
             const token = localStorage.getItem('token');
             const headers = { 'x-auth-token': token || '' };
