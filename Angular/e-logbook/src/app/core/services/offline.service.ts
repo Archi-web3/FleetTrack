@@ -20,7 +20,7 @@ export interface Trip {
     startMileage: number;
     endMileage?: number;
     purpose: string;
-    departurePlaceId?: string;
+    departurePlaceId?: string; // Optional if starting from GPS location
     arrivalPlaceId?: string;
     passengerIds?: string[];
     photos?: string[]; // URLs des photos

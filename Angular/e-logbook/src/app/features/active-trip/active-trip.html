@@ -27,6 +27,13 @@
                         <mat-error>Le lieu de départ est requis</mat-error>
                     </mat-form-field>
 
+                    <!-- NOUVEAU: Option ou départ GPS -->
+                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                        <input type="checkbox" [checked]="useGpsStart" (change)="toggleGpsStart()" id="gpsStart">
+                        <label for="gpsStart" style="margin-left: 8px;">Utiliser ma position actuelle
+                            (Hors-site)</label>
+                    </div>
+
                     <mat-form-field appearance="fill" class="full-width">
                         <mat-label>Motif du déplacement</mat-label>
                         <input matInput formControlName="purpose">
@@ -68,6 +75,13 @@
                         {{ gpsSignalStatus === 'good' ? 'GPS OK' : (gpsSignalStatus === 'searching' ? 'Recherche GPS...'
                         : 'GPS Faible') }}
                     </span>
+                </div>
+
+                <!-- NOUVEAU: Bouton d'annulation d'urgence -->
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <button mat-button color="warn" (click)="abortTrip()" style="font-size: 0.8em;">
+                        <mat-icon inline="true">cancel</mat-icon> Annuler ce trajet (Erreur)
+                    </button>
                 </div>
 
                 <form [formGroup]="endForm">
