@@ -230,15 +230,19 @@ export class DemandeMouvementComponent implements OnInit {
         if (result) {
           // Convert distance (meters -> km) and duration (seconds -> readable)
           const km = (result.distance / 1000).toFixed(1) + ' km';
+          const durationSeconds = result.duration;
 
-          const hours = Math.floor(result.duration / 3600);
-          const minutes = Math.floor((result.duration % 3600) / 60);
+          const hours = Math.floor(durationSeconds / 3600);
+          const minutes = Math.floor((durationSeconds % 3600) / 60);
 
           let durationStr = '';
           if (hours > 0) durationStr += `${hours}h `;
           durationStr += `${minutes} min`;
 
           this.estimation = { distance: km, duration: durationStr };
+
+          // AUTO-FILL Arrival Date
+          this.updateArrivalDate(durationSeconds);
         } else {
           this.estimation = null;
         }
@@ -250,9 +254,62 @@ export class DemandeMouvementComponent implements OnInit {
     });
   }
 
+  // NOUVEAU: Mettre à jour la date d'arrivée basés sur la durée estimée + marge
+  updateArrivalDate(durationSeconds?: number): void {
+    if (!this.mouvement.dateDepart) return;
+
+    // Si durationSeconds n'est pas fourni, essayer de le récupérer d'une estimation précédente stockée ? 
+    // Pour l'instant, on ne le stocke pas en raw, donc on ne fait rien si pas fourni, 
+    // SAUF si on relance le calcul complet (ce qui est le cas avec onLieuChange).
+    // Mais si on change JUSTE la date de départ, il nous faut la durée.
+    // Simplification: on relance calculateEstimation() si la date de départ change ? 
+    // Non, c'est coûteux en API. On devrait stocker durationSeconds.
+
+    // Stockons la durée brute pour réutilisation
+    if (durationSeconds) {
+      (this.estimation as any).rawDuration = durationSeconds;
+    } else if (this.estimation && (this.estimation as any).rawDuration) {
+      durationSeconds = (this.estimation as any).rawDuration;
+    } else {
+      return;
+    }
+
+    if (!durationSeconds) return;
+
+    const depart = new Date(this.mouvement.dateDepart);
+    if (isNaN(depart.getTime())) return;
+
+    // Ajouter marge de 20% (x1.2)
+    let estimatedDuration = durationSeconds * 1.2;
+
+    // Minimum 15 minutes (900 secondes) de marge/trajet si c'est très court
+    if (estimatedDuration < durationSeconds + 900) {
+      estimatedDuration = durationSeconds + 900;
+    }
+
+    const arrivee = new Date(depart.getTime() + (estimatedDuration * 1000));
+
+    // Formater pour l'input datetime-local (YYYY-MM-DDTHH:mm)
+    // Attention au fuseau horaire local
+    const pad = (n: number) => n < 10 ? '0' + n : n;
+    const year = arrivee.getFullYear();
+    const month = pad(arrivee.getMonth() + 1);
+    const day = pad(arrivee.getDate());
+    const hours = pad(arrivee.getHours());
+    const minutes = pad(arrivee.getMinutes());
+
+    this.mouvement.dateArrivee = `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
   // Appelé quand un lieu change dans le template
   onLieuChange(): void {
     this.calculateEstimation();
+  }
+
+  // Appelé quand la date de départ change
+  onDateDepartChange(): void {
+    // Mettre à jour l'arrivée si une estimation existe déjà
+    this.updateArrivalDate();
   }
 
   async onSubmit(): Promise<void> {

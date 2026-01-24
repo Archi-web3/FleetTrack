@@ -46,7 +46,7 @@
       <div style="margin-top: 15px;">
         <label for="dateDepart">Date et Heure de Départ:</label>
         <input type="datetime-local" id="dateDepart" name="dateDepart" [(ngModel)]="mouvement.dateDepart" required
-          style="width: 100%; padding: 8px;">
+          (change)="onDateDepartChange()" style="width: 100%; padding: 8px;">
       </div>
     </div>
 
