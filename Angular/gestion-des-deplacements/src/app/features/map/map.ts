@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MouvementService } from '../../mouvement.service';
 import { VehiculeService } from '../../vehicule.service';
 import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.component';
@@ -17,6 +18,7 @@ import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.comp
     MatSelectModule,
     MatFormFieldModule,
     MatCardModule,
+    MatIconModule,
     MapMouvementsComponent
   ],
   templateUrl: './map.html',
