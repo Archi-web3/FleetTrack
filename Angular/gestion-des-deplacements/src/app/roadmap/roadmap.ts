@@ -31,6 +31,18 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.2.0',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Validation', description: 'Emails de refus : Notification enrichie avec le motif de refus.' },
+                { category: 'Visualisation', description: 'Carte Interactive : Tracés routiers réels (OSRM) et marqueurs de couleurs.' },
+                { category: 'Intelligence', description: 'Calculs prédictifs : Estimation automatique Distance/Durée lors de la demande.' },
+                { category: 'Expérience Utilisateur', description: 'Pré-remplissage intelligent de l\'heure d\'arrivée (+ marge sécurité).' },
+                { category: 'Correctif', description: 'Résolution des problèmes CORS (Intercepteurs) pour les API externes.' }
+            ]
+        },
+        {
             version: 'v2.1.0',
             date: '23 Janvier 2026',
             type: 'minor',
@@ -103,7 +115,7 @@ export class RoadmapComponent {
             category: 'Sécurité & Alertes',
             categoryIcon: 'map',
             targetApp: 'Gestion des déplacements',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Moyenne'
         },
         {
