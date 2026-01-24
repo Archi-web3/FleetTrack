@@ -31,6 +31,20 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.4.0',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'e-logbook', description: 'Traceur GPS "Boîte Noire" : Enregistrement auto (Position, Vitesse) pour les véhicules trackés.' },
+                { category: 'e-logbook', description: 'Départ GPS : Nouvelle option pour démarrer depuis la position actuelle (bypass lieux).' },
+                { category: 'e-logbook', description: 'UX : Annulation de Trajet (Bouton d\'urgence) et Indicateurs visuels (Satellite).' },
+                { category: 'e-logbook', description: 'Fix Kilométrage : Logique de suggestion intelligente (Max des 10 derniers trajets).' },
+                { category: 'Web Dashboard', description: 'Visualisation : Carte interactive des trajets réels vs planifiés (Comparaison).' },
+                { category: 'Web Dashboard', description: 'Admin : Toggle "Activer GPS" par véhicule.' },
+                { category: 'Backend', description: 'Analyse : Calcul Distance Réelle (Haversine) et Détection de Déviation (>15%).' }
+            ]
+        },
+        {
             version: 'v2.3.1',
             date: '24 Janvier 2026',
             type: 'minor',
@@ -113,7 +127,7 @@ export class RoadmapComponent {
             category: 'Mobile & Localisation',
             categoryIcon: 'my_location',
             targetApp: 'e-logbook',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Haute'
         },
         {
