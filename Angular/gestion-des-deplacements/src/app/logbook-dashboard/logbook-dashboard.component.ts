@@ -6,10 +6,14 @@ import { VehiculeService } from '../vehicule.service';
 import { MouvementService } from '../mouvement.service';
 import { AuthService } from '../auth.service';
 
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
     selector: 'app-logbook-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, MatIconModule, MatTabsModule, MatTooltipModule],
     templateUrl: './logbook-dashboard.component.html',
     styleUrls: ['./logbook-dashboard.component.css']
 })
