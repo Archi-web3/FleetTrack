@@ -12,7 +12,11 @@ const fuelSchema = new mongoose.Schema({
   price: { type: Number }, // Prix total ou par litre (optionnel)
   driverSignature: { type: String }, // URL ou base64 de la signature
   photos: [{ type: mongoose.Schema.Types.Mixed }], // MODIFIÉ: Photos (tickets, compteur) - Support string[] ou object[]
-  comments: { type: String }
+  comments: { type: String },
+  // NOUVEAU : Alerting Surconsommation
+  calculatedConsumption: { type: Number }, // L/100km calculé
+  isOverConsumption: { type: Boolean, default: false }, // Flag d'alerte
+  theoreticalConsumptionSnapshot: { type: Number } // La valeur théorique du véhicule au moment du plein
 }, { timestamps: true });
 
 module.exports = mongoose.model('Fuel', fuelSchema);

@@ -442,6 +442,17 @@ router.post('/sync', async (req, res) => {
     }
 
     // 2. Sync Fuels
+    // Pre-load vehicles for consumption check
+    const vehiclesMap = new Map();
+    if (vehicles && Array.isArray(vehicles)) { // Incoming vehicles from sync (if sent)
+        // Note: usually 'vehicles' sync is update, here we might need existing DB info for theoretical consumption if not coming from mobile.
+        // Better strategy: Fetch all involved vehicles IDs from fuels list, then Load from DB.
+    }
+
+    // Helper: We need to fetch vehicles if we want to check theoretical consumption efficiently
+    // Collect distinct vehicle IDs from fuels
+    // (Simplification for MVP: We fetch inside loop or optimistic check)
+
     if (fuels && Array.isArray(fuels)) {
         for (const fuelData of fuels) {
             try {
@@ -461,7 +472,7 @@ router.post('/sync', async (req, res) => {
                 }
 
                 // Create new fuel only if it doesn't exist
-                const newFuel = new Fuel({
+                const newFuelData = {
                     vehicule: fuelData.vehicleId,
                     chauffeur: fuelData.driverId,
                     date: fuelData.date,
@@ -472,7 +483,60 @@ router.post('/sync', async (req, res) => {
                     fullTank: fuelData.isFull !== undefined ? fuelData.isFull : true, // Map isFull to fullTank
                     price: fuelData.price, // Add price
                     photos: fuelData.photos || [] // NOUVEAU: Copier les photos
-                });
+                };
+
+                // --- ALERTING LOGIC ---
+                try {
+                    // 1. Get Vehicle Theoretical Consumption
+                    const vehicleDoc = vehiclesMap.get(fuelData.vehicleId); // Optim: Get from map or fetch
+                    let theoreticalConsumption = 0;
+
+                    if (vehicleDoc && vehicleDoc.consommation && vehicleDoc.consommation.valeur) {
+                        theoreticalConsumption = vehicleDoc.consommation.valeur;
+                        newFuelData.theoreticalConsumptionSnapshot = theoreticalConsumption;
+                    }
+                    // Fallback fetch if not in map (should be loaded ideally outside loop, but safety check)
+                    else {
+                        const fetchedVeh = await Vehicule.findById(fuelData.vehicleId);
+                        if (fetchedVeh && fetchedVeh.consommation && fetchedVeh.consommation.valeur) {
+                            theoreticalConsumption = fetchedVeh.consommation.valeur;
+                            newFuelData.theoreticalConsumptionSnapshot = theoreticalConsumption;
+                        }
+                    }
+
+                    // 2. Get Previous Fuel for Mileage Diff
+                    const previousFuel = await Fuel.findOne({
+                        vehicule: fuelData.vehicleId,
+                        date: { $lt: fuelData.date } // Strictement avant ce plein
+                    }).sort({ date: -1 });
+
+                    if (previousFuel && previousFuel.mileage < fuelData.mileage) {
+                        const distance = fuelData.mileage - previousFuel.mileage;
+                        if (distance > 0) {
+                            // Conso (L/100km) = (Litres / km) * 100
+                            const calculated = (fuelData.quantity / distance) * 100;
+                            newFuelData.calculatedConsumption = parseFloat(calculated.toFixed(2));
+
+                            // Trigger Alert > 10% tolerance (AND fullTank is true usually, but logic holds)
+                            // Logic: If previous was NOT full tank, distance calculation is tricky...
+                            // Standard: We calculate liters ADDED now covering the distance SINCE LAST FILL.
+                            // Valid only if we assume we top up to full. 
+                            // If fullTank=true for THIS fill, it means we filled what was consumed.
+                            if (newFuelData.fullTank && theoreticalConsumption > 0) {
+                                if (calculated > theoreticalConsumption * 1.10) {
+                                    newFuelData.isOverConsumption = true;
+                                    console.warn(`⚠️ ALERT: Overconsumption detected for ${fuelData.vehicleId}. Calc: ${calculated}, Theo: ${theoreticalConsumption}`);
+                                }
+                            }
+                        }
+                    }
+                } catch (alertErr) {
+                    console.error('Error calculating consumption alert:', alertErr);
+                    // Non-blocking
+                }
+                // ----------------------
+
+                const newFuel = new Fuel(newFuelData);
                 await newFuel.save();
                 console.log(`Created new fuel for vehicle ${fuelData.vehicleId} at ${fuelData.mileage}km`);
                 results.fuels.success++;
