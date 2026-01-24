@@ -17,7 +17,9 @@ interface MapMouvement {
     lng: number;
     dateDepart?: string;
     dateArrivee?: string;
+    dateArrivee?: string;
   }[];
+  gpsTrace?: { lat: number; lng: number }[]; // NOUVEAU
 }
 
 @Component({
@@ -115,7 +117,8 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
       });
 
       // --- Dessiner l'itinéraire avec Leaflet Routing Machine ---
-      if (waypoints.length >= 2) { // Il faut au moins 2 points pour un itinéraire
+      // (Planifié - Bleu)
+      if (waypoints.length >= 2) {
         const routingControl = (L.Routing as any).control({
           waypoints: waypoints,
           router: (L.Routing as any).osrmv1({
@@ -123,19 +126,47 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
             language: 'fr'
           }),
           lineOptions: {
-            styles: [{ color: 'blue', weight: 6, opacity: 0.7 }]
+            styles: [{ color: '#2196F3', weight: 6, opacity: 0.6, dashArray: '10, 10' }] // Bleu pointillé pour le planifié
           },
-          createMarker: function (i: number, waypoint: any, n: number) { return null; }, // Pas de marqueurs LRM
+          createMarker: function (i: number, waypoint: any, n: number) { return null; },
           addWaypoints: false,
           draggableWaypoints: false,
           fitSelectedRoutes: false,
           showAlternatives: false,
           routeWhileDragging: false,
-          show: false // Ne pas afficher le panneau d'instructions
+          show: false
         });
 
         routingControl.addTo(this.map);
         this.routingControls.push(routingControl);
+      }
+
+      // --- NOUVEAU : Dessiner le tracé GPS réel (Rouge) ---
+      if (mouvement.gpsTrace && mouvement.gpsTrace.length > 1) {
+        const gpsLatLngs = mouvement.gpsTrace.map(pt => L.latLng(pt.lat, pt.lng));
+
+        // Ligne Rouge continue pour le réel
+        const polyline = L.polyline(gpsLatLngs, {
+          color: '#d32f2f', // Rouge Mat
+          weight: 4,
+          opacity: 0.9
+        }).addTo(this.map!);
+
+        // Ajouter un marker de départ réel (petit cercle vert)
+        L.circleMarker(gpsLatLngs[0], {
+          radius: 6, fillOpacity: 1, color: '#2e7d32', fillColor: '#4caf50'
+        }).addTo(this.map!).bindPopup('Départ Réel GPS');
+
+        // Ajouter un marker d'arrivée réelle (petit cercle rouge)
+        L.circleMarker(gpsLatLngs[gpsLatLngs.length - 1], {
+          radius: 6, fillOpacity: 1, color: '#c62828', fillColor: '#ef5350'
+        }).addTo(this.map!).bindPopup('Arrivée Réelle GPS');
+
+        // Ajouter aux bornes pour le zoom
+        allLatLngs.push(...gpsLatLngs);
+      } else {
+        // Fallback si pas de trace GPS mais mouvement terminé : ligne droite rouge (pour debug ou ancien sans trace)
+        // ... (Optionnel, on ne fait rien pour l'instant)
       }
 
       // Ajouter les marqueurs créés par nous à la carte

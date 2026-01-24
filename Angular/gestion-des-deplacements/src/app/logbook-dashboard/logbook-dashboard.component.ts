@@ -9,11 +9,12 @@ import { AuthService } from '../auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component'; // Import Map
 
 @Component({
     selector: 'app-logbook-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatIconModule, MatTabsModule, MatTooltipModule],
+    imports: [CommonModule, FormsModule, MatIconModule, MatTabsModule, MatTooltipModule, MapMouvementsComponent],
     templateUrl: './logbook-dashboard.component.html',
     styleUrls: ['./logbook-dashboard.component.css']
 })
@@ -33,6 +34,10 @@ export class LogbookDashboardComponent implements OnInit {
 
     // NOUVEAU: Photo modal
     selectedPhoto: string | null = null;
+
+    // NOUVEAU: Map Modal
+    showMapModal: boolean = false;
+    mapMouvementsData: any[] = [];
 
     constructor(
         private vehiculeService: VehiculeService,
@@ -177,5 +182,41 @@ export class LogbookDashboardComponent implements OnInit {
 
     closePhotoModal(): void {
         this.selectedPhoto = null;
+    }
+
+    // NOUVEAU: Gestion Map Modal
+    openMap(trip: any): void {
+        console.log('Opening map for trip:', trip);
+
+        // Convertir trip en format compatible MapMouvement
+        // Il faut s'assurer que les stops sont bien peuplés
+        // Si stops manquants mais lieuDepart/Arrivee présents, on bricole
+
+        const stops = trip.stops && trip.stops.length > 0 ? trip.stops.map((s: any) => ({
+            lieuId: s.lieu?._id || s.lieu,
+            nom: s.lieu?.nom || 'Stop',
+            adresse: s.lieu?.adresse || '',
+            lat: s.lieu?.coordonnees?.lat || s.lat, // Fallback si plat
+            lng: s.lieu?.coordonnees?.lng || s.lng,
+            dateDepart: s.dateDepart,
+            dateArrivee: s.dateArrivee
+        })) : [];
+
+        // Si pas de stops mais trace GPS, on peut afficher quand même
+
+        this.mapMouvementsData = [{
+            id: trip._id,
+            title: trip.objectif || trip.purpose || 'Trajet',
+            demandeur: trip.chauffeur?.prenom + ' ' + trip.chauffeur?.nom,
+            stops: stops,
+            gpsTrace: trip.gpsTrace // Passer la trace GPS
+        }];
+
+        this.showMapModal = true;
+    }
+
+    closeMapModal(): void {
+        this.showMapModal = false;
+        this.mapMouvementsData = [];
     }
 }
