@@ -55,8 +55,19 @@
 
             <!-- STOP TRIP FORM -->
             <div *ngIf="tripStarted">
-                <div class="timer">
-                    <p>Départ: {{ startTime | date:'shortTime' }}</p>
+                <div class="info-row">
+                    <mat-icon>schedule</mat-icon>
+                    <span>Début: {{ startTime | date:'HH:mm' }}</span>
+
+                    <!-- NOUVEAU: Indicateur GPS -->
+                    <span *ngIf="gpsEnabled"
+                        style="margin-left: 15px; display: flex; align-items: center; font-size: 0.9em;"
+                        [ngStyle]="{'color': gpsSignalStatus === 'good' ? '#4CAF50' : (gpsSignalStatus === 'searching' ? '#FF9800' : '#f44336')}">
+                        <mat-icon
+                            style="font-size: 18px; margin-right: 4px; height: 18px; width: 18px;">satellite_alt</mat-icon>
+                        {{ gpsSignalStatus === 'good' ? 'GPS OK' : (gpsSignalStatus === 'searching' ? 'Recherche GPS...'
+                        : 'GPS Faible') }}
+                    </span>
                 </div>
 
                 <form [formGroup]="endForm">

@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import Dexie, { Table } from 'dexie';
 
+export interface GpsPoint {
+    lat: number;
+    lng: number;
+    timestamp: number; // Unix timestamp
+    accuracy?: number;
+    speed?: number;
+    heading?: number;
+}
+
 export interface Trip {
     id?: number;
     serverId?: string; // Backend ID
@@ -14,7 +23,8 @@ export interface Trip {
     departurePlaceId?: string;
     arrivalPlaceId?: string;
     passengerIds?: string[];
-    photos?: string[]; // NOUVEAU: URLs des photos
+    photos?: string[]; // URLs des photos
+    gpsTrace?: GpsPoint[]; // NOUVEAU: Tracé GPS
     synced: number; // 0 = false, 1 = true
     plannedMovementId?: string; // ID of the planned movement if started from planning
 }

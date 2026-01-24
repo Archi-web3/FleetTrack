@@ -10,7 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { OfflineService, Trip, Lieu, User } from '../../core/services/offline.service';
+import { OfflineService, Trip, Lieu, User, GpsPoint } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PhotoService, Photo } from '../../core/services/photo.service';
 
@@ -38,6 +38,12 @@ export class ActiveTripComponent implements OnInit {
   lastMileage: number = 0;
   plannedMovementId: string | undefined;
 
+  // NOUVEAU: GPS Tracking
+  gpsEnabled = false;
+  gpsTrace: GpsPoint[] = [];
+  watchId: number | null = null;
+  gpsSignalStatus: 'searching' | 'good' | 'weak' | 'off' = 'off';
+
   // Forms
   startForm!: FormGroup;
   endForm!: FormGroup;
@@ -59,10 +65,13 @@ export class ActiveTripComponent implements OnInit {
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {
-    // Get selected vehicle from localStorage
-    const selectedVehicle = localStorage.getItem('selectedVehicle');
-    if (selectedVehicle) {
-      this.vehicleId = JSON.parse(selectedVehicle)._id;
+    // Get selected vehicle from localStorage and check GPS config
+    const selectedVehicleStr = localStorage.getItem('selectedVehicle');
+    if (selectedVehicleStr) {
+      const v = JSON.parse(selectedVehicleStr);
+      this.vehicleId = v._id;
+      this.gpsEnabled = !!v.enableGpsTracking;
+      if (this.gpsEnabled) console.log('🛰️ GPS Tracking activé pour ce véhicule');
     } else {
       // If no vehicle selected, redirect to vehicle selector
       this.router.navigate(['/vehicle-selector']);
@@ -228,6 +237,11 @@ export class ActiveTripComponent implements OnInit {
 
     // NOUVEAU: Sauvegarder état dans localStorage
     this.saveActiveTrip();
+
+    // NOUVEAU: Démarrer GPS si activé
+    if (this.gpsEnabled) {
+      this.startGpsTracking();
+    }
   }
 
   async stopTrip() {
@@ -273,9 +287,13 @@ export class ActiveTripComponent implements OnInit {
       arrivalPlaceId: endFormValue.arrivalPlaceId,
       passengerIds: startFormValue.passengerIds,
       photos: this.photos.filter(p => p.synced).map(p => p.url!), // NOUVEAU: Photos synchronisées
+      gpsTrace: this.gpsTrace, // NOUVEAU: Tracé GPS complet
       synced: 0,
       plannedMovementId: this.plannedMovementId // Include plannedMovementId if present
     };
+
+    // NOUVEAU: Arrêter GPS
+    this.stopGpsTracking();
 
     console.log('Saving trip:', trip);
     await this.offlineService.addTrip(trip);
@@ -308,7 +326,8 @@ export class ActiveTripComponent implements OnInit {
       startTime: this.startTime?.toISOString(),
       startFormValue: this.startForm.value,
       plannedMovementId: this.plannedMovementId,
-      vehicleId: this.vehicleId
+      vehicleId: this.vehicleId,
+      gpsTrace: this.gpsTrace // Sauvegarde partielle du tracé
     };
     localStorage.setItem('activeTrip', JSON.stringify(activeTripData));
     console.log('✅ Trip actif sauvegardé dans localStorage');
@@ -323,6 +342,11 @@ export class ActiveTripComponent implements OnInit {
         this.tripStarted = data.tripStarted;
         this.startTime = data.startTime ? new Date(data.startTime) : null;
         this.plannedMovementId = data.plannedMovementId;
+        this.gpsTrace = data.gpsTrace || []; // Restaurer tracé
+
+        if (this.tripStarted && this.gpsEnabled) {
+          this.startGpsTracking(); // Reprendre le tracking si refresh
+        }
 
         // Restaurer les valeurs du formulaire
         if (data.startFormValue) {
@@ -340,6 +364,7 @@ export class ActiveTripComponent implements OnInit {
   // NOUVEAU: Nettoyer localStorage
   clearActiveTrip() {
     localStorage.removeItem('activeTrip');
+    this.stopGpsTracking(); // Sécurité
     console.log('🗑️ Trip actif supprimé du localStorage');
   }
 
@@ -471,5 +496,67 @@ export class ActiveTripComponent implements OnInit {
     }
     this.photos.splice(index, 1);
     this.cdr.detectChanges();
+  }
+
+  // --- GPS IMPLEMENTATION ---
+
+  startGpsTracking() {
+    if (!navigator.geolocation) {
+      console.warn('⚠️ Géolocalisation non supportée par ce navigateur');
+      return;
+    }
+
+    console.log('🛰️ Démarrage du tracking GPS...');
+    this.gpsSignalStatus = 'searching';
+
+    // Options: Haute précision, timeout 10s, maxAge 0 (pas de cache)
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+
+    this.watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        // Success
+        this.gpsSignalStatus = position.coords.accuracy < 20 ? 'good' : 'weak';
+
+        const point: GpsPoint = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          speed: position.coords.speed || 0,
+          heading: position.coords.heading || 0,
+          timestamp: position.timestamp
+        };
+
+        // Filtrage simple: ne garder que si mvt > 10m ou toutes les 30s
+        // Pour l'instant on garde tout toutes les ~10-30s selon le device, 
+        // mais on peut ajouter un filtre ici si trop de données.
+        // Simplification: On ajoute tout, on nettoiera au backend ou on throttle si besoin.
+
+        this.gpsTrace.push(point);
+
+        // Sauvegarde incrémentale (tous les 5 points par ex, ou à chaque point)
+        // Ici à chaque point pour sécurité max "Boîte Noire"
+        this.saveActiveTrip();
+        console.log(`📍 GPS Point: ${point.lat}, ${point.lng} (Acc: ${point.accuracy}m)`);
+      },
+      (error) => {
+        // Error
+        console.error('❌ Erreur GPS:', error.message);
+        this.gpsSignalStatus = 'off';
+      },
+      options
+    );
+  }
+
+  stopGpsTracking() {
+    if (this.watchId !== null) {
+      navigator.geolocation.clearWatch(this.watchId);
+      this.watchId = null;
+      this.gpsSignalStatus = 'off';
+      console.log('🛑 Arrêt du tracking GPS');
+    }
   }
 }
