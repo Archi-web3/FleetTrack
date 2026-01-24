@@ -46,7 +46,7 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
   private markersMap: { [tripId: string]: L.Marker } = {}; // Map trip ID to Marker for fast access
   private markers: L.Marker[] = [];
   private realTraceLayers: L.Layer[] = []; // Stocker les traces rouges
-  private plannedRouteLayers: L.Routing.Control[] = []; // Stocker les routes bleues
+  private plannedRouteLayers: L.Layer[] = []; // Stocker les routes bleues (Lignes directes maintenant)
   private lastPositionsMarkers: L.CircleMarker[] = [];
 
   constructor() { }
@@ -93,8 +93,9 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
     this.lastPositionsMarkers = [];
 
     // Nettoyage Routing controls
-    this.plannedRouteLayers.forEach(c => {
-      try { this.map.removeControl(c); } catch (e) { }
+    // Nettoyage Planned Routes
+    this.plannedRouteLayers.forEach(l => {
+      try { l.remove(); } catch (e) { }
     });
     this.plannedRouteLayers = [];
 
@@ -140,17 +141,16 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
           }
         });
 
-        // Tracé Bleu (OSRM)
+        // Tracé Bleu (Ligne directe pour éviter les quotas/erreurs OSRM)
         if (waypoints.length >= 2) {
-          const routingControl = (L.Routing as any).control({
-            waypoints: waypoints,
-            router: (L.Routing as any).osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1', language: 'fr' }),
-            lineOptions: { styles: [{ color: '#2196F3', weight: 6, opacity: 0.6, dashArray: '10, 10' }] }, // Bleu pointillé
-            createMarker: () => null, // Pas de markers par défaut du routing
-            addWaypoints: false, draggableWaypoints: false, fitSelectedRoutes: false, show: false
-          });
-          routingControl.addTo(this.map);
-          this.plannedRouteLayers.push(routingControl);
+          const plannedPolyline = L.polyline(waypoints, {
+            color: '#2196F3',
+            weight: 4,
+            opacity: 0.7,
+            dashArray: '10, 10',
+            lineCap: 'square'
+          }).addTo(this.map);
+          this.plannedRouteLayers.push(plannedPolyline);
         }
       }
 
