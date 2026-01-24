@@ -1,1 +1,29 @@
-<div id="map" style="height: 500px; width: 100%;"></div>
+<div class="map-container" style="position: relative; height: 500px; width: 100%;">
+    <div id="map" style="height: 100%; width: 100%;"></div>
+
+    <!-- Controls Overlay -->
+    <div class="map-controls">
+        <div class="controls-header">
+            <mat-icon>layers</mat-icon>
+            <span>Filtres</span>
+        </div>
+
+        <div class="controls-content">
+            <mat-checkbox [(ngModel)]="showPlanned" (change)="onFilterChange()" color="primary">
+                <span style="color: #2196F3; font-weight: bold;">---</span> Trajets Planifiés
+            </mat-checkbox>
+
+            <mat-checkbox [(ngModel)]="showReal" (change)="onFilterChange()" color="warn">
+                <span style="color: #d32f2f; font-weight: bold;">———</span> Tracés GPS (Réel)
+            </mat-checkbox>
+        </div>
+
+        <div class="controls-actions">
+            <button mat-flat-button color="warn" (click)="zoomToLastPositions()"
+                matTooltip="Zoomer sur la dernière position connue de tous les véhicules affichés">
+                <mat-icon>my_location</mat-icon>
+                Dernières Positions
+            </button>
+        </div>
+    </div>
+</div>

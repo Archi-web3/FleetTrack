@@ -1,5 +1,65 @@
-/* Assurez-vous que le conteneur de la carte a une hauteur et une largeur définies */
+/* Map Container */
+.map-container {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 #map {
-  height: 500px;
+  height: 100%;
   width: 100%;
+  z-index: 1;
+  /* Base layer */
+}
+
+/* Floating Controls */
+.map-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  /* Above Leaflet controls */
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.controls-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+
+  mat-icon {
+    color: #666;
+  }
+}
+
+.controls-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  mat-checkbox {
+    font-size: 13px;
+  }
+}
+
+.controls-actions {
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+
+  button {
+    width: 100%;
+    font-size: 12px;
+  }
 }

@@ -22,18 +22,30 @@ interface MapMouvement {
   gpsTrace?: { lat: number; lng: number }[]; // NOUVEAU
 }
 
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-map-mouvements',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatCheckboxModule, MatButtonModule, MatIconModule, FormsModule],
   templateUrl: './map-mouvements.component.html',
   styleUrls: ['./map-mouvements.component.scss']
 })
 export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() mouvements: MapMouvement[] = [];
+
+  // NOUVEAU: Filtres
+  showPlanned: boolean = true;
+  showReal: boolean = true;
+
   private map!: L.Map;
   private markers: L.Marker[] = [];
-  private routingControls: any[] = []; // Using any to avoid TypeScript errors with leaflet-routing-machine
+  private realTraceLayers: L.Layer[] = []; // Stocker les traces rouges
+  private plannedRouteLayers: L.Routing.Control[] = []; // Stocker les routes bleues
+  private lastPositionsMarkers: L.CircleMarker[] = [];
 
   constructor() { }
 
@@ -69,16 +81,19 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
   private updateMapMarkers(): void {
     if (!this.map) return;
 
-    // Supprimer les marqueurs et contrôles de routage existants
-    this.markers.forEach(marker => marker.remove());
+    // Nettoyage complet
+    this.markers.forEach(m => m.remove());
     this.markers = [];
-    this.routingControls.forEach(control => {
-      // Utiliser un type assertion pour éviter l'erreur si map est undefined
-      if (this.map && control) {
-        this.map.removeControl(control);
-      }
+    this.realTraceLayers.forEach(l => l.remove());
+    this.realTraceLayers = [];
+    this.lastPositionsMarkers.forEach(m => m.remove());
+    this.lastPositionsMarkers = [];
+
+    // Nettoyage Routing controls
+    this.plannedRouteLayers.forEach(c => {
+      try { this.map.removeControl(c); } catch (e) { }
     });
-    this.routingControls = [];
+    this.plannedRouteLayers = [];
 
     if (this.mouvements.length === 0) {
       this.map.setView([0, 0], 2);
@@ -88,95 +103,94 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
     const allLatLngs: L.LatLng[] = [];
 
     this.mouvements.forEach(mouvement => {
-      if (!mouvement.stops || mouvement.stops.length < 1) return;
+      // 1. GESTION DU PLANIFIÉ (BLEU)
+      if (this.showPlanned && mouvement.stops && mouvement.stops.length >= 1) {
+        const waypoints: L.LatLng[] = [];
 
-      const waypoints: L.LatLng[] = [];
-      const currentMarkers: L.Marker[] = [];
+        mouvement.stops.forEach((stop, index) => {
+          if (stop.lat && stop.lng) {
+            // Markers des stops (Toujours visibles si Planned activé ?? Ou séparé ?)
+            // On les lie à "Show Planned" pour l'instant
+            let iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png';
+            if (index === 0) iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png';
+            else if (index === mouvement.stops.length - 1) iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png';
 
-      mouvement.stops.forEach((stop, index) => {
-        if (stop.lat !== undefined && stop.lng !== undefined && stop.lat !== null && stop.lng !== null) {
-          // Déterminer l'icône en fonction de la position du stop
-          let iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png'; // Intermédiaire par défaut
-          if (index === 0) {
-            iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'; // Départ (vert)
-          } else if (index === mouvement.stops.length - 1) {
-            iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png'; // Arrivée (rouge)
+            const marker = L.marker([stop.lat, stop.lng], {
+              icon: L.icon({
+                iconUrl: iconUrl,
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+              })
+            }).bindPopup(`<b>${index === 0 ? 'Départ Planifié' : 'Arrivée Planifiée'}</b><br>${stop.nom}`);
+
+            marker.addTo(this.map);
+            this.markers.push(marker);
+            waypoints.push(L.latLng(stop.lat, stop.lng));
+            allLatLngs.push(L.latLng(stop.lat, stop.lng));
           }
-
-          const marker = L.marker([stop.lat, stop.lng], {
-            icon: L.icon({
-              iconUrl: iconUrl,
-              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-              iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-            })
-          }).bindPopup(`<b>${index === 0 ? 'Départ' : index === mouvement.stops.length - 1 ? 'Arrivée' : 'Étape ' + (index + 1)}:</b> ${stop.nom}<br>Objectif: ${mouvement.title}<br>Demandeur: ${mouvement.demandeur}`);
-          currentMarkers.push(marker);
-          waypoints.push(L.latLng(stop.lat, stop.lng));
-          allLatLngs.push(L.latLng(stop.lat, stop.lng));
-        }
-      });
-
-      // --- Dessiner l'itinéraire avec Leaflet Routing Machine ---
-      // (Planifié - Bleu)
-      if (waypoints.length >= 2) {
-        const routingControl = (L.Routing as any).control({
-          waypoints: waypoints,
-          router: (L.Routing as any).osrmv1({
-            serviceUrl: 'https://router.project-osrm.org/route/v1',
-            language: 'fr'
-          }),
-          lineOptions: {
-            styles: [{ color: '#2196F3', weight: 6, opacity: 0.6, dashArray: '10, 10' }] // Bleu pointillé pour le planifié
-          },
-          createMarker: function (i: number, waypoint: any, n: number) { return null; },
-          addWaypoints: false,
-          draggableWaypoints: false,
-          fitSelectedRoutes: false,
-          showAlternatives: false,
-          routeWhileDragging: false,
-          show: false
         });
 
-        routingControl.addTo(this.map);
-        this.routingControls.push(routingControl);
+        // Tracé Bleu (OSRM)
+        if (waypoints.length >= 2) {
+          const routingControl = (L.Routing as any).control({
+            waypoints: waypoints,
+            router: (L.Routing as any).osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1', language: 'fr' }),
+            lineOptions: { styles: [{ color: '#2196F3', weight: 6, opacity: 0.6, dashArray: '10, 10' }] }, // Bleu pointillé
+            createMarker: () => null, // Pas de markers par défaut du routing
+            addWaypoints: false, draggableWaypoints: false, fitSelectedRoutes: false, show: false
+          });
+          routingControl.addTo(this.map);
+          this.plannedRouteLayers.push(routingControl);
+        }
       }
 
-      // --- NOUVEAU : Dessiner le tracé GPS réel (Rouge) ---
-      if (mouvement.gpsTrace && mouvement.gpsTrace.length > 1) {
+      // 2. GESTION DU RÉEL (ROUGE)
+      if (this.showReal && mouvement.gpsTrace && mouvement.gpsTrace.length > 1) {
         const gpsLatLngs = mouvement.gpsTrace.map(pt => L.latLng(pt.lat, pt.lng));
 
-        // Ligne Rouge continue pour le réel
+        // Polyligne Rouge
         const polyline = L.polyline(gpsLatLngs, {
           color: '#d32f2f', // Rouge Mat
           weight: 4,
           opacity: 0.9
         }).addTo(this.map!);
+        this.realTraceLayers.push(polyline);
 
-        // Ajouter un marker de départ réel (petit cercle vert)
-        L.circleMarker(gpsLatLngs[0], {
-          radius: 6, fillOpacity: 1, color: '#2e7d32', fillColor: '#4caf50'
-        }).addTo(this.map!).bindPopup('Départ Réel GPS');
-
-        // Ajouter un marker d'arrivée réelle (petit cercle rouge)
-        L.circleMarker(gpsLatLngs[gpsLatLngs.length - 1], {
-          radius: 6, fillOpacity: 1, color: '#c62828', fillColor: '#ef5350'
-        }).addTo(this.map!).bindPopup('Arrivée Réelle GPS');
-
-        // Ajouter aux bornes pour le zoom
         allLatLngs.push(...gpsLatLngs);
-      } else {
-        // Fallback si pas de trace GPS mais mouvement terminé : ligne droite rouge (pour debug ou ancien sans trace)
-        // ... (Optionnel, on ne fait rien pour l'instant)
-      }
 
-      // Ajouter les marqueurs créés par nous à la carte
-      currentMarkers.forEach(marker => marker.addTo(this.map!));
+        // Markers Départ/Arrivée Réels
+        const startMarker = L.circleMarker(gpsLatLngs[0], { radius: 6, fillOpacity: 1, color: '#2e7d32', fillColor: '#4caf50' })
+          .bindPopup('Départ Réel GPS').addTo(this.map!);
+        this.realTraceLayers.push(startMarker);
+
+        const endMarker = L.circleMarker(gpsLatLngs[gpsLatLngs.length - 1], { radius: 6, fillOpacity: 1, color: '#c62828', fillColor: '#ef5350' })
+          .bindPopup('Dernière Position Connue').addTo(this.map!);
+        this.realTraceLayers.push(endMarker);
+
+        // Stocker pour le bouton urgence
+        this.lastPositionsMarkers.push(endMarker);
+      }
     });
 
-    // Ajuster la carte pour voir tous les marqueurs (y compris ceux des étapes)
+    // Auto-zoomer
     if (allLatLngs.length > 0) {
-      const bounds = L.latLngBounds(allLatLngs);
-      this.map.fitBounds(bounds, { padding: [50, 50] });
+      this.map.fitBounds(L.latLngBounds(allLatLngs), { padding: [50, 50] });
+    }
+  }
+
+  // Méthode appelée quand on change les filtres
+  onFilterChange(): void {
+    this.updateMapMarkers();
+  }
+
+  // Bouton Urgence
+  zoomToLastPositions(): void {
+    if (this.lastPositionsMarkers.length > 0) {
+      const group = L.featureGroup(this.lastPositionsMarkers as any);
+      this.map.fitBounds(group.getBounds(), { maxZoom: 15, padding: [50, 50] });
+      this.lastPositionsMarkers.forEach(m => m.openPopup());
+    } else {
+      alert('Aucune position réelle connue disponible.');
     }
   }
 }
