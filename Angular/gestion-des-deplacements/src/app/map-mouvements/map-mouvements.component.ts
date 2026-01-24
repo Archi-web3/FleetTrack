@@ -19,7 +19,8 @@ interface MapMouvement {
     dateArrivee?: string;
     dateArrivee?: string;
   }[];
-  gpsTrace?: { lat: number; lng: number }[]; // NOUVEAU
+  gpsTrace?: { lat: number; lng: number }[];
+  vehiculeName?: string; // NOUVEAU
 }
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -121,7 +122,7 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                 iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
               })
-            }).bindPopup(`<b>${index === 0 ? 'Départ Planifié' : 'Arrivée Planifiée'}</b><br>${stop.nom}`);
+            }).bindPopup(`<b>${index === 0 ? 'Départ Planifié' : 'Arrivée Planifiée'}</b><br>${mouvement.vehiculeName || 'Véhicule Inconnu'}<br>${stop.nom}<br><i>${mouvement.title}</i>`);
 
             marker.addTo(this.map);
             this.markers.push(marker);
@@ -160,11 +161,11 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
 
         // Markers Départ/Arrivée Réels
         const startMarker = L.circleMarker(gpsLatLngs[0], { radius: 6, fillOpacity: 1, color: '#2e7d32', fillColor: '#4caf50' })
-          .bindPopup('Départ Réel GPS').addTo(this.map!);
+          .bindPopup(`<b>Départ Réel GPS</b><br>${mouvement.vehiculeName || ''}<br>${mouvement.title}`).addTo(this.map!);
         this.realTraceLayers.push(startMarker);
 
         const endMarker = L.circleMarker(gpsLatLngs[gpsLatLngs.length - 1], { radius: 6, fillOpacity: 1, color: '#c62828', fillColor: '#ef5350' })
-          .bindPopup('Dernière Position Connue').addTo(this.map!);
+          .bindPopup(`<b>Dernière Position Connue</b><br>${mouvement.vehiculeName || ''}<br>${mouvement.title}`).addTo(this.map!);
         this.realTraceLayers.push(endMarker);
 
         // Stocker pour le bouton urgence

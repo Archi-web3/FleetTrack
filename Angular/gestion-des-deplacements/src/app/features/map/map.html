@@ -3,6 +3,14 @@
     <div class="sidebar-filters">
         <h2><mat-icon>tune</mat-icon> Filtres</h2>
 
+        <!-- Search Filter -->
+        <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Recherche (ID, Objectif)</mat-label>
+            <input matInput [(ngModel)]="selectedSearchQuery" (keyup)="applyFilters()" placeholder="Ex: Mission..."
+                autocomplete="off">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
         <!-- Vehicle Filter -->
         <mat-form-field appearance="outline" class="filter-field">
             <mat-label>Véhicule</mat-label>

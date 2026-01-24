@@ -5,6 +5,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MouvementService } from '../../mouvement.service';
 import { VehiculeService } from '../../vehicule.service';
 import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.component';
@@ -19,6 +20,7 @@ import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.comp
     MatFormFieldModule,
     MatCardModule,
     MatIconModule,
+    MatInputModule,
     MapMouvementsComponent
   ],
   templateUrl: './map.html',
@@ -33,6 +35,7 @@ export class MapComponent implements OnInit {
   // Filters
   selectedVehicleId: string | 'all' = 'all';
   selectedStatus: string | 'all' = 'all'; // Default to show all active types
+  selectedSearchQuery: string = '';
 
   // Status options for filter
   statusOptions = [
@@ -82,6 +85,14 @@ export class MapComponent implements OnInit {
       // 2. Status Filter
       if (this.selectedStatus !== 'all') {
         if (m.statut !== this.selectedStatus) return false;
+      }
+
+      // 3. Search Query (ID or Objectif)
+      if (this.selectedSearchQuery && this.selectedSearchQuery.trim() !== '') {
+        const q = this.selectedSearchQuery.trim().toLowerCase();
+        const matchesId = m._id && m._id.toLowerCase().includes(q);
+        const matchesObjectif = (m.objectif || m.purpose || '').toLowerCase().includes(q);
+        if (!matchesId && !matchesObjectif) return false;
       } else {
         // Default 'all' view: Show Active (En cours, Validé) AND recently Completed?
         // Actually user might want to see everything.
@@ -142,7 +153,8 @@ export class MapComponent implements OnInit {
       title: trip.objectif || trip.purpose || 'Trajet',
       demandeur: (trip.chauffeur?.prenom || '') + ' ' + (trip.chauffeur?.nom || ''),
       stops: stops,
-      gpsTrace: trip.gpsTrace
+      gpsTrace: trip.gpsTrace,
+      vehiculeName: trip.vehicule ? `${trip.vehicule.marque || ''} ${trip.vehicule.modele || ''} (${trip.vehicule.immatriculation || '?'})` : 'Véhicule Inconnu'
     };
   }
 }
