@@ -277,27 +277,21 @@ export class OfflineService extends Dexie {
         // Vérifier TOUS les trips récents pour trouver le dernier endMileage
         console.log('📊 [getLastMileage] Trips trouvés:', lastTrip.length);
 
-        // DEBUG: Alert pour voir ce qui se passe sur le mobile
-        const topTripsDebug = lastTrip.slice(0, 3).map(t => `${t.startDateTime} - ${t.endMileage}km`).join('\n');
-        alert(`DEBUG MILEAGE:\nTrips Found: ${lastTrip.length}\nTop 3:\n${topTripsDebug}`);
-
         if (lastTrip.length > 0) {
-            console.log('🔍 [getLastMileage] Top 3 récents:', lastTrip.slice(0, 3).map(t => ({
-                id: t.id,
-                server: t.serverId,
-                date: t.startDateTime,
-                endKm: t.endMileage
-            })));
+            // STRATEGIE: On prend le MAX des kilométrages des 10 derniers trajets.
+            // Cela protège contre les erreurs de date (ex: trajet futur avec km plus bas) ou de tri.
+            const recentTrips = lastTrip.slice(0, 10);
 
-            // Chercher le premier trip (le plus récent) avec endMileage
-            const tripWithEndMileage = lastTrip.find(t => t.endMileage != null && t.endMileage > 0);
-            if (tripWithEndMileage && tripWithEndMileage.endMileage) {
-                console.log('✅ [getLastMileage] Trip récent avec endMileage:', tripWithEndMileage.endMileage);
-                mileages.push(tripWithEndMileage.endMileage);
-            } else if (lastTrip[0].startMileage) {
-                console.log('⚠️ [getLastMileage] Trip récent sans fin, startMileage:', lastTrip[0].startMileage);
-                mileages.push(lastTrip[0].startMileage);
-            }
+            recentTrips.forEach(t => {
+                if (t.endMileage && t.endMileage > 0) {
+                    mileages.push(t.endMileage);
+                }
+                if (t.startMileage && t.startMileage > 0) {
+                    mileages.push(t.startMileage);
+                }
+            });
+
+            console.log('✅ [getLastMileage] Analyse sur 10 trajets récents. Candidats:', mileages);
         } else {
             console.log('⚠️ [getLastMileage] Aucun trip trouvé pour ce véhicule.');
         }
