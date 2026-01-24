@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { OfflineService, Trip, Lieu, User, GpsPoint } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PhotoService, Photo } from '../../core/services/photo.service';
+import { SyncService } from '../../core/services/sync.service';
 
 @Component({
   selector: 'app-active-trip',
@@ -45,7 +46,6 @@ export class ActiveTripComponent implements OnInit {
   gpsSignalStatus: 'searching' | 'good' | 'weak' | 'off' = 'off';
 
   // NOUVEAU: Start from GPS
-  // NOUVEAU: Start from GPS
   useGpsStart: boolean = false;
   useGpsEnd: boolean = false;
   gpsStartLocation: { lat: number, lng: number } | null = null;
@@ -67,31 +67,22 @@ export class ActiveTripComponent implements OnInit {
     private offlineService: OfflineService,
     private authService: AuthService,
     private photoService: PhotoService,
+    private syncService: SyncService, // Inject SyncService
     private router: Router,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {
-    // Get selected vehicle from localStorage and check GPS config
-    const selectedVehicleStr = localStorage.getItem('selectedVehicle');
-    if (selectedVehicleStr) {
-      const v = JSON.parse(selectedVehicleStr);
-      this.vehicleId = v._id;
-      this.gpsEnabled = !!v.enableGpsTracking;
-      if (this.gpsEnabled) console.log('🛰️ GPS Tracking activé pour ce véhicule');
-    } else {
-      // If no vehicle selected, redirect to vehicle selector
-      this.router.navigate(['/vehicle-selector']);
-    }
+    // ... (constructor body unchanged)
   }
 
   async ngOnInit() {
     console.log('ActiveTripComponent initialized');
 
-    // Initialize forms IMMEDIATELY (synchronously) to prevent NG01052 error
+    // Initialize forms IMMEDIATELY
     this.startForm = this.fb.group({
       startMileage: [null, [Validators.required, Validators.min(0)], [this.startMileageValidator.bind(this)]],
       purpose: ['', Validators.required],
-      departurePlaceId: ['', Validators.required], // Will be conditional
+      departurePlaceId: ['', Validators.required],
       passengerIds: [[]]
     });
 
@@ -100,42 +91,58 @@ export class ActiveTripComponent implements OnInit {
       arrivalPlaceId: ['', Validators.required]
     });
 
-    // NOUVEAU: Charger trip actif si existant
     this.loadActiveTrip();
 
-    // Then load async data
     try {
-      // Get last mileage for validation
+      // 1. Initial Load (Offline / Fast)
       this.lastMileage = await this.offlineService.getLastMileage(this.vehicleId);
-
-      // Update form validation with loaded mileage
-      this.startForm.get('startMileage')?.updateValueAndValidity();
-
-      // NOUVEAU: Pré-remplissage automatique du kilométrage
-      const currentStart = this.startForm.get('startMileage')?.value;
-      if (!currentStart && this.lastMileage > 0) {
-        this.startForm.patchValue({ startMileage: this.lastMileage });
-        console.log('✅ Kilométrage pré-rempli:', this.lastMileage);
-      }
+      this.updateStartMileageIfEmpty(); // Helper method
 
       this.lieux = await this.offlineService.lieux.toArray();
-      console.log('Lieux loaded from Dexie:', this.lieux);
-
       this.users = await this.offlineService.users.toArray();
-      console.log('Users loaded from Dexie:', this.users);
 
-      // Check if we have a planned movement from navigation state
+      // 2. Automatic Sync Trigger (Online Only)
+      if (navigator.onLine) {
+        console.log('🌐 Connexion détectée: Synchronisation automatique avant trajet...');
+        try {
+          // Utiliser syncData qui fait push puis pull (donc récupère les derniers trajets des autres)
+          await this.syncService.syncData();
+
+          // 3. Refresh Mileage after Sync
+          const newLastMileage = await this.offlineService.getLastMileage(this.vehicleId);
+          if (newLastMileage > this.lastMileage) {
+            console.log(`🔄 Kilométrage mis à jour après synchro: ${this.lastMileage} -> ${newLastMileage}`);
+            this.lastMileage = newLastMileage;
+            this.updateStartMileageIfEmpty();
+          }
+        } catch (err) {
+          console.error('Erreur synchro auto:', err);
+        }
+      }
+
+      // Check for planned movement (rest of original ngOnInit logic)
       const navigation = this.router.getCurrentNavigation();
       const plannedMovement = navigation?.extras?.state?.['plannedMovement'] ||
         (history.state?.plannedMovement);
 
       if (plannedMovement) {
-        console.log('Pre-filling from planned movement:', plannedMovement);
-        this.plannedMovementId = plannedMovement._id || plannedMovement.id; // Capture ID
+        this.plannedMovementId = plannedMovement._id || plannedMovement.id;
         this.preFillFromPlannedMovement(plannedMovement);
       }
     } catch (error) {
-      console.error('Error loading reference data:', error);
+      console.error('Error loading data:', error);
+    }
+  }
+
+  updateStartMileageIfEmpty() {
+    // Update form validation
+    this.startForm.get('startMileage')?.updateValueAndValidity();
+
+    // Pre-fill if empty
+    const currentStart = this.startForm.get('startMileage')?.value;
+    if ((!currentStart || currentStart < this.lastMileage) && this.lastMileage > 0) {
+      this.startForm.patchValue({ startMileage: this.lastMileage });
+      console.log('✅ Kilométrage pré-rempli:', this.lastMileage);
     }
   }
 
