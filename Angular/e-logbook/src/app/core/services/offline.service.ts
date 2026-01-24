@@ -276,16 +276,26 @@ export class OfflineService extends Dexie {
 
         // Vérifier TOUS les trips récents pour trouver le dernier endMileage
         console.log('📊 [getLastMileage] Trips trouvés:', lastTrip.length);
-        if (lastTrip.length > 0) {
-            console.log('🔍 [getLastMileage] Top 3 trips found:', lastTrip.slice(0, 3).map(t => ({ id: t.id, start: t.startDateTime, endKm: t.endMileage })));
 
-            // Chercher le premier trip avec endMileage
+        // DEBUG: Alert pour voir ce qui se passe sur le mobile
+        const topTripsDebug = lastTrip.slice(0, 3).map(t => `${t.startDateTime} - ${t.endMileage}km`).join('\n');
+        alert(`DEBUG MILEAGE:\nTrips Found: ${lastTrip.length}\nTop 3:\n${topTripsDebug}`);
+
+        if (lastTrip.length > 0) {
+            console.log('🔍 [getLastMileage] Top 3 récents:', lastTrip.slice(0, 3).map(t => ({
+                id: t.id,
+                server: t.serverId,
+                date: t.startDateTime,
+                endKm: t.endMileage
+            })));
+
+            // Chercher le premier trip (le plus récent) avec endMileage
             const tripWithEndMileage = lastTrip.find(t => t.endMileage != null && t.endMileage > 0);
             if (tripWithEndMileage && tripWithEndMileage.endMileage) {
-                console.log('✅ [getLastMileage] Trip avec endMileage trouvé:', tripWithEndMileage.endMileage, 'Date:', tripWithEndMileage.startDateTime);
+                console.log('✅ [getLastMileage] Trip récent avec endMileage:', tripWithEndMileage.endMileage);
                 mileages.push(tripWithEndMileage.endMileage);
             } else if (lastTrip[0].startMileage) {
-                console.log('⚠️ [getLastMileage] Aucun endMileage, utilisation startMileage:', lastTrip[0].startMileage);
+                console.log('⚠️ [getLastMileage] Trip récent sans fin, startMileage:', lastTrip[0].startMileage);
                 mileages.push(lastTrip[0].startMileage);
             }
         } else {
