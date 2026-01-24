@@ -101,16 +101,41 @@ export class MapComponent implements OnInit {
   }
 
   transformToMapMouvement(trip: any): any {
-    // Adapter le format pour app-map-mouvements
-    const stops = trip.stops && trip.stops.length > 0 ? trip.stops.map((s: any) => ({
-      lieuId: s.lieu?._id || s.lieu,
-      nom: s.lieu?.nom || 'Stop',
-      adresse: s.lieu?.adresse || '',
-      lat: s.lieu?.coordonnees?.lat || (typeof s.lieu?.coordonnees === 'string' ? parseFloat(s.lieu.coordonnees.split(',')[0]) : 0),
-      lng: s.lieu?.coordonnees?.lng || (typeof s.lieu?.coordonnees === 'string' ? parseFloat(s.lieu.coordonnees.split(',')[1]) : 0),
-      dateDepart: s.dateDepart,
-      dateArrivee: s.dateArrivee
-    })) : [];
+    const stops = trip.stops && trip.stops.length > 0 ? trip.stops.map((s: any) => {
+      let lat = 0;
+      let lng = 0;
+
+      // Secure Coordinate Parsing
+      if (s.lieu?.coordonnees) {
+        const coords = s.lieu.coordonnees;
+        if (typeof coords === 'object' && coords.latitude && coords.longitude) {
+          lat = parseFloat(coords.latitude);
+          lng = parseFloat(coords.longitude);
+        } else if (typeof coords === 'string' && coords.includes(',')) {
+          const parts = coords.split(',');
+          lat = parseFloat(parts[0].trim());
+          lng = parseFloat(parts[1].trim());
+        }
+      } else if (s.lat && s.lng) {
+        // Fallback to stop-level coords if they exist
+        lat = parseFloat(s.lat);
+        lng = parseFloat(s.lng);
+      }
+
+      return {
+        lieuId: s.lieu?._id || s.lieu,
+        nom: s.lieu?.nom || s.nom || 'Stop',
+        adresse: s.lieu?.adresse || '',
+        lat: isNaN(lat) ? 0 : lat,
+        lng: isNaN(lng) ? 0 : lng,
+        dateDepart: s.dateDepart,
+        dateArrivee: s.dateArrivee
+      };
+    }) : [];
+
+    // Filter out stops with invalid coordinates (0,0) immediately to avoid pollution
+    // BUT we keep them if we want to show non-mapped stops in list? MapMouvementsComponent handles this.
+    // For now, let's pass them, MapMouvementsComponent filters (lat && lng).
 
     return {
       id: trip._id,
