@@ -220,235 +220,234 @@ export class ActiveTripComponent implements OnInit {
     return null;
   }
 
-    return null;
+
+
+  // NOUVEAU: Toggle GPS Start
+  toggleGpsStart() {
+    this.useGpsStart = !this.useGpsStart;
+    const deptControl = this.startForm.get('departurePlaceId');
+
+    if (this.useGpsStart) {
+      deptControl?.clearValidators();
+      deptControl?.setValue(null); // Clear value
+      deptControl?.disable();
+      console.log('📍 Mode GPS Start activé');
+    } else {
+      deptControl?.setValidators([Validators.required]);
+      deptControl?.enable();
+      console.log('📍 Mode Lieu liste activé');
+    }
+    deptControl?.updateValueAndValidity();
+    this.cdr.detectChanges();
   }
 
-// NOUVEAU: Toggle GPS Start
-toggleGpsStart() {
-  this.useGpsStart = !this.useGpsStart;
-  const deptControl = this.startForm.get('departurePlaceId');
-
-  if (this.useGpsStart) {
-    deptControl?.clearValidators();
-    deptControl?.setValue(null); // Clear value
-    deptControl?.disable();
-    console.log('📍 Mode GPS Start activé');
-  } else {
-    deptControl?.setValidators([Validators.required]);
-    deptControl?.enable();
-    console.log('📍 Mode Lieu liste activé');
+  // NOUVEAU: Abort active trip
+  abortTrip() {
+    if (confirm('Êtes-vous sûr de vouloir annuler ce trajet en cours ?\nToutes les données seront perdues.')) {
+      this.clearActiveTrip();
+      this.router.navigate(['/trip-list']);
+    }
   }
-  deptControl?.updateValueAndValidity();
-  this.cdr.detectChanges();
-}
-
-// NOUVEAU: Abort active trip
-abortTrip() {
-  if (confirm('Êtes-vous sûr de vouloir annuler ce trajet en cours ?\nToutes les données seront perdues.')) {
-    this.clearActiveTrip();
-    this.router.navigate(['/trip-list']);
-  }
-}
 
   async startTrip() {
-  if (this.startForm.invalid) {
-    this.startForm.markAllAsTouched();
-    return;
-  }
-
-  this.tripStarted = true;
-  this.startTime = new Date();
-
-  // NOUVEAU: Appeler backend si mouvement planifié
-  if (this.plannedMovementId) {
-    try {
-      await this.updateMovementStatus();
-    } catch (error) {
-      console.error('Erreur mise à jour statut:', error);
-      // Continuer même si l'appel backend échoue (mode offline)
-    }
-  }
-
-  // NOUVEAU: Sauvegarder état dans localStorage
-  this.saveActiveTrip();
-
-  // NOUVEAU: Démarrer GPS si activé
-  if (this.gpsEnabled) {
-    this.startGpsTracking();
-  }
-}
-
-  async stopTrip() {
-  if (this.endForm.invalid) {
-    this.endForm.markAllAsTouched();
-    return;
-  }
-
-  // NOUVEAU: Vérifier si des photos sont en cours d'upload
-  const pendingCount = this.getPendingUploadsCount();
-  if (pendingCount > 0) {
-    const confirmSave = confirm(
-      `⚠️ Attention : ${pendingCount} photo(s) sont encore en cours d'upload.\n\n` +
-      `Si vous continuez maintenant, ces photos ne seront pas incluses.\n\n` +
-      `Voulez-vous continuer quand même ?`
-    );
-    if (!confirmSave) {
+    if (this.startForm.invalid) {
+      this.startForm.markAllAsTouched();
       return;
     }
-  }
 
-  const currentUser = this.authService.getCurrentUser();
-  const driverId = currentUser ? (currentUser._id || currentUser.id) : 'mock-driver-id';
+    this.tripStarted = true;
+    this.startTime = new Date();
 
-  if (!driverId) {
-    console.error('Driver ID not found in current user:', currentUser);
-    alert('Erreur: Impossible d\'identifier le chauffeur. Veuillez vous reconnecter.');
-    return;
-  }
-
-  const startFormValue = this.startForm.value;
-  const endFormValue = this.endForm.value;
-
-  const trip: Trip = {
-    vehicleId: this.vehicleId,
-    driverId: driverId,
-    startDateTime: this.startTime!,
-    endDateTime: new Date(),
-    startMileage: startFormValue.startMileage,
-    endMileage: endFormValue.endMileage,
-    purpose: startFormValue.purpose,
-    departurePlaceId: startFormValue.departurePlaceId,
-    arrivalPlaceId: endFormValue.arrivalPlaceId,
-    passengerIds: startFormValue.passengerIds,
-    photos: this.photos.filter(p => p.synced).map(p => p.url!), // NOUVEAU: Photos synchronisées
-    gpsTrace: this.gpsTrace, // NOUVEAU: Tracé GPS complet
-    synced: 0,
-    plannedMovementId: this.plannedMovementId // Include plannedMovementId if present
-  };
-
-  // NOUVEAU: Arrêter GPS
-  this.stopGpsTracking();
-
-  console.log('Saving trip:', trip);
-  await this.offlineService.addTrip(trip);
-  console.log('Trip saved successfully');
-
-  // NOUVEAU: Nettoyer localStorage
-  this.clearActiveTrip();
-
-  this.router.navigate(['/trip-list']);
-}
-
-cancel() {
-  // MODIFIÉ: Ne pas nettoyer si trip démarré
-  if (!this.tripStarted) {
-    this.clearActiveTrip();
-  }
-  this.router.navigate(['/trip-list']);
-}
-
-// NOUVEAU: Retourner au menu en gardant le trip actif
-returnToMenu() {
-  this.saveActiveTrip();
-  this.router.navigate(['/dashboard']);
-}
-
-// NOUVEAU: Sauvegarder trip en cours
-saveActiveTrip() {
-  const activeTripData = {
-    tripStarted: this.tripStarted,
-    startTime: this.startTime?.toISOString(),
-    startFormValue: this.startForm.value,
-    plannedMovementId: this.plannedMovementId,
-    vehicleId: this.vehicleId,
-    gpsTrace: this.gpsTrace // Sauvegarde partielle du tracé
-  };
-  localStorage.setItem('activeTrip', JSON.stringify(activeTripData));
-  console.log('✅ Trip actif sauvegardé dans localStorage');
-}
-
-// NOUVEAU: Charger trip en cours
-loadActiveTrip() {
-  const saved = localStorage.getItem('activeTrip');
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      this.tripStarted = data.tripStarted;
-      this.startTime = data.startTime ? new Date(data.startTime) : null;
-      this.plannedMovementId = data.plannedMovementId;
-      this.gpsTrace = data.gpsTrace || []; // Restaurer tracé
-
-      if (this.tripStarted && this.gpsEnabled) {
-        this.startGpsTracking(); // Reprendre le tracking si refresh
+    // NOUVEAU: Appeler backend si mouvement planifié
+    if (this.plannedMovementId) {
+      try {
+        await this.updateMovementStatus();
+      } catch (error) {
+        console.error('Erreur mise à jour statut:', error);
+        // Continuer même si l'appel backend échoue (mode offline)
       }
+    }
 
-      // Restaurer les valeurs du formulaire
-      if (data.startFormValue) {
-        this.startForm.patchValue(data.startFormValue);
-      }
+    // NOUVEAU: Sauvegarder état dans localStorage
+    this.saveActiveTrip();
 
-      console.log('✅ Trip actif restauré depuis localStorage');
-    } catch (error) {
-      console.error('Erreur chargement trip actif:', error);
-      this.clearActiveTrip();
+    // NOUVEAU: Démarrer GPS si activé
+    if (this.gpsEnabled) {
+      this.startGpsTracking();
     }
   }
-}
 
-// NOUVEAU: Nettoyer localStorage
-clearActiveTrip() {
-  localStorage.removeItem('activeTrip');
-  this.stopGpsTracking(); // Sécurité
-  console.log('🗑️ Trip actif supprimé du localStorage');
-}
+  async stopTrip() {
+    if (this.endForm.invalid) {
+      this.endForm.markAllAsTouched();
+      return;
+    }
+
+    // NOUVEAU: Vérifier si des photos sont en cours d'upload
+    const pendingCount = this.getPendingUploadsCount();
+    if (pendingCount > 0) {
+      const confirmSave = confirm(
+        `⚠️ Attention : ${pendingCount} photo(s) sont encore en cours d'upload.\n\n` +
+        `Si vous continuez maintenant, ces photos ne seront pas incluses.\n\n` +
+        `Voulez-vous continuer quand même ?`
+      );
+      if (!confirmSave) {
+        return;
+      }
+    }
+
+    const currentUser = this.authService.getCurrentUser();
+    const driverId = currentUser ? (currentUser._id || currentUser.id) : 'mock-driver-id';
+
+    if (!driverId) {
+      console.error('Driver ID not found in current user:', currentUser);
+      alert('Erreur: Impossible d\'identifier le chauffeur. Veuillez vous reconnecter.');
+      return;
+    }
+
+    const startFormValue = this.startForm.value;
+    const endFormValue = this.endForm.value;
+
+    const trip: Trip = {
+      vehicleId: this.vehicleId,
+      driverId: driverId,
+      startDateTime: this.startTime!,
+      endDateTime: new Date(),
+      startMileage: startFormValue.startMileage,
+      endMileage: endFormValue.endMileage,
+      purpose: startFormValue.purpose,
+      departurePlaceId: startFormValue.departurePlaceId,
+      arrivalPlaceId: endFormValue.arrivalPlaceId,
+      passengerIds: startFormValue.passengerIds,
+      photos: this.photos.filter(p => p.synced).map(p => p.url!), // NOUVEAU: Photos synchronisées
+      gpsTrace: this.gpsTrace, // NOUVEAU: Tracé GPS complet
+      synced: 0,
+      plannedMovementId: this.plannedMovementId // Include plannedMovementId if present
+    };
+
+    // NOUVEAU: Arrêter GPS
+    this.stopGpsTracking();
+
+    console.log('Saving trip:', trip);
+    await this.offlineService.addTrip(trip);
+    console.log('Trip saved successfully');
+
+    // NOUVEAU: Nettoyer localStorage
+    this.clearActiveTrip();
+
+    this.router.navigate(['/trip-list']);
+  }
+
+  cancel() {
+    // MODIFIÉ: Ne pas nettoyer si trip démarré
+    if (!this.tripStarted) {
+      this.clearActiveTrip();
+    }
+    this.router.navigate(['/trip-list']);
+  }
+
+  // NOUVEAU: Retourner au menu en gardant le trip actif
+  returnToMenu() {
+    this.saveActiveTrip();
+    this.router.navigate(['/dashboard']);
+  }
+
+  // NOUVEAU: Sauvegarder trip en cours
+  saveActiveTrip() {
+    const activeTripData = {
+      tripStarted: this.tripStarted,
+      startTime: this.startTime?.toISOString(),
+      startFormValue: this.startForm.value,
+      plannedMovementId: this.plannedMovementId,
+      vehicleId: this.vehicleId,
+      gpsTrace: this.gpsTrace // Sauvegarde partielle du tracé
+    };
+    localStorage.setItem('activeTrip', JSON.stringify(activeTripData));
+    console.log('✅ Trip actif sauvegardé dans localStorage');
+  }
+
+  // NOUVEAU: Charger trip en cours
+  loadActiveTrip() {
+    const saved = localStorage.getItem('activeTrip');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        this.tripStarted = data.tripStarted;
+        this.startTime = data.startTime ? new Date(data.startTime) : null;
+        this.plannedMovementId = data.plannedMovementId;
+        this.gpsTrace = data.gpsTrace || []; // Restaurer tracé
+
+        if (this.tripStarted && this.gpsEnabled) {
+          this.startGpsTracking(); // Reprendre le tracking si refresh
+        }
+
+        // Restaurer les valeurs du formulaire
+        if (data.startFormValue) {
+          this.startForm.patchValue(data.startFormValue);
+        }
+
+        console.log('✅ Trip actif restauré depuis localStorage');
+      } catch (error) {
+        console.error('Erreur chargement trip actif:', error);
+        this.clearActiveTrip();
+      }
+    }
+  }
+
+  // NOUVEAU: Nettoyer localStorage
+  clearActiveTrip() {
+    localStorage.removeItem('activeTrip');
+    this.stopGpsTracking(); // Sécurité
+    console.log('🗑️ Trip actif supprimé du localStorage');
+  }
 
   // NOUVEAU: Appeler backend pour mettre statut "en cours"
   async updateMovementStatus() {
-  if (!this.plannedMovementId) return;
+    if (!this.plannedMovementId) return;
 
-  const apiUrl = 'https://fleettrack-api.onrender.com/api';
-  const token = localStorage.getItem('token'); // Utiliser localStorage directement
+    const apiUrl = 'https://fleettrack-api.onrender.com/api';
+    const token = localStorage.getItem('token'); // Utiliser localStorage directement
 
-  try {
-    const response = await this.http.put(
-      `${apiUrl}/mouvements/${this.plannedMovementId}/start`,
-      {
-        realDepartureTime: this.startTime?.toISOString(),
-        startMileage: this.startForm.get('startMileage')?.value
-      },
-      {
-        headers: {
-          'x-auth-token': token || ''
+    try {
+      const response = await this.http.put(
+        `${apiUrl}/mouvements/${this.plannedMovementId}/start`,
+        {
+          realDepartureTime: this.startTime?.toISOString(),
+          startMileage: this.startForm.get('startMileage')?.value
+        },
+        {
+          headers: {
+            'x-auth-token': token || ''
+          }
         }
-      }
-    ).toPromise();
+      ).toPromise();
 
-    console.log('✅ Statut mouvement mis à jour:', response);
-  } catch (error) {
-    console.error('❌ Erreur mise à jour statut mouvement:', error);
-    throw error;
+      console.log('✅ Statut mouvement mis à jour:', response);
+    } catch (error) {
+      console.error('❌ Erreur mise à jour statut mouvement:', error);
+      throw error;
+    }
+  }
+
+  // Helper to get error message for start mileage
+  getStartMileageError(): string {
+    const control = this.startForm.get('startMileage');
+    if (control?.hasError('required')) {
+      return 'Le kilométrage de départ est requis';
+    }
+    if (control?.hasError('min')) {
+      return 'Le kilométrage doit être positif';
+    }
+    if (control?.hasError('min')) {
+      return 'Le kilométrage doit être positif';
+    }
+    if (control?.hasError('mileageTooLow')) {
+      const error = control.getError('mileageTooLow');
+      return `Le kilométrage ne peut pas être inférieur au dernier enregistré (${error.lastMileage} km)`;
+    }
+    return '';
   }
 }
-
-// Helper to get error message for start mileage
-getStartMileageError(): string {
-  const control = this.startForm.get('startMileage');
-  if (control?.hasError('required')) {
-    return 'Le kilométrage de départ est requis';
-  }
-  if (control?.hasError('min')) {
-    return 'Le kilométrage doit être positif';
-  }
-  if (control?.hasError('min')) {
-    return 'Le kilométrage doit être positif';
-  }
-  if (control?.hasError('mileageTooLow')) {
-    const error = control.getError('mileageTooLow');
-    return `Le kilométrage ne peut pas être inférieur au dernier enregistré (${error.lastMileage} km)`;
-  }
-  return '';
-}
-  }
 
 // Helper to get error message for end mileage
 getEndMileageError(): string {
