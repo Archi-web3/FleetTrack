@@ -61,8 +61,16 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
             .populate('base')
             .sort({ immatriculation: 1 });
 
+        // 2. Récupérer les configurations de maintenance actives
+        const maintenanceConfigs = await MaintenanceConfig.find({ actif: true });
+
         // Pour chaque véhicule, récupérer son prochain service et dernier service complété
         const overview = await Promise.all(vehicules.map(async (vehicule) => {
+
+            // Trouver la config pour ce type de véhicule
+            const config = maintenanceConfigs.find(c => c.typeVehicule === vehicule.type);
+            const intervalle = config ? config.intervalleService : 5000; // Défaut 5000km
+
             // Prochain service (non complété, par ordre de km)
             const prochainService = await ServiceSchedule.findOne({
                 vehicule: vehicule._id,
@@ -92,11 +100,26 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
             // Calculer l'écart km
             let ecartKm = null;
             let statusCode = 'ok'; // ok, proche, retard, critique
+
+            // S'il y a un service planifié spécifiquement
             if (prochainService) {
                 ecartKm = prochainService.kilometragePrevu - vehicule.kilometrage;
-                if (ecartKm < -2000) statusCode = 'critique';
-                else if (ecartKm < 0) statusCode = 'retard';
-                else if (ecartKm < 500) statusCode = 'proche';
+            }
+            // Sinon, calculer basé sur le dernier service + intervalle
+            else if (dernierService) {
+                const prochainKmTheorique = dernierService.kilometragePrevu + intervalle;
+                ecartKm = prochainKmTheorique - vehicule.kilometrage;
+            }
+            // Si jamais eu de service (véhicule neuf ?), baser sur km initial ou 0
+            else {
+                const prochainKmTheorique = (vehicule.kilometrageInitial || 0) + intervalle;
+                ecartKm = prochainKmTheorique - vehicule.kilometrage;
+            }
+
+            if (ecartKm !== null) {
+                if (ecartKm < 0) statusCode = 'retard'; // Dépassé
+                if (ecartKm < -2000) statusCode = 'critique'; // Très dépassé
+                else if (ecartKm < 500 && ecartKm >= 0) statusCode = 'proche'; // Bientôt
             }
 
             return {
@@ -118,7 +141,12 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                     type: prochainService.typeService,
                     kmPrevu: prochainService.kilometragePrevu,
                     statut: prochainService.statut
-                } : null,
+                } : {
+                    // Si pas de service planifié, on renvoie l'estimation
+                    type: 'Estimé',
+                    kmPrevu: (vehicule.kilometrage + (ecartKm || 0)),
+                    statut: 'Planifié (Auto)'
+                },
                 checklist: {
                     status: checklistStatus,
                     lastDate: lastChecklist ? lastChecklist.submissionDate : null
