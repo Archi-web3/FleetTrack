@@ -26,8 +26,8 @@ export class GestionVehiculesComponent implements OnInit {
     type: 'Voiture',
     capacitePassagers: 1,
     kilometrageInitial: 0,
-    statut: 'En Service', // Remplacera 'enService'
-    enService: true, // Garder pour compatibilité temporaire
+    enService: true,
+    enableGpsTracking: false, // NOUVEAU
     pays: '',
     base: '',
     emissionsCO2: { valeur: null, source: 'Constructeur' },
@@ -145,6 +145,7 @@ export class GestionVehiculesComponent implements OnInit {
           capacitePassagers: 1,
           kilometrageInitial: 0,
           enService: true,
+          enableGpsTracking: false, // NOUVEAU
           pays: this.userProfile === 'SuperAdmin' ? '' : this.userPaysId,
           base: this.userProfile === 'SuperAdmin' ? '' : this.userBaseId,
           emissionsCO2: { valeur: null, source: 'Constructeur' },
@@ -184,6 +185,9 @@ export class GestionVehiculesComponent implements OnInit {
     }
     if (!this.selectedVehicule.assurance) {
       this.selectedVehicule.assurance = { nomAssureur: '', dateFin: null, certificatUrl: '' };
+    }
+    if (this.selectedVehicule.enableGpsTracking === undefined) {
+      this.selectedVehicule.enableGpsTracking = false;
     }
     if (!this.selectedVehicule.statut) {
       this.selectedVehicule.statut = this.selectedVehicule.enService ? 'En Service' : 'Hors Service';

@@ -169,6 +169,13 @@
         </div>
       </div>
 
+      <div style="margin-bottom: 10px; display: flex; align-items: center;">
+        <input type="checkbox" id="newVehiculeGps" name="newVehiculeGps" [(ngModel)]="newVehicule.enableGpsTracking"
+          style="margin-right: 10px;">
+        <label for="newVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6;">Activer le Tracking GPS
+          🛰️</label>
+      </div>
+
       <div style="margin-bottom: 10px;">
         <label for="newVehiculeStatut">Statut:</label>
         <select id="newVehiculeStatut" name="newVehiculeStatut" [(ngModel)]="newVehicule.statut" required
@@ -335,6 +342,13 @@
           <input type="text" id="editVehiculeCertificat" name="editVehiculeCertificat"
             [(ngModel)]="selectedVehicule.assurance.certificatUrl" style="width: 100%; padding: 8px;">
         </div>
+      </div>
+
+      <div style="margin-bottom: 10px; display: flex; align-items: center;">
+        <input type="checkbox" id="editVehiculeGps" name="editVehiculeGps"
+          [(ngModel)]="selectedVehicule.enableGpsTracking" style="margin-right: 10px;">
+        <label for="editVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6;">Activer le Tracking GPS
+          🛰️</label>
       </div>
 
       <div style="margin-bottom: 10px;">

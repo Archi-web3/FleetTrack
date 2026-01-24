@@ -31,7 +31,9 @@ const vehiculeSchema = new mongoose.Schema({
   kilometrage: { type: Number, required: true, default: 0, min: 0 },
   kilometrageInitial: { type: Number, default: 0, min: 0 }, // Km lors de l'acquisition du véhicule
   derniereMiseAJourKm: { type: Date, default: Date.now },
-  capacitePassagers: { type: Number, required: true, default: 1 },
+  capacitePassagers: { type: Number, default: 5 },
+  enService: { type: Boolean, default: true },
+  enableGpsTracking: { type: Boolean, default: false }, // NOUVEAU: Config GPS par véhicule,
   fuelType: { type: String, enum: ['Diesel', 'Essence', 'Hybride', 'Electrique'], default: 'Diesel' },
 
   // Données environnementales

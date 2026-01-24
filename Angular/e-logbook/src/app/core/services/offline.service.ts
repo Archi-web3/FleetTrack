@@ -100,6 +100,7 @@ export interface Vehicle {
     remarks?: string;
 
     enService?: boolean;
+    enableGpsTracking?: boolean; // NOUVEAU
     capacitePassagers?: number;
     fuelType?: string;
 }
