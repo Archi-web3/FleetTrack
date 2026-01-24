@@ -1,20 +1,61 @@
-.map-container {
-    padding: 20px;
+.page-container {
+    display: flex;
     height: calc(100vh - 64px);
-    /* Adjust based on navbar height */
+    /* Adjust for toolbar */
+    overflow: hidden;
+    background-color: #f5f5f5;
+}
+
+.sidebar-filters {
+    width: 300px;
+    background: white;
+    padding: 24px;
+    border-right: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
+    gap: 16px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    z-index: 2;
+
+    h2 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        color: #3f51b5;
+        font-size: 20px;
+    }
+
+    .filter-field {
+        width: 100%;
+    }
+
+    .stats-summary {
+        margin-top: auto;
+        padding: 16px;
+        background: #e3f2fd;
+        border-radius: 8px;
+        color: #1565c0;
+        text-align: center;
+    }
 }
 
-h2 {
-    margin-bottom: 20px;
-    color: #333;
-}
-
-#map {
+.map-area {
     flex: 1;
-    width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e0e0e0;
+    position: relative;
+    padding: 16px;
+
+    /* Force child component to fill */
+    ::ng-deep app-map-mouvements {
+        display: block;
+        height: 100%;
+
+        .map-container {
+            height: 100% !important;
+        }
+
+        #map {
+            height: 100% !important;
+        }
+    }
 }

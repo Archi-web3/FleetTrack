@@ -1,4 +1,37 @@
-<div class="map-container">
-    <h2>Carte des Mouvements en Cours ({{ mouvements.length }} trouvés)</h2>
-    <div id="map"></div>
+<div class="page-container">
+    <!-- Sidebar Filters -->
+    <div class="sidebar-filters">
+        <h2><mat-icon>tune</mat-icon> Filtres</h2>
+
+        <!-- Vehicle Filter -->
+        <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Véhicule</mat-label>
+            <mat-select [(ngModel)]="selectedVehicleId" (selectionChange)="applyFilters()">
+                <mat-option value="all">Tous les véhicules</mat-option>
+                <mat-option *ngFor="let v of vehicles" [value]="v._id">
+                    {{ v.marque }} {{ v.modele }} - {{ v.immatriculation }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Status Filter -->
+        <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Statut Mouvement</mat-label>
+            <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
+                <mat-option *ngFor="let s of statusOptions" [value]="s.value">
+                    {{ s.label }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="stats-summary" *ngIf="filteredMouvements.length > 0">
+            <p><strong>{{ filteredMouvements.length }}</strong> trajets affichés</p>
+        </div>
+    </div>
+
+    <!-- Main Map Area -->
+    <div class="map-area">
+        <!-- Utilisation du composant partagé -->
+        <app-map-mouvements [mouvements]="filteredMouvements"></app-map-mouvements>
+    </div>
 </div>

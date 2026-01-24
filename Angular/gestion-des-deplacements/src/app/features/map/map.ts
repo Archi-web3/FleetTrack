@@ -1,208 +1,121 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as L from 'leaflet';
-import 'leaflet-routing-machine';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
 import { MouvementService } from '../../mouvement.service';
+import { VehiculeService } from '../../vehicule.service';
+import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.component';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MapMouvementsComponent
+  ],
   templateUrl: './map.html',
   styleUrl: './map.css',
 })
-export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
-  private map: L.Map | undefined;
-  mouvements: any[] = [];
-  private routingControls: any[] = [];
-  private markers: L.Marker[] = [];
+export class MapComponent implements OnInit {
+  // Data
+  allMouvements: any[] = [];
+  filteredMouvements: any[] = []; // Those passed to the map
+  vehicles: any[] = [];
 
-  constructor(private mouvementService: MouvementService) { }
+  // Filters
+  selectedVehicleId: string | 'all' = 'all';
+  selectedStatus: string | 'all' = 'all'; // Default to show all active types
+
+  // Status options for filter
+  statusOptions = [
+    { value: 'all', label: 'Tous les statuts' },
+    { value: 'en cours', label: 'En cours' },
+    { value: 'validé', label: 'Validé (En attente)' },
+    { value: 'terminé', label: 'Terminé' }
+  ];
+
+  constructor(
+    private mouvementService: MouvementService,
+    private vehiculeService: VehiculeService
+  ) { }
 
   ngOnInit(): void {
-    this.fixLeafletIcons();
-    this.loadMouvements();
+    this.loadData();
   }
 
-  ngAfterViewInit(): void {
-    // Delay init slightly to ensure container is ready
-    setTimeout(() => {
-      this.initMap();
-    }, 100);
-  }
-
-  ngOnDestroy(): void {
-    if (this.map) {
-      this.map.remove();
-      this.map = undefined;
-    }
-  }
-
-  private initMap(): void {
-    if (this.map) return;
-
-    const mapContainer = document.getElementById('map');
-    if (!mapContainer) return;
-
-    if ((mapContainer as any)._leaflet_id) {
-      (mapContainer as any)._leaflet_id = null;
-    }
-
-    this.map = L.map('map').setView([4.3947, 18.557], 6);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map);
-
-    // Relayout map to ensure tiles load correctly
-    setTimeout(() => {
-      this.map?.invalidateSize();
-    }, 200);
-  }
-
-  private fixLeafletIcons(): void {
-    const iconRetinaUrl = 'assets/marker-icon-2x.png';
-    const iconUrl = 'assets/marker-icon.png';
-    const shadowUrl = 'assets/marker-shadow.png';
-    const iconDefault = L.icon({
-      iconRetinaUrl,
-      iconUrl,
-      shadowUrl,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
-      shadowSize: [41, 41]
+  loadData(): void {
+    // 1. Load Vehicles for dropdown
+    this.vehiculeService.getVehicules().subscribe(v => {
+      this.vehicles = v;
     });
-    L.Marker.prototype.options.icon = iconDefault;
-  }
 
-  private loadMouvements(): void {
+    // 2. Load Movements
     this.mouvementService.getMouvements().subscribe({
       next: (data: any[]) => {
-        this.mouvements = data.filter(m =>
-          m.statut === 'en cours' || m.statut === 'validé'
-        );
-        console.log(`🗺️ Mouvements affichés sur la carte: ${this.mouvements.length}`);
-        this.displayMouvements();
+        // Pre-filter to exclude completely irrelevant stuff if needed, 
+        // but user might want to see history ('terminé'), so we keep reasonable set.
+        this.allMouvements = data;
+
+        // Initial filter
+        this.applyFilters();
       },
-      error: (err: any) => console.error('Error loading movements for map:', err)
+      error: (err: any) => console.error('Error loading movements:', err)
     });
   }
 
-  private displayMouvements(): void {
-    if (!this.map) return;
-    const map = this.map;
-
-    // Cleanup
-    this.routingControls.forEach(control => map.removeControl(control));
-    this.routingControls = [];
-    this.markers.forEach(marker => marker.remove());
-    this.markers = [];
-
-    const allLatLngs: L.LatLng[] = [];
-
-    this.mouvements.forEach(m => {
-      const validStops = m.stops.filter((s: any) => {
-        const lieu = s.lieu as any;
-        if (!lieu || !lieu.coordonnees) return false;
-
-        const coords = lieu.coordonnees;
-        if (typeof coords === 'string') return true;
-        if (typeof coords === 'object' && coords.latitude !== undefined && coords.longitude !== undefined) return true;
-
-        console.warn(`⚠️ [MAP] Invalid coords format for movement ${m._id} stop ${lieu.nom}:`, coords);
-        return false;
-      });
-
-      if (validStops.length >= 2) {
-        const waypoints: L.LatLng[] = [];
-
-        validStops.forEach((s: any, index: number) => {
-          // Parse coords
-          const lieu = s.lieu as any;
-          let lat: number, lng: number;
-
-          if (typeof lieu.coordonnees === 'string') {
-            const parts = lieu.coordonnees.split(',').map((c: string) => parseFloat(c.trim()));
-            lat = parts[0];
-            lng = parts[1];
-          } else {
-            lat = parseFloat(lieu.coordonnees.latitude);
-            lng = parseFloat(lieu.coordonnees.longitude);
-          }
-
-          waypoints.push(L.latLng(lat, lng));
-          allLatLngs.push(L.latLng(lat, lng));
-
-          // Markers
-          let iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png';
-          if (index === 0) {
-            iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png';
-          } else if (index === validStops.length - 1) {
-            iconUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png';
-          }
-
-          const marker = L.marker([lat, lng], {
-            icon: L.icon({
-              iconUrl: iconUrl,
-              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-              iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
-            })
-          }).addTo(map);
-
-          const type = index === 0 ? 'Départ' : (index === validStops.length - 1 ? 'Arrivée' : 'Étape');
-          marker.bindPopup(this.createPopupContent(m, type));
-
-          this.markers.push(marker);
-        });
-
-        // Routing
-        const color = m.statut === 'validé' ? 'green' : (m.statut === 'en cours' ? 'blue' : 'gray');
-
-        try {
-          const routingControl = (L as any).Routing.control({
-            waypoints: waypoints,
-            router: (L as any).Routing.osrmv1({
-              serviceUrl: 'https://router.project-osrm.org/route/v1',
-              language: 'fr'
-            }),
-            lineOptions: {
-              styles: [{ color: color, weight: 6, opacity: 0.7 }]
-            },
-            createMarker: function () { return null; },
-            addWaypoints: false,
-            draggableWaypoints: false,
-            fitSelectedRoutes: false,
-            show: false
-          }).addTo(map);
-
-          this.routingControls.push(routingControl);
-        } catch (e) {
-          console.error('Routing control error:', e);
-        }
+  applyFilters(): void {
+    this.filteredMouvements = this.allMouvements.filter(m => {
+      // 1. Vehicle Filter
+      if (this.selectedVehicleId !== 'all') {
+        const mVehicleId = m.vehicule?._id || m.vehicule;
+        if (mVehicleId !== this.selectedVehicleId) return false;
       }
+
+      // 2. Status Filter
+      if (this.selectedStatus !== 'all') {
+        if (m.statut !== this.selectedStatus) return false;
+      } else {
+        // Default 'all' view: Show Active (En cours, Validé) AND recently Completed?
+        // Actually user might want to see everything.
+        // Let's filter out 'annulé' or 'refusé' by default unless specifically asked?
+        // For now, let's just show everything relevant to map.
+      }
+
+      // Ensure it has stops or GPS trace to be mappable
+      const hasStops = m.stops && m.stops.length > 0;
+      const hasTrace = m.gpsTrace && m.gpsTrace.length > 0;
+
+      return hasStops || hasTrace;
     });
 
-    if (allLatLngs.length > 0) {
-      const bounds = L.latLngBounds(allLatLngs);
-      // Ensure bounds are valid
-      try {
-        map.fitBounds(bounds, { padding: [50, 50] });
-      } catch (e) { console.warn('Invalid bounds', e); }
-    }
+    // Transform for Map Component (Match interface)
+    this.filteredMouvements = this.filteredMouvements.map(m => this.transformToMapMouvement(m));
   }
 
-  private createPopupContent(m: any, type: string): string {
-    const vehiculeInfo = m.vehicule ? `${(m.vehicule as any).marque} ${(m.vehicule as any).immatriculation}` : 'Non assigné';
-    const chauffeurInfo = m.chauffeur ? `${(m.chauffeur as any).nom} ${(m.chauffeur as any).prenom}` : 'Non assigné';
-    return `
-      <strong>${type}</strong><br>
-      <b>Véhicule:</b> ${vehiculeInfo}<br>
-      <b>Chauffeur:</b> ${chauffeurInfo}<br>
-      <b>Statut:</b> ${m.statut}<br>
-      <b>Projet:</b> ${m.projet || 'N/A'}
-    `;
+  transformToMapMouvement(trip: any): any {
+    // Adapter le format pour app-map-mouvements
+    const stops = trip.stops && trip.stops.length > 0 ? trip.stops.map((s: any) => ({
+      lieuId: s.lieu?._id || s.lieu,
+      nom: s.lieu?.nom || 'Stop',
+      adresse: s.lieu?.adresse || '',
+      lat: s.lieu?.coordonnees?.lat || (typeof s.lieu?.coordonnees === 'string' ? parseFloat(s.lieu.coordonnees.split(',')[0]) : 0),
+      lng: s.lieu?.coordonnees?.lng || (typeof s.lieu?.coordonnees === 'string' ? parseFloat(s.lieu.coordonnees.split(',')[1]) : 0),
+      dateDepart: s.dateDepart,
+      dateArrivee: s.dateArrivee
+    })) : [];
+
+    return {
+      id: trip._id,
+      title: trip.objectif || trip.purpose || 'Trajet',
+      demandeur: (trip.chauffeur?.prenom || '') + ' ' + (trip.chauffeur?.nom || ''),
+      stops: stops,
+      gpsTrace: trip.gpsTrace
+    };
   }
 }
