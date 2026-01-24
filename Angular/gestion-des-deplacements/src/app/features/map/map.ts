@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MouvementService } from '../../mouvement.service';
 import { VehiculeService } from '../../vehicule.service';
 import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.component';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-map',
@@ -27,6 +28,8 @@ import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.comp
   styleUrl: './map.css',
 })
 export class MapComponent implements OnInit {
+  @ViewChild(MapMouvementsComponent) mapMouvementsComponent!: MapMouvementsComponent;
+
   // Data
   allMouvements: any[] = [];
   filteredMouvements: any[] = []; // Those passed to the map
@@ -156,5 +159,11 @@ export class MapComponent implements OnInit {
       gpsTrace: trip.gpsTrace,
       vehiculeName: trip.vehicule ? `${trip.vehicule.marque || ''} ${trip.vehicule.modele || ''} (${trip.vehicule.immatriculation || '?'})` : 'Véhicule Inconnu'
     };
+  }
+
+  selectTrip(trip: any): void {
+    if (this.mapMouvementsComponent) {
+      this.mapMouvementsComponent.highlightTrip(trip.id);
+    }
   }
 }

@@ -38,6 +38,56 @@
         color: #1565c0;
         text-align: center;
     }
+
+    .results-list {
+        margin-top: 15px;
+        flex: 1;
+        overflow-y: auto;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+    }
+
+    .result-item {
+        background: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            border-color: #ddd;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+
+            .result-time {
+                color: #888;
+                font-size: 0.8rem;
+            }
+        }
+
+        .result-body {
+            p {
+                margin: 0;
+                font-weight: 500;
+                color: #333;
+            }
+
+            small {
+                color: #666;
+                font-size: 0.8rem;
+            }
+        }
+    }
 }
 
 .map-area {

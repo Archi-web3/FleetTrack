@@ -43,6 +43,7 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
   showReal: boolean = true;
 
   private map!: L.Map;
+  private markersMap: { [tripId: string]: L.Marker } = {}; // Map trip ID to Marker for fast access
   private markers: L.Marker[] = [];
   private realTraceLayers: L.Layer[] = []; // Stocker les traces rouges
   private plannedRouteLayers: L.Routing.Control[] = []; // Stocker les routes bleues
@@ -85,6 +86,7 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
     // Nettoyage complet
     this.markers.forEach(m => m.remove());
     this.markers = [];
+    this.markersMap = {};
     this.realTraceLayers.forEach(l => l.remove());
     this.realTraceLayers = [];
     this.lastPositionsMarkers.forEach(m => m.remove());
@@ -125,7 +127,14 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
             }).bindPopup(`<b>${index === 0 ? 'Départ Planifié' : 'Arrivée Planifiée'}</b><br>${mouvement.vehiculeName || 'Véhicule Inconnu'}<br>${stop.nom}<br><i>${mouvement.title}</i>`);
 
             marker.addTo(this.map);
+            marker.addTo(this.map);
             this.markers.push(marker);
+
+            // Map the START marker to the trip ID for selection
+            if (index === 0) {
+              this.markersMap[mouvement.id] = marker;
+            }
+
             waypoints.push(L.latLng(stop.lat, stop.lng));
             allLatLngs.push(L.latLng(stop.lat, stop.lng));
           }
@@ -192,6 +201,16 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
       this.lastPositionsMarkers.forEach(m => m.openPopup());
     } else {
       alert('Aucune position réelle connue disponible.');
+    }
+  }
+
+  // Highlight a specific trip
+  public highlightTrip(tripId: string): void {
+    const marker = this.markersMap[tripId];
+    if (marker && this.map) {
+      // Zoom to marker and open popup
+      this.map.setView(marker.getLatLng(), 14);
+      marker.openPopup();
     }
   }
 }

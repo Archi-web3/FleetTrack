@@ -35,6 +35,20 @@
         <div class="stats-summary" *ngIf="filteredMouvements.length > 0">
             <p><strong>{{ filteredMouvements.length }}</strong> trajets affichés</p>
         </div>
+
+        <!-- Filtered Results List (Only if search query is active) -->
+        <div class="results-list" *ngIf="selectedSearchQuery && filteredMouvements.length > 0">
+            <div class="result-item" *ngFor="let m of filteredMouvements" (click)="selectTrip(m)">
+                <div class="result-header">
+                    <strong>{{ m.vehiculeName }}</strong>
+                    <span class="result-time">{{ m.dateDepart | date:'short' }}</span>
+                </div>
+                <div class="result-body">
+                    <p>{{ m.title }}</p>
+                    <small>Demandeur: {{ m.demandeur }}</small>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Main Map Area -->
