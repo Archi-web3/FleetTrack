@@ -9,6 +9,7 @@ import { LieuService } from '../lieu.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../auth.service'; // NOUVEAU : Importer AuthService
+import { OsrmService } from '../core/services/osrm.service'; // NOUVEAU
 
 @Component({
   selector: 'app-demande-mouvement',
@@ -78,6 +79,10 @@ export class DemandeMouvementComponent implements OnInit {
   // NOUVEAU : Gestion des étapes intermédiaires
   etapes: any[] = [];
 
+  // NOUVEAU : Estimation du trajet
+  estimation: { distance: string, duration: string } | null = null;
+  isCalculatingEstimation: boolean = false;
+
   constructor(
     private mouvementService: MouvementService,
     private utilisateurService: UtilisateurService,
@@ -85,7 +90,8 @@ export class DemandeMouvementComponent implements OnInit {
     private chauffeurService: ChauffeurService,
     private lieuService: LieuService,
     private router: Router,
-    public authService: AuthService
+    public authService: AuthService,
+    private osrmService: OsrmService // NOUVEAU
   ) { }
 
   ngOnInit(): void {
@@ -158,10 +164,95 @@ export class DemandeMouvementComponent implements OnInit {
   // Gestion des étapes
   addEtape(): void {
     this.etapes.push({ lieu: '', dateArrivee: '', dateDepart: '' });
+    this.calculateEstimation();
   }
 
   removeEtape(index: number): void {
     this.etapes.splice(index, 1);
+    this.calculateEstimation();
+  }
+
+  // NOUVEAU : Méthode de calcul d'estimation
+  calculateEstimation(): void {
+    // Collecter tous les IDs de lieux (Départ -> Etapes -> Arrivée)
+    const lieuIds: string[] = [];
+
+    if (this.mouvement.lieuDepart) lieuIds.push(this.mouvement.lieuDepart);
+
+    this.etapes.forEach(e => {
+      if (e.lieu) lieuIds.push(e.lieu);
+    });
+
+    if (this.mouvement.lieuArrivee) lieuIds.push(this.mouvement.lieuArrivee);
+
+    // Il faut au moins 2 points pour calculer
+    if (lieuIds.length < 2) {
+      this.estimation = null;
+      return;
+    }
+
+    // Récupérer les coordonnées de chaque lieu
+    const waypoints: { lat: number, lng: number }[] = [];
+    let valid = true;
+
+    lieuIds.forEach(id => {
+      const lieu = this.lieux.find(l => l._id === id);
+      if (lieu && lieu.coordonnees) {
+        let lat: number, lng: number;
+        if (typeof lieu.coordonnees === 'string') {
+          const parts = lieu.coordonnees.split(',').map((c: string) => parseFloat(c.trim()));
+          lat = parts[0];
+          lng = parts[1];
+        } else {
+          lat = parseFloat(lieu.coordonnees.latitude);
+          lng = parseFloat(lieu.coordonnees.longitude);
+        }
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+          waypoints.push({ lat, lng });
+        } else {
+          valid = false;
+        }
+      } else {
+        valid = false;
+      }
+    });
+
+    if (!valid || waypoints.length < 2) {
+      this.estimation = null;
+      return;
+    }
+
+    this.isCalculatingEstimation = true;
+    this.osrmService.getRoute(waypoints).subscribe({
+      next: (result) => {
+        this.isCalculatingEstimation = false;
+        if (result) {
+          // Convert distance (meters -> km) and duration (seconds -> readable)
+          const km = (result.distance / 1000).toFixed(1) + ' km';
+
+          const hours = Math.floor(result.duration / 3600);
+          const minutes = Math.floor((result.duration % 3600) / 60);
+
+          let durationStr = '';
+          if (hours > 0) durationStr += `${hours}h `;
+          durationStr += `${minutes} min`;
+
+          this.estimation = { distance: km, duration: durationStr };
+        } else {
+          this.estimation = null;
+        }
+      },
+      error: () => {
+        this.isCalculatingEstimation = false;
+        this.estimation = null;
+      }
+    });
+  }
+
+  // Appelé quand un lieu change dans le template
+  onLieuChange(): void {
+    this.calculateEstimation();
   }
 
   async onSubmit(): Promise<void> {

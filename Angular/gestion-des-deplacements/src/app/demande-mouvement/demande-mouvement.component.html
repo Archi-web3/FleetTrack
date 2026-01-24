@@ -19,7 +19,7 @@
 
       <div *ngIf="selectedLieuDepartOption === 'existing'" style="margin-top: 10px;">
         <select id="lieuDepart" name="lieuDepartExisting" [(ngModel)]="mouvement.lieuDepart" required
-          style="width: 100%; padding: 8px;">
+          (change)="onLieuChange()" style="width: 100%; padding: 8px;">
           <option value="">Sélectionnez un lieu de départ</option>
           <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
         </select>
@@ -56,7 +56,7 @@
       <h3 style="margin-top: 0;">Étapes Intermédiaires (Optionnel)</h3>
       <div *ngFor="let etape of etapes; let i = index" style="margin-bottom: 10px; display: flex; align-items: center;">
         <span style="margin-right: 10px; font-weight: bold;">Étape {{ i + 1 }}:</span>
-        <select [(ngModel)]="etape.lieu" name="etapeLieu_{{i}}" required
+        <select [(ngModel)]="etape.lieu" name="etapeLieu_{{i}}" required (change)="onLieuChange()"
           style="flex-grow: 1; padding: 8px; margin-right: 10px;">
           <option value="">Sélectionnez un lieu</option>
           <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
@@ -97,7 +97,7 @@
 
       <div *ngIf="selectedLieuArriveeOption === 'existing'" style="margin-top: 10px;">
         <select id="lieuArrivee" name="lieuArriveeExisting" [(ngModel)]="mouvement.lieuArrivee" required
-          style="width: 100%; padding: 8px;" [disabled]="isRetourIdentique">
+          (change)="onLieuChange()" style="width: 100%; padding: 8px;" [disabled]="isRetourIdentique">
           <option value="">Sélectionnez un lieu d'arrivée</option>
           <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
         </select>
@@ -185,5 +185,21 @@
     <button type="submit" [disabled]="!demandeForm.form.valid"
       style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer;">Soumettre
       Demande</button>
+
+    <!-- NOUVEAU : Estimation du Trajet -->
+    <div
+      style="margin-top: 15px; padding: 10px; background-color: #e9ecef; border-radius: 5px; border-left: 5px solid #007bff;">
+      <strong>📊 Estimation du Trajet (OSRM)</strong>
+      <div *ngIf="isCalculatingEstimation" style="margin-top: 5px; font-style: italic; color: #666;">
+        Calcul en cours...
+      </div>
+      <div *ngIf="!isCalculatingEstimation && estimation" style="margin-top: 5px;">
+        <span style="margin-right: 15px;">🛣️ <strong>Distance:</strong> {{ estimation.distance }}</span>
+        <span>⏱️ <strong>Durée:</strong> {{ estimation.duration }}</span>
+      </div>
+      <div *ngIf="!isCalculatingEstimation && !estimation" style="margin-top: 5px; color: #666; font-size: 0.9em;">
+        Sélectionnez au moins un lieu de départ et d'arrivée (avec coordonnées valides) pour voir l'estimation.
+      </div>
+    </div>
   </form>
 </div>
