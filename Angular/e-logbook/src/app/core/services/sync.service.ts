@@ -232,6 +232,7 @@ export class SyncService {
                     departurePlaceId: firstStop?.lieu?._id || firstStop?.lieu,
                     arrivalPlaceId: lastStop?.lieu?._id || lastStop?.lieu,
                     passengerIds: trip.passagers?.map((p: any) => p._id || p) || [],
+                    gpsTrace: trip.gpsTrace, // FIX: Ensure GPS trace is synced back to local DB
                     synced: 1
                 };
 

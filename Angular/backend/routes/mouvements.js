@@ -220,7 +220,9 @@ router.get('/mouvements', auth(), countryFilter, async (req, res) => {
       .populate('passagers', 'nom email');
 
     console.log('📥 [GET MOUVEMENTS] Mouvements trouvés:', mouvements.length);
-    console.log('📥 [GET MOUVEMENTS] Mouvements récupérés:', mouvements);
+    console.log('📥 [GET MOUVEMENTS] Mouvements récupérés:', mouvements.length);
+    const traceCount = mouvements.filter(m => m.gpsTrace && m.gpsTrace.length > 0).length;
+    console.log(`📥 [GET MOUVEMENTS] ${traceCount} mouvements ont une trace GPS.`);
 
     res.json(mouvements);
   } catch (err) {

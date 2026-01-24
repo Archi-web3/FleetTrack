@@ -187,6 +187,7 @@ export class LogbookDashboardComponent implements OnInit {
     // NOUVEAU: Gestion Map Modal
     openMap(trip: any): void {
         console.log('Opening map for trip:', trip);
+        console.log('Trip GPS Trace length:', trip.gpsTrace ? trip.gpsTrace.length : 'undefined');
 
         // Convertir trip en format compatible MapMouvement
         // Il faut s'assurer que les stops sont bien peuplés
