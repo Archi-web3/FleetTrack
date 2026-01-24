@@ -45,7 +45,9 @@ export class ActiveTripComponent implements OnInit {
   gpsSignalStatus: 'searching' | 'good' | 'weak' | 'off' = 'off';
 
   // NOUVEAU: Start from GPS
+  // NOUVEAU: Start from GPS
   useGpsStart: boolean = false;
+  useGpsEnd: boolean = false;
   gpsStartLocation: { lat: number, lng: number } | null = null;
 
   // Forms
@@ -238,6 +240,25 @@ export class ActiveTripComponent implements OnInit {
       console.log('📍 Mode Lieu liste activé');
     }
     deptControl?.updateValueAndValidity();
+    this.cdr.detectChanges();
+  }
+
+  // NOUVEAU: Toggle GPS End
+  toggleGpsEnd() {
+    this.useGpsEnd = !this.useGpsEnd;
+    const arrControl = this.endForm.get('arrivalPlaceId');
+
+    if (this.useGpsEnd) {
+      arrControl?.clearValidators();
+      arrControl?.setValue(null);
+      arrControl?.disable();
+      console.log('🏁 Mode GPS Arrival activé');
+    } else {
+      arrControl?.setValidators([Validators.required]);
+      arrControl?.enable();
+      console.log('🏁 Mode Lieu Arrivée liste activé');
+    }
+    arrControl?.updateValueAndValidity();
     this.cdr.detectChanges();
   }
 

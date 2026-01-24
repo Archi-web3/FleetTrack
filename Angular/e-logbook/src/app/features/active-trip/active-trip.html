@@ -85,6 +85,12 @@
                 </div>
 
                 <form [formGroup]="endForm">
+                    <!-- NOUVEAU: Option arrivée GPS -->
+                    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+                        <input type="checkbox" [checked]="useGpsEnd" (change)="toggleGpsEnd()" id="gpsEnd">
+                        <label for="gpsEnd" style="margin-left: 8px;">Utiliser ma position actuelle (Hors-site)</label>
+                    </div>
+
                     <mat-form-field appearance="fill" class="full-width">
                         <mat-label>Lieu d'arrivée</mat-label>
                         <mat-select formControlName="arrivalPlaceId">
