@@ -123,6 +123,7 @@
                         <th>Chauffeur</th>
                         <th>Quantité (L)</th>
                         <th>Km Compteur</th>
+                        <th>Conso. (L/100)</th>
                         <th>Type</th>
                         <th>Source</th>
                         <th>Photos</th>
@@ -130,11 +131,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let f of fuels">
+                    <tr *ngFor="let f of fuels" [class.overconsumption-row]="f.isOverConsumption">
                         <td>{{ f.date | date:'short' }}</td>
                         <td>{{ f.chauffeur?.prenom }} {{ f.chauffeur?.nom }}</td>
                         <td>{{ f.quantity }}</td>
                         <td>{{ f.mileage }}</td>
+                        <td>
+                            <span *ngIf="f.calculatedConsumption">
+                                {{ f.calculatedConsumption }} L/100
+                                <mat-icon *ngIf="f.isOverConsumption" class="warning-icon"
+                                    matTooltip="Surconsommation détectée (>10% vs théorique)">warning</mat-icon>
+                            </span>
+                            <span *ngIf="!f.calculatedConsumption">-</span>
+                        </td>
                         <td>{{ f.fuelType }}</td>
                         <td>{{ f.source }}</td>
                         <td>
