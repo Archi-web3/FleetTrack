@@ -1,5 +1,43 @@
 # Changelog
 
+## [Unreleased] - 2026-01-25 (Soir)
+
+### ✨ Module 2 : Gestion Avancée & Sécurité
+
+#### ✈️ Modes de Transport (Air & Mer)
+- **Nouveaux Modes :** Support complet pour les trajets Aériens (Avion, UNHAS) et Maritimes (Bateau, Speedboat).
+- **Workflow Dédié :** Création simplifiée (pas d'affectation véhicule/chauffeur). Workflow de clôture manuelle spécifique.
+- **Statistiques Séparées :**
+    - **Dashboard :** Nouvelles cartes dédiées "Aérien" et "Maritime".
+    - **KPI CO2 :** Distinction claire entre "CO2 Total (Flotte Routière)" et "CO2 Aérien". Le KPI principal n'affiche QUE la flotte routière (demande utilisateur).
+    - **Carte CO2 Aérien :** Calcul automatique basé sur la distance (Haversine) et les facteurs d'émission ADEME (Courte/Moyenne/Longue distance).
+
+#### 🛡️ Sécurité & Validation
+- **Matrice de Validation :** Le système vérifie désormais le "Niveau de Sécurité" du trajet (basé sur la couleur des lieux : Vert/Jaune/Orange/Rouge) par rapport au niveau d'habitation de l'utilisateur.
+- **Workflow Intelligent :** Un trajet "Rouge" ou "Orange" nécessite une validation par un Superviseur Sécurité habilité.
+- **Traçabilité :** Historique complet des validations (Qui, Quand, Niveau).
+
+#### 💰 Gestion Financière (Multi-Projets)
+- **Ventilation Automatique :** Lors de la création d'un mouvement, le coût est réparti automatiquement (en %) selon les codes projets des passagers à bord.
+- **Correction Manuelle :** Possibilité de modifier la ventilation (Projet/Pourcentage) dans le formulaire de modification.
+
+### 🛠️ Corrections & Améliorations (Fixes & Improvements)
+
+#### 🗺️ Visualisation Carte (Logbook)
+- **Fix "Trajet Planifié" :** Correction d'un bug où la ligne bleue (trajet théorique) ne s'affichait pas. Le système gère maintenant correctement tous les formats de coordonnées GPS.
+- **Légende :** Ajout d'une légende claire (Bleu = Planifié, Rouge = Réel).
+
+#### 🎨 UX / UI
+- **Lisibilité :** Fond blanc forcé sur tous les menus déroulants et champs de texte (suppression de la transparence) pour une meilleure lecture sur Gestion des Déplacements et e-Logbook.
+- **Icônes :** Ajout d'icônes distinctives (Avion, Bateau, Voiture) dans la liste "Mes Mouvements".
+
+#### 🐛 Bugs Corrigés
+- **Stats Globales à 0 :** Correction d'un problème d'agrégation MongoDB qui renvoyait des compteurs à 0.
+- **Persistance des Dates :** Correction d'un bug où la modification d'une date de mouvement était écrasée par le serveur.
+- **Calcul CO2 Aérien :** Correction d'un crash serveur dû à une fonction manquante (`calculateDistance`).
+
+---
+
 ## [Unreleased] - 2026-01-24
 
 ### ✨ Nouvelles Fonctionnalités (New Features)
