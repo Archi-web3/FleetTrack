@@ -189,19 +189,40 @@ export class LogbookDashboardComponent implements OnInit {
         console.log('Opening map for trip:', trip);
         console.log('Trip GPS Trace length:', trip.gpsTrace ? trip.gpsTrace.length : 'undefined');
 
-        // Convertir trip en format compatible MapMouvement
-        // Il faut s'assurer que les stops sont bien peuplés
-        // Si stops manquants mais lieuDepart/Arrivee présents, on bricole
+        // Helper pour extraire lat/lon peu importe le format
+        const getCoords = (lieu: any) => {
+            if (!lieu || !lieu.coordonnees) return null;
 
-        const stops = trip.stops && trip.stops.length > 0 ? trip.stops.map((s: any) => ({
-            lieuId: s.lieu?._id || s.lieu,
-            nom: s.lieu?.nom || 'Stop',
-            adresse: s.lieu?.adresse || '',
-            lat: s.lieu?.coordonnees?.lat || s.lat, // Fallback si plat
-            lng: s.lieu?.coordonnees?.lng || s.lng,
-            dateDepart: s.dateDepart,
-            dateArrivee: s.dateArrivee
-        })) : [];
+            // Cas 1: coordonnees est un string "lat,lon"
+            if (typeof lieu.coordonnees === 'string') {
+                const parts = lieu.coordonnees.split(',').map((s: string) => parseFloat(s.trim()));
+                if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                    return { lat: parts[0], lng: parts[1] };
+                }
+            }
+            // Cas 2: coordonnees est un objet avec latitude/longitude (Backend Model)
+            else if (lieu.coordonnees.latitude !== undefined && lieu.coordonnees.longitude !== undefined) {
+                return { lat: parseFloat(lieu.coordonnees.latitude), lng: parseFloat(lieu.coordonnees.longitude) };
+            }
+            // Cas 3: coordonnees est un objet avec lat/lng (Leaflet style)
+            else if (lieu.coordonnees.lat !== undefined && lieu.coordonnees.lng !== undefined) {
+                return { lat: parseFloat(lieu.coordonnees.lat), lng: parseFloat(lieu.coordonnees.lng) };
+            }
+            return null;
+        };
+
+        const stops = trip.stops && trip.stops.length > 0 ? trip.stops.map((s: any) => {
+            const coords = getCoords(s.lieu);
+            return {
+                lieuId: s.lieu?._id || s.lieu,
+                nom: s.lieu?.nom || 'Stop',
+                adresse: s.lieu?.adresse || '',
+                lat: coords ? coords.lat : (s.lat || 0), // Fallback si plat
+                lng: coords ? coords.lng : (s.lng || 0),
+                dateDepart: s.dateDepart,
+                dateArrivee: s.dateArrivee
+            };
+        }) : [];
 
         // Si pas de stops mais trace GPS, on peut afficher quand même
 
@@ -210,7 +231,9 @@ export class LogbookDashboardComponent implements OnInit {
             title: trip.objectif || trip.purpose || 'Trajet',
             demandeur: trip.chauffeur?.prenom + ' ' + trip.chauffeur?.nom,
             stops: stops,
-            gpsTrace: trip.gpsTrace // Passer la trace GPS
+            gpsTrace: trip.gpsTrace, // Passer la trace GPS
+            vehiculeName: trip.vehicule?.marque ? `${trip.vehicule.marque} ${trip.vehicule.modele}` : 'Véhicule', // Ajout details
+            vehiculeCode: trip.vehicule?.immatriculation // Ajout plaque
         }];
 
         this.showMapModal = true;
