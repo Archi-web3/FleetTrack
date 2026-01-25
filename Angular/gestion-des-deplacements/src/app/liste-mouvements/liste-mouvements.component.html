@@ -15,9 +15,23 @@
     <li *ngFor="let mouvement of filteredMouvements"
       style="background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #005fb6;">
       <div>
-        <!-- ID du Mouvement -->
-        <div style="font-size: 0.8em; color: #888; margin-bottom: 5px;">
-          <strong>ID:</strong> {{ mouvement._id }}
+        <!-- ID du Mouvement et Mode de Transport -->
+        <div
+          style="font-size: 0.8em; color: #888; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <strong>ID:</strong> {{ mouvement._id }}
+          </div>
+          <!-- ICÔNE MODE TRANSPORT -->
+          <div
+            style="display: flex; align-items: center; gap: 5px; background: #e3f2fd; padding: 2px 8px; border-radius: 12px; color: #0277bd;">
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px;">
+              {{ !mouvement.modeTransport || mouvement.modeTransport === 'Routier' ? 'directions_car' :
+              mouvement.modeTransport === 'Aérien' ? 'flight' : 'directions_boat' }}
+            </mat-icon>
+            <span style="font-weight: 500; font-size: 0.9em;">
+              {{ mouvement.modeTransport || 'Routier' }}
+            </span>
+          </div>
         </div>
         <!-- Affichage de l'itinéraire complet -->
         <div *ngIf="mouvement.stops && mouvement.stops.length > 0" style="margin-bottom: 10px;">
@@ -112,6 +126,13 @@
           *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
           style="margin-left: 8px;">
           Modifier
+        </button>
+
+        <!-- NOUVEAU: BOUTON TERMINER POUR AÉRIEN/MARITIME -->
+        <button mat-raised-button style="background-color: #2e7d32; color: white; margin-left: 8px;"
+          *ngIf="mouvement.statut === 'validé' && (mouvement.modeTransport === 'Aérien' || mouvement.modeTransport === 'Maritime')"
+          (click)="completeMouvement(mouvement)">
+          ✅ Confirmer Voyage Effectué
         </button>
 
         <hr> <!-- Séparateur pour chaque mouvement -->

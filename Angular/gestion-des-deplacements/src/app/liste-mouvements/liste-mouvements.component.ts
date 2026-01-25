@@ -121,4 +121,19 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
     console.log('🔄 [liste-mouvements] Navigating to edit:', id);
     this.router.navigate(['/modifier-mouvement', id]);
   }
+
+  completeMouvement(mouvement: any): void {
+    if (confirm(`Confirmer que le voyage "${mouvement.objectif}" a bien été effectué ?\nCela clôturera le mouvement.`)) {
+      this.mouvementService.updateMouvement(mouvement._id, { statut: 'terminé' }).subscribe({
+        next: () => {
+          alert('Voyage confirmé et terminé !');
+          this.getMouvements();
+        },
+        error: (err) => {
+          console.error('Erreur clôture mouvement:', err);
+          alert('Erreur lors de la clôture du mouvement.');
+        }
+      });
+    }
+  }
 }
