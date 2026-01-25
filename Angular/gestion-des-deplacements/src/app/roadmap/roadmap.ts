@@ -35,12 +35,10 @@ export class RoadmapComponent {
             date: '25 Janvier 2026',
             type: 'minor',
             changes: [
-                { category: 'Modes de Transport', description: 'Support complet Aérien/Maritime : Workflow dédié, KPIs distincts et clôture manuelle.' },
-                { category: 'Sécurité', description: 'Matrice de Validation : Vérification auto du niveau de risque (Couleur Lieu) vs Habilitation Utilisateur.' },
-                { category: 'Finance', description: 'Ventilation Multi-Projets : Répartition automatique des coûts selon les passagers (avec correction manuelle).' },
-                { category: 'Dashboard', description: 'Tour de Contrôle : KPIs CO2 séparés (Flotte vs Aérien) et nouvelles cartes par mode.' },
+                { category: 'Dashboard', description: 'Tour de Contrôle : KPIs CO2 séparés (Flotte vs Aérien) et nouvelles cartes par mode + Correctif Stats Globales.' },
                 { category: 'Logbook', description: 'Visualisation Carte : Correction du tracé planifié (Ligne bleue) et support robuste des coordonnées GPS.' },
-                { category: 'UX / UI', description: 'Amélioration lisibilité : Fonds blancs imposés sur les listes déroulantes et champs de saisie.' }
+                { category: 'UX / UI', description: 'Amélioration lisibilité : Fonds blancs imposés sur les listes déroulantes, champs de saisie et icônes modes.' },
+                { category: 'Correctif', description: 'Stabilisation de la persistance des dates (Stops) et du calcul distance Aérien.' }
             ]
         },
         {
