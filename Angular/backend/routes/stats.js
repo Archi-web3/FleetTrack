@@ -6,6 +6,7 @@ const Vehicule = require('../models/vehicule.model');
 const auth = require('../middleware/authMiddleware');
 
 // GET /api/stats/global - Statistiques globales avec filtres
+// GET /api/stats/global - Statistiques globales avec filtres
 router.get('/global', auth(), async (req, res) => {
     try {
         const { dateDebut, dateFin, projet, vehicule } = req.query;
@@ -19,9 +20,8 @@ router.get('/global', auth(), async (req, res) => {
         if (dateDebut && dateFin) {
             const startDate = new Date(dateDebut);
             const endDate = new Date(dateFin);
-            endDate.setHours(23, 59, 59, 999); // Include entire end date
+            endDate.setHours(23, 59, 59, 999);
 
-            // Priorité à realDepartureTime (si le trajet a eu lieu), sinon dateDepart (planifié)
             matchFilter.$or = [
                 { realDepartureTime: { $gte: startDate, $lte: endDate } },
                 { dateDepart: { $gte: startDate, $lte: endDate }, realDepartureTime: null }
@@ -38,117 +38,24 @@ router.get('/global', auth(), async (req, res) => {
             matchFilter.pays = req.selectedCountry;
         }
 
-        // Pipeline d'agrégation
-        const pipeline = [
-            { $match: matchFilter },
-            {
-                $lookup: {
-                    from: 'utilisateurs',
-                    localField: 'chauffeur',
-                    foreignField: '_id',
-                    as: 'chauffeurInfo'
-                }
-            },
-            { $unwind: { path: '$chauffeurInfo', preserveNullAndEmptyArrays: true } }
-        ];
+        // 1. Récupérer les paramètres CO2
+        const Setting = require('../models/setting.model');
+        const co2Setting = await Setting.findOne({ key: 'co2Factors' });
+        const co2Factors = co2Setting ? co2Setting.value : { short: 230, medium: 178, long: 152 };
 
-        // LOGIQUE CHANGÉE : Si un projet est sélectionné, on utilise la VENTILATION EFFECTIVE
-        // au lieu du projet du chauffeur.
-        if (projet) {
-            pipeline.push(
-                // 1. Calculer la ventilation effective (même logique que par-projet)
-                {
-                    $addFields: {
-                        effectiveVentilation: {
-                            $cond: {
-                                if: { $and: [{ $isArray: "$projetsVentilation" }, { $gt: [{ $size: "$projetsVentilation" }, 0] }] },
-                                then: "$projetsVentilation",
-                                else: [{
-                                    projet: { $ifNull: ["$projet", "Non assigné"] },
-                                    percentage: 100
-                                }]
-                            }
-                        },
-                        rawKm: {
-                            $cond: [
-                                { $and: [{ $ne: ['$startMileage', null] }, { $ne: ['$endMileage', null] }] },
-                                { $subtract: ['$endMileage', '$startMileage'] },
-                                0
-                            ]
-                        }
-                    }
-                },
-                // 2. Dérouler pour filtrer sur les ventilations
-                { $unwind: "$effectiveVentilation" },
-                // 3. Filtrer strictement sur le projet demandé
-                {
-                    $match: { "effectiveVentilation.projet": projet }
-                }
-            );
-        } else {
-            // Si pas de projet sélectionné, on calcule le km brut pour le total (déjà fait dans le group plus bas pour l'instant)
-            // On ajoute juste rawKm pour uniformiser si besoin, mais le group original utilisait end - start.
-            // On va laisser le group original gérer les sommes si pas de "projet" car on ne veut pas multiplier les lignes par unwind.
-        }
+        // 2. Récupérer les mouvements (Find au lieu d'Aggregate pour gérer le JS complexe air/mer/projets)
+        const mouvements = await Mouvement.find(matchFilter).populate('stops.lieu');
 
+        let kmTotauxRoutier = 0;
+        let co2TotalRoutier = 0;
+        let consommationTotale = 0;
 
-        // Agrégation des statistiques
-        const groupStage = {
-            $group: {
-                _id: null,
-                kmTotaux: { $sum: 0 }, // Placeholder, défini conditionnellement ci-dessous
-                nombreMouvements: { $sum: 1 }
-            }
-        };
+        let nbRoutier = 0;
+        let nbAerien = 0;
+        let nbMaritime = 0;
 
-        if (projet) {
-            // Avec un projet filtre, on somme la part ventilée
-            groupStage.$group.kmTotaux = {
-                $sum: {
-                    $multiply: ["$rawKm", { $divide: ["$effectiveVentilation.percentage", 100] }]
-                }
-            };
-        } else {
-            // Sans filtre projet, on somme la distance totale des trajets
-            groupStage.$group.kmTotaux = {
-                $sum: {
-                    $cond: [
-                        { $and: [{ $ne: ['$startMileage', null] }, { $ne: ['$endMileage', null] }] },
-                        { $subtract: ['$endMileage', '$startMileage'] },
-                        0
-                    ]
-                }
-            };
-        }
+        let co2Aerien = 0;
 
-        pipeline.push(groupStage);
-
-        const result = await Mouvement.aggregate(pipeline);
-
-        // DEBUG: Compter tous les mouvements terminés
-        const allTerminated = await Mouvement.countDocuments({ statut: 'terminé' });
-        const terminatedWithMileage = await Mouvement.countDocuments({
-            statut: 'terminé',
-            startMileage: { $ne: null },
-            endMileage: { $ne: null }
-        });
-
-        console.log('=== DEBUG STATS GLOBALES ===');
-        console.log('Filtre appliqué:', JSON.stringify(matchFilter));
-        console.log('Projet demandé:', projet);
-        console.log('Total mouvements terminés (tous):', allTerminated);
-        console.log('Mouvements terminés avec kilométrage:', terminatedWithMileage);
-        console.log('Nombre de mouvements trouvés (après filtre):', result.length > 0 ? result[0].nombreMouvements : 0);
-        console.log('Résultat agrégation:', result);
-
-        if (result.length === 0) {
-            return res.json({
-                kmTotaux: 0,
-                co2Total: 0,
-                consommationTotale: 0,
-                nombreMouvements: 0
-            });
-        }
         mouvements.forEach(m => {
             const mode = m.modeTransport || 'Routier';
 
