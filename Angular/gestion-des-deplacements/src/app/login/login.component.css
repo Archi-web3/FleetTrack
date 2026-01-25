@@ -1,0 +1,11 @@
+.app-title {
+    margin: 0;
+    color: #005FB6;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.version {
+    font-size: 0.6em;
+    color: #005FB6;
+}
