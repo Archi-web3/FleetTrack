@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - 2026-01-25 (Soir)
+## [2.6.0] - 2026-01-25
 
 ### ✨ Module 2 : Gestion Avancée & Sécurité
 
