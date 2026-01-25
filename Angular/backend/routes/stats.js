@@ -149,52 +149,103 @@ router.get('/global', auth(), async (req, res) => {
                 nombreMouvements: 0
             });
         }
-        const p1 = getLatLon(s1);
-        const p2 = getLatLon(s2);
-        totalDistAir += calculateDistance(p1.lat, p1.lon, p2.lat, p2.lon);
-    }
+        mouvements.forEach(m => {
+            const mode = m.modeTransport || 'Routier';
+
+            // Fitrage Projet (Manuel car complexe avec ventilation et stats globales)
+            // Si projet est spécifié, on vérifie si le mouvement est ventilé sur ce projet.
+            let partPonderation = 1; // 100% par défaut
+            if (projet) {
+                // Vérifier ventilation
+                const ventil = m.projetsVentilation && m.projetsVentilation.length > 0
+                    ? m.projetsVentilation
+                    : [{ projet: m.projet, percentage: 100 }];
+
+                const targetVentil = ventil.find(v => v.projet === projet);
+                if (!targetVentil) return; // Skip ce mouvement
+                partPonderation = targetVentil.percentage / 100;
+            }
+
+            if (mode === 'Routier') {
+                nbRoutier++;
+                // Calcul Km Routier
+                let dist = 0;
+                if (m.startMileage != null && m.endMileage != null) {
+                    dist = m.endMileage - m.startMileage;
+                }
+                const distPonderee = dist * partPonderation;
+                kmTotauxRoutier += distPonderee;
+
+                // CO2/Conso Routier (Formules approximatives existantes)
+                // Conso: ~8L/100km, CO2: ~2.3kg/L
+                const conso = (distPonderee / 100) * 8;
+                consommationTotale += conso;
+                co2TotalRoutier += conso * 2.3;
+
+            } else if (mode === 'Aérien') {
+                nbAerien++;
+                // Calcul CO2 Aérien (ADEME)
+                // 1. Distance Vol d'oiseau Total
+                let totalDistAir = 0;
+                if (m.stops && m.stops.length >= 2) {
+                    for (let i = 0; i < m.stops.length - 1; i++) {
+                        const s1 = m.stops[i].lieu;
+                        const s2 = m.stops[i + 1].lieu;
+                        if (s1 && s2 && s1.coordonnees && s2.coordonnees) {
+                            // Gestion coord string vs object
+                            const getLatLon = (l) => {
+                                if (typeof l.coordonnees === 'string') {
+                                    const p = l.coordonnees.split(',').map(n => parseFloat(n.trim()));
+                                    return { lat: p[0], lon: p[1] };
+                                }
+                                return { lat: parseFloat(l.coordonnees.latitude), lon: parseFloat(l.coordonnees.longitude) };
+                            }
+                            const p1 = getLatLon(s1);
+                            const p2 = getLatLon(s2);
+                            totalDistAir += calculateDistance(p1.lat, p1.lon, p2.lat, p2.lon);
+                        }
                     }
                 }
 
-    // 2. Facteur Emission (selon distance totale du vol)
-    let factor = co2Factors.short; // < 1000
-if (totalDistAir >= 1000 && totalDistAir <= 3500) factor = co2Factors.medium;
-else if (totalDistAir > 3500) factor = co2Factors.long;
+                // 2. Facteur Emission (selon distance totale du vol)
+                let factor = co2Factors.short; // < 1000
+                if (totalDistAir >= 1000 && totalDistAir <= 3500) factor = co2Factors.medium;
+                else if (totalDistAir > 3500) factor = co2Factors.long;
 
-// 3. Nb Passagers (Impact)
-const nbPassagers = m.passagers ? m.passagers.length : 1;
+                // 3. Nb Passagers (Impact)
+                const nbPassagers = m.passagers ? m.passagers.length : 1;
 
-// 4. Calcul (g -> kg)
-// CO2 = Dist * Passagers * Factor / 1000
-const co2Vol = (totalDistAir * nbPassagers * factor) / 1000;
+                // 4. Calcul (g -> kg)
+                // CO2 = Dist * Passagers * Factor / 1000
+                const co2Vol = (totalDistAir * nbPassagers * factor) / 1000;
 
-co2Aerien += co2Vol * partPonderation;
+                co2Aerien += co2Vol * partPonderation;
 
             } else if (mode === 'Maritime') {
-    nbMaritime++;
-    // Pas de calcul CO2 pour l'instant
-}
+                nbMaritime++;
+                // Pas de calcul CO2 pour l'instant
+            }
         });
 
-res.json({
-    kmTotaux: Math.round(kmTotauxRoutier),
-    co2Total: Math.round(co2TotalRoutier + co2Aerien), // Total CO2 (Routier + Aérien)
-    // On ajoute les nouveaux champs explicites
-    co2Flotte: Math.round(co2TotalRoutier),
-    co2Aerien: Math.round(co2Aerien),
-    consommationTotale: Math.round(consommationTotale),
-    nombreMouvements: nbRoutier + nbAerien + nbMaritime,
-    repartitionModes: {
-        routier: nbRoutier,
-        aerien: nbAerien,
-        maritime: nbMaritime
-    }
-});
+        res.json({
+            kmTotaux: Math.round(kmTotauxRoutier),
+            co2Total: Math.round(co2TotalRoutier + co2Aerien), // Total CO2 (Routier + Aérien)
+            // On ajoute les nouveaux champs explicites
+            co2Flotte: Math.round(co2TotalRoutier),
+            co2Aerien: Math.round(co2Aerien),
+            consommationTotale: Math.round(consommationTotale),
+            nombreMouvements: nbRoutier + nbAerien + nbMaritime,
+            repartitionModes: {
+                routier: nbRoutier,
+                aerien: nbAerien,
+                maritime: nbMaritime
+            }
+        });
 
     } catch (error) {
-    console.error('Erreur stats globales:', error);
-    res.status(500).json({ message: 'Erreur serveur', error: error.message });
-}
+        console.error('Erreur stats globales:', error);
+        res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    }
 });
 
 // GET /api/stats/par-projet - Statistiques par projet avec filtres
