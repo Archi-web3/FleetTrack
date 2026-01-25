@@ -103,3 +103,27 @@ body {
 .cdk-overlay-backdrop {
   background-color: rgba(0, 0, 0, 0.5) !important;
 }
+
+/* --- FORCE WHITE BACKGROUND FOR DROPDOWNS & INPUTS --- */
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel,
+.mat-mdc-menu-panel {
+  background-color: white !important;
+}
+
+input,
+textarea,
+select {
+  background-color: white !important;
+}
+
+/* Ensure options are visible */
+.mat-mdc-option {
+  background-color: white !important;
+  color: black !important;
+}
+
+.mat-mdc-option:hover,
+.mat-mdc-option.mat-mdc-option-active {
+  background-color: #f5f5f5 !important;
+}
