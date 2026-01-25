@@ -72,14 +72,11 @@
           <p style="color: #666;">Distance Flotte (Routier)</p>
         </div>
 
-        <!-- CO2 Total (Flotte + Aérien) -->
+        <!-- CO2 Total (Flotte UNIQUEMENT) -->
         <div class="stat-card" style="border: 2px solid #e8f5e9; background-color: #f1f8e9;">
           <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #52ae32;">eco</mat-icon>
           <h2 style="margin: 10px 0; color: #52ae32;">{{statsGlobales.co2Total | number:'1.0-0'}} kg</h2>
-          <p style="color: #666;">CO2 Total (Flotte + Aérien)</p>
-          <div style="font-size: 0.8em; color: #52ae32;">
-            dont {{statsGlobales.co2Aerien | number:'1.0-0'}} kg Aérien
-          </div>
+          <p style="color: #666;">CO2 Total (Flotte)</p>
         </div>
 
         <!-- Conso (Flotte) -->

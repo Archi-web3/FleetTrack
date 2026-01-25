@@ -136,7 +136,7 @@ router.get('/global', auth(), async (req, res) => {
 
         res.json({
             kmTotaux: Math.round(kmTotauxRoutier),
-            co2Total: Math.round(co2TotalRoutier + co2Aerien), // Total CO2 (Routier + Aérien)
+            co2Total: Math.round(co2TotalRoutier), // Total CO2 (Flotte Routier UNIQUEMENT, demandé par user)
             // On ajoute les nouveaux champs explicites
             co2Flotte: Math.round(co2TotalRoutier),
             co2Aerien: Math.round(co2Aerien),
