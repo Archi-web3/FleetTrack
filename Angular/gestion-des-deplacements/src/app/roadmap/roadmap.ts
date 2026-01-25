@@ -31,6 +31,18 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.5.0',
+            date: '25 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Tour de Contrôle', description: 'Dashboard : Filtres avancés par date et sélection multiple interactive sur la carte.' },
+                { category: 'Tour de Contrôle', description: 'Validation : Gestion des trajets "Hors-Liste" (Imprévus) avec indicateurs visuels et validation Manager.' },
+                { category: 'Visualisation', description: 'Carte : Affichage du code véhicule (ACF) dans les infobulles.' },
+                { category: 'e-logbook', description: 'Mode Libre : Possibilité de démarrer un trajet sans mission planifiée (avec GPS complet).' },
+                { category: 'Backend', description: 'Flagging automatique des trajets ad-hoc et intégration dans le flux de consolidation.' }
+            ]
+        },
+        {
             version: 'v2.4.0',
             date: '24 Janvier 2026',
             type: 'minor',

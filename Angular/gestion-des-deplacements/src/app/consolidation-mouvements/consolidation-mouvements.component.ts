@@ -513,4 +513,20 @@ export class ConsolidationMouvementsComponent implements OnInit {
       }
     );
   }
+
+  // NOUVEAU: Valider un trajet ad-hoc
+  validerAdHoc(mouvement: any): void {
+    if (confirm('Valider ce trajet imprévu ? Il sera à fait intégré comme un trajet normal.')) {
+      this.mouvementService.updateMouvement(mouvement._id, { isAdHoc: false }).subscribe(
+        () => {
+          alert('Trajet validé !');
+          this.loadDataForConsolidation();
+        },
+        (error) => {
+          console.error('Erreur validation ad-hoc:', error);
+          alert('Erreur lors de la validation.');
+        }
+      );
+    }
+  }
 }

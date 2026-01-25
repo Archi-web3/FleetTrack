@@ -52,6 +52,7 @@ const mouvementSchema = new mongoose.Schema({
   }],
 
   isRoundTrip: { type: Boolean, default: false }, // NOUVEAU CHAMP : Indique si c'est un aller-retour simple
+  isAdHoc: { type: Boolean, default: false }, // NOUVEAU: Mouvement non planifié (créé par chauffeur)
 
   // Ces champs sont dérivés des stops, mais maintenus pour des recherches rapides ou des affichages sommaires
   // (Le hook pre-save les gérera)

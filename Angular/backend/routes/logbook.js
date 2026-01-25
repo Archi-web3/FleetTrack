@@ -420,6 +420,7 @@ router.post('/sync', async (req, res) => {
                     param: tripData.passengerIds || [], // Add passengers
                     base: driverBase, // ✅ ADD BASE FROM DRIVER
                     pays: driverCountry, // ✅ ADD COUNTRY FROM DRIVER
+                    isAdHoc: true, // ✅ MARK AS UNPLANNED/OFF-LIST
 
                     // Stops are required by schema
                     stops: [

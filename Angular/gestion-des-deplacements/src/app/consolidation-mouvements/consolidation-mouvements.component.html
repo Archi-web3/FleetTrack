@@ -251,6 +251,15 @@ font-size: 1em; font-weight: 500;">
             <ng-container *ngIf="mouvement.chauffeur">
               <strong>Chauffeur affecté:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}<br>
             </ng-container>
+            <!-- NOUVEAU: Indicateur Hors-Liste et Bouton Validation -->
+            <div *ngIf="mouvement.isAdHoc"
+              style="margin-top: 5px; margin-bottom: 5px; padding: 8px; background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>⚠️ Trajet Hors-Liste (Imprévu)</strong></span>
+              <button (click)="validerAdHoc(mouvement)"
+                style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                ✅ Valider
+              </button>
+            </div>
             <strong>Statut:</strong> {{ mouvement.statut | titlecase }}<br>
           </div>
         </div>
