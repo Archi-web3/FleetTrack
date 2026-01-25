@@ -149,28 +149,52 @@ router.get('/global', auth(), async (req, res) => {
                 nombreMouvements: 0
             });
         }
+        const p1 = getLatLon(s1);
+        const p2 = getLatLon(s2);
+        totalDistAir += calculateDistance(p1.lat, p1.lon, p2.lat, p2.lon);
+    }
+                    }
+                }
 
-        const stats = result[0];
+    // 2. Facteur Emission (selon distance totale du vol)
+    let factor = co2Factors.short; // < 1000
+if (totalDistAir >= 1000 && totalDistAir <= 3500) factor = co2Factors.medium;
+else if (totalDistAir > 3500) factor = co2Factors.long;
 
-        // Calcul CO2 et consommation (formules approximatives)
-        // CO2: environ 2.3 kg par litre de diesel
-        // Consommation: environ 8L/100km en moyenne
-        const consommationTotale = (stats.kmTotaux / 100) * 8;
-        const co2Total = consommationTotale * 2.3;
+// 3. Nb Passagers (Impact)
+const nbPassagers = m.passagers ? m.passagers.length : 1;
 
-        console.log('Stats calculées - Km:', stats.kmTotaux, 'CO2:', co2Total, 'Conso:', consommationTotale);
+// 4. Calcul (g -> kg)
+// CO2 = Dist * Passagers * Factor / 1000
+const co2Vol = (totalDistAir * nbPassagers * factor) / 1000;
 
-        res.json({
-            kmTotaux: Math.round(stats.kmTotaux),
-            co2Total: Math.round(co2Total),
-            consommationTotale: Math.round(consommationTotale),
-            nombreMouvements: stats.nombreMouvements
+co2Aerien += co2Vol * partPonderation;
+
+            } else if (mode === 'Maritime') {
+    nbMaritime++;
+    // Pas de calcul CO2 pour l'instant
+}
         });
 
-    } catch (error) {
-        console.error('Erreur stats globales:', error);
-        res.status(500).json({ message: 'Erreur serveur', error: error.message });
+res.json({
+    kmTotaux: Math.round(kmTotauxRoutier),
+    co2Total: Math.round(co2TotalRoutier + co2Aerien), // Total CO2 (Routier + Aérien)
+    // On ajoute les nouveaux champs explicites
+    co2Flotte: Math.round(co2TotalRoutier),
+    co2Aerien: Math.round(co2Aerien),
+    consommationTotale: Math.round(consommationTotale),
+    nombreMouvements: nbRoutier + nbAerien + nbMaritime,
+    repartitionModes: {
+        routier: nbRoutier,
+        aerien: nbAerien,
+        maritime: nbMaritime
     }
+});
+
+    } catch (error) {
+    console.error('Erreur stats globales:', error);
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+}
 });
 
 // GET /api/stats/par-projet - Statistiques par projet avec filtres

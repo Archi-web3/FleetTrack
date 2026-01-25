@@ -8,6 +8,16 @@
   </div>
   <form (ngSubmit)="onSubmit()" #demandeForm="ngForm">
 
+    <!-- Section Mode de Transport (DÉPLACÉ EN HAUT) -->
+    <div
+      style="margin-bottom: 15px; padding: 10px; background-color: #e3f2fd; border-radius: 5px; border-left: 5px solid #2196F3;">
+      <label for="modeTransport" style="font-weight: bold; color: #0d47a1;">Mode de Transport:</label>
+      <select id="modeTransport" name="modeTransport" [(ngModel)]="mouvement.modeTransport" required
+        style="width: 100%; padding: 8px; margin-top: 5px;">
+        <option *ngFor="let mode of transportModes" [value]="mode">{{ mode }}</option>
+      </select>
+    </div>
+
     <!-- Section Lieu de Départ -->
     <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
       <label>Lieu de Départ:</label><br>
@@ -157,13 +167,7 @@
       </select>
     </div>
  ... -->
-    <div style="margin-bottom: 10px;">
-      <label for="modeTransport">Mode de Transport:</label>
-      <select id="modeTransport" name="modeTransport" [(ngModel)]="mouvement.modeTransport" required
-        style="width: 100%; padding: 8px;">
-        <option *ngFor="let mode of transportModes" [value]="mode">{{ mode }}</option>
-      </select>
-    </div>
+
 
     <!-- Alerte Niveau de Risque Trajet -->
     <div *ngIf="getMaxSecurityLevel() as risk" [style.background-color]="risk.level >= 3 ? '#fff3cd' : '#d4edda'"

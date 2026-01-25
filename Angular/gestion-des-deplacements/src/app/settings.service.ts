@@ -82,4 +82,20 @@ export class SettingsService {
             })
         );
     }
+
+    // Récupérer les facteurs CO2
+    getCO2Factors(): Observable<any> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/co2Factors`).pipe(
+            map(setting => setting ? setting.value : null),
+            catchError(err => {
+                console.error('Erreur chargement CO2 factors', err);
+                return of(null);
+            })
+        );
+    }
+
+    // Sauvegarder les facteurs CO2
+    saveCO2Factors(factors: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/co2Factors`, { value: factors });
+    }
 }

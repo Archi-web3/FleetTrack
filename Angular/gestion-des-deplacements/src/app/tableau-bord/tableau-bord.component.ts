@@ -54,8 +54,15 @@ export class TableauBordComponent implements OnInit {
   statsGlobales: any = {
     kmTotaux: 0,
     co2Total: 0,
+    co2Flotte: 0,
+    co2Aerien: 0,
     consommationTotale: 0,
-    nombreMouvements: 0
+    nombreMouvements: 0,
+    repartitionModes: {
+      routier: 0,
+      aerien: 0,
+      maritime: 0
+    }
   };
   statsParProjet: any[] = [];
 

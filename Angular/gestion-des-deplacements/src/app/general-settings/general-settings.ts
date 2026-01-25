@@ -39,6 +39,7 @@ export class GeneralSettingsComponent implements OnInit {
 
     ngOnInit() {
         this.loadTypes();
+        this.loadCO2Factors();
     }
 
     loadTypes() {
@@ -90,4 +91,33 @@ export class GeneralSettingsComponent implements OnInit {
             }
         });
     }
+
+    // --- GESTION CO2 ---
+    co2Factors: any = {
+        short: 230,
+        medium: 178,
+        long: 152,
+        source: 'ADEME (Base Empreinte)',
+        url: ''
+    };
+
+    loadCO2Factors() {
+        this.settingsService.getCO2Factors().subscribe(data => {
+            if (data) {
+                this.co2Factors = data;
+            }
+        });
+    }
+
+    saveCO2() {
+        this.settingsService.saveCO2Factors(this.co2Factors).subscribe({
+            next: () => this.snackBar.open('Facteurs CO2 enregistrés', 'OK', { duration: 2000 }),
+            error: (err) => {
+                console.error(err);
+                this.snackBar.open('Erreur sauvegarde CO2', 'Fermer');
+            }
+        });
+    }
+
+
 }

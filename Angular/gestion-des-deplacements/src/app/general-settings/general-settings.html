@@ -38,6 +38,46 @@
                     </mat-list-item>
                 </mat-list>
             </div>
+
+            <div class="settings-section" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                <h3>Facteurs d'Émission CO2 (Aérien)</h3>
+                <p class="description">Paramétrage des facteurs d'émission pour le calcul de l'empreinte carbone des
+                    vols.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Court courrier (&lt; 1000km)</mat-label>
+                        <input matInput type="number" [(ngModel)]="co2Factors.short" placeholder="230">
+                        <span matSuffix>gCO2e/pkm</span>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Moyen courrier (1000-3500km)</mat-label>
+                        <input matInput type="number" [(ngModel)]="co2Factors.medium" placeholder="178">
+                        <span matSuffix>gCO2e/pkm</span>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Long courrier (&gt; 3500km)</mat-label>
+                        <input matInput type="number" [(ngModel)]="co2Factors.long" placeholder="152">
+                        <span matSuffix>gCO2e/pkm</span>
+                    </mat-form-field>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Source des données</mat-label>
+                        <input matInput [(ngModel)]="co2Factors.source" placeholder="Ex: ADEME">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Lien information (URL)</mat-label>
+                        <input matInput [(ngModel)]="co2Factors.url" placeholder="https://...">
+                    </mat-form-field>
+                </div>
+
+                <button mat-raised-button color="primary" (click)="saveCO2()">
+                    <mat-icon>save</mat-icon> Enregistrer Paramètres CO2
+                </button>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>
