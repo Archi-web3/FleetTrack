@@ -217,10 +217,29 @@ export class ModifierMouvementComponent implements OnInit {
     // Assigner les passagers sélectionnés
     this.mouvement.passagers = this.selectedPassagersIds;
 
+    // FIX: Mettre à jour les dates des STOPS car le backend (pre-save hook) écrase dateDepart/Arrivee par ceux des stops
+    // Si c'est un trajet simple, on met à jour stops[0] et stops[last]
+    if (this.mouvement.stops && this.mouvement.stops.length > 0) {
+      if (this.mouvement.dateDepart) {
+        this.mouvement.stops[0].dateDepart = this.mouvement.dateDepart; // Note: le format input est string, backend attend Date ou string ISO, ça devrait passer
+      }
+      if (this.mouvement.dateArrivee) {
+        this.mouvement.stops[this.mouvement.stops.length - 1].dateArrivee = this.mouvement.dateArrivee;
+      }
+
+      // Si on a changé les lieux, mettre à jour aussi
+      if (this.mouvement.lieuDepart) {
+        this.mouvement.stops[0].lieu = this.mouvement.lieuDepart;
+      }
+      if (this.mouvement.lieuArrivee) {
+        this.mouvement.stops[this.mouvement.stops.length - 1].lieu = this.mouvement.lieuArrivee;
+      }
+    }
+
     this.mouvementService.updateMouvement(this.mouvementId, this.mouvement).subscribe(
       (response) => {
         alert('Mouvement mis à jour avec succès !');
-        this.router.navigate(['/']); // Rediriger vers la liste des mouvements
+        this.router.navigate(['/mes-mouvements']); // Rediriger vers mes mouvements (plus logique si on vient de là)
       },
       (error) => {
         console.error('Erreur lors de la mise à jour du mouvement:', error);
