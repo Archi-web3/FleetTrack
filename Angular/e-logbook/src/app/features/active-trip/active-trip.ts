@@ -78,6 +78,26 @@ export class ActiveTripComponent implements OnInit {
   async ngOnInit() {
     console.log('ActiveTripComponent initialized');
 
+    // 0. Initialize Vehicle ID (CRITICAL FIX)
+    const savedVehicle = localStorage.getItem('selectedVehicle');
+    if (savedVehicle) {
+      try {
+        const v = JSON.parse(savedVehicle);
+        this.vehicleId = v._id || v.id;
+      } catch (e) {
+        console.error('Error parsing selectedVehicle', e);
+      }
+    }
+
+    if (!this.vehicleId) {
+      const user = this.authService.getCurrentUser();
+      if (user && user.vehicule) {
+        this.vehicleId = user.vehicule._id || user.vehicule;
+      }
+    }
+
+    console.log('🚗 Vehicle ID set to:', this.vehicleId);
+
     // Initialize forms IMMEDIATELY
     this.startForm = this.fb.group({
       startMileage: [null, [Validators.required, Validators.min(0)], [this.startMileageValidator.bind(this)]],
@@ -95,8 +115,12 @@ export class ActiveTripComponent implements OnInit {
 
     try {
       // 1. Initial Load (Offline / Fast)
-      this.lastMileage = await this.offlineService.getLastMileage(this.vehicleId);
-      this.updateStartMileageIfEmpty(); // Helper method
+      if (this.vehicleId) {
+        this.lastMileage = await this.offlineService.getLastMileage(this.vehicleId);
+        this.updateStartMileageIfEmpty(); // Helper method
+      } else {
+        console.warn('⚠️ No Vehicle ID found. Cannot fetch last mileage.');
+      }
 
       this.lieux = await this.offlineService.lieux.toArray();
       this.users = await this.offlineService.users.toArray();
@@ -109,11 +133,13 @@ export class ActiveTripComponent implements OnInit {
           await this.syncService.syncData();
 
           // 3. Refresh Mileage after Sync
-          const newLastMileage = await this.offlineService.getLastMileage(this.vehicleId);
-          if (newLastMileage > this.lastMileage) {
-            console.log(`🔄 Kilométrage mis à jour après synchro: ${this.lastMileage} -> ${newLastMileage}`);
-            this.lastMileage = newLastMileage;
-            this.updateStartMileageIfEmpty();
+          if (this.vehicleId) {
+            const newLastMileage = await this.offlineService.getLastMileage(this.vehicleId);
+            if (newLastMileage > this.lastMileage) {
+              console.log(`🔄 Kilométrage mis à jour après synchro: ${this.lastMileage} -> ${newLastMileage}`);
+              this.lastMileage = newLastMileage;
+              this.updateStartMileageIfEmpty();
+            }
           }
         } catch (err) {
           console.error('Erreur synchro auto:', err);

@@ -129,6 +129,11 @@ select {
   color: black !important;
 }
 
+/* Force white background on Material Form Fields (Inputs & Selects triggers) */
+.mat-mdc-text-field-wrapper {
+  background-color: white !important;
+}
+
 /* Fix for dark mode leaks if system preference */
 :root {
   color-scheme: light;
