@@ -6,6 +6,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MouvementService } from '../../mouvement.service';
 import { VehiculeService } from '../../vehicule.service';
 import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.component';
@@ -21,7 +24,11 @@ import { ViewChild } from '@angular/core';
     MatFormFieldModule,
     MatCardModule,
     MatIconModule,
+    MatIconModule,
     MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCheckboxModule,
     MapMouvementsComponent
   ],
   templateUrl: './map.html',
@@ -39,6 +46,13 @@ export class MapComponent implements OnInit {
   selectedVehicleId: string | 'all' = 'all';
   selectedStatus: string | 'all' = 'all'; // Default to show all active types
   selectedSearchQuery: string = '';
+  filterDateStart: Date | null = null;
+  filterDateEnd: Date | null = null;
+
+  // Multi-selection
+  selectedTripIds: Set<string> = new Set();
+  isAllSelected: boolean = false;
+  movementsToDisplay: any[] = []; // The actual list passed to the map
 
   // Status options for filter
   statusOptions = [
@@ -103,6 +117,23 @@ export class MapComponent implements OnInit {
         // For now, let's just show everything relevant to map.
       }
 
+      // 4. Date Range Filter
+      if (this.filterDateStart || this.filterDateEnd) {
+        const mDate = m.dateDepart ? new Date(m.dateDepart) : null;
+        if (!mDate) return false;
+
+        if (this.filterDateStart && mDate < this.filterDateStart) return false;
+
+        // For end date, we want to include the selected end day fully (until 23:59:59)
+        if (this.filterDateEnd) {
+          const endOfDay = new Date(this.filterDateEnd);
+          endOfDay.setHours(23, 59, 59, 999);
+          if (mDate > endOfDay) return false;
+        }
+      }
+
+      // Ensure it has stops or GPS trace to be mappable
+
       // Ensure it has stops or GPS trace to be mappable
       const hasStops = m.stops && m.stops.length > 0;
       const hasTrace = m.gpsTrace && m.gpsTrace.length > 0;
@@ -112,7 +143,51 @@ export class MapComponent implements OnInit {
 
     // Transform for Map Component (Match interface)
     this.filteredMouvements = this.filteredMouvements.map(m => this.transformToMapMouvement(m));
+
+    // Reset selection when filters change (optional, but safer to avoid invisible selected items)
+    // this.selectedTripIds.clear(); 
+    // UPDATE: User might want to keep selection even if list shrinks? 
+    // Let's keep it simple: If filter changes, we might want to uncheck stuff that is no longer visible?
+    // For now, let's re-evaluate what is displayed.
+
+    this.updateMovementsToDisplay();
   }
+
+  updateMovementsToDisplay(): void {
+    if (this.selectedTripIds.size > 0) {
+      // Rule: Show ONLY selected trips
+      this.movementsToDisplay = this.filteredMouvements.filter(m => this.selectedTripIds.has(m.id));
+    } else {
+      // Rule: Show ALL filtered trips
+      this.movementsToDisplay = [...this.filteredMouvements];
+    }
+
+    // Update "Select All" state
+    this.isAllSelected = this.filteredMouvements.length > 0 && this.selectedTripIds.size === this.filteredMouvements.length;
+  }
+
+  toggleTripSelection(trip: any, event: any): void {
+    // Prevent bubbling if clicking check box vs row
+    // event.stopPropagation(); // Actually we might want row click to select?
+
+    if (this.selectedTripIds.has(trip.id)) {
+      this.selectedTripIds.delete(trip.id);
+    } else {
+      this.selectedTripIds.add(trip.id);
+    }
+    this.updateMovementsToDisplay();
+  }
+
+  toggleSelectAll(event: any): void {
+    if (this.isAllSelected) {
+      this.selectedTripIds.clear();
+    } else {
+      this.filteredMouvements.forEach(m => this.selectedTripIds.add(m.id));
+    }
+    this.isAllSelected = !this.isAllSelected;
+    this.updateMovementsToDisplay();
+  }
+
 
   transformToMapMouvement(trip: any): any {
     const stops = trip.stops && trip.stops.length > 0 ? trip.stops.map((s: any) => {
@@ -157,13 +232,19 @@ export class MapComponent implements OnInit {
       demandeur: (trip.chauffeur?.prenom || '') + ' ' + (trip.chauffeur?.nom || ''),
       stops: stops,
       gpsTrace: trip.gpsTrace,
-      vehiculeName: trip.vehicule ? `${trip.vehicule.marque || ''} ${trip.vehicule.modele || ''} (${trip.vehicule.immatriculation || '?'})` : 'Véhicule Inconnu'
+      vehiculeName: trip.vehicule ? `${trip.vehicule.marque || ''} ${trip.vehicule.modele || ''} (${trip.vehicule.immatriculation || '?'})` : 'Véhicule Inconnu',
+      vehiculeCode: trip.vehicule?.acfCode || ''
     };
   }
 
   selectTrip(trip: any): void {
     if (this.mapMouvementsComponent) {
       this.mapMouvementsComponent.highlightTrip(trip.id);
+    }
+    // Also select it if not selected?
+    if (!this.selectedTripIds.has(trip.id)) {
+      this.selectedTripIds.add(trip.id);
+      this.updateMovementsToDisplay();
     }
   }
 }

@@ -32,20 +32,51 @@
             </mat-select>
         </mat-form-field>
 
+        <!-- Date Range Filter -->
+        <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Période</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+                <input matStartDate [(ngModel)]="filterDateStart" (dateChange)="applyFilters()" placeholder="Début">
+                <input matEndDate [(ngModel)]="filterDateEnd" (dateChange)="applyFilters()" placeholder="Fin">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
         <div class="stats-summary" *ngIf="filteredMouvements.length > 0">
-            <p><strong>{{ filteredMouvements.length }}</strong> trajets affichés</p>
+            <p><strong>{{ filteredMouvements.length }}</strong> trajets filtrés</p>
         </div>
 
-        <!-- Filtered Results List (Only if search query is active) -->
-        <div class="results-list" *ngIf="selectedSearchQuery && filteredMouvements.length > 0">
-            <div class="result-item" *ngFor="let m of filteredMouvements" (click)="selectTrip(m)">
-                <div class="result-header">
-                    <strong>{{ m.vehiculeName }}</strong>
-                    <span class="result-time">{{ m.dateDepart | date:'short' }}</span>
-                </div>
-                <div class="result-body">
-                    <p>{{ m.title }}</p>
-                    <small>Demandeur: {{ m.demandeur }}</small>
+        <!-- Multi-Selection Actions -->
+        <div class="selection-actions" *ngIf="filteredMouvements.length > 0">
+            <mat-checkbox [checked]="isAllSelected" (change)="toggleSelectAll($event)">
+                Tout sélectionner
+            </mat-checkbox>
+            <span class="selection-count" *ngIf="selectedTripIds.size > 0">
+                ({{ selectedTripIds.size }} affichés)
+            </span>
+        </div>
+
+        <!-- Filtered Results List (Always Visible) -->
+        <div class="results-list" *ngIf="filteredMouvements.length > 0">
+            <div class="result-item" *ngFor="let m of filteredMouvements" [class.selected]="selectedTripIds.has(m.id)"
+                (click)="selectTrip(m)">
+
+                <div class="result-row">
+                    <mat-checkbox [checked]="selectedTripIds.has(m.id)" (change)="toggleTripSelection(m, $event)"
+                        (click)="$event.stopPropagation()">
+                    </mat-checkbox>
+                    <div class="result-content">
+                        <div class="result-header">
+                            <strong>{{ m.vehiculeName }}</strong>
+                            <span class="result-time">{{ m.dateDepart | date:'dd/MM HH:mm' }}</span>
+                        </div>
+                        <div class="result-body">
+                            <p>{{ m.title }}</p>
+                            <small>Demandeur: {{ m.demandeur }}</small>
+                            <small class="acf-code" *ngIf="m.vehiculeCode">{{ m.vehiculeCode }}</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,7 +84,7 @@
 
     <!-- Main Map Area -->
     <div class="map-area">
-        <!-- Utilisation du composant partagé -->
-        <app-map-mouvements [mouvements]="filteredMouvements"></app-map-mouvements>
+        <!-- Utilisation du composant partagé avec la liste calculée -->
+        <app-map-mouvements [mouvements]="movementsToDisplay"></app-map-mouvements>
     </div>
 </div>

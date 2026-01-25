@@ -39,11 +39,27 @@
         text-align: center;
     }
 
+    .selection-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+
+        .selection-count {
+            color: #1976d2;
+            font-weight: 500;
+        }
+    }
+
     .results-list {
-        margin-top: 15px;
+        margin-top: 5px;
+        /* Reduced margin since actions are above */
         flex: 1;
         overflow-y: auto;
-        border-top: 1px solid #eee;
+        /* border-top: 1px solid #eee; Removed as actions have border */
         padding-top: 10px;
     }
 
@@ -51,7 +67,8 @@
         background: #f9f9f9;
         border: 1px solid #eee;
         border-radius: 8px;
-        padding: 10px;
+        padding: 8px;
+        /* Reduced padding */
         margin-bottom: 8px;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -61,6 +78,21 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
             border-color: #ddd;
+        }
+
+        &.selected {
+            border-color: #2196F3;
+            background-color: #e3f2fd;
+        }
+
+        .result-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .result-content {
+            flex: 1;
         }
 
         .result-header {
@@ -83,8 +115,16 @@
             }
 
             small {
+                display: block;
                 color: #666;
                 font-size: 0.8rem;
+            }
+
+            .acf-code {
+                color: #1976d2;
+                font-weight: bold;
+                font-size: 0.75rem;
+                margin-top: 2px;
             }
         }
     }

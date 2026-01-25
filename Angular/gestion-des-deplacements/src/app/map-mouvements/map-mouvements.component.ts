@@ -20,7 +20,8 @@ interface MapMouvement {
     dateArrivee?: string;
   }[];
   gpsTrace?: { lat: number; lng: number }[];
-  vehiculeName?: string; // NOUVEAU
+  vehiculeName?: string;
+  vehiculeCode?: string; // NOUVEAU
 }
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -125,7 +126,7 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                 iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
               })
-            }).bindPopup(`<b>${index === 0 ? 'Départ Planifié' : 'Arrivée Planifiée'}</b><br>${mouvement.vehiculeName || 'Véhicule Inconnu'}<br>${stop.nom}<br><i>${mouvement.title}</i>`);
+            }).bindPopup(`<b>${index === 0 ? 'Départ Planifié' : 'Arrivée Planifiée'}</b><br>${mouvement.vehiculeName || 'Véhicule Inconnu'} <b>[${mouvement.vehiculeCode || '?'}]</b><br>${stop.nom}<br><i>${mouvement.title}</i>`);
 
             marker.addTo(this.map);
             marker.addTo(this.map);
@@ -170,11 +171,11 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
 
         // Markers Départ/Arrivée Réels
         const startMarker = L.circleMarker(gpsLatLngs[0], { radius: 6, fillOpacity: 1, color: '#2e7d32', fillColor: '#4caf50' })
-          .bindPopup(`<b>Départ Réel GPS</b><br>${mouvement.vehiculeName || ''}<br>${mouvement.title}`).addTo(this.map!);
+          .bindPopup(`<b>Départ Réel GPS</b><br>${mouvement.vehiculeName || ''} <b>[${mouvement.vehiculeCode || '?'}]</b><br>${mouvement.title}`).addTo(this.map!);
         this.realTraceLayers.push(startMarker);
 
         const endMarker = L.circleMarker(gpsLatLngs[gpsLatLngs.length - 1], { radius: 6, fillOpacity: 1, color: '#c62828', fillColor: '#ef5350' })
-          .bindPopup(`<b>Dernière Position Connue</b><br>${mouvement.vehiculeName || ''}<br>${mouvement.title}`).addTo(this.map!);
+          .bindPopup(`<b>Dernière Position Connue</b><br>${mouvement.vehiculeName || ''} <b>[${mouvement.vehiculeCode || '?'}]</b><br>${mouvement.title}`).addTo(this.map!);
         this.realTraceLayers.push(endMarker);
 
         // Stocker pour le bouton urgence
