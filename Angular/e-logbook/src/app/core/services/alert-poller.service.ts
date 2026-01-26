@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, timer, switchMap, filter, take, EMPTY } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertDialogComponent } from '../shared/components/alert-dialog/alert-dialog.component'; // A créer
-import { environment } from '../../environments/environment';
+import { AlertDialogComponent } from '../../shared/components/alert-dialog/alert-dialog.component';
+// import { environment } from '../../environments/environment'; // Non utilisé ici car API_URL hardcodé
 
 // Définition locale de l'URL si env manquant (par sécurité)
 const API_URL = 'https://fleettrack-api.onrender.com/api/alerts';
