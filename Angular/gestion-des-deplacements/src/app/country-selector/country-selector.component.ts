@@ -31,12 +31,30 @@ import { AuthService } from '../auth.service';
     </div>
   `,
   styles: [`
-    mat-form-field {
-      margin: 0;
+  styles: [`
+    mat - form - field {
+      margin- left: 15px;
+  font- size: 14px;
     }
-    ::ng-deep .mat-mdc-form-field {
-      margin-bottom: 0 !important;
-    }
+    :: ng - deep.mat - mdc - text - field - wrapper {
+  background - color: white!important; /* Force white background for the input box so it's not transparent/ugly on blue */
+  border - radius: 4px;
+  height: 40px; /* Reduced height */
+  padding: 0 10px;
+}
+    :: ng - deep.mat - mdc - form - field - flex {
+  height: 40px;
+  align - items: center;
+}
+    :: ng - deep.mat - mdc - form - field - infix {
+  padding - top: 8px!important;
+  padding - bottom: 0!important;
+  min - height: 40px!important;
+}
+    :: ng - deep.mat - mdc - floating - label {
+  top: 8px!important;
+}
+`]
   `]
 })
 export class CountrySelectorComponent implements OnInit {
