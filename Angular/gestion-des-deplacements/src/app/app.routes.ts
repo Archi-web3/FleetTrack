@@ -188,6 +188,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'environment-roadmap',
+    loadComponent: () => import('./environment-roadmap/environment-roadmap').then(m => m.EnvironmentRoadmapComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+  },
+  {
     path: 'statistics',
     component: StatisticsComponent,
     canActivate: [AuthGuard],

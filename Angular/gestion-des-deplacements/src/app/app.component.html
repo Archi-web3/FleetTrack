@@ -67,6 +67,11 @@
         <mat-icon>rocket_launch</mat-icon>
         <span>Roadmap</span>
       </button>
+      <button mat-menu-item routerLink="/environment-roadmap"
+        *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
+        <mat-icon>eco</mat-icon>
+        <span>Objectifs Enviro</span>
+      </button>
       <mat-divider></mat-divider>
       <button mat-menu-item routerLink="/gestion-chauffeurs">
         <mat-icon>people_alt</mat-icon>

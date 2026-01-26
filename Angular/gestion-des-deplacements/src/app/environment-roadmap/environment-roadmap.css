@@ -1,0 +1,78 @@
+.env-container {
+    padding: 24px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #005FB6;
+}
+
+.controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.base-badge {
+    background: #e0e0e0;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* QUARTERS GRID */
+.quarters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.quarter-card {
+    height: 100%;
+}
+
+.action-item {
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+}
+
+.action-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.badge {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* FORMS GRID */
+.forms-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.chart-wrapper {
+    height: 400px;
+    display: flex;
+    justify-content: center;
+}

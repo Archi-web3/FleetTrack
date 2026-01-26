@@ -1,0 +1,210 @@
+<div class="env-container">
+    <div class="header">
+        <h1><mat-icon>eco</mat-icon> Objectifs Environnementaux</h1>
+        <div class="controls">
+            <mat-form-field appearance="outline" class="density-sm">
+                <mat-label>Année</mat-label>
+                <mat-select [(ngModel)]="currentYear" (selectionChange)="ngOnInit()">
+                    <mat-option *ngFor="let y of years" [value]="y">{{y}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div class="base-badge">{{currentBase}}</div>
+        </div>
+    </div>
+
+    <mat-tab-group animationDuration="0ms">
+
+        <!-- TAB 1: ROADMAP (ACTIONS) -->
+        <mat-tab label="Plan d'Action">
+            <div class="tab-content">
+
+                <!-- Add Action Form -->
+                <mat-expansion-panel class="add-action-panel">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title><mat-icon>add_circle</mat-icon> Ajouter une action</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="form-grid">
+                        <mat-form-field>
+                            <mat-label>Trimestre</mat-label>
+                            <mat-select [(ngModel)]="newAction.quarter">
+                                <mat-option value="T1">T1 (Jan-Mar)</mat-option>
+                                <mat-option value="T2">T2 (Avr-Juin)</mat-option>
+                                <mat-option value="T3">T3 (Juil-Sep)</mat-option>
+                                <mat-option value="T4">T4 (Oct-Dec)</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Levier</mat-label>
+                            <mat-select [(ngModel)]="newAction.category">
+                                <mat-option *ngFor="let l of leviers" [value]="l">{{l}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="full-width">
+                            <mat-label>Description de l'action</mat-label>
+                            <input matInput [(ngModel)]="newAction.action"
+                                placeholder="Ex: Formation éco-conduite pour 10 chauffeurs">
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Impact Estimé</mat-label>
+                            <input matInput [(ngModel)]="newAction.impact_estimated" placeholder="Ex: -2% carburant">
+                        </mat-form-field>
+                    </div>
+
+                    <button mat-raised-button color="primary" (click)="addAction()">Enregistrer</button>
+                </mat-expansion-panel>
+
+                <!-- Quarterly Columns -->
+                <div class="quarters-grid">
+                    <!-- T1 -->
+                    <mat-card class="quarter-card">
+                        <mat-card-header><mat-card-title>T1 - Jan à Mars</mat-card-title></mat-card-header>
+                        <mat-card-content>
+                            <div class="action-item" *ngFor="let a of actionsT1">
+                                <div class="action-header">
+                                    <span class="badge">{{a.category}}</span>
+                                    <button mat-icon-button color="warn"
+                                        (click)="deleteAction(a._id)"><mat-icon>delete</mat-icon></button>
+                                </div>
+                                <p>{{a.action}}</p>
+                                <div class="status-select">
+                                    <mat-select [value]="a.status"
+                                        (selectionChange)="updateActionStatus(a, $event.value)">
+                                        <mat-option value="Non commencé">À faire</mat-option>
+                                        <mat-option value="En cours">En cours</mat-option>
+                                        <mat-option value="Fait">Fait</mat-option>
+                                    </mat-select>
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <!-- T2 -->
+                    <mat-card class="quarter-card">
+                        <mat-card-header><mat-card-title>T2 - Avril à Juin</mat-card-title></mat-card-header>
+                        <mat-card-content>
+                            <div class="action-item" *ngFor="let a of actionsT2">
+                                <div class="action-header"><span class="badge">{{a.category}}</span></div>
+                                <p>{{a.action}}</p>
+                                <div class="status-select">
+                                    <mat-select [value]="a.status"
+                                        (selectionChange)="updateActionStatus(a, $event.value)">
+                                        <mat-option value="Non commencé">À faire</mat-option>
+                                        <mat-option value="En cours">En cours</mat-option>
+                                        <mat-option value="Fait">Fait</mat-option>
+                                    </mat-select>
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <!-- T3 -->
+                    <mat-card class="quarter-card">
+                        <mat-card-header><mat-card-title>T3 - Juil à Sept</mat-card-title></mat-card-header>
+                        <mat-card-content>
+                            <div class="action-item" *ngFor="let a of actionsT3">
+                                <div class="action-header"><span class="badge">{{a.category}}</span></div>
+                                <p>{{a.action}}</p>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <!-- T4 -->
+                    <mat-card class="quarter-card">
+                        <mat-card-header><mat-card-title>T4 - Oct à Déc</mat-card-title></mat-card-header>
+                        <mat-card-content>
+                            <div class="action-item" *ngFor="let a of actionsT4">
+                                <div class="action-header"><span class="badge">{{a.category}}</span></div>
+                                <p>{{a.action}}</p>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+
+            </div>
+        </mat-tab>
+
+        <!-- TAB 2: DATA ENTRY -->
+        <mat-tab label="Saisie Données (IAP)">
+            <div class="tab-content">
+                <div class="data-toolbar">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Mois</mat-label>
+                        <mat-select [(ngModel)]="selectedMonth" (selectionChange)="loadMonthlyData()">
+                            <mat-option *ngFor="let m of months" [value]="m.id">{{m.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <button mat-flat-button color="accent" (click)="loadMonthlyData()">
+                        <mat-icon>autorenew</mat-icon> Pré-remplir (Auto)
+                    </button>
+
+                    <button mat-raised-button color="primary" (click)="saveMonthlyData()">
+                        <mat-icon>save</mat-icon> Sauvegarder
+                    </button>
+                </div>
+
+                <div class="forms-container">
+                    <!-- FLOTTE -->
+                    <mat-card>
+                        <mat-card-header><mat-card-title>Flotte (Véhicules)</mat-card-title></mat-card-header>
+                        <mat-card-content>
+                            <mat-form-field><mat-label>Km Total</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.fleet_km_total"></mat-form-field>
+                            <mat-form-field><mat-label>Litres Total</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.fleet_liters_total"></mat-form-field>
+                            <div class="calc-info">L/100km théorique: {{(monthlyData.fleet_liters_total /
+                                monthlyData.fleet_km_total * 100) | number:'1.1-1'}}</div>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <!-- ENERGIE -->
+                    <mat-card>
+                        <mat-card-header><mat-card-title>Énergie (Base)</mat-card-title></mat-card-header>
+                        <mat-card-content>
+                            <mat-form-field><mat-label>Heures Générateurs</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.energy_gen_hours"></mat-form-field>
+                            <mat-form-field><mat-label>Litres Générateurs</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.energy_gen_liters"></mat-form-field>
+                            <mat-form-field><mat-label>kWh Réseau (si dispo)</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.energy_grid_kwh"></mat-form-field>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <!-- ACTIVITE -->
+                    <mat-card>
+                        <mat-card-header><mat-card-title>Activité (Drivers IAP)</mat-card-title></mat-card-header>
+                        <mat-card-content>
+                            <mat-form-field><mat-label>Nb Projets Actifs</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.driver_nb_projects"></mat-form-field>
+                            <mat-form-field><mat-label>Nb Sites/Lieux</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.driver_nb_sites"></mat-form-field>
+                            <mat-form-field><mat-label>Staff Terrain (FTE)</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.driver_staff_fte"></mat-form-field>
+                            <mat-form-field><mat-label>Volume Financier</mat-label><input matInput type="number"
+                                    [(ngModel)]="monthlyData.driver_financial_volume"></mat-form-field>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+
+            </div>
+        </mat-tab>
+
+        <!-- TAB 3: CHARTS -->
+        <mat-tab label="Analyse & Graphiques">
+            <div class="tab-content">
+                <mat-card class="chart-container">
+                    <mat-card-title>Évolution Consommation vs Activité</mat-card-title>
+                    <div class="chart-wrapper">
+                        <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'">
+                        </canvas>
+                    </div>
+                </mat-card>
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
+</div>

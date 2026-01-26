@@ -96,6 +96,10 @@ app.use('/api/maintenance-tracking', maintenanceTrackingRoute);
 const settingsRoute = require('./routes/settings');
 app.use('/api/settings', settingsRoute);
 
+// NOUVEAU : Routes pour les Objectifs Environnementaux (Roadmap & IAP)
+const environmentRoute = require('./routes/environment.routes');
+app.use('/api/environment', environmentRoute);
+
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
 const startMaintenanceCron = require('./jobs/maintenanceCron'); // New daily email cron
