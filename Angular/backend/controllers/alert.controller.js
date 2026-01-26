@@ -2,7 +2,11 @@ const Alert = require('../models/alert.model');
 const Vehicule = require('../models/vehicule.model');
 
 // Créer une nouvelle alerte
+// Créer une nouvelle alerte
 exports.createAlert = async (req, res) => {
+    console.log('📥 [API] createAlert received body:', req.body);
+    console.log('👤 [API] createAlert User:', req.user); // Vérifier si l'user est bien passé
+
     try {
         const { title, message, severity, targetType, targetVehicleId } = req.body;
 
@@ -12,13 +16,14 @@ exports.createAlert = async (req, res) => {
             severity,
             targetType,
             targetVehicleId,
-            createdBy: req.user.userId
+            createdBy: req.user ? req.user.userId : null // Gestion cas user manquant
         });
 
-        await alert.save();
-        res.status(201).json({ message: 'Alerte créée avec succès', alert });
+        const savedAlert = await alert.save();
+        console.log('✅ [API] Alert saved:', savedAlert._id);
+        res.status(201).json({ message: 'Alerte créée avec succès', alert: savedAlert });
     } catch (error) {
-        console.error('Erreur création alerte:', error);
+        console.error('❌ [API] Erreur création alerte:', error);
         res.status(500).json({ error: 'Erreur lors de la création de l\'alerte' });
     }
 };
