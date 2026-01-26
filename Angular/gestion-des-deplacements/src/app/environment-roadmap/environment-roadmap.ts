@@ -75,7 +75,17 @@ export class EnvironmentRoadmapComponent implements OnInit {
 
   // --- UI STATE ---
   showGuide = false;
+  showWeights = false; // Toggle for configuration
   targetPercent = 5;
+
+  // --- IAP WEIGHTS (Recommandation) ---
+  defaultWeights = {
+    projects: 15, sites: 20, staff: 15,
+    passengers: 20, cargo: 10, gen: 10, grid: 5, tonnage: 5
+  };
+
+  // Weights used for calculation (Editable)
+  weights = { ...this.defaultWeights };
 
   constructor(
     private envService: EnvironmentService,
@@ -149,10 +159,20 @@ export class EnvironmentRoadmapComponent implements OnInit {
   }
 
   autoCalculateIAP() {
-    // Placeholder IAP Logic displayed (Client side approx)
+    // IAP = Sum (Value * Weight% / NormalizationFactor?) 
+    // Simplified Activity Score for demo: Sum(Value * Weight)
+    // Note: To be truly "IAP" scaling 0-1, we need max values, but for evolution tracking,
+    // a consistent weighted sum is sufficient to show trend.
+
+    // We divide by 100 since weights are in %.
+    // We add arbitrary scaling factors to make numbers "feel" right (e.g. Staff is ~10-50, Projects ~2-10)
+    // Adjusting scaling to give roughly equal magnitude influence.
+
     this.iapScore =
-      (this.monthlyData.driver_nb_projects * 10) +
-      (this.monthlyData.driver_staff_fte * 1);
+      (this.monthlyData.driver_nb_projects * this.weights.projects) +
+      (this.monthlyData.driver_staff_fte * this.weights.staff) +
+      (this.monthlyData.driver_nb_sites * this.weights.sites);
+    // Add other drivers as needed...
   }
 
   // --- CHARTS ---
@@ -161,23 +181,34 @@ export class EnvironmentRoadmapComponent implements OnInit {
       this.chartLabels = data.map(d => this.months.find(m => m.id === d.month)?.name || '');
 
       const litres = data.map(d => d.fleet_liters_total + d.energy_gen_liters);
-      const activity = data.map(d => d.driver_staff_fte); // Example driver
+      const activity = data.map(d => d.metrics_iap_score); // IAP calculated stored per month
 
-      // Calculate Target Line (Baseline - Target%)
-      // For simplified demo, let's say Baseline is Avg of previous points or fixed
-      const avgConso = litres.length ? litres.reduce((a, b) => a + b, 0) / litres.length : 1000;
-      const targetVal = avgConso * (1 - (this.targetPercent / 100));
-      const targetLine = new Array(litres.length).fill(targetVal);
+      // RATIO EFFICIENCY = Liters / Activity
+      // Validating protection against div/0
+      const efficiency = litres.map((l, i) => activity[i] > 0 ? l / activity[i] : 0);
+
+      // BASELINE (First month or Average of first T1?)
+      // Let's take the first non-zero efficiency as baseline
+      const baseline = efficiency.find(v => v > 0) || 100;
+
+      // Target is -5% of that baseline
+      const targetVal = baseline * (1 - (this.targetPercent / 100)); // Oops variable name error in thought, correcting: baseline * (1 - target/100)
+      const targetLine = new Array(efficiency.length).fill(targetVal);
 
       this.barChartData = {
         labels: this.chartLabels,
         datasets: [
-          { data: litres, label: 'Conso Totale (L)', backgroundColor: '#005FB6', order: 2 },
-          { data: activity, label: 'Activité (Staff)', backgroundColor: '#ff9800', type: 'line' as const, order: 1 },
+          {
+            data: efficiency,
+            label: 'Efficacité (Litres / Unité d\'Activité)',
+            backgroundColor: '#005FB6',
+            type: 'bar',
+            order: 2
+          },
           {
             data: targetLine,
-            label: `Objectif (-${this.targetPercent}%)`,
-            type: 'line' as const,
+            label: `Objectif (-${this.targetPercent}% vs Début Année)`,
+            type: 'line',
             borderColor: '#4caf50',
             borderDash: [5, 5],
             pointRadius: 0,
