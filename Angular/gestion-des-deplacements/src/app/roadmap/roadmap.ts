@@ -31,6 +31,16 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.7.0',
+            date: '26 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Objectifs Environnementaux', description: 'Nouveau Module : Suivi de la consommation (-5%) et Plan d\'Action (Roadmap) trimestriel.' },
+                { category: 'Objectifs Environnementaux', description: 'IAP (Indicateur) : Calcul automatique de l\'Indice d\'Activité Pondéré pour l\'efficacité énergétique.' },
+                { category: 'Objectifs Environnementaux', description: 'UI : Guide méthodologique intégré et configuration personnalisée des pondérations.' }
+            ]
+        },
+        {
             version: 'v2.6.1',
             date: '26 Janvier 2026',
             type: 'patch',
