@@ -36,21 +36,31 @@ exports.getAlertsForVehicle = async (req, res) => {
         const { vehicleId } = req.query;
 
         if (!vehicleId) {
+            console.warn('⚠️ [API] getAlertsForVehicle: Missing vehicleId');
             return res.status(400).json({ error: 'VehicleId requis' });
         }
+
+        console.log(`🔍 [API] Checking alerts for vehicle: ${vehicleId}`);
 
         // Chercher les alertes actives :
         // 1. Ciblées 'all'
         // 2. OU Ciblées sur ce vehicleId précis
         // 3. ET qui n'ont PAS encore été lues par ce véhicule
-        const alerts = await Alert.find({
+        const query = {
             active: true,
             $or: [
                 { targetType: 'all' },
                 { targetType: 'vehicle', targetVehicleId: vehicleId }
             ],
             'readBy.vehicleId': { $ne: vehicleId } // Exclure celles déjà lues par ce véhicule
-        }).sort({ createdAt: -1 });
+        };
+
+        console.log('🔍 [API] Alert Query:', JSON.stringify(query, null, 2));
+
+        const alerts = await Alert.find(query).sort({ createdAt: -1 });
+
+        console.log(`✅ [API] Found ${alerts.length} unread alerts for ${vehicleId}`);
+        if (alerts.length > 0) console.log('First alert:', alerts[0].title);
 
         res.status(200).json(alerts);
     } catch (error) {
