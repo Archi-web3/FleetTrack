@@ -14,10 +14,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const token = authService.getToken();
 
     if (token) {
+        const selectedCountry = localStorage.getItem('selectedCountry');
+        const headers: any = {
+            'x-auth-token': token
+        };
+
+        if (selectedCountry) {
+            headers['X-Selected-Country'] = selectedCountry;
+        }
+
         const clonedReq = req.clone({
-            setHeaders: {
-                'x-auth-token': token
-            }
+            setHeaders: headers
         });
         return next(clonedReq).pipe(
             catchError((error: HttpErrorResponse) => {

@@ -36,22 +36,30 @@ import { AuthService } from '../auth.service';
       font-size: 14px;
     }
     ::ng-deep .mat-mdc-text-field-wrapper {
-      background-color: white !important;
+      background-color: transparent !important; /* Transparent background */
+      border: 1px solid rgba(255, 255, 255, 0.7); /* Light white border */
       border-radius: 4px;
-      height: 40px;
+      height: 36px; /* Slightly smaller */
       padding: 0 10px;
     }
+    ::ng-deep .mat-mdc-select-value {
+      color: white !important; /* White text */
+      font-weight: 500;
+    }
+    ::ng-deep .mat-mdc-select-arrow {
+      color: white !important; /* White arrow */
+    }
     ::ng-deep .mat-mdc-form-field-flex {
-      height: 40px;
+      height: 36px;
       align-items: center;
     }
     ::ng-deep .mat-mdc-form-field-infix {
-      padding-top: 8px !important;
+      padding-top: 6px !important;
       padding-bottom: 0 !important;
-      min-height: 40px !important;
+      min-height: 36px !important;
     }
     ::ng-deep .mat-mdc-floating-label {
-      top: 8px !important;
+      display: none; /* Hide label to save space/clean look since we have placeholder/value */
     }
   `]
 })
@@ -85,7 +93,8 @@ export class CountrySelectorComponent implements OnInit {
         if (this.isSuperAdmin) {
           // Load selected country from localStorage
           const stored = this.paysService.getSelectedCountry();
-          this.selectedCountryId = stored ? stored : 'none';
+          // Default to 'all' if nothing stored (Global View)
+          this.selectedCountryId = stored ? stored : 'all';
         } else {
           // For non-SuperAdmin, get their assigned country
           const user = this.authService.getUser();
@@ -100,11 +109,9 @@ export class CountrySelectorComponent implements OnInit {
 
   onCountryChange(): void {
     if (this.selectedCountryId) {
-      if (this.selectedCountryId === 'none') {
-        this.paysService.clearSelectedCountry();
-      } else {
-        this.paysService.setSelectedCountry(this.selectedCountryId);
-      }
+      // Save selection (including 'all' and 'none') to localStorage
+      this.paysService.setSelectedCountry(this.selectedCountryId);
+
       this.countryChanged.emit(this.selectedCountryId);
       // Reload page to apply new country filter
       window.location.reload();
