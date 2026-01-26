@@ -15,6 +15,8 @@ import { AuthService } from '../auth.service';
       <mat-form-field appearance="outline" style="width: 200px;">
         <mat-label>Pays</mat-label>
         <mat-select [(ngModel)]="selectedCountryId" (selectionChange)="onCountryChange()">
+          <mat-option value="none">Aucun</mat-option>
+          <mat-option value="all">Tous</mat-option>
           <mat-option *ngFor="let pays of paysList" [value]="pays._id">
             {{pays.nom}} ({{pays.code}})
           </mat-option>
@@ -66,7 +68,8 @@ export class CountrySelectorComponent implements OnInit {
 
         if (this.isSuperAdmin) {
           // Load selected country from localStorage
-          this.selectedCountryId = this.paysService.getSelectedCountry();
+          const stored = this.paysService.getSelectedCountry();
+          this.selectedCountryId = stored ? stored : 'none';
         } else {
           // For non-SuperAdmin, get their assigned country
           const user = this.authService.getUser();
@@ -81,7 +84,11 @@ export class CountrySelectorComponent implements OnInit {
 
   onCountryChange(): void {
     if (this.selectedCountryId) {
-      this.paysService.setSelectedCountry(this.selectedCountryId);
+      if (this.selectedCountryId === 'none') {
+        this.paysService.clearSelectedCountry();
+      } else {
+        this.paysService.setSelectedCountry(this.selectedCountryId);
+      }
       this.countryChanged.emit(this.selectedCountryId);
       // Reload page to apply new country filter
       window.location.reload();
