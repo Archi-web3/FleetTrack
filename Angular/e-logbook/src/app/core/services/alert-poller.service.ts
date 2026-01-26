@@ -41,12 +41,19 @@ export class AlertPollerService {
         });
     }
 
+    private getHeaders() {
+        const token = localStorage.getItem('token');
+        return {
+            headers: { 'x-auth-token': token || '' }
+        };
+    }
+
     getUnreadAlerts(vehicleId: string): Observable<any[]> {
-        return this.http.get<any[]>(`${API_URL}/unread?vehicleId=${vehicleId}`);
+        return this.http.get<any[]>(`${API_URL}/unread?vehicleId=${vehicleId}`, this.getHeaders());
     }
 
     markAsRead(alertId: string, vehicleId: string): Observable<any> {
-        return this.http.post(`${API_URL}/${alertId}/read`, { vehicleId });
+        return this.http.post(`${API_URL}/${alertId}/read`, { vehicleId }, this.getHeaders());
     }
 
     private openAlertDialog(alert: any, vehicleId: string) {
