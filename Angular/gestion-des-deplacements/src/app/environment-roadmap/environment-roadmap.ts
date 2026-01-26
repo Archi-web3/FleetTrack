@@ -73,12 +73,18 @@ export class EnvironmentRoadmapComponent implements OnInit {
   public barChartData: ChartData = { labels: [], datasets: [] };
   public lineChartData: ChartData<'line'> = { labels: [], datasets: [] };
 
+  // --- UI STATE ---
+  showGuide = false;
+  targetPercent = 5;
+
   constructor(
     private envService: EnvironmentService,
     private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
+    // Show guide by default on first visit?
+    this.showGuide = true;
     this.loadActions();
     this.loadDataForChart();
   }
@@ -143,22 +149,6 @@ export class EnvironmentRoadmapComponent implements OnInit {
   }
 
   autoCalculateIAP() {
-    // Weights (Documentation Document 3)
-    const w = {
-      projects: 0.15, sites: 0.20, staff: 0.15,
-      passengers: 0.20, cargo: 0.10, gen: 0.10, grid: 0.05, tonnage: 0.05
-    };
-
-    // Simplification: Direct sum for now as normalization requires Min/Max of the year
-    // For specific dashboard, we track RAW value of "Activity" for now, or just sum?
-    // Let's do a weighted sum of normalized inputs (Assume some Max caps for normalization roughly)
-    // Or just display "Activity Score" raw for now.
-
-    // Let's implement full normalization later. For now, simple weighted sum of log inputs?
-    // No, IAP = Sum(Driver_norm * Weight). 
-    // Since we don't have Full Year history yet to find Max, we will just save the Drivers.
-    // The Backend Aggregation/Get Data should handle the IAP Ratio calculation over time.
-
     // Placeholder IAP Logic displayed (Client side approx)
     this.iapScore =
       (this.monthlyData.driver_nb_projects * 10) +
@@ -173,11 +163,26 @@ export class EnvironmentRoadmapComponent implements OnInit {
       const litres = data.map(d => d.fleet_liters_total + d.energy_gen_liters);
       const activity = data.map(d => d.driver_staff_fte); // Example driver
 
+      // Calculate Target Line (Baseline - Target%)
+      // For simplified demo, let's say Baseline is Avg of previous points or fixed
+      const avgConso = litres.length ? litres.reduce((a, b) => a + b, 0) / litres.length : 1000;
+      const targetVal = avgConso * (1 - (this.targetPercent / 100));
+      const targetLine = new Array(litres.length).fill(targetVal);
+
       this.barChartData = {
         labels: this.chartLabels,
         datasets: [
-          { data: litres, label: 'Conso Totale (L)', backgroundColor: '#005FB6' },
-          { data: activity, label: 'Activité (Staff)', backgroundColor: '#ff9800', type: 'line' as const }
+          { data: litres, label: 'Conso Totale (L)', backgroundColor: '#005FB6', order: 2 },
+          { data: activity, label: 'Activité (Staff)', backgroundColor: '#ff9800', type: 'line' as const, order: 1 },
+          {
+            data: targetLine,
+            label: `Objectif (-${this.targetPercent}%)`,
+            type: 'line' as const,
+            borderColor: '#4caf50',
+            borderDash: [5, 5],
+            pointRadius: 0,
+            order: 0
+          }
         ]
       };
     });

@@ -1,7 +1,19 @@
 <div class="env-container">
     <div class="header">
-        <h1><mat-icon>eco</mat-icon> Objectifs Environnementaux</h1>
+        <div class="header-left">
+            <h1><mat-icon>eco</mat-icon> Objectifs Environnementaux</h1>
+            <!-- GUIDE BUTTON -->
+            <button mat-stroked-button color="primary" (click)="showGuide = !showGuide">
+                <mat-icon>menu_book</mat-icon> Guide & Méthode
+            </button>
+        </div>
         <div class="controls">
+            <mat-form-field appearance="outline" class="density-sm">
+                <mat-label>Objectif (-%)</mat-label>
+                <input matInput type="number" [(ngModel)]="targetPercent" (change)="loadDataForChart()">
+                <span matSuffix>%</span>
+            </mat-form-field>
+
             <mat-form-field appearance="outline" class="density-sm">
                 <mat-label>Année</mat-label>
                 <mat-select [(ngModel)]="currentYear" (selectionChange)="ngOnInit()">
@@ -11,6 +23,30 @@
             <div class="base-badge">{{currentBase}}</div>
         </div>
     </div>
+
+    <!-- EMBEDDED GUIDE SECTION -->
+    <mat-expansion-panel [expanded]="showGuide" class="guide-panel">
+        <mat-expansion-panel-header>
+            <mat-panel-title>📖 Comment calculer l'évolution au prorata de l'activité (IAP) ?</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="guide-content">
+            <h3>🔹 Le Principe</h3>
+            <p>Pour comparer deux années équitablement, nous utilisons l'<strong>Indice d'Activité Pondéré
+                    (IAP)</strong>. Il permet de mesurer si la baisse de consommation est réelle (efficacité) ou juste
+                due à une baisse d'activité.</p>
+
+            <h3>🔹 Formule de Calcul</h3>
+            <p><strong>IAP = (Projets × 15%) + (Sites × 20%) + (Staff × 15%) + (Km Passagers × 20%) + ...</strong></p>
+            <p>Si votre ratio <code>Consommation / IAP</code> diminue de <strong>{{targetPercent}}%</strong>, l'objectif
+                est atteint !</p>
+
+            <div class="guide-alert">
+                <mat-icon>info</mat-icon>
+                <span>Remplissez bien les indicateurs "Activité" chaque mois dans l'onglet <strong>Saisie
+                        Données</strong> pour que le calcul fonctionne.</span>
+            </div>
+        </div>
+    </mat-expansion-panel>
 
     <mat-tab-group animationDuration="0ms">
 
