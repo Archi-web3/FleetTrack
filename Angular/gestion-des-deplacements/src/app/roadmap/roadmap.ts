@@ -31,6 +31,14 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.6.1',
+            date: '26 Janvier 2026',
+            type: 'patch',
+            changes: [
+                { category: 'Correctif', description: 'Résolution du blocage lors de la connexion (Login) causé par une police manquante.' }
+            ]
+        },
+        {
             version: 'v2.6.0',
             date: '25 Janvier 2026',
             type: 'minor',
