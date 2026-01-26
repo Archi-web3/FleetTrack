@@ -94,7 +94,7 @@ export class EnvironmentRoadmapComponent implements OnInit {
 
   ngOnInit() {
     // Show guide by default on first visit?
-    this.showGuide = true;
+    // this.showGuide = true;
     this.loadActions();
     this.loadDataForChart();
   }
