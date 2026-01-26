@@ -31,6 +31,16 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.7.1',
+            date: '26 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Carte Interactive', description: 'Nouveau Filtre : Sélection par Mode de Transport (Route, Aérien, Maritime).' },
+                { category: 'Demande Mouvement', description: 'Récurrence : Possibilité de créer une série de demandes (Quotidienne/Hebdomadaire) sur 3 mois.' },
+                { category: 'UX', description: 'Amélioration de la saisie des dates pour les demandes récurrentes.' }
+            ]
+        },
+        {
             version: 'v2.7.0',
             date: '26 Janvier 2026',
             type: 'minor',

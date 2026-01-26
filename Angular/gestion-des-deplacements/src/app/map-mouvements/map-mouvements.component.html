@@ -9,6 +9,19 @@
         </div>
 
         <div class="controls-content">
+            <!-- Mode Filter -->
+            <mat-form-field appearance="outline" class="density-sm" style="width: 100%; margin-bottom: 8px;">
+                <mat-label>Mode Transport</mat-label>
+                <mat-select [(ngModel)]="selectedMode" (selectionChange)="onFilterChange()">
+                    <mat-option *ngFor="let mode of transportModes" [value]="mode">
+                        <mat-icon *ngIf="mode === 'Aérien'">flight</mat-icon>
+                        <mat-icon *ngIf="mode === 'Maritime'">directions_boat</mat-icon>
+                        <mat-icon *ngIf="mode === 'Route'">directions_car</mat-icon>
+                        {{mode}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
             <mat-checkbox [(ngModel)]="showPlanned" (change)="onFilterChange()" color="primary">
                 <span style="color: #2196F3; font-weight: bold;">---</span> Trajets Planifiés
             </mat-checkbox>

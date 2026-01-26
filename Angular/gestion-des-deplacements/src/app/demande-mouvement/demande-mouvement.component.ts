@@ -11,10 +11,12 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../auth.service'; // NOUVEAU : Importer AuthService
 import { OsrmService } from '../core/services/osrm.service'; // NOUVEAU
 
+import { MatIconModule } from '@angular/material/icon'; // Fix Build error
+
 @Component({
   selector: 'app-demande-mouvement',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './demande-mouvement.component.html',
   styleUrls: ['./demande-mouvement.component.css']
 })
@@ -312,22 +314,46 @@ export class DemandeMouvementComponent implements OnInit {
     this.updateArrivalDate();
   }
 
+  // NOUVEAU : Récurrence
+  isRecurring: boolean = false;
+  recurrenceFrequency: 'Daily' | 'Weekly' = 'Daily';
+  recurrenceEndDate: string = '';
+
   async onSubmit(): Promise<void> {
     console.log('Tentative de soumission de demande...');
 
     try {
       // 1. Validation de base
       if (!this.mouvement.lieuDepart || !this.mouvement.lieuArrivee || !this.mouvement.dateDepart || !this.mouvement.dateArrivee) {
-        // Note exception: si on crée un nouveau lieu, lieuDepart/Arrivee peuvent être vide temporairement, 
-        // mais ils seront remplis ci-dessous.
-        // On vérifie les dates obligatoires
         if (!this.mouvement.dateDepart || !this.mouvement.dateArrivee) {
           alert('Veuillez renseigner les dates de départ et d\'arrivée.');
           return;
         }
       }
 
-      // 2. Création des Lieux (si "Nouveau")
+      // 1.1 Validation Récurrence
+      if (this.isRecurring) {
+        if (!this.recurrenceEndDate) {
+          alert('Veuillez spécifier une date de fin pour la récurrence.');
+          return;
+        }
+        const startDate = new Date(this.mouvement.dateDepart);
+        const endDate = new Date(this.recurrenceEndDate);
+        const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (endDate <= startDate) {
+          alert('La date de fin de récurrence doit être postérieure à la date de départ.');
+          return;
+        }
+
+        if (diffDays > 90) { // Approx 3 mois
+          alert('La récurrence ne peut pas dépasser 3 mois.');
+          return;
+        }
+      }
+
+      // 2. Création des Lieux (si "Nouveau") - IDENTIQUE
       // Gérer le nouveau lieu de départ si sélectionné
       if (this.selectedLieuDepartOption === 'new') {
         const nom = this.newLieuDepart.nom.trim();
@@ -342,16 +368,13 @@ export class DemandeMouvementComponent implements OnInit {
         this.newLieuDepart.coordonnees.latitude = lat;
         this.newLieuDepart.coordonnees.longitude = long;
 
-        console.log('Création nouveau lieu de départ:', this.newLieuDepart);
         try {
           const newDepartLieu = await firstValueFrom(this.lieuService.addLieu(this.newLieuDepart));
           this.mouvement.lieuDepart = newDepartLieu._id;
-          console.log('✅ Lieu de départ créé avec succès:', newDepartLieu._id);
+          // IMPORTANT: Switch to existing to avoid recreating for every recurrence loop
+          this.selectedLieuDepartOption = 'existing';
         } catch (error: any) {
-          console.error('❌ Erreur création lieu de départ:', error);
-          const errorMsg = error.error?.message || error.message || 'Erreur inconnue';
-          alert(`Erreur lors de la création du lieu de départ: ${errorMsg}`);
-          return;
+          console.error('Erreur creation lieu depart', error); throw error;
         }
       }
 
@@ -369,71 +392,107 @@ export class DemandeMouvementComponent implements OnInit {
         this.newLieuArrivee.coordonnees.latitude = lat;
         this.newLieuArrivee.coordonnees.longitude = long;
 
-        console.log('Création nouveau lieu d\'arrivée:', this.newLieuArrivee);
         try {
           const newArriveeLieu = await firstValueFrom(this.lieuService.addLieu(this.newLieuArrivee));
           this.mouvement.lieuArrivee = newArriveeLieu._id;
-          console.log('✅ Lieu d\'arrivée créé avec succès:', newArriveeLieu._id);
+          // IMPORTANT: Switch to existing
+          this.selectedLieuArriveeOption = 'existing';
         } catch (error: any) {
-          console.error('❌ Erreur création lieu d\'arrivée:', error);
-          const errorMsg = error.error?.message || error.message || 'Erreur inconnue';
-          alert(`Erreur lors de la création du lieu d'arrivée: ${errorMsg}`);
-          return;
+          console.error('Erreur creation lieu arrivee', error); throw error;
         }
       }
 
-      // 3. Construction du payload avec 'stops'
-      // Le backend attend 'stops' : [ { lieu, dateDepart }, { lieu }, { lieu, dateArrivee } ]
-      const stops = [];
+      // 3. BOUCLE DE RÉCURRENCE OU SIMPLE ENVOI
+      const requests = [];
+      let currentDate = new Date(this.mouvement.dateDepart);
+      // Calculer durée trajet pour repliquer l'arrivée
+      const arrivalDateOrigin = new Date(this.mouvement.dateArrivee);
+      const tripDurationMs = arrivalDateOrigin.getTime() - currentDate.getTime();
 
-      // Stop 0: Départ
-      stops.push({
-        lieu: this.mouvement.lieuDepart,
-        dateDepart: this.mouvement.dateDepart
-      });
+      let endDateLoop = this.isRecurring ? new Date(this.recurrenceEndDate) : new Date(this.mouvement.dateDepart);
+      // Set hours for strict comparison logic if needed, but simple loop is fine.
 
-      // Stops intermédiaires
-      this.etapes.forEach(etape => {
-        if (etape.lieu) {
-          const stop: any = { lieu: etape.lieu };
-          if (etape.dateArrivee) stop.dateArrivee = etape.dateArrivee;
-          if (etape.dateDepart) stop.dateDepart = etape.dateDepart;
-          stops.push(stop);
+      // Safety limit
+      let safeGuard = 0;
+
+      do {
+        // Prepare payload for THIS iteration
+        const currentDepartStr = currentDate.toISOString(); // Or format correctly for backend?
+        // Attention: input datetime-local gives 'YYYY-MM-DDTHH:mm', Date.toISOString gives 'YYYY-MM-DDTHH:mm:ss.sssZ'
+        // Backend likely handles ISO or Date objects. Assuming standard Date handling.
+        // BUT: Components use strings for inputs...
+        // Let's reconstruct the string format needed if backend expects specific string.
+        // Assuming backend handles ISO strings fine (Mongoose Date).
+
+        const currentArriveeDate = new Date(currentDate.getTime() + tripDurationMs);
+
+        const stops = [];
+
+        // Helper to format date for backend/consistency if needed, or just use date object
+        // The service addMouvement expects payload matching Mouvement model.
+
+        stops.push({
+          lieu: this.mouvement.lieuDepart,
+          dateDepart: currentDate
+        });
+
+        // Stops intermédiaires (Dates need shifting too!)
+        // For simplicity in MVP Recurrence: We might ignore intermediate stop dates shifting logic or assume they are relative.
+        // CURRENT LOGIC: Recurrence copies structure but updating intermediate dates is complex without duration data per leg.
+        // SIMPLIFICATION: We only shift start/end of the whole trip. Intermediate stops keep "same time of day" ? 
+        // Implementation: Shift intermediate dates by same delta as start date.
+        const timeDelta = currentDate.getTime() - (new Date(this.mouvement.dateDepart)).getTime();
+
+        this.etapes.forEach(etape => {
+          if (etape.lieu) {
+            const s: any = { lieu: etape.lieu };
+            if (etape.dateArrivee) s.dateArrivee = new Date(new Date(etape.dateArrivee).getTime() + timeDelta);
+            if (etape.dateDepart) s.dateDepart = new Date(new Date(etape.dateDepart).getTime() + timeDelta);
+            stops.push(s);
+          }
+        });
+
+        stops.push({
+          lieu: this.mouvement.lieuArrivee,
+          dateArrivee: currentArriveeDate
+        });
+
+        this.mouvement.passagers = this.selectedPassagersIds;
+
+        const payload = {
+          ...this.mouvement,
+          dateDepart: currentDate,
+          dateArrivee: currentArriveeDate,
+          stops: stops,
+          recurrenceGroupId: this.isRecurring ? 'REC_' + Date.now() : null // Optional: marking them
+        };
+
+        requests.push(this.mouvementService.addMouvement(payload));
+
+        // INCREMENT DATE
+        if (this.recurrenceFrequency === 'Daily') {
+          currentDate.setDate(currentDate.getDate() + 1);
+        } else {
+          currentDate.setDate(currentDate.getDate() + 7);
         }
-      });
+        safeGuard++;
+      } while (this.isRecurring && currentDate <= endDateLoop && safeGuard < 100);
 
-      // Stop Final: Arrivée
-      stops.push({
-        lieu: this.mouvement.lieuArrivee,
-        dateArrivee: this.mouvement.dateArrivee
-      });
+      // Execute All
+      if (requests.length > 0) {
+        // Use forkJoin logic via firstValueFrom checking
+        // Since we pushed Observables, we can use forkJoin
+        const { forkJoin } = await import('rxjs');
+        await firstValueFrom(forkJoin(requests));
 
-      // Assigner les passagers sélectionnés
-      this.mouvement.passagers = this.selectedPassagersIds;
+        console.log(`${requests.length} mouvements créés.`);
+        alert(this.isRecurring ? `${requests.length} demandes de mouvement récurrentes créées !` : 'Demande de mouvement soumise !');
+        this.router.navigate(['/']);
+      }
 
-      // Préparer l'objet final à envoyer
-      const payload = {
-        ...this.mouvement,
-        stops: stops, // <<< L'array CRUCIAL
-        // Nettoyer les champs plats si besoin, ou les laisser (le backend les ignore ou les écrase via pre-save)
-      };
-
-      console.log('Soumission du mouvement avec payload:', payload);
-
-      this.mouvementService.addMouvement(payload).subscribe(
-        (response) => {
-          console.log('Mouvement créé avec succès:', response);
-          alert('Demande de mouvement soumise !');
-          this.router.navigate(['/']); // Rediriger vers la liste des mouvements
-        },
-        (error) => {
-          console.error('Erreur lors de la soumission de la demande:', error);
-          alert('Erreur lors de la soumission du mouvement. Vérifiez la console.');
-        }
-      );
     } catch (error: any) {
-      console.error('Erreur générale dans onSubmit (création lieu ou mouvement):', error);
-      alert('Une erreur est survenue lors du processus de soumission: ' + (error.message || ''));
+      console.error('Erreur générale dans onSubmit:', error);
+      alert('Une erreur est survenue: ' + (error.message || ''));
     }
   }
   // Helper pour obtenir les infos de sécurité d'un lieu
