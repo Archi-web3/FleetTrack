@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-
 @Injectable({
     providedIn: 'root'
 })
 export class EnvironmentService {
-    private apiUrl = `${environment.apiUrl}/environment`;
+    private apiUrl = 'https://fleettrack-api.onrender.com/api/environment';
 
     constructor(private http: HttpClient) { }
 
