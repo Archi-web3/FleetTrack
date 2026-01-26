@@ -23,12 +23,19 @@ export class AlertPollerService {
         this.isPolling = true;
         console.log('[AlertPoller] Démarrage du polling pour le véhicule:', vehicleId);
 
-        timer(0, this.pollingInterval).pipe(
-            switchMap(() => this.getUnreadAlerts(vehicleId)),
-            filter(alerts => alerts && alerts.length > 0)
+        timer(0, 10000).pipe( // 10 secondes
+            switchMap(() => {
+                console.log('[AlertPoller] Checking alerts...');
+                return this.getUnreadAlerts(vehicleId);
+            }),
+            filter(alerts => {
+                if (alerts && alerts.length > 0) {
+                    console.log('[AlertPoller] Alertes reçues !', alerts);
+                    return true;
+                }
+                return false;
+            })
         ).subscribe(alerts => {
-            // Afficher les alertes une par une ou la plus récente
-            // On prend la plus récente pour commencer
             const latestAlert = alerts[0];
             this.openAlertDialog(latestAlert, vehicleId);
         });
