@@ -1,0 +1,129 @@
+<div class="container">
+    <h1>📢 Centre d'Alertes Sécurité (Push)</h1>
+    <p class="subtitle">Envoyez des notifications instantanées aux tablettes e-logbook.</p>
+
+    <div class="layout">
+        <!-- Formulaire de Création -->
+        <mat-card class="create-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar color="warn">notification_important</mat-icon>
+                <mat-card-title>Nouvelle Alerte</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="alertForm" (ngSubmit)="onSubmit()">
+
+                    <!-- Titre -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Titre de l'alerte</mat-label>
+                        <input matInput formControlName="title" placeholder="Ex: Route barrée RN7">
+                        <mat-icon matSuffix>title</mat-icon>
+                    </mat-form-field>
+
+                    <!-- Niveau d'urgence -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Niveau d'urgence</mat-label>
+                        <mat-select formControlName="severity">
+                            <mat-option value="info">ℹ️ Information (Bleu)</mat-option>
+                            <mat-option value="warning">⚠️ Avertissement (Jaune)</mat-option>
+                            <mat-option value="danger">🚨 DANGER (Rouge)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Cible -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Cible</mat-label>
+                        <mat-select formControlName="targetType">
+                            <mat-option value="all">🌍 Toute la flotte</mat-option>
+                            <mat-option value="vehicle">🚙 Véhicule spécifique</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Sélection Véhicule (Si cible = vehicle) -->
+                    <mat-form-field appearance="outline" class="full-width"
+                        *ngIf="alertForm.get('targetType')?.value === 'vehicle'">
+                        <mat-label>Choisir le véhicule</mat-label>
+                        <mat-select formControlName="targetVehicleId">
+                            <mat-option *ngFor="let v of vehicles" [value]="v._id">
+                                {{ v.marque }} {{ v.modele }} - {{ v.immatriculation }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Message -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Message détaillé</mat-label>
+                        <textarea matInput formControlName="message" rows="4"
+                            placeholder="Tapez votre message ici..."></textarea>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="warn" type="submit" [disabled]="alertForm.invalid"
+                        class="submit-btn">
+                        <mat-icon>send</mat-icon> Envoyer l'alerte
+                    </button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Historique -->
+        <mat-card class="history-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>history</mat-icon>
+                <mat-card-title>Historique des envois</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <table mat-table [dataSource]="history" class="mat-elevation-z0">
+
+                    <!-- Date -->
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef> Date </th>
+                        <td mat-cell *matCellDef="let alert"> {{ alert.createdAt | date:'dd/MM HH:mm' }} </td>
+                    </ng-container>
+
+                    <!-- Titre -->
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef> Titre </th>
+                        <td mat-cell *matCellDef="let alert" class="title-cell">
+                            <strong>{{ alert.title }}</strong>
+                        </td>
+                    </ng-container>
+
+                    <!-- Sévérité -->
+                    <ng-container matColumnDef="severity">
+                        <th mat-header-cell *matHeaderCellDef> Niveau </th>
+                        <td mat-cell *matCellDef="let alert">
+                            <span [class]="'badge ' + alert.severity">{{ alert.severity | uppercase }}</span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Target -->
+                    <ng-container matColumnDef="target">
+                        <th mat-header-cell *matHeaderCellDef> Cible </th>
+                        <td mat-cell *matCellDef="let alert">
+                            <span *ngIf="alert.targetType === 'all'">🌍 Tous</span>
+                            <span *ngIf="alert.targetType === 'vehicle'">🚙 {{ getVehicleName(alert.targetVehicleId)
+                                }}</span>
+                        </td>
+                    </ng-container>
+
+                    <!-- Lu par -->
+                    <ng-container matColumnDef="readCount">
+                        <th mat-header-cell *matHeaderCellDef> Lus </th>
+                        <td mat-cell *matCellDef="let alert">
+                            <mat-chip-listbox>
+                                <mat-chip-option color="primary" selected>{{ alert.readBy?.length || 0 }}
+                                    lectures</mat-chip-option>
+                            </mat-chip-listbox>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <div *ngIf="history.length === 0" class="empty-state">
+                    Aucune alerte envoyée récemment.
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

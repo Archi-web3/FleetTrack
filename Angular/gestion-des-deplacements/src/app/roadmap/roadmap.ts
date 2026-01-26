@@ -188,7 +188,7 @@ export class RoadmapComponent {
             category: 'Sécurité & Alertes',
             categoryIcon: 'warning',
             targetApp: 'Les deux',
-            status: 'Planifié',
+            status: 'En cours',
             priority: 'Haute'
         },
         {
@@ -258,7 +258,7 @@ export class RoadmapComponent {
             category: 'Planning & Scheduling',
             categoryIcon: 'repeat',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Haute'
         },
         {

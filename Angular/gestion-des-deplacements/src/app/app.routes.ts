@@ -34,6 +34,11 @@ export const routes: Routes = [
     component: ListeMouvementsComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: 'security-alerts',
+    loadComponent: () => import('./features/security-alerts/security-alerts.component').then(m => m.SecurityAlertsComponent),
+    canActivate: [AuthGuard]
+  },
   { path: 'login', component: LoginComponent },
   {
     path: 'demande-mouvement',

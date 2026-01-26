@@ -10,6 +10,7 @@ import { OfflineService } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
 import { MaintenanceService } from '../../core/services/maintenance.service';
+import { AlertPollerService } from '../../core/services/alert-poller.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
@@ -45,6 +46,7 @@ export class DashboardComponent implements OnInit {
         private authService: AuthService,
         private http: HttpClient,
         private maintenanceService: MaintenanceService,
+        private alertPoller: AlertPollerService,
         private snackBar: MatSnackBar
     ) { }
 
@@ -52,6 +54,7 @@ export class DashboardComponent implements OnInit {
         const vehicleStr = localStorage.getItem('selectedVehicle');
         if (vehicleStr) {
             this.selectedVehicle = JSON.parse(vehicleStr);
+            this.alertPoller.startPolling(this.selectedVehicle._id);
         }
 
         // Subscribe to current user

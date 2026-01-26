@@ -1,0 +1,78 @@
+.container {
+    padding: 20px;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.layout {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .create-card {
+        flex: 1;
+        min-width: 350px;
+        max-width: 500px;
+    }
+
+    .history-card {
+        flex: 2;
+        min-width: 400px;
+    }
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 8px;
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+
+    th {
+        color: #666;
+        font-weight: 500;
+    }
+
+    td {
+        vertical-align: middle;
+    }
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+
+    &.info {
+        background-color: #2196F3;
+    }
+
+    &.warning {
+        background-color: #FF9800;
+        color: #333;
+    }
+
+    &.danger {
+        background-color: #F44336;
+    }
+}
+
+.empty-state {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+}

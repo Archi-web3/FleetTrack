@@ -25,6 +25,11 @@
       Validation <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #validationMenu="matMenu">
+      <button mat-menu-item routerLink="/security-alerts">
+        <mat-icon style="color: #f44336;">notification_important</mat-icon>
+        <span>Alertes Sécurité (Push)</span>
+      </button>
+      <mat-divider></mat-divider>
       <button mat-menu-item routerLink="/valider-mouvements">
         <mat-icon>check_circle</mat-icon>
         <span>Valider Mouvements</span>
