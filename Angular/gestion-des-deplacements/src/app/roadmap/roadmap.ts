@@ -9,7 +9,7 @@ interface RoadmapItem {
     description: string;
     category: string;
     categoryIcon: string;
-    targetApp: 'Gestion des déplacements' | 'e-logbook' | 'Les deux';
+    targetApp: 'FleetTrack' | 'e-logbook' | 'Les deux';
     status: 'Planifié' | 'En cours' | 'Terminé';
     priority: 'Haute' | 'Moyenne' | 'Basse';
 }
@@ -197,7 +197,7 @@ export class RoadmapComponent {
             description: 'Visualisation en temps réel de tous les véhicules de la flotte sur une carte interactive. Permet de suivre les mouvements en cours et optimiser la gestion des ressources.',
             category: 'Sécurité & Alertes',
             categoryIcon: 'map',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Terminé',
             priority: 'Moyenne'
         },
@@ -217,7 +217,7 @@ export class RoadmapComponent {
             description: 'Calcul et affichage du pourcentage de trajets de moins de 2 km pour encourager les déplacements alternatifs (marche, vélo) et réduire l\'empreinte carbone.',
             category: 'Analytics & Reporting',
             categoryIcon: 'analytics',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Basse'
         },
@@ -227,7 +227,7 @@ export class RoadmapComponent {
             description: 'Suivi et reporting du nombre de kilomètres mutualisés (plusieurs passagers/projets dans un même trajet) pour optimiser l\'utilisation des véhicules.',
             category: 'Analytics & Reporting',
             categoryIcon: 'groups',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Basse'
         },
@@ -237,7 +237,7 @@ export class RoadmapComponent {
             description: 'Indicateurs de performance montrant le taux d\'utilisation et de disponibilité de chaque véhicule pour identifier les ressources sous-utilisées ou sur-sollicitées.',
             category: 'Analytics & Reporting',
             categoryIcon: 'assessment',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Moyenne'
         },
@@ -247,7 +247,7 @@ export class RoadmapComponent {
             description: 'Ajout d\'une option pour marquer les demandes de mouvement comme "flexibles" en termes d\'horaire, permettant une meilleure optimisation du planning.',
             category: 'Planning & Scheduling',
             categoryIcon: 'schedule',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Moyenne'
         },
@@ -257,7 +257,7 @@ export class RoadmapComponent {
             description: 'Possibilité d\'enregistrer des demandes de mouvement récurrentes (quotidiennes, hebdomadaires, mensuelles) pour éviter les saisies répétitives et gagner du temps.',
             category: 'Planning & Scheduling',
             categoryIcon: 'repeat',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Haute'
         },
@@ -267,7 +267,7 @@ export class RoadmapComponent {
             description: 'Intégration des créneaux horaires de maintenance préventive directement dans le planning global pour éviter les conflits et assurer la disponibilité des véhicules.',
             category: 'Planning & Scheduling',
             categoryIcon: 'build_circle',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Haute'
         },
@@ -277,7 +277,7 @@ export class RoadmapComponent {
             description: 'Historique complet des actions sensibles (créations, modifications, suppressions) pour une traçabilité totale.',
             category: 'Sécurité & Admin',
             categoryIcon: 'security',
-            targetApp: 'Gestion des déplacements',
+            targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Haute'
         }
@@ -303,7 +303,7 @@ export class RoadmapComponent {
 
     getAppClass(app: string): string {
         switch (app) {
-            case 'Gestion des déplacements': return 'app-gestion';
+            case 'FleetTrack': return 'app-gestion';
             case 'e-logbook': return 'app-logbook';
             case 'Les deux': return 'app-both';
             default: return '';

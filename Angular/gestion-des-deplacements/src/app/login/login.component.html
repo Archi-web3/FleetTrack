@@ -3,7 +3,7 @@
     <!-- NOUVEAU: Logo et titre réorganisés -->
     <div style="text-align: center; margin-bottom: 30px;">
       <img src="assets/logo_acf.png" alt="Logo ACF" style="max-width: 150px; height: auto; margin-bottom: 15px;">
-      <h2 class="app-title">Gestion des Déplacements <span class="version">(v2.7.1)</span></h2>
+      <h2 class="app-title">FleetTrack <span class="version">(v2.7.1)</span></h2>
     </div>
 
     <mat-card-title style="text-align: center; margin-bottom: 20px;">Connexion</mat-card-title>
@@ -36,7 +36,11 @@
         </div>
 
         <!-- Indicateur de chargement -->
-        <mat-progress-bar *ngIf="isLoading" mode="indeterminate" style="margin-bottom: 15px;"></mat-progress-bar>
+        <div *ngIf="isLoading" style="margin-bottom: 15px; text-align: center;">
+          <mat-progress-bar mode="indeterminate" style="margin-bottom: 5px;"></mat-progress-bar>
+          <small style="color: #666; font-style: italic;">Connexion en cours... (Le serveur peut mettre quelques
+            secondes à répondre)</small>
+        </div>
 
         <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.form.valid || isLoading"
           style="width: 100%;">
