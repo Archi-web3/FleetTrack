@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const alertController = require('../controllers/alert.controller');
-const authParams = require('../middleware/authParams'); // Middleware d'auth existant
+const authParams = require('../middleware/authMiddleware'); // Correction import
 
 // Routes protégées par authentification
 router.post('/', authParams, alertController.createAlert); // Admin créé
