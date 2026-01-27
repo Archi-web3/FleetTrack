@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.7.0] - 2026-01-27
+
+### ✨ Module Alertes : Inbox & Suppression
+
+#### 📩 e-Logbook (Inbox)
+- **Boîte de Réception :** Ajout d'une icône "Enveloppe" dans le bandeau supérieur. Accès à l'historique complet des notifications reçues (lues et non lues).
+- **Gestion :** Possibilité pour le chauffeur de supprimer (masquer) une notification de sa liste personnelle.
+- **Polling :** Optimisation de la récupération des messages avec un mode "Inbox" dédié.
+
+#### 🗑️ FleetTrack (Admin)
+- **Suppression Définitive :** Ajout d'un bouton "Supprimer" dans l'historique des alertes. Cette action supprime définitivement l'alerte de la base de données (et donc de toutes les tablettes).
+- **Tableau de Bord :** Ajout d'une colonne "Action" pour gérer les suppressions.
+
+---
+
 ## [2.6.0] - 2026-01-25
 
 ### ✨ Module 2 : Gestion Avancée & Sécurité
