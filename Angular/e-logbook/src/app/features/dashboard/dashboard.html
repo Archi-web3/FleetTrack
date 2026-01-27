@@ -23,6 +23,11 @@
         </div>
 
         <div class="header-actions">
+            <!-- NOUVEAU: Inbox Button -->
+            <button mat-icon-button (click)="openInbox()" class="action-btn inbox-btn"
+                style="color: white; margin-right: 10px;">
+                <mat-icon>notifications</mat-icon>
+            </button>
             <button mat-stroked-button (click)="changeVehicle()">
                 <mat-icon>swap_horiz</mat-icon>
                 Changer de véhicule

@@ -12,6 +12,8 @@ import { environment } from '../../../environments/environment';
 import { MaintenanceService } from '../../core/services/maintenance.service';
 import { AlertPollerService } from '../../core/services/alert-poller.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { NotificationListComponent } from '../../shared/components/notification-list/notification-list.component';
 
 @Component({
     selector: 'app-dashboard',
@@ -22,7 +24,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
         MatIconModule,
         MatButtonModule,
         MatBadgeModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatDialogModule
     ],
     templateUrl: './dashboard.html',
     styleUrls: ['./dashboard.scss']
@@ -47,7 +50,8 @@ export class DashboardComponent implements OnInit {
         private http: HttpClient,
         private maintenanceService: MaintenanceService,
         private alertPoller: AlertPollerService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private dialog: MatDialog
     ) { }
 
     async ngOnInit() {
@@ -239,5 +243,17 @@ export class DashboardComponent implements OnInit {
             console.error('❌ Erreur réinitialisation:', error);
             alert('❌ Erreur lors de la réinitialisation des données.');
         }
+    }
+
+    // NOUVEAU: Ouvrir l'Inbox
+    openInbox() {
+        if (!this.selectedVehicle) return;
+        this.dialog.open(NotificationListComponent, {
+            width: '90%',
+            maxWidth: '500px',
+            data: { vehicleId: this.selectedVehicle._id },
+            backdropClass: 'custom-dialog-backdrop',
+            panelClass: 'custom-dialog-panel'
+        });
     }
 }

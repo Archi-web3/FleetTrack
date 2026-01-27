@@ -1,0 +1,41 @@
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+
+    mat-icon {
+        font-size: 48px;
+        height: 48px;
+        width: 48px;
+        margin-bottom: 1rem;
+    }
+}
+
+.danger {
+    color: #f44336;
+}
+
+.warning {
+    color: #ff9800;
+}
+
+.info {
+    color: #2196f3;
+}
+
+.alert-title {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+
+    .date {
+        font-size: 0.8em;
+        color: #888;
+        font-weight: normal;
+        margin-left: 10px;
+    }
+}
+
+mat-list-item {
+    border-bottom: 1px solid #eee;
+}

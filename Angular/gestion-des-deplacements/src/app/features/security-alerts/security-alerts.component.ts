@@ -39,7 +39,7 @@ export class SecurityAlertsComponent implements OnInit {
     alertForm: FormGroup;
     vehicles: any[] = [];
     history: Alert[] = [];
-    displayedColumns: string[] = ['date', 'title', 'severity', 'target', 'readCount'];
+    displayedColumns: string[] = ['date', 'title', 'severity', 'target', 'readCount', 'actions'];
 
     constructor(
         private fb: FormBuilder,
@@ -118,5 +118,21 @@ export class SecurityAlertsComponent implements OnInit {
     getVehicleName(id: string): string {
         const v = this.vehicles.find(veh => veh._id === id);
         return v ? `${v.marque} ${v.modele} (${v.immatriculation})` : id;
+    }
+
+    deleteAlert(alert: Alert): void {
+        if (!alert._id) return;
+        if (confirm('Êtes-vous sûr de vouloir supprimer définitivement cette alerte ?')) {
+            this.alertService.deleteAlert(alert._id).subscribe({
+                next: () => {
+                    this.snackBar.open('Alerte supprimée', 'Fermer', { duration: 3000 });
+                    this.loadHistory();
+                },
+                error: (err) => {
+                    console.error('Erreur suppression', err);
+                    this.snackBar.open('Erreur lors de la suppression', 'Fermer', { duration: 3000 });
+                }
+            });
+        }
     }
 }

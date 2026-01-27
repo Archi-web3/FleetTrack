@@ -9,5 +9,7 @@ router.post('/', authParams(), alertController.createAlert); // Admin créé
 router.get('/', authParams(), alertController.getAllAlerts); // Admin voit historique
 router.get('/unread', authParams(), alertController.getAlertsForVehicle); // e-logbook poll
 router.post('/:id/read', authParams(), alertController.markAsRead); // e-logbook confirme lecture
+router.put('/:id/hide', authParams(), alertController.hideAlert); // e-logbook masque (inbox delete)
+router.delete('/:id', authParams(), alertController.deleteAlert); // Admin supprime définitivement
 
 module.exports = router;

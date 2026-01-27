@@ -38,6 +38,11 @@ const alertSchema = new mongoose.Schema({
         readAt: { type: Date, default: Date.now },
         user: String
     }],
+    // Liste des véhicules pour lesquels l'alerte est masquée ("supprimée" par l'utilisateur)
+    deletedBy: [{
+        vehicleId: String,
+        deletedAt: { type: Date, default: Date.now }
+    }],
     createdAt: {
         type: Date,
         default: Date.now,

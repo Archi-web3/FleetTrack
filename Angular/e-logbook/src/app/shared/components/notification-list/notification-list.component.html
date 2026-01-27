@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Boîte de Réception</h2>
+<mat-dialog-content>
+    <div *ngIf="alerts.length === 0" class="empty-state">
+        <mat-icon>notifications_none</mat-icon>
+        <p>Aucune notification</p>
+    </div>
+
+    <mat-list>
+        <mat-list-item *ngFor="let alert of alerts">
+            <mat-icon matListItemIcon [class]="alert.severity">
+                {{ getIcon(alert.severity) }}
+            </mat-icon>
+            <div matListItemTitle class="alert-title">
+                <span>{{ alert.title }}</span>
+                <span class="date">{{ alert.createdAt | date:'dd/MM HH:mm' }}</span>
+            </div>
+            <div matListItemLine>{{ alert.message }}</div>
+            <button mat-icon-button matListItemMeta (click)="hideAlert(alert)" color="warn">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-list-item>
+    </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="close()">FERMER</button>
+</mat-dialog-actions>

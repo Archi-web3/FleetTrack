@@ -56,6 +56,16 @@ export class AlertPollerService {
         return this.http.post(`${API_URL}/${alertId}/read`, { vehicleId }, this.getHeaders());
     }
 
+    // Récupérer la liste des alertes reçues (inbox)
+    getInboxAlerts(vehicleId: string): Observable<any[]> {
+        return this.http.get<any[]>(`${API_URL}/unread?vehicleId=${vehicleId}&mode=inbox`, this.getHeaders());
+    }
+
+    // Masquer une alerte (Inbox delete)
+    hideAlert(alertId: string, vehicleId: string): Observable<any> {
+        return this.http.put(`${API_URL}/${alertId}/hide`, { vehicleId }, this.getHeaders());
+    }
+
     private openAlertDialog(alert: any, vehicleId: string) {
         // Vérifier si une dialog est déjà ouverte pour éviter le spam
         if (this.dialog.openDialogs.length > 0) {

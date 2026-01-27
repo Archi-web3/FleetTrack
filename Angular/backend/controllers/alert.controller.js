@@ -28,40 +28,30 @@ exports.createAlert = async (req, res) => {
     }
 };
 
-// Récupérer les alertes pour un véhicule donné (celles non lues ou récentes)
+// Récupérer les alertes pour un véhicule donné (celles non lues ou mode Inbox)
 exports.getAlertsForVehicle = async (req, res) => {
     try {
-        // Le véhicule ID est passé en query ou déduit du contexte (ici on attend un query param ?vehicleId=...)
-        // Dans une vraie sécu, on vérifierait que le user a le droit sur ce véhicule.
-        const { vehicleId } = req.query;
+        const { vehicleId, mode } = req.query;
 
         if (!vehicleId) {
-            console.warn('⚠️ [API] getAlertsForVehicle: Missing vehicleId');
             return res.status(400).json({ error: 'VehicleId requis' });
         }
 
-        console.log(`🔍 [API] Checking alerts for vehicle: ${vehicleId}`);
-
-        // Chercher les alertes actives :
-        // 1. Ciblées 'all'
-        // 2. OU Ciblées sur ce vehicleId précis
-        // 3. ET qui n'ont PAS encore été lues par ce véhicule
         const query = {
             active: true,
             $or: [
                 { targetType: 'all' },
                 { targetType: 'vehicle', targetVehicleId: vehicleId }
             ],
-            'readBy.vehicleId': { $ne: vehicleId } // Exclure celles déjà lues par ce véhicule
+            'deletedBy.vehicleId': { $ne: vehicleId } // Exclure celles masquées par l'utilisateur
         };
 
-        console.log('🔍 [API] Alert Query:', JSON.stringify(query, null, 2));
+        // Si ce n'est PAS le mode inbox, on filtre aussi celles déjà lues (comportement popup)
+        if (mode !== 'inbox') {
+            query['readBy.vehicleId'] = { $ne: vehicleId };
+        }
 
         const alerts = await Alert.find(query).sort({ createdAt: -1 });
-
-        console.log(`✅ [API] Found ${alerts.length} unread alerts for ${vehicleId}`);
-        if (alerts.length > 0) console.log('First alert:', alerts[0].title);
-
         res.status(200).json(alerts);
     } catch (error) {
         console.error('Erreur récupération alertes:', error);
@@ -105,5 +95,35 @@ exports.getAllAlerts = async (req, res) => {
         res.status(200).json(alerts);
     } catch (error) {
         res.status(500).json({ error: 'Erreur récupération historique' });
+    }
+};
+
+// Masquer une alerte pour un véhicule (Suppression Inbox)
+exports.hideAlert = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { vehicleId } = req.body;
+
+        if (!vehicleId) return res.status(400).json({ error: 'VehicleId requis' });
+
+        await Alert.findByIdAndUpdate(id, {
+            $push: { deletedBy: { vehicleId } }
+        });
+
+        res.status(200).json({ message: 'Alerte masquée' });
+    } catch (error) {
+        console.error('Erreur hideAlert:', error);
+        res.status(500).json({ error: 'Erreur masquage alerte' });
+    }
+};
+
+// Suppression physique (Admin)
+exports.deleteAlert = async (req, res) => {
+    try {
+        await Alert.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: 'Alerte supprimée définitivement' });
+    } catch (error) {
+        console.error('Erreur deleteAlert:', error);
+        res.status(500).json({ error: 'Erreur suppression alerte' });
     }
 };

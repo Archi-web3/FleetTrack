@@ -32,4 +32,9 @@ export class SecurityAlertService {
     getAllAlerts(): Observable<Alert[]> {
         return this.http.get<Alert[]>(this.apiUrl);
     }
+
+    // Supprimer une alerte
+    deleteAlert(id: string): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/${id}`);
+    }
 }
