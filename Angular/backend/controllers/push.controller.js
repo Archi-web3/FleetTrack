@@ -3,15 +3,19 @@ const Vehicule = require('../models/vehicule.model');
 
 // Configuration unique au démarrage
 // Configuration unique au démarrage
+// Configuration unique au démarrage
+const publicVapidKey = process.env.VAPID_PUBLIC_KEY || 'BJxzSPkMqZI8jwa2YPb6ubznDd4SYxaK88u3c5qdbYkM8b5KIZaRtO2tlgDuVmJa7750MyEzwkBCmavjez6SW80';
+const privateVapidKey = process.env.VAPID_PRIVATE_KEY || '2RezBMEx2LOc0WTMe-PBpj7nVMw772-ybd4McTPQzTw';
+
 webPush.setVapidDetails(
     process.env.VAPID_MAILTO || 'mailto:admin@fleettrack.com',
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
+    publicVapidKey,
+    privateVapidKey
 );
 
 // Renvoyer la clé publique au client
 exports.getVapidKey = (req, res) => {
-    res.status(200).json({ publicKey: process.env.VAPID_PUBLIC_KEY });
+    res.status(200).json({ publicKey: publicVapidKey });
 };
 
 // Enregistrer l'abonnement pour un véhicule
