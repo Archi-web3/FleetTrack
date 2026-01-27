@@ -126,6 +126,96 @@
                     </div>
                 </div>
             </mat-tab>
+            <!-- Onglet 3 : Sécurité -->
+            <mat-tab label="Sécurité & Confidentialité">
+                <div class="tab-content">
+                    <div class="intro-section">
+                        <p>
+                            La sécurité de vos données est notre priorité absolue. Voici un aperçu des mesures
+                            techniques
+                            et protocoles mis en place pour garantir l'intégrité et la confidentialité de FleetTrack.
+                        </p>
+                    </div>
+
+                    <div class="security-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
+
+                        <!-- Authentification -->
+                        <div class="timeline-card" style="border-left: 4px solid #4caf50;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">verified_user</mat-icon>
+                                    <span class="category-name">Accès & Identité</span>
+                                </div>
+                                <span class="status-badge status-completed">Actif</span>
+                            </div>
+                            <h3 class="card-title">Authentification Forte (JWT)</h3>
+                            <p class="card-description">
+                                Utilisation du standard industriel <strong>JSON Web Tokens (JWT)</strong>.
+                                Vos sessions sont sécurisées, cryptées et expirent automatiquement après 24h
+                                d'inactivité
+                                pour prévenir tout accès non autorisé en cas de vol d'appareil.
+                            </p>
+                        </div>
+
+                        <!-- Chiffrement -->
+                        <div class="timeline-card" style="border-left: 4px solid #2196f3;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">lock</mat-icon>
+                                    <span class="category-name">Données Sensibles</span>
+                                </div>
+                                <span class="status-badge status-completed">Actif</span>
+                            </div>
+                            <h3 class="card-title">Chiffrement Bcrypt</h3>
+                            <p class="card-description">
+                                Les mots de passe ne sont <strong>JAMAIS</strong> stockés en clair.
+                                Nous utilisons l'algorithme de hachage <strong>Bcrypt</strong> (le même que les banques)
+                                qui rend impossible la lecture de votre mot de passe, même pour les administrateurs
+                                système.
+                            </p>
+                        </div>
+
+                        <!-- Protection Réseau -->
+                        <div class="timeline-card" style="border-left: 4px solid #ff9800;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">security</mat-icon>
+                                    <span class="category-name">Infrastructure</span>
+                                </div>
+                                <span class="status-badge status-completed">Renforcé</span>
+                            </div>
+                            <h3 class="card-title">Bouclier Réseau (CORS & Rate Limit)</h3>
+                            <p class="card-description">
+                                L'accès à l'API est strictement restreint aux applications officielles (FleetTrack Web &
+                                Mobile).
+                                Un système de <strong>Rate Limiting</strong> bloque automatiquement les adresses IP
+                                tentant des
+                                attaques par force brute (plus de 300 requêtes/15min).
+                            </p>
+                        </div>
+
+                        <!-- Protection Réseau -->
+                        <div class="timeline-card" style="border-left: 4px solid #f44336;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">admin_panel_settings</mat-icon>
+                                    <span class="category-name">Contrôle d'Accès</span>
+                                </div>
+                                <span class="status-badge status-completed">RBAC</span>
+                            </div>
+                            <h3 class="card-title">Ségrégation des Données</h3>
+                            <p class="card-description">
+                                Architecture <strong>Role-Based Access Control (RBAC)</strong> stricte.
+                                Un utilisateur d'un pays (ex: Mali) ne peut techniquement pas accéder aux données d'un
+                                autre
+                                pays (ex: RDC), garantissant une étanchéité parfaite entre les missions.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </mat-tab>
         </mat-tab-group>
 
         <!-- Call to Action -->
