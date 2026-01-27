@@ -1,93 +1,123 @@
-<div class="tree-container">
-    <div class="tree-legend">
-        <div class="legend-item">
-            <span class="legend-dot implemented"></span> Déjà inclus dans FleetTrack
-        </div>
-        <div class="legend-item">
-            <span class="legend-dot planned"></span> Planifié / A faire
-        </div>
-        <div class="legend-actions">
-            <small>Hover sur un élément pour éditer (+/-)</small>
-        </div>
-    </div>
-
-    <div class="mindmap">
-        <!-- ROOT -->
-        <div class="node-level-0">
-            <div class="node root-node">
-                {{ treeData.name }}
-                <button mat-icon-button class="add-btn sub-root" (click)="addNode(treeData)">
-                    <mat-icon>add_circle</mat-icon>
-                </button>
+<div class="tree-wrapper">
+    <!-- LEFT PANEL: TREE -->
+    <div class="tree-container">
+        <div class="tree-legend">
+            <div class="legend-item">
+                <span class="legend-dot implemented"></span> Déjà inclus dans FleetTrack
             </div>
+            <div class="legend-item">
+                <span class="legend-dot planned"></span> Planifié / A faire
+            </div>
+            <div class="legend-actions">
+                <small>Cliquez sur un élément pour voir les détails à droite 👉</small>
+            </div>
+        </div>
 
-            <div class="children-container level-1">
-                <!-- CATEGORIES -->
-                <div class="branch" *ngFor="let cat of treeData.children; let i = index">
-                    <div class="connector-elbow"></div>
-                    <div class="node category-node" [style.border-left-color]="cat.color">
-                        <!-- Mode Lecture -->
-                        <span *ngIf="editingNodeId !== cat.id" (click)="toggleEdit(cat)">{{ cat.name }}</span>
-                        <!-- Mode Edition -->
-                        <input *ngIf="editingNodeId === cat.id" [(ngModel)]="cat.name" (blur)="toggleEdit(cat)"
-                            (keyup.enter)="toggleEdit(cat)" autoFocus>
+        <div class="mindmap">
+            <!-- ROOT -->
+            <div class="node-level-0">
+                <div class="node root-node" [class.selected]="selectedNode?.id === treeData.id"
+                    (click)="selectNode(treeData)">
+                    {{ treeData.name }}
+                    <button mat-icon-button class="add-btn sub-root"
+                        (click)="addNode(treeData); $event.stopPropagation()">
+                        <mat-icon>add_circle</mat-icon>
+                    </button>
+                </div>
 
-                        <div class="node-actions">
-                            <button mat-icon-button color="primary" (click)="addNode(cat)"
-                                matTooltip="Ajouter une fonction">
-                                <mat-icon>add</mat-icon>
-                            </button>
-                            <button mat-icon-button color="warn" (click)="deleteNode(treeData, i)"
-                                matTooltip="Supprimer le lot">
-                                <mat-icon>delete</mat-icon>
-                            </button>
+                <div class="children-container level-1">
+                    <!-- CATEGORIES -->
+                    <div class="branch" *ngFor="let cat of treeData.children; let i = index">
+                        <div class="connector-elbow"></div>
+                        <div class="node category-node" [class.selected]="selectedNode?.id === cat.id"
+                            [style.border-left-color]="cat.color" (click)="selectNode(cat)">
+
+                            <span>{{ cat.name }}</span>
+
+                            <div class="node-actions">
+                                <button mat-icon-button color="primary" (click)="addNode(cat); $event.stopPropagation()"
+                                    matTooltip="Ajouter une fonction">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn"
+                                    (click)="deleteNode(treeData, i); $event.stopPropagation()"
+                                    matTooltip="Supprimer le lot">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- FUNCTIONS -->
-                    <div class="children-container level-2" *ngIf="cat.children && cat.children.length > 0">
-                        <div class="leaf" *ngFor="let func of cat.children; let j = index">
-                            <div class="connector-straight"></div>
-                            <div class="node function-node" [class.implemented]="func.isImplemented"
-                                [style.background-color]="func.isImplemented ? cat.color + '20' : '#fff'"
-                                [style.border-left-color]="cat.color">
+                        <!-- FUNCTIONS -->
+                        <div class="children-container level-2" *ngIf="cat.children && cat.children.length > 0">
+                            <div class="leaf" *ngFor="let func of cat.children; let j = index">
+                                <div class="connector-straight"></div>
+                                <div class="node function-node" [class.selected]="selectedNode?.id === func.id"
+                                    [class.implemented]="func.isImplemented"
+                                    [style.background-color]="func.isImplemented ? cat.color + '20' : '#fff'"
+                                    [style.border-left-color]="cat.color" (click)="selectNode(func)">
 
-                                <div class="status-indicator" (click)="toggleImplementation(func)"
-                                    [matTooltip]="func.isImplemented ? 'Inclus' : 'A faire'">
-                                    <mat-icon *ngIf="func.isImplemented">check_circle</mat-icon>
-                                    <mat-icon *ngIf="!func.isImplemented">radio_button_unchecked</mat-icon>
-                                </div>
-
-                                <div class="node-content">
-                                    <span *ngIf="editingNodeId !== func.id" (click)="toggleEdit(func)">{{ func.name
-                                        }}</span>
-                                    <input *ngIf="editingNodeId === func.id" [(ngModel)]="func.name"
-                                        (keyup.enter)="toggleEdit(func)" autoFocus>
-
-                                    <!-- INFO BUBBLE -->
-                                    <div class="info-bubble" *ngIf="func.description">
-                                        <mat-icon class="info-icon" [matTooltip]="func.description">info</mat-icon>
+                                    <div class="status-indicator"
+                                        (click)="toggleImplementation(func); $event.stopPropagation()"
+                                        [matTooltip]="func.isImplemented ? 'Inclus' : 'A faire'">
+                                        <mat-icon *ngIf="func.isImplemented">check_circle</mat-icon>
+                                        <mat-icon *ngIf="!func.isImplemented">radio_button_unchecked</mat-icon>
                                     </div>
-                                    <button class="add-note-btn" *ngIf="!func.description && editingNodeId !== func.id"
-                                        (click)="func.description = 'Double-cliquez pour éditer...'">
-                                        <mat-icon>add_comment</mat-icon>
-                                    </button>
 
-                                    <!-- EDIT DESCRIPTION MODE -->
-                                    <div class="description-edit" *ngIf="editingNodeId === func.id">
-                                        <label>Note Interne :</label>
-                                        <textarea [(ngModel)]="func.description" rows="3"
-                                            placeholder="Comment c'est géré dans FleetTrack ?"></textarea>
-                                        <button mat-button color="primary" (click)="toggleEdit(func)">OK</button>
-                                    </div>
+                                    <span>{{ func.name }}</span>
+
+                                    <!-- Indicator icon if description exists -->
+                                    <mat-icon *ngIf="func.description" class="info-icon"
+                                        style="font-size: 16px; width: 16px; height: 16px;">info</mat-icon>
+
+                                    <button class="delete-mini"
+                                        (click)="deleteNode(cat, j); $event.stopPropagation()">×</button>
                                 </div>
-
-                                <button class="delete-mini" (click)="deleteNode(cat, j)">×</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: DETAILS -->
+    <div class="detail-panel" *ngIf="selectedNode">
+        <div class="panel-header">
+            <h3 class="panel-title">{{ selectedNode.name }}</h3>
+            <div class="panel-status" [class.implemented]="selectedNode.isImplemented">
+                <mat-icon>{{ selectedNode.isImplemented ? 'check_circle' : 'schedule' }}</mat-icon>
+                <span>{{ selectedNode.isImplemented ? 'Déjà inclus dans FleetTrack' : 'Fonctionnalité Planifiée'
+                    }}</span>
+            </div>
+        </div>
+
+        <div class="panel-content">
+            <label style="display:block; margin-bottom:10px; font-weight:bold; color:#555;">Détails Techniques /
+                Implémentation :</label>
+
+            <div class="description-box" *ngIf="selectedNode.description">
+                {{ selectedNode.description }}
+            </div>
+
+            <div class="description-placeholder" *ngIf="!selectedNode.description">
+                Aucune description technique saisie pour le moment.
+            </div>
+
+            <div class="edit-area">
+                <label>Modifier / Ajouter une note :</label>
+                <textarea [(ngModel)]="selectedNode.description"
+                    placeholder="Décrivez comment cette fonctionnalité est gérée dans l'outil..."></textarea>
+                <div style="font-size: 12px; color: #999;">Modification enregistrée automatiquement.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-panel" *ngIf="!selectedNode">
+        <div
+            style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#999;">
+            <mat-icon
+                style="font-size:48px; width:48px; height:48px; margin-bottom:20px; opacity:0.5;">touch_app</mat-icon>
+            <p>Sélectionnez un élément dans l'arbre pour voir les détails ici.</p>
         </div>
     </div>
 </div>

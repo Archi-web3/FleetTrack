@@ -1,19 +1,106 @@
+.tree-wrapper {
+    display: flex;
+    height: calc(100vh - 200px);
+    /* Adjust based on header/footer */
+    gap: 20px;
+}
+
 .tree-container {
+    flex: 2;
     padding: 20px;
-    overflow-x: auto;
+    overflow: auto;
     background-color: #f8f9fa;
-    min-height: 600px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
     font-family: 'Segoe UI', sans-serif;
+}
+
+.detail-panel {
+    flex: 1;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+    /* Shadow on left */
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #eee;
+    min-width: 300px;
+}
+
+.panel-header {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.panel-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+}
+
+.panel-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.panel-status.implemented {
+    color: #4caf50;
+    font-weight: 500;
+}
+
+.panel-content {
+    flex: 1;
+}
+
+.description-box {
+    background: #e3f2fd;
+    /* Light Blue */
+    border-left: 4px solid #2196f3;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #37474f;
+    white-space: pre-wrap;
+    /* Preserve formatting */
+}
+
+.description-placeholder {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.edit-area {
+    margin-top: auto;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.edit-area textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    min-height: 100px;
+    margin-bottom: 10px;
 }
 
 .tree-legend {
     display: flex;
     gap: 20px;
-    margin-bottom: 30px;
-    padding: 10px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
 .legend-item {
