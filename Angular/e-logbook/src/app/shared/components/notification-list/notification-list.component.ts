@@ -1,8 +1,17 @@
 import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
-// ... imports
+import { CommonModule } from '@angular/common';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { AlertPollerService } from '../../../core/services/alert-poller.service';
 
 @Component({
-    // ...
+    selector: 'app-notification-list',
+    standalone: true,
+    imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatListModule],
+    templateUrl: './notification-list.component.html',
+    styleUrls: ['./notification-list.component.scss']
 })
 export class NotificationListComponent implements OnInit {
     alerts: any[] = [];
@@ -13,7 +22,7 @@ export class NotificationListComponent implements OnInit {
         private dialogRef: MatDialogRef<NotificationListComponent>,
         @Inject(MAT_DIALOG_DATA) public data: { vehicleId: string },
         private alertService: AlertPollerService,
-        private cdr: ChangeDetectorRef // NOUVEAU
+        private cdr: ChangeDetectorRef
     ) {
         this.vehicleId = data.vehicleId;
     }
@@ -25,16 +34,15 @@ export class NotificationListComponent implements OnInit {
     loadAlerts() {
         this.isLoading = true;
         this.alertService.getInboxAlerts(this.vehicleId).subscribe({
-            next: (alerts) => {
-                // console.log('Inbox data received:', alerts);
+            next: (alerts: any[]) => {
                 this.alerts = alerts;
                 this.isLoading = false;
-                this.cdr.detectChanges(); // FORCE UI UPDATE
+                this.cdr.detectChanges();
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.error('Inbox error:', err);
                 this.isLoading = false;
-                this.cdr.detectChanges(); // FORCE UI UPDATE
+                this.cdr.detectChanges();
             }
         });
     }
@@ -43,6 +51,7 @@ export class NotificationListComponent implements OnInit {
         if (confirm('Supprimer cette notification ?')) {
             this.alertService.hideAlert(alert._id, this.vehicleId).subscribe(() => {
                 this.alerts = this.alerts.filter(a => a._id !== alert._id);
+                this.cdr.detectChanges();
             });
         }
     }
