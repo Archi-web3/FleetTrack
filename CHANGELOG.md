@@ -12,7 +12,14 @@
 #### 🔔 Notifications Web Push (App Fermée)
 - **Support Service Worker :** Implémentation complète du standard Web Push (VAPID). Les notifications sont désormais reçues sur les tablettes Android même lorsque l'application e-Logbook est fermée ou en arrière-plan.
 - **Activation Manuelle :** Ajout d'un bouton "Activer les Notifications" dans l'Inbox pour contourner les blocages de permission des navigateurs modernes.
+- **Activation Manuelle :** Ajout d'un bouton "Activer les Notifications" dans l'Inbox pour contourner les blocages de permission des navigateurs modernes.
 - **Indicateurs :** Feedback visuel immédiat (Succès/Erreur) lors de l'abonnement.
+
+#### 📧 Communication & Workflow (Validations)
+- **Emails Automatiques :** Intégration complète du cycle de notification :
+    - **Pour validation :** Alertes envoyées aux Superviseurs Sécurité dès qu'un trajet à risque est créé.
+    - **Suivi Demandeur :** Confirmation par email lors de la validation ou du refus (avec motif) du mouvement.
+- **Matrice Sécurité :** Le système bloque les mouvements en zone sensible (Orange/Rouge) tant que la validation sécurité n'est pas signée numériquement.
 
 #### 🗑️ FleetTrack (Admin)
 - **Suppression Définitive :** Ajout d'un bouton "Supprimer" dans l'historique des alertes. Cette action supprime définitivement l'alerte de la base de données (et donc de toutes les tablettes).

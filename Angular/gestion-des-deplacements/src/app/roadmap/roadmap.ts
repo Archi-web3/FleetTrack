@@ -38,6 +38,9 @@ export class RoadmapComponent {
                 { category: 'Carte Interactive', description: 'Nouveau Filtre : Sélection par Mode de Transport (Route, Aérien, Maritime).' },
                 { category: 'Demande Mouvement', description: 'Récurrence : Possibilité de créer une série de demandes (Quotidienne/Hebdomadaire) sur 3 mois.' },
                 { category: 'UX', description: 'Amélioration de la saisie des dates pour les demandes récurrentes.' },
+                { category: 'Communication', description: 'Emails Transactionnels : Notification automatique aux Superviseurs (demande de validation) et Demandeurs (suivi statut).' },
+                { category: 'Workflow', description: 'Validation Sécurité : Matrice de risque active. Les trajets en zone rouge/orange déclenchent une approbation sécuritaire obligatoire.' },
+                { category: 'Alerting', description: 'Push Notifications : Diffusion instantanée des alertes de sécurité sur les mobiles (même app fermée).' },
                 { category: 'Sécurité', description: 'Durcissement Backend : Rate Limiter, Helmet et CORS strict pour bloquer les accès non autorisés.' },
                 { category: 'Documentation', description: 'Transparence : Nouvel onglet "Sécurité" détaillant les mesures de protection des données.' }
             ]
