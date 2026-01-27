@@ -20,16 +20,62 @@ const maintenanceTrackingRoute = require('./routes/maintenance-tracking'); // No
 // NOUVEAU : Importez le modèle Mouvement ici
 const Mouvement = require('./models/mouvement.model'); // <<< AJOUTEZ CETTE LIGNE
 
+// Middleware de sécurité
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 const port = 3000;
 
-// Middleware CORS et JSON (nécessaires)
-app.use(cors());
+// 1. Protection des Headers HTTP
+app.use(helmet({
+    crossOriginResourcePolicy: false, // Autoriser le chargement d'images croisées (pour l'App Mobile)
+}));
+
+// 2. Limitation de débit (Rate Limiting)
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 300, // Limite à 300 requêtes par IP par fenêtre (assez large pour l'usage API intensif)
+    standardHeaders: true, // Retourne les infos de rate limit dans les headers `RateLimit-*`
+    legacyHeaders: false, // Désactive les headers `X-RateLimit-*`
+    message: 'Trop de requêtes depuis cette IP, veuillez réessayer plus tard.'
+});
+app.use('/api', limiter); // Appliquer uniquement aux routes API
+
+// 3. Configuration CORS Stricte
+const allowedOrigins = [
+    'http://localhost:4200',
+    'http://localhost:4201',
+    'http://localhost:8100', // Ionic Dev
+    'https://fleettrack-web.vercel.app',
+    'https://fleettrack-admin-v2.vercel.app',
+    'https://fleettrack-mobile.vercel.app',
+    'https://fleettrack.vercel.app' // Alias potentiel
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Autoriser les requêtes sans origine (comme les applis mobiles natives ou curl)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+            callback(null, true);
+        } else {
+            console.warn(`🚫 [CORS] Origine bloquée: ${origin}`);
+            callback(new Error('Non autorisé par CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Selected-Country'],
+    credentials: true
+}));
+
 app.use(express.json());
 
 // NOUVEAU : Middleware de log générique global (pour voir si ça passe avant le auth)
 app.use((req, res, next) => {
-    console.log(`[GLOBAL MW] ${req.method} ${req.originalUrl}`);
+    // Log léger pour prod
+    // console.log(`[GLOBAL MW] ${req.method} ${req.originalUrl}`);
     next();
 });
 
