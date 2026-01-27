@@ -14,6 +14,7 @@ import { AlertPollerService } from '../../core/services/alert-poller.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NotificationListComponent } from '../../shared/components/notification-list/notification-list.component';
+import { PushNotificationService } from '../../core/services/push-notification.service'; // NOUVEAU
 
 @Component({
     selector: 'app-dashboard',
@@ -50,6 +51,7 @@ export class DashboardComponent implements OnInit {
         private http: HttpClient,
         private maintenanceService: MaintenanceService,
         private alertPoller: AlertPollerService,
+        private pushService: PushNotificationService, // NOUVEAU
         private snackBar: MatSnackBar,
         private dialog: MatDialog
     ) { }
@@ -59,6 +61,10 @@ export class DashboardComponent implements OnInit {
         if (vehicleStr) {
             this.selectedVehicle = JSON.parse(vehicleStr);
             this.alertPoller.startPolling(this.selectedVehicle._id);
+
+            // NOUVEAU: Demander l'abonnement aux notifications Push
+            // On le fait discrètement (console log en cas d'erreur)
+            this.pushService.requestSubscription(this.selectedVehicle._id);
         }
 
         // Subscribe to current user

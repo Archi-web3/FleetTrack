@@ -1,11 +1,10 @@
-const Alert = require('../models/alert.model');
+const pushController = require('./push.controller'); // NOUVEAU
 const Vehicule = require('../models/vehicule.model');
 
 // Créer une nouvelle alerte
-// Créer une nouvelle alerte
 exports.createAlert = async (req, res) => {
     console.log('📥 [API] createAlert received body:', req.body);
-    console.log('👤 [API] createAlert User:', req.user); // Vérifier si l'user est bien passé
+    console.log('👤 [API] createAlert User:', req.user);
 
     try {
         const { title, message, severity, targetType, targetVehicleId } = req.body;
@@ -16,11 +15,49 @@ exports.createAlert = async (req, res) => {
             severity,
             targetType,
             targetVehicleId,
-            createdBy: req.user ? req.user.userId : null // Gestion cas user manquant
+            createdBy: req.user ? req.user.userId : null
         });
 
         const savedAlert = await alert.save();
         console.log('✅ [API] Alert saved:', savedAlert._id);
+
+        // --- ENVOI PUSH NOTIFICATION (ASYNC) ---
+        // On ne bloque pas la réponse HTTP pour ça
+        (async () => {
+            try {
+                const payload = {
+                    notification: {
+                        title: `📢 ${title}`,
+                        body: message,
+                        icon: 'assets/icons/icon-72x72.png',
+                        vibrate: [100, 50, 100],
+                        data: {
+                            url: '/', // Ouvre l'app
+                            alertId: savedAlert._id
+                        }
+                    }
+                };
+
+                if (targetType === 'vehicle' && targetVehicleId) {
+                    await pushController.sendNotificationToVehicle(targetVehicleId, payload);
+                } else if (targetType === 'all') {
+                    // Trouver tous les véhicules actifs avec un abonnement push
+                    const vehicles = await Vehicule.find({
+                        active: { $ne: false },
+                        'pushSubscription.endpoint': { $exists: true }
+                    });
+
+                    console.log(`🔔 [PUSH] Envoi groupé à ${vehicles.length} véhicules...`);
+                    for (const v of vehicles) {
+                        await pushController.sendNotificationToVehicle(v._id, payload);
+                    }
+                }
+            } catch (pushError) {
+                console.error('❌ [PUSH] Erreur envoi global:', pushError);
+            }
+        })();
+        // ---------------------------------------
+
         res.status(201).json({ message: 'Alerte créée avec succès', alert: savedAlert });
     } catch (error) {
         console.error('❌ [API] Erreur création alerte:', error);

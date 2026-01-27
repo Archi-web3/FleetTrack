@@ -65,6 +65,16 @@ const vehiculeSchema = new mongoose.Schema({
   rentalCost: { type: Number }, // Coût mensuel location
   driverIncluded: { type: Boolean, default: false }, // Location inclut chauffeur ?
 
+  // Web Push Subscription (Tablette e-logbook)
+  pushSubscription: {
+    endpoint: String,
+    expirationTime: Number,
+    keys: {
+      p256dh: String,
+      auth: String
+    }
+  },
+
   // Mileage
 
 
