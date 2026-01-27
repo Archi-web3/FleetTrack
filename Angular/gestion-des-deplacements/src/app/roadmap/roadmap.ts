@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { FunctionalTreeComponent } from './functional-tree/functional-tree';
 
 interface RoadmapItem {
     id: number;
@@ -24,7 +25,7 @@ interface ChangelogItem {
 @Component({
     selector: 'app-roadmap',
     standalone: true,
-    imports: [CommonModule, MatIconModule, MatTabsModule],
+    imports: [CommonModule, MatIconModule, MatTabsModule, FunctionalTreeComponent],
     templateUrl: './roadmap.html',
     styleUrls: ['./roadmap.css']
 })
