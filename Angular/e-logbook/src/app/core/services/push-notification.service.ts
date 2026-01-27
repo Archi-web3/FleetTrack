@@ -30,13 +30,16 @@ export class PushNotificationService {
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then(sub => {
-                console.log('✅ [PUSH] Notification Subscription object: ', sub);
-                // Envoyer l'abonnement au backend
-                this.sendSubscriptionToBackend(sub, vehicleId).subscribe();
+                console.log('✅ [PUSH] Got sub, sending to backend...', sub);
+                // Convertir l'Observable en Promise pour attendre la réponse du backend
+                return this.sendSubscriptionToBackend(sub, vehicleId).toPromise();
+            })
+            .then(() => {
+                console.log('✅ [PUSH] Saved on backend!');
                 return true;
             })
             .catch(err => {
-                console.error('❌ [PUSH] Could not subscribe to notifications', err);
+                console.error('❌ [PUSH] Error:', err);
                 throw err;
             });
     }
