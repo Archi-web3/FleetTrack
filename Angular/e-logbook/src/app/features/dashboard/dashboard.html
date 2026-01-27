@@ -1,6 +1,11 @@
 <div class="dashboard-container">
     <!-- Header -->
     <div class="dashboard-header">
+        <!-- NOUVEAU: Notification Bell (Top Right) -->
+        <button mat-icon-button (click)="openInbox()" class="notification-btn-absolute">
+            <mat-icon>notifications</mat-icon>
+        </button>
+
         <!-- NOUVEAU: Logo ACF -->
         <div class="logo-container">
             <img src="acf-logo.png" alt="ACF Logo" class="acf-logo">
@@ -23,11 +28,6 @@
         </div>
 
         <div class="header-actions">
-            <!-- NOUVEAU: Inbox Button -->
-            <button mat-icon-button (click)="openInbox()" class="action-btn inbox-btn"
-                style="color: white; margin-right: 10px;">
-                <mat-icon>notifications</mat-icon>
-            </button>
             <button mat-stroked-button (click)="changeVehicle()">
                 <mat-icon>swap_horiz</mat-icon>
                 Changer de véhicule

@@ -14,6 +14,21 @@
     border-radius: 12px;
     color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative; // Pour positionner la cloche en absolu
+
+    // NOUVEAU: Bouton Notification Absolute
+    .notification-btn-absolute {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        z-index: 10;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    }
 
     // NOUVEAU: Style pour le logo ACF
     .logo-container {
