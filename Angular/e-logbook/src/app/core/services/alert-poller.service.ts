@@ -58,7 +58,8 @@ export class AlertPollerService {
 
     // Récupérer la liste des alertes reçues (inbox)
     getInboxAlerts(vehicleId: string): Observable<any[]> {
-        return this.http.get<any[]>(`${API_URL}/unread?vehicleId=${vehicleId}&mode=inbox`, this.getHeaders());
+        const t = new Date().getTime();
+        return this.http.get<any[]>(`${API_URL}/unread?vehicleId=${vehicleId}&mode=inbox&t=${t}`, this.getHeaders());
     }
 
     // Masquer une alerte (Inbox delete)

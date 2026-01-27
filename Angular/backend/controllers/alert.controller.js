@@ -43,16 +43,26 @@ exports.getAlertsForVehicle = async (req, res) => {
                 { targetType: 'all' },
                 { targetType: 'vehicle', targetVehicleId: vehicleId }
             ],
-            'deletedBy.vehicleId': { $ne: vehicleId } // Exclure celles masquées par l'utilisateur
+            // Exclure si le véhicule est présent dans le tableau deletedBy
+            deletedBy: {
+                $not: {
+                    $elemMatch: { vehicleId: vehicleId }
+                }
+            }
         };
 
         // Si ce n'est PAS le mode inbox, on filtre aussi celles déjà lues (comportement popup)
         if (mode !== 'inbox') {
-            query['readBy.vehicleId'] = { $ne: vehicleId };
+            // Exclure si le véhicule est présent dans le tableau readBy
+            query.readBy = {
+                $not: {
+                    $elemMatch: { vehicleId: vehicleId }
+                }
+            };
         }
 
         console.log(`🔍 [API] getAlertsForVehicle vehicle=${vehicleId} mode=${mode}`);
-        console.log('🔍 [API] Query:', JSON.stringify(query));
+        // console.log('🔍 [API] Query:', JSON.stringify(query));
 
         const alerts = await Alert.find(query).sort({ createdAt: -1 });
         console.log(`✅ [API] Found ${alerts.length} alerts`);
