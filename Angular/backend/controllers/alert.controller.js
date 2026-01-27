@@ -1,3 +1,4 @@
+const Alert = require('../models/alert.model'); // Restauration import manquant
 const pushController = require('./push.controller'); // NOUVEAU
 const Vehicule = require('../models/vehicule.model');
 
