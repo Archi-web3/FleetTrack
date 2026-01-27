@@ -16,6 +16,7 @@ import { AlertPollerService } from '../../../core/services/alert-poller.service'
 export class NotificationListComponent implements OnInit {
     alerts: any[] = [];
     vehicleId: string;
+    isLoading = true; // Start loading by default
 
     constructor(
         private dialogRef: MatDialogRef<NotificationListComponent>,
@@ -30,8 +31,15 @@ export class NotificationListComponent implements OnInit {
     }
 
     loadAlerts() {
-        this.alertService.getInboxAlerts(this.vehicleId).subscribe(alerts => {
-            this.alerts = alerts;
+        this.isLoading = true;
+        this.alertService.getInboxAlerts(this.vehicleId).subscribe({
+            next: (alerts) => {
+                this.alerts = alerts;
+                this.isLoading = false;
+            },
+            error: () => {
+                this.isLoading = false;
+            }
         });
     }
 
