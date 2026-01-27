@@ -104,6 +104,10 @@ app.use('/api/environment', environmentRoute);
 const alertsRoute = require('./routes/alerts');
 app.use('/api/alerts', alertsRoute);
 
+// NOUVEAU: Routes pour les Notifications Push
+const pushRoute = require('./routes/push');
+app.use('/api/push', pushRoute);
+
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
 const startMaintenanceCron = require('./jobs/maintenanceCron'); // New daily email cron
