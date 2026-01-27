@@ -1,7 +1,7 @@
 <div class="user-guide-container">
     <div class="guide-header">
         <h1>📖 Guide Utilisateur FleetTrack</h1>
-        <p class="version">Version 2.4 - Janvier 2026</p>
+        <p class="version">Version 2.7 - Janvier 2026</p>
     </div>
 
     <div class="guide-content">
@@ -20,13 +20,23 @@
         <!-- Introduction -->
         <section id="introduction">
             <h2>1. Introduction</h2>
-            <p>FleetTrack est la solution de gestion de flotte optimisée pour ACF, comprenant :</p>
+            <p>FleetTrack est la solution de gestion de flotte optimisée pour ACF. Elle repose sur une
+                <strong>architecture multi-pays stricte</strong> :
+            </p>
             <ul>
-                <li><strong>Interface Web</strong> : Pour gérer les véhicules, planifier les mouvements et configurer la
-                    maintenance.</li>
-                <li><strong>E-Logbook Mobile (Chauffeur)</strong> : Carnet de bord numérique pour les trajets, pleins de
-                    carburant et exécution des services de maintenance.</li>
+                <li><strong>Cloisonnement des données :</strong> Un utilisateur affecté à un pays (ex: Mali) ne peut
+                    voir QUE les données de ce pays.</li>
+                <li><strong>Exception SuperAdmin :</strong> Seul le rôle "SuperAdmin" possède une vue globale et peut
+                    naviguer entre tous les pays.</li>
             </ul>
+
+            <div class="note">
+                <strong>Important :</strong> L'application est divisée en deux interfaces connectées :
+                <ul>
+                    <li><strong>Interface Web (Admin) :</strong> Gestion, Planification, Validation par le bureau.</li>
+                    <li><strong>E-Logbook (Chauffeur) :</strong> Application Mobile (PWA) pour le terrain.</li>
+                </ul>
+            </div>
 
             <h3>Rôles Utilisateurs</h3>
             <table class="roles-table">
@@ -34,39 +44,47 @@
                     <tr>
                         <th>Rôle</th>
                         <th>Accès</th>
-                        <th>Description</th>
+                        <th>Portée (Scope)</th>
+                        <th>Responsabilités</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Super Admin</strong></td>
-                        <td>Interface Web</td>
-                        <td>Gestion complète : pays, bases, utilisateurs, véhicules</td>
+                        <td><strong>SuperAdmin</strong></td>
+                        <td>Web (Complet)</td>
+                        <td>🌍 Monde (Tous Pays)</td>
+                        <td>Configuration système, création des pays/bases, audit global, gestion des admins pays.</td>
                     </tr>
                     <tr>
                         <td><strong>Admin (Pays)</strong></td>
-                        <td>Interface Web</td>
-                        <td>Gestion de sa base : utilisateurs, véhicules, mouvements</td>
+                        <td>Web (Pays)</td>
+                        <td>🏳️ Pays (Mission)</td>
+                        <td>Gestion de TOUTES les bases de sa mission. Création des utilisateurs, paramétrage local.
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>Superviseur (Base)</strong></td>
-                        <td>Interface Web</td>
-                        <td>Validation des mouvements et gestion de la flotte de sa base</td>
+                        <td>Web (Base)</td>
+                        <td>📍 Base Locale</td>
+                        <td>Validation hiérarchique des mouvements, suivi maintenance flotte locale.</td>
                     </tr>
                     <tr>
                         <td><strong>Superviseur Sécurité</strong></td>
-                        <td>Interface Web</td>
-                        <td>Validation sécuritaire des mouvements</td>
+                        <td>Web (Base/Pays)</td>
+                        <td>🛡️ Transverse</td>
+                        <td>Validation sécuritaire des mouvements, envoi des alertes push de sécurité.</td>
                     </tr>
                     <tr>
-                        <td><strong>Technicien (RP/Demandeur)</strong></td>
-                        <td>Interface Web</td>
-                        <td>Consultation et création de demandes de mouvements (Responsable Programme)</td>
+                        <td><strong>Technicien (Demandeur)</strong></td>
+                        <td>Web (Restreint)</td>
+                        <td>👤 Personnel</td>
+                        <td>Création de demandes de mouvements pour soi ou son équipe.</td>
                     </tr>
                     <tr>
                         <td><strong>Chauffeur</strong></td>
-                        <td>E-Logbook Mobile</td>
-                        <td>Enregistrement des trajets, carburant, incidents</td>
+                        <td>Mobile PWA</td>
+                        <td>🚙 Véhicule</td>
+                        <td>Tenue du carnet de bord, pleins carburant, checklist maintenance.</td>
                     </tr>
                 </tbody>
             </table>
@@ -97,112 +115,100 @@
             <h2>3. Interface Web</h2>
 
             <h3>3.1 Planning Global</h3>
-            <p>Le planning permet de visualiser tous les mouvements planifiés.</p>
+            <p>Le cœur operationnel. Visualisez tous les mouvements de la semaine d'un coup d'œil.</p>
             <div class="features">
-                <h4>Fonctionnalités :</h4>
+                <h4>Nouveautés :</h4>
                 <ul>
-                    <li>✅ <strong>Visualisation des mouvements à la semaine.</strong></li>
-                    <li>✅ Passez votre souris sur un mouvement pour voir plus de détails (Passagers, Motif, etc.).</li>
+                    <li>✅ <strong>Drag & Drop :</strong> Assignez un véhicule en glissant la demande sur la ressource.
+                    </li>
+                    <li>✅ <strong>Mode "Inbox" Alertes :</strong> Les notifications non lues apparaissent en priorité.
+                    </li>
                 </ul>
-                <div class="status-legend">
-                    <h4>Légende des status :</h4>
-                    <ul>
-                        <li>🟡 <strong>En attente</strong> : Demande soumise.</li>
-                        <li>🟢 <strong>Validé</strong> : Approuvé par l'administrateur.</li>
-                        <li>🔵 <strong>Pris en charge</strong> : Chauffeur/Véhicule assigné et confirmé.</li>
-                        <li>🚙 <strong>En cours</strong> : Trajet démarré.</li>
-                        <li>✅ <strong>Terminé</strong> : Trajet clôturé.</li>
-                        <li>❌ <strong>Annulé</strong> : Demande annulée.</li>
-                    </ul>
-                </div>
             </div>
 
-            <h3>3.2 Tableau de Bord</h3>
-            <p>Vue d'ensemble de l'activité du jour et indicateurs clés.</p>
-
-            <h3>3.3 Nouvelle Demande</h3>
-            <p>Formulaire pour créer un nouveau mouvement.</p>
+            <h3>3.2 Vision & Sécurité (Roadmap)</h3>
+            <p><em>(Nouveau Menu)</em></p>
+            <p>Une transparence totale sur l'évolution de l'outil et sa sécurité.</p>
             <ul>
-                <li>Remplissez les détails : Projet, Date/Heure, Itinéraire, Passagers, Motif.</li>
-                <li>Soumettez pour validation.</li>
+                <li><strong>Roadmap :</strong> Consultez les prochaines fonctionnalités prévues.</li>
+                <li><strong>Changelog :</strong> Historique complet des mises à jour.</li>
+                <li><strong>Sécurité :</strong> Détails techniques sur la protection des données (RGPD, Chiffrement,
+                    Audit).</li>
             </ul>
 
-            <h3>3.4 Mes Mouvements</h3>
-            <p>Espace dédié au demandeur (Technicien RP) pour suivre ses propres demandes.</p>
+            <h3>3.3 Objectifs Environnementaux</h3>
+            <p>Suivez l'empreinte carbone de la flotte.</p>
             <ul>
-                <li>Visualiser la liste de vos demandes.</li>
-                <li>Vérifier le statut en temps réel (En attente, Validé, etc.).</li>
-                <li>Consulter l'historique des mouvements terminés.</li>
+                <li><strong>IAP (Indicateur d'Activité Pondéré) :</strong> Mesure l'efficacité réelle des déplacements.
+                </li>
+                <li><strong>Plan d'Action :</strong> Suivi des objectifs de réduction CO2 (-5% / an).</li>
             </ul>
 
-            <h3>3.5 Validation</h3>
-            <p><em>(Réservé aux Admin/Superviseurs)</em></p>
-            <p>Interface pour valider ou refuser les demandes de mouvements en attente.</p>
+            <h3>3.4 Alertes de Sécurité</h3>
+            <p>Permet d'envoyer des notifications urgentes à toute la flotte (via Web Push).</p>
+            <ul>
+                <li>Ciblez un véhicule précis ou "TOUTE LA FLOTTE".</li>
+                <li>Le chauffeur reçoit l'alerte même si son téléphone est verrouillé (App fermée).</li>
+            </ul>
 
-            <h3>3.6 Consolidation</h3>
-            <p><em>(Réservé aux Admin/Dispatch)</em></p>
-            <p>Outil pour attribuer les véhicules et les chauffeurs aux mouvements validés et organiser le planning.</p>
+            <h3>3.5 Validation & Consolidation</h3>
+            <p>Le workflow de validation à double niveau :</p>
+            <ol>
+                <li><strong>Logistique :</strong> Vérifie la disponibilité véhicule.</li>
+                <li><strong>Sécurité :</strong> Valide la faisabilité du trajet (Zones à risques).</li>
+            </ol>
+            <p>Utilisez la <strong>Consolidation</strong> pour grouper plusieurs demandes dans un même véhicule
+                (Covoiturage).</p>
 
-            <h3>3.7 Gestion des Véhicules</h3>
-            <p>Gestion des véhicules et de leurs données techniques.</p>
+            <h3>3.6 Gestion de Flotte & Maintenance</h3>
             <div class="tip">
-                <strong>Kilométrage Initial :</strong>
-                Lors de l'ajout d'un véhicule, ce champ est crucial. Si modifié sans trajets existants, le kilométrage
-                actuel s'ajuste automatiquement.
+                <strong>Notifications Maintenance :</strong>
+                FleetTrack surveille automatiquement les kilométrages.
+                Un email est envoyé au Superviseur (08h00) si un véhicule approche de son échéance de maintenance.
             </div>
-
-            <h3>3.8 Suivi Maintenance</h3>
-            <p>Module pour assurer le suivi préventif de la flotte.</p>
-
-            <div class="features">
-                <h4>Onglet Suivi Hebdo</h4>
-                <p>Permet de consulter l'état des checklist hebdomadaires effectuées par les chauffeurs.</p>
-
-                <h4>Onglet Configuration Intervalles</h4>
-                <p>Définissez les fréquences de maintenance (ex: Vidange tous les 5000 km) pour générer les alertes.</p>
-
-                <h4>Templates de Service</h4>
-                <p>Configuration des listes de tâches.</p>
-                <div class="note">
-                    <em>Note : Pour l'instant, la référence des instructions techniques provient du manuel MSF et cible
-                        principalement les Land Cruiser.</em>
-                </div>
-            </div>
-
-            <h3>3.9 Administration</h3>
-            <p>Configuration avancée de l'application.</p>
             <ul>
-                <li><strong>Gestion des utilisateurs</strong> : Création et gestion des comptes et rôles.</li>
-                <li><strong>Gestion des projets</strong> : Codes projets pour l'analytique.</li>
-                <li><strong>Gestion des chauffeurs</strong> : Liste spécifique des conducteurs.</li>
-                <li><strong>Gestion des lieux</strong> : Points de départ/arrivée fréquents.</li>
-                <li><strong>Paramètres généraux</strong> : Configuration globale.</li>
-                <li><strong>Rapport mensuel</strong> : Export des données d'activité.</li>
+                <li><strong>Suivi Hebdo :</strong> État des checklists chauffeurs.</li>
+                <li><strong>Configuration :</strong> Définissez vos propres intervalles (ex: Vidange LC tous les
+                    5000km).</li>
             </ul>
+
+            <h3>3.7 Rapports & Analytics</h3>
+            <p>Exportez vos rapports mensuels en un clic (Format standard Logbook).</p>
         </section>
 
         <!-- E-Logbook Mobile -->
         <section id="mobile">
             <h2>4. E-Logbook Mobile (PWA)</h2>
+            <div class="note">
+                <strong>Mode Hors-Ligne (Offline First) :</strong>
+                L'application fonctionne ENTIÈREMENT sans connexion internet.
+                Les données sont stockées dans le téléphone et synchronisées automatiquement dès que le réseau revient
+                (Icône 🔄 verte).
+            </div>
 
-            <h3>4.1 Utilisation Quotidienne</h3>
+            <h3>4.1 Notifications Web Push (NOUVEAU)</h3>
+            <p>Pour la sécurité et la réactivité :</p>
             <ul>
-                <li><strong>Sélection Véhicule</strong> : Choisissez votre véhicule au démarrage.</li>
-                <li><strong>Trajets</strong> : Démarrez et arrêtez vos trajets.</li>
-                <li><strong>Carburant</strong> : Saisie des pleins.</li>
+                <li><strong>App Fermée :</strong> Vous recevez les alertes de sécurité et les notifications de mission
+                    même si l'application est fermée.</li>
+                <li><strong>Activation :</strong> Cliquez sur le bouton "Activer Notifications" dans votre Inbox pour
+                    autoriser le mobile.</li>
             </ul>
 
-            <h3>4.2 Services Programmés (Maintenance)</h3>
-            <p>Exécution des maintenances via l'application.</p>
-            <ol>
-                <li>Allez dans <strong>"Maintenance" > "Services Programmés"</strong>.</li>
-                <li>Cochez les tâches réalisées.</li>
-                <li>Utilisez l'icône livre 📖 pour consulter le <strong>Manuel Atelier (PDF)</strong>.</li>
-                <li>Validez le service une fois terminé.</li>
-            </ol>
+            <h3>4.2 Utilisation Quotidienne</h3>
+            <ul>
+                <li><strong>Sélection Véhicule :</strong> Choisissez votre véhicule au démarrage.</li>
+                <li><strong>GPS Automatique :</strong> Le départ de trajet enregistre votre position GPS précise.</li>
+                <li><strong>Mode Libre :</strong> Possibilité de démarrer un trajet imprévu ("Ad-Hoc") sans demande
+                    préalable.</li>
+            </ul>
 
-            <h3>4.3 Signalement</h3>
-            <p>Utilisez le menu <strong>"Incidents"</strong> pour déclarer accidents ou pannes.</p>
+            <h3>4.3 Services & Incidents</h3>
+            <ul>
+                <li><strong>Maintenance :</strong> Cochez les tâches réalisées (avec accès au Manuel Atelier PDF
+                    intégré).</li>
+                <li><strong>Incidents :</strong> Déclarez accidents ou pannes avec photos à l'appui.</li>
+            </ul>
         </section>
 
         <!-- FAQ -->
