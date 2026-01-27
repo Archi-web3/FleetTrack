@@ -14,6 +14,7 @@ export interface TreeNode {
     children?: TreeNode[];
     isImplemented?: boolean; // Pour le futur (statut)
     color?: string; // Pour les lots
+    description?: string; // Nouvelle "bulle d'info"
 }
 
 @Component({
@@ -25,7 +26,7 @@ export interface TreeNode {
 })
 export class FunctionalTreeComponent {
 
-    // Données initiales basées sur l'image XMind
+    // Données initiales basées sur l'image XMind et Feedback
     treeData: TreeNode = {
         id: 'root',
         name: 'Mouvements Terrain & Parc de Véhicules',
@@ -33,7 +34,13 @@ export class FunctionalTreeComponent {
         children: [
             {
                 id: 'c1', name: 'Paramétrage', type: 'category', color: '#000000', children: [ // Black
-                    { id: 'f1-1', name: 'Gestion des utilisateurs : SSO + droits', type: 'function', isImplemented: true },
+                    {
+                        id: 'f1-1',
+                        name: 'Gestion des utilisateurs : SSO + droits',
+                        type: 'function',
+                        isImplemented: true,
+                        description: "FleetTrack : Gestion native (Email/Mot de passe) + Rôles (RBAC). Pas de SSO externe pour l'instant."
+                    },
                     { id: 'f1-2', name: 'Gestion des employés (Core RH)', type: 'function' },
                     { id: 'f1-3', name: 'Gestion de la structure ACF : BP, bases...', type: 'function', isImplemented: true },
                     { id: 'f1-4', name: 'Gestion des contrats', type: 'function' },
@@ -104,13 +111,25 @@ export class FunctionalTreeComponent {
                 id: 'c9', name: 'Suivi administratif', type: 'category', color: '#00bcd4', children: [ // Cyan
                     { id: 'f9-1', name: 'Suivi standards véhicules (équipement)', type: 'function' },
                     { id: 'f9-2', name: 'Suivi échéances admin véhicules', type: 'function' },
-                    { id: 'f9-3', name: 'Suivi standards chauffeurs (formation)', type: 'function' },
+                    {
+                        id: 'f9-3',
+                        name: 'Suivi standards chauffeurs (formation)',
+                        type: 'function',
+                        isImplemented: true, // Partiel
+                        description: "FleetTrack : Suivi 'Eco-conduite' (Oui/Non + Date) présent. Manque l'historique complet des formations et les alertes de fin de validité Admin (Permis...)."
+                    },
                     { id: 'f9-4', name: 'Suivi échéances admin chauffeurs', type: 'function' }
                 ]
             },
             {
                 id: 'c10', name: 'Gestion financière', type: 'category', color: '#9c27b0', children: [ // Deep Purple
-                    { id: 'f10-1', name: 'Suivi coûts récurrents (Assurance, Loc...)', type: 'function' },
+                    {
+                        id: 'f10-1',
+                        name: 'Suivi coûts récurrents (Assurance, Loc...)',
+                        type: 'function',
+                        isImplemented: true,
+                        description: "FleetTrack : Présent dans la fiche Véhicule (Assurance, Coût Location, Dépréciation). Visible dans l'export 'Rapport Mensuel' et le menu d'administration."
+                    },
                     { id: 'f10-2', name: 'Suivi coûts ponctuels (Maint/Rep)', type: 'function' },
                     { id: 'f10-3', name: 'Consolidation coûts par véhicule/mois', type: 'function' },
                     { id: 'f10-4', name: 'Ventilation des coûts (Analytique)', type: 'function', isImplemented: true },

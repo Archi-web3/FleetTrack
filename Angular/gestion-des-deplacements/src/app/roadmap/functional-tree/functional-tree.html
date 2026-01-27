@@ -58,10 +58,29 @@
                                     <mat-icon *ngIf="!func.isImplemented">radio_button_unchecked</mat-icon>
                                 </div>
 
-                                <span *ngIf="editingNodeId !== func.id" (click)="toggleEdit(func)">{{ func.name
-                                    }}</span>
-                                <input *ngIf="editingNodeId === func.id" [(ngModel)]="func.name"
-                                    (blur)="toggleEdit(func)" (keyup.enter)="toggleEdit(func)" autoFocus>
+                                <div class="node-content">
+                                    <span *ngIf="editingNodeId !== func.id" (click)="toggleEdit(func)">{{ func.name
+                                        }}</span>
+                                    <input *ngIf="editingNodeId === func.id" [(ngModel)]="func.name"
+                                        (keyup.enter)="toggleEdit(func)" autoFocus>
+
+                                    <!-- INFO BUBBLE -->
+                                    <div class="info-bubble" *ngIf="func.description">
+                                        <mat-icon class="info-icon" [matTooltip]="func.description">info</mat-icon>
+                                    </div>
+                                    <button class="add-note-btn" *ngIf="!func.description && editingNodeId !== func.id"
+                                        (click)="func.description = 'Double-cliquez pour éditer...'">
+                                        <mat-icon>add_comment</mat-icon>
+                                    </button>
+
+                                    <!-- EDIT DESCRIPTION MODE -->
+                                    <div class="description-edit" *ngIf="editingNodeId === func.id">
+                                        <label>Note Interne :</label>
+                                        <textarea [(ngModel)]="func.description" rows="3"
+                                            placeholder="Comment c'est géré dans FleetTrack ?"></textarea>
+                                        <button mat-button color="primary" (click)="toggleEdit(func)">OK</button>
+                                    </div>
+                                </div>
 
                                 <button class="delete-mini" (click)="deleteNode(cat, j)">×</button>
                             </div>
