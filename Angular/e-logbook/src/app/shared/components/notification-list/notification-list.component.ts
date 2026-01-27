@@ -59,9 +59,15 @@ export class NotificationListComponent implements OnInit {
     }
 
     enablePush() {
-        this.pushService.requestSubscription(this.vehicleId);
-        // Note: requestSubscription gère ses propres logs, on pourrait ajouter un feedback visuel ici si besoin
-        alert("Demande d'activation envoyée. Si le navigateur demande la permission, cliquez sur AUTORISER.");
+        this.pushService.requestSubscription(this.vehicleId)
+            .then(() => {
+                alert("✅ Notifications activées avec succès ! Vous recevrez désormais les alertes même l'app fermée.");
+                this.close();
+            })
+            .catch(err => {
+                console.error('Erreur activation push:', err);
+                alert("❌ Erreur lors de l'activation des notifications :\n" + (err.message || err));
+            });
     }
 
     close() {
