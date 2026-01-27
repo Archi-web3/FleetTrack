@@ -9,6 +9,11 @@
 - **Gestion :** Possibilité pour le chauffeur de supprimer (masquer) une notification de sa liste personnelle.
 - **Polling :** Optimisation de la récupération des messages avec un mode "Inbox" dédié.
 
+#### 🔔 Notifications Web Push (App Fermée)
+- **Support Service Worker :** Implémentation complète du standard Web Push (VAPID). Les notifications sont désormais reçues sur les tablettes Android même lorsque l'application e-Logbook est fermée ou en arrière-plan.
+- **Activation Manuelle :** Ajout d'un bouton "Activer les Notifications" dans l'Inbox pour contourner les blocages de permission des navigateurs modernes.
+- **Indicateurs :** Feedback visuel immédiat (Succès/Erreur) lors de l'abonnement.
+
 #### 🗑️ FleetTrack (Admin)
 - **Suppression Définitive :** Ajout d'un bouton "Supprimer" dans l'historique des alertes. Cette action supprime définitivement l'alerte de la base de données (et donc de toutes les tablettes).
 - **Tableau de Bord :** Ajout d'une colonne "Action" pour gérer les suppressions.
