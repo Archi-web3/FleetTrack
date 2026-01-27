@@ -2,8 +2,9 @@ const webPush = require('web-push');
 const Vehicule = require('../models/vehicule.model');
 
 // Configuration unique au démarrage
+// Configuration unique au démarrage
 webPush.setVapidDetails(
-    process.env.VAPID_MAILTO,
+    process.env.VAPID_MAILTO || 'mailto:admin@fleettrack.com',
     process.env.VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
 );
