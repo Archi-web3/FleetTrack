@@ -1,27 +1,19 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { AlertPollerService } from '../../../core/services/alert-poller.service';
+import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
+// ... imports
 
 @Component({
-    selector: 'app-notification-list',
-    standalone: true,
-    imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatListModule],
-    templateUrl: './notification-list.component.html',
-    styleUrls: ['./notification-list.component.scss']
+    // ...
 })
 export class NotificationListComponent implements OnInit {
     alerts: any[] = [];
     vehicleId: string;
-    isLoading = true; // Start loading by default
+    isLoading = true;
 
     constructor(
         private dialogRef: MatDialogRef<NotificationListComponent>,
         @Inject(MAT_DIALOG_DATA) public data: { vehicleId: string },
-        private alertService: AlertPollerService
+        private alertService: AlertPollerService,
+        private cdr: ChangeDetectorRef // NOUVEAU
     ) {
         this.vehicleId = data.vehicleId;
     }
@@ -34,11 +26,15 @@ export class NotificationListComponent implements OnInit {
         this.isLoading = true;
         this.alertService.getInboxAlerts(this.vehicleId).subscribe({
             next: (alerts) => {
+                // console.log('Inbox data received:', alerts);
                 this.alerts = alerts;
                 this.isLoading = false;
+                this.cdr.detectChanges(); // FORCE UI UPDATE
             },
-            error: () => {
+            error: (err) => {
+                console.error('Inbox error:', err);
                 this.isLoading = false;
+                this.cdr.detectChanges(); // FORCE UI UPDATE
             }
         });
     }

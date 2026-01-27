@@ -46,7 +46,9 @@ exports.getAlertsForVehicle = async (req, res) => {
             ]
         };
 
-        const allPotentialAlerts = await Alert.find(rawQuery).sort({ createdAt: -1 });
+        const allPotentialAlerts = await Alert.find(rawQuery)
+            .sort({ createdAt: -1 })
+            .limit(100); // Optimisation: ne pas charger tout l'historique inutilement
 
         console.log(`🔍 [API] Raw Candidates: ${allPotentialAlerts.length}`);
 
