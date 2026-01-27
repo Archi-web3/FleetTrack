@@ -51,7 +51,12 @@ exports.getAlertsForVehicle = async (req, res) => {
             query['readBy.vehicleId'] = { $ne: vehicleId };
         }
 
+        console.log(`🔍 [API] getAlertsForVehicle vehicle=${vehicleId} mode=${mode}`);
+        console.log('🔍 [API] Query:', JSON.stringify(query));
+
         const alerts = await Alert.find(query).sort({ createdAt: -1 });
+        console.log(`✅ [API] Found ${alerts.length} alerts`);
+
         res.status(200).json(alerts);
     } catch (error) {
         console.error('Erreur récupération alertes:', error);
