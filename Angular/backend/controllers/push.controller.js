@@ -28,10 +28,17 @@ exports.subscribe = async (req, res) => {
         }
 
         console.log(`🔔 [PUSH] Nouvel abonnement pour véhicule ${vehicleId}`);
+        console.log('📦 [PUSH] Payload Subscription:', JSON.stringify(subscription, null, 2));
 
-        await Vehicule.findByIdAndUpdate(vehicleId, {
+        const result = await Vehicule.findByIdAndUpdate(vehicleId, {
             pushSubscription: subscription
-        });
+        }, { new: true }); // new: true pour retourner le doc mis à jour (vérif)
+
+        if (!result) {
+            console.error('❌ [PUSH] Véhicule introuvable pour maj abo');
+        } else {
+            console.log('💾 [PUSH] Abonnement sauvegardé en DB. Endpoint:', result.pushSubscription?.endpoint?.substring(0, 50) + '...');
+        }
 
         res.status(201).json({ message: 'Abonnement Push enregistré' });
     } catch (error) {
