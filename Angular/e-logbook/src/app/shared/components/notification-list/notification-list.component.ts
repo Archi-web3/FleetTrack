@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { AlertPollerService } from '../../../core/services/alert-poller.service';
+import { PushNotificationService } from '../../../core/services/push-notification.service'; // NOUVEAU
 
 @Component({
     selector: 'app-notification-list',
@@ -22,6 +23,7 @@ export class NotificationListComponent implements OnInit {
         private dialogRef: MatDialogRef<NotificationListComponent>,
         @Inject(MAT_DIALOG_DATA) public data: { vehicleId: string },
         private alertService: AlertPollerService,
+        private pushService: PushNotificationService, // NOUVEAU
         private cdr: ChangeDetectorRef
     ) {
         this.vehicleId = data.vehicleId;
@@ -54,6 +56,12 @@ export class NotificationListComponent implements OnInit {
                 this.cdr.detectChanges();
             });
         }
+    }
+
+    enablePush() {
+        this.pushService.requestSubscription(this.vehicleId);
+        // Note: requestSubscription gère ses propres logs, on pourrait ajouter un feedback visuel ici si besoin
+        alert("Demande d'activation envoyée. Si le navigateur demande la permission, cliquez sur AUTORISER.");
     }
 
     close() {

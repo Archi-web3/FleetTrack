@@ -61,10 +61,6 @@ export class DashboardComponent implements OnInit {
         if (vehicleStr) {
             this.selectedVehicle = JSON.parse(vehicleStr);
             this.alertPoller.startPolling(this.selectedVehicle._id);
-
-            // NOUVEAU: Demander l'abonnement aux notifications Push
-            // On le fait discrètement (console log en cas d'erreur)
-            this.pushService.requestSubscription(this.selectedVehicle._id);
         }
 
         // Subscribe to current user

@@ -27,6 +27,10 @@
         </mat-list-item>
     </mat-list>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions align="end" style="justify-content: space-between;">
+    <button mat-flat-button color="primary" (click)="enablePush()">
+        <mat-icon>notifications_active</mat-icon>
+        ACTIVER NOTIFICATIONS
+    </button>
     <button mat-button (click)="close()">FERMER</button>
 </mat-dialog-actions>
