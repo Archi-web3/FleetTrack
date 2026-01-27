@@ -37,37 +37,37 @@ exports.getAlertsForVehicle = async (req, res) => {
             return res.status(400).json({ error: 'VehicleId requis' });
         }
 
-        const query = {
+        // 1. Récupérer TOUTES les alertes actives pour ce véhicule
+        const rawQuery = {
             active: true,
             $or: [
                 { targetType: 'all' },
                 { targetType: 'vehicle', targetVehicleId: vehicleId }
-            ],
-            // Exclure si le véhicule est présent dans le tableau deletedBy
-            deletedBy: {
-                $not: {
-                    $elemMatch: { vehicleId: vehicleId }
-                }
-            }
+            ]
         };
 
-        // Si ce n'est PAS le mode inbox, on filtre aussi celles déjà lues (comportement popup)
-        if (mode !== 'inbox') {
-            // Exclure si le véhicule est présent dans le tableau readBy
-            query.readBy = {
-                $not: {
-                    $elemMatch: { vehicleId: vehicleId }
-                }
-            };
-        }
+        const allPotentialAlerts = await Alert.find(rawQuery).sort({ createdAt: -1 });
 
-        console.log(`🔍 [API] getAlertsForVehicle vehicle=${vehicleId} mode=${mode}`);
-        // console.log('🔍 [API] Query:', JSON.stringify(query));
+        console.log(`🔍 [API] Raw Candidates: ${allPotentialAlerts.length}`);
 
-        const alerts = await Alert.find(query).sort({ createdAt: -1 });
-        console.log(`✅ [API] Found ${alerts.length} alerts`);
+        // 2. Filtrage manuel en Javascript
+        const filteredAlerts = allPotentialAlerts.filter(alert => {
+            // A. Est-ce que l'utilisateur a supprimé cette alerte de son inbox ?
+            const isDeleted = alert.deletedBy && alert.deletedBy.some(d => d.vehicleId.toString() === vehicleId);
+            if (isDeleted) return false;
 
-        res.status(200).json(alerts);
+            // B. Si on n'est PAS en mode inbox, on masque les alertes déjà lues
+            if (mode !== 'inbox') {
+                const isRead = alert.readBy && alert.readBy.some(r => r.vehicleId.toString() === vehicleId);
+                if (isRead) return false;
+            }
+
+            return true;
+        });
+
+        console.log(`✅ [API] Returning ${filteredAlerts.length} alerts (Mode: ${mode})`);
+
+        res.status(200).json(filteredAlerts);
     } catch (error) {
         console.error('Erreur récupération alertes:', error);
         res.status(500).json({ error: 'Erreur récupération alertes' });
