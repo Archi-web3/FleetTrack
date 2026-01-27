@@ -18,6 +18,14 @@
 - **Suppression Définitive :** Ajout d'un bouton "Supprimer" dans l'historique des alertes. Cette action supprime définitivement l'alerte de la base de données (et donc de toutes les tablettes).
 - **Tableau de Bord :** Ajout d'une colonne "Action" pour gérer les suppressions.
 
+#### 🛡️ Renforcement Sécurité & Conformité
+- **Protection Backend 3.0 :** Déploiement du triptyque de sécurité :
+    1.  **Strict CORS :** Restriction des accès API aux seules origines officielles (Vercel).
+    2.  **Rate Limiter :** Protection anti-BruteForce (Max 300 requêtes/15min par IP).
+    3.  **Helmet :** Sécurisation des headers HTTP (XSS, Sniffing).
+- **Transparence UI :** Nouvel onglet "Sécurité & Confidentialité" dans le menu "Vision & Sécurité". Vulgarisation des protocoles techniques (JWT, Chiffrement, RBAC) pour les utilisateurs finaux.
+- **Documentation :** Mise à jour majeure du Guide Utilisateur (v2.7) intégrant l'explication de l'architecture Multi-Pays et la portée des rôles.
+
 ---
 
 ## [2.6.0] - 2026-01-25

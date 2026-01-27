@@ -37,7 +37,9 @@ export class RoadmapComponent {
             changes: [
                 { category: 'Carte Interactive', description: 'Nouveau Filtre : Sélection par Mode de Transport (Route, Aérien, Maritime).' },
                 { category: 'Demande Mouvement', description: 'Récurrence : Possibilité de créer une série de demandes (Quotidienne/Hebdomadaire) sur 3 mois.' },
-                { category: 'UX', description: 'Amélioration de la saisie des dates pour les demandes récurrentes.' }
+                { category: 'UX', description: 'Amélioration de la saisie des dates pour les demandes récurrentes.' },
+                { category: 'Sécurité', description: 'Durcissement Backend : Rate Limiter, Helmet et CORS strict pour bloquer les accès non autorisés.' },
+                { category: 'Documentation', description: 'Transparence : Nouvel onglet "Sécurité" détaillant les mesures de protection des données.' }
             ]
         },
         {
