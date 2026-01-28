@@ -35,7 +35,13 @@ router.get('/global', auth(), async (req, res) => {
 
         // Filtre MULTI-PAYS : Filtrer par pays sélectionné
         if (req.selectedCountry) {
-            matchFilter.pays = req.selectedCountry;
+            if (req.selectedCountry === 'all') {
+                // Pas de filtre (Vue Globale)
+            } else if (req.selectedCountry === 'none') {
+                matchFilter.$or = [{ pays: null }, { pays: { $exists: false } }];
+            } else {
+                matchFilter.pays = req.selectedCountry;
+            }
         }
 
         // 1. Récupérer les paramètres CO2
@@ -179,7 +185,13 @@ router.get('/par-projet', auth(), async (req, res) => {
 
         // Filtre MULTI-PAYS : Filtrer par pays sélectionné (comme pour stats globales)
         if (req.selectedCountry) {
-            matchFilter.pays = req.selectedCountry;
+            if (req.selectedCountry === 'all') {
+                // Pas de filtre
+            } else if (req.selectedCountry === 'none') {
+                matchFilter.$or = [{ pays: null }, { pays: { $exists: false } }];
+            } else {
+                matchFilter.pays = req.selectedCountry;
+            }
         }
 
         // Filtre par véhicule

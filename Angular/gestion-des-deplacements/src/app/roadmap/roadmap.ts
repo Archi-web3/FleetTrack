@@ -39,6 +39,7 @@ export class RoadmapComponent {
                 { category: 'Journal d\'Activité', description: 'Nouveau Module : Audit Log complet traçant toutes les actions sensibles (Cr, Up, Del) sur les utilisateurs, véhicules, mouvements et lieux.' },
                 { category: 'Journal d\'Activité', description: 'Filtres : Possibilité de filtrer l\'historique par Catégorie, Action et Pays (SuperAdmin).' },
                 { category: 'Administration', description: 'Mode "Purge" : Fonctionnalité de nettoyage complet des logs (réservée au SuperAdmin) après confirmation.' },
+                { category: 'Juridique', description: 'Décharge de Responsabilité : Ajout de la fonctionnalité de signature numérique pour les passagers externes.' },
                 { category: 'Sécurité', description: 'Traçabilité : Enregistrement automatique du Pays concerné et de l\'IP de l\'auteur pour chaque action.' },
                 { category: 'Correctif', description: 'Stabilité : Résolution des problèmes de CORS et Rate Limiting sur l\'API.' }
             ]
