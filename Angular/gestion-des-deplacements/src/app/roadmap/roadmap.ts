@@ -286,6 +286,106 @@ export class RoadmapComponent {
             targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Haute'
+        },
+        {
+            id: 13,
+            title: 'Connecteur SSO (Azure AD)',
+            description: 'Intégration du Single Sign-On avec Azure AD pour une gestion centralisée des identités et une connexion simplifiée pour les utilisateurs.',
+            category: 'Sécurité & Admin',
+            categoryIcon: 'vpn_key',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Haute'
+        },
+        {
+            id: 14,
+            title: 'Refonte Workflow Validation',
+            description: 'Révision du logique d\'attribution des véhicules pour permettre l\'affectation APRES validation sécuritaire (évitant les annulations tardives).',
+            category: 'Workflow',
+            categoryIcon: 'hub',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Moyenne'
+        },
+        {
+            id: 15,
+            title: 'Suivi Demandes en Attente',
+            description: 'Ajout de filtres sur le planning global pour visualiser les demandes en attente de validation et notifications automatiques aux demandeurs.',
+            category: 'Workflow',
+            categoryIcon: 'pending_actions',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Moyenne'
+        },
+        {
+            id: 16,
+            title: 'Tableau de Bord Mouvements',
+            description: 'Nouveau dashboard filtrable intégré au planning pour une analyse fine des mouvements (statuts, types, périodes).',
+            category: 'Analytics & Reporting',
+            categoryIcon: 'dashboard',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Moyenne'
+        },
+        {
+            id: 17,
+            title: 'Détection Conflits Horaires',
+            description: 'Algorithme automatique détectant les chevauchements de planning lors de l\'affectation véhicule/chauffeur.',
+            category: 'Planning & Scheduling',
+            categoryIcon: 'event_busy',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Haute'
+        },
+        {
+            id: 18,
+            title: 'Blocage Défaut Critique',
+            description: 'Fonctionnalité bloquante dans l\'e-logbook empêchant l\'utilisation d\'un véhicule si un défaut critique est signalé lors du check.',
+            category: 'Sécurité & Alertes',
+            categoryIcon: 'gpp_bad',
+            targetApp: 'e-logbook',
+            status: 'Planifié',
+            priority: 'Haute'
+        },
+        {
+            id: 19,
+            title: 'Géoloc Incidents Auto',
+            description: 'Capture automatique des coordonnées GPS lors de la déclaration d\'un incident via l\'application mobile.',
+            category: 'Mobile & Localisation',
+            categoryIcon: 'add_location',
+            targetApp: 'e-logbook',
+            status: 'Planifié',
+            priority: 'Moyenne'
+        },
+        {
+            id: 20,
+            title: 'Programmation Maintenance Future',
+            description: 'Possibilité de planifier à l\'avance des opérations de maintenance qui bloqueront le planning du véhicule.',
+            category: 'Planning & Scheduling',
+            categoryIcon: 'edit_calendar',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Moyenne'
+        },
+        {
+            id: 21,
+            title: 'Suivi Administratif Chauffeurs',
+            description: 'Module complet de suivi des expirations de contrats et permis de conduire avec alertes.',
+            category: 'Sécurité & Admin',
+            categoryIcon: 'badge',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Basse'
+        },
+        {
+            id: 22,
+            title: 'Module Gestion des Coûts',
+            description: 'Module financier avancé incluant tableaux d\'amortissement, TCO (Total Cost of Ownership) et ventilation analytique poussée.',
+            category: 'Analytics & Reporting',
+            categoryIcon: 'euro',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Basse'
         }
     ];
 

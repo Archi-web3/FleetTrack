@@ -49,31 +49,31 @@ export class FunctionalTreeComponent {
                 id: 'c1', name: 'Paramétrage', type: 'category', color: '#000000', children: [
                     {
                         id: 'f1-1', name: 'Gestion des utilisateurs : SSO + droits', type: 'function', isImplemented: true,
-                        description: "Authentification locale (Email/Mot de passe crypté Bcrypt). Gestion fine des droits via le champ 'Profil' (RBAC) : SuperAdmin, Admin, Superviseur, Technicien, Guest.\nAjouté : Profil 'Superviseur Sécurité' spécifique.\nRoadmap : Connecteur SSO (Azure AD)."
+                        description: "Authentification locale (Email/Mot de passe crypté Bcrypt). Gestion fine des droits via le champ 'Profil' (RBAC) : SuperAdmin, Admin, Superviseur, Technicien, Guest, incluant un profil 'Superviseur Sécurité' spécifique."
                     },
                     {
                         id: 'f1-3', name: 'Gestion de la structure ACF : BP, bases...', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Modélisation complète : Collections 'Pays', 'Base', 'Lieux', 'Nom de projet'.\nLe rôle 'Super Admin' peut créer des admins pays et gérer les affectations globales (Bases, Lieux, Utilisateurs, Véhicules)."
+                        description: "Modélisation complète : Collections 'Pays', 'Base', 'Lieux', 'Nom de projet'. Le système permet de créer des admins pays et gérer les affectations globales (Bases, Lieux, Utilisateurs, Véhicules)."
                     },
                     {
                         id: 'f1-5', name: 'Gestion des workflows de validation', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Workflow multiniveaux : Logistique ET Sécurité.\nValidation Sécurité obligatoire pour les zones sensibles AVANT l'organisation du mouvement.\nNote Roadmap : Revoir si l'attribution véhicule doit se faire avant ou après la validation sécu (risque d'annulation tardive)."
+                        description: "Workflow multiniveaux : Logistique ET Sécurité. Validation Sécurité obligatoire pour les zones sensibles AVANT l'organisation du mouvement."
                     },
                     {
                         id: 'f1-6', name: 'Gestion des lieux (départs/destinations)', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Collection 'Lieu' enrichie : Nom, Adresse, Coordonnées GPS.\nNouveau : Niveaux de sécurité paramétrables (1 à 5) pour chaque lieu."
+                        description: "Collection 'Lieu' enrichie : Nom, Adresse, Coordonnées GPS. Niveaux de sécurité paramétrables (1 à 5) pour chaque lieu."
                     },
                     {
                         id: 'f1-7', name: 'Gestion des véhicules', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Fiche complète : Marque, Modèle, Immat.\nNouveau : Statut (Propriété/Location), Données Admin (Assurances), Données Enviro (CO2), Conso théorique vs réelle.\nOption : Activer/Désactiver le tracking GPS par véhicule."
+                        description: "Fiche complète : Marque, Modèle, Immat, Statut (Propriété/Location), Données Admin (Assurances), Données Enviro (CO2) et Conso théorique vs réelle. Option pour activer/désactiver le tracking GPS par véhicule."
                     },
                     {
                         id: 'f1-8', name: 'Paramétrage checklists contrôle véhicule', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Intégré dans e-Logbook (PWA). Template modifiable directement dans l'outil.\nAjout de liens vers instructions PDF pour chaque point de contrôle.\nTraçabilité complète des checks faits/non faits."
+                        description: "Intégré dans e-Logbook (PWA). Template modifiable directement dans l'outil avec ajout de liens vers instructions PDF pour chaque point de contrôle. Traçabilité complète des checks faits/non faits."
                     },
                     {
                         id: 'f1-9', name: 'Paramétrage services type', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Liste des types de maintenance paramétrable.\nPossibilité de définir des intervalles de maintenance par type de véhicule.\nLien vers instructions PDF."
+                        description: "Liste des types de maintenance paramétrable avec possibilité de définir des intervalles par type de véhicule et liens vers instructions PDF."
                     }
                 ]
             },
@@ -81,15 +81,15 @@ export class FunctionalTreeComponent {
                 id: 'c2', name: 'Demandes de déplacement', type: 'category', color: '#ffca28', children: [
                     {
                         id: 'f2-1', name: 'Edition de demandes', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Création uniquement dans FleetTrack (pas PWA). Formulaire riche : Mode (Routier, Air, Mer), Itinéraire (Multi-stops, GPS ou Lieux enregistrés), Passagers, Cargaison, Horaires.\nProjet affilié automatiquement au demandeur (consolidation possible).\nEstimation automatique trajet (OSRM) et calcul heure arrivée."
+                        description: "Création uniquement dans FleetTrack (pas PWA). Formulaire riche : Mode (Routier, Air, Mer), Itinéraire (Multi-stops, GPS ou Lieux enregistrés), Passagers, Cargaison, Horaires. Projet affilié automatiquement au demandeur. Estimation automatique trajet (OSRM) et calcul heure arrivée."
                     },
                     {
                         id: 'f2-2', name: 'Envoi pour validation', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Statut 'En attente' (Log ou Sécu). Email auto aux superviseurs (Sécu si zone sensible).\nRoadmap : Afficher les demandes en attente sur le planning global (bouton filtre). Notification au demandeur lors validation/refus."
+                        description: "Statut 'En attente' (Log ou Sécu). Email auto aux superviseurs (Sécu si zone sensible)."
                     },
                     {
                         id: 'f2-3', name: 'Consultation des demandes', type: 'function', isImplemented: true,
-                        description: "Via le Planning Global et le menu 'Mes Mouvements'.\nRoadmap : Ajouter un tableau de bord des mouvements filtrable en bas du planning global (remplaçant la carte interactive)."
+                        description: "Via le Planning Global et le menu 'Mes Mouvements'."
                     }
                 ]
             },
@@ -97,7 +97,7 @@ export class FunctionalTreeComponent {
                 id: 'c3', name: 'Validation des demandes', type: 'category', color: '#ffca28', children: [
                     {
                         id: 'f3-1', name: 'Workflow & Droits', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Admin paramètre le niveau d'habilitation de chaque Superviseur Sécurité.\nValidation numérique centralisée."
+                        description: "Admin paramètre le niveau d'habilitation de chaque Superviseur Sécurité. Validation numérique centralisée."
                     }
                 ]
             },
@@ -109,11 +109,11 @@ export class FunctionalTreeComponent {
                     },
                     {
                         id: 'f4-2', name: 'Consolidation (Regroupement)', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Outil de regroupement pour optimisation (pas drag & drop). Sélection des mouvements à fusionner (étape, horaire, passagers).\nVisualisation cartographique des opportunités de consolidation."
+                        description: "Outil de regroupement pour optimisation. Sélection des mouvements à fusionner (étape, horaire, passagers). Visualisation cartographique des opportunités de consolidation."
                     },
                     {
                         id: 'f4-4', name: 'Affectation véhicule/chauffeur', type: 'function', isImplemented: true,
-                        description: "Se fait à l'étape de consolidation après validations (Log & Sécu).\nRoadmap : Détection automatique des conflits d'horaires."
+                        description: "Se fait à l'étape de consolidation après validations (Log & Sécu)."
                     },
                     { id: 'f4-5', name: 'Consultation planning', type: 'function', isImplemented: true, description: "Visuel des statuts sur planning semaine. Consultable aussi dans 'Mes mouvements'." }
                 ]
@@ -126,7 +126,7 @@ export class FunctionalTreeComponent {
                     },
                     {
                         id: 'f5-2', name: 'Enregistrement mouvements (Logbook)', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Start/Stop digital. Capture auto heure. Saisie manuelle Km réel. Reprise dernier Km enregistré.\nDétection mouvements affiliés pour prise en charge.\nMouvements libres (non planifiés) possibles avec géoloc.\nSynchro Offline/Online automatique.\nComparaison Planning vs Réel (Heures/Km)."
+                        description: "Start/Stop digital. Capture auto heure. Saisie manuelle Km réel. Reprise dernier Km enregistré. Détection mouvements affiliés pour prise en charge. Mouvements libres (non planifiés) possibles avec géoloc. Synchro Offline/Online automatique. Comparaison Planning vs Réel (Heures/Km)."
                     },
                     {
                         id: 'f5-3', name: 'Enregistrement carburant', type: 'function', isImplemented: true,
@@ -134,15 +134,15 @@ export class FunctionalTreeComponent {
                     },
                     {
                         id: 'f5-4', name: 'Check quotidien / hebdo', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Log automatique à chaque vérification (Date/Heure). Blocage si défaut critique (Roadmap)."
+                        description: "Log automatique à chaque vérification (Date/Heure)."
                     },
                     {
                         id: 'f5-5', name: 'Information maintenance', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Suivi du template des checks service. Instructions accessibles.\nValidation complétion par Responsable (Admin/Superviseur) uniquement."
+                        description: "Suivi du template des checks service. Instructions accessibles. Validation complétion par Responsable (Admin/Superviseur) uniquement."
                     },
                     {
                         id: 'f5-8', name: 'Déclarer un incident', type: 'function', isImplemented: true,
-                        description: "Formulaire déclaration. Roadmap : Relevé géolocalisation automatique."
+                        description: "Formulaire déclaration d'incident."
                     },
                     {
                         id: 'f5-9', name: 'Position TR + Envoi serveur', type: 'function', isImplemented: true, isExclusive: true,
@@ -158,7 +158,7 @@ export class FunctionalTreeComponent {
                 id: 'c6', name: 'Consultation Logbook', type: 'category', color: '#ba68c8', children: [
                     {
                         id: 'f6-1', name: 'Consultation Global Logbook', type: 'function', isImplemented: true, isExclusive: true,
-                        description: "Tout le logbook (Trajets, Carburant, Maintenance, Incidents) est consultable centralisé via Gestion des Déplacements (FleetTrack). Pas d'export Excel, tout est dans l'app."
+                        description: "Tout le logbook (Trajets, Carburant, Maintenance, Incidents) est consultable centralisé via Gestion des Déplacements (FleetTrack). Tout est dans l'app."
                     },
                     {
                         id: 'f6-2', name: 'Historique des réparations', type: 'function', isImplemented: true, description: "Détails complets des réparations visibles dans le global."
@@ -173,7 +173,7 @@ export class FunctionalTreeComponent {
                     },
                     {
                         id: 'f7-2', name: 'Programmation des opérations', type: 'function', isImplemented: false,
-                        description: "Roadmap : Planifier une maintenance future visible dans le planning véhicule."
+                        description: "Planifier une maintenance future visible dans le planning véhicule."
                     }
                 ]
             },
@@ -194,7 +194,7 @@ export class FunctionalTreeComponent {
                     { id: 'f9-2', name: 'Suivi échéances admin véhicules', type: 'function', isImplemented: true, description: "Prise en compte échéance assurance." },
                     {
                         id: 'f9-4', name: 'Suivi échéances admin chauffeurs', type: 'function', isImplemented: false,
-                        description: "Roadmap : Suivi expiration contrat et permis."
+                        description: "Suivi expiration contrat et permis."
                     }
                 ]
             },
@@ -206,7 +206,7 @@ export class FunctionalTreeComponent {
                     },
                     {
                         id: 'f10-6', name: 'Module Gestion des Coûts', type: 'function', isImplemented: false,
-                        description: "Roadmap : Module complet gestion des coûts, tableaux de dépréciation..."
+                        description: "Module complet gestion des coûts, tableaux de dépréciation..."
                     }
                 ]
             }
