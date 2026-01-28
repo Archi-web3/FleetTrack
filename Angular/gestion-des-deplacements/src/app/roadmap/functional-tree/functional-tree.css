@@ -511,4 +511,100 @@ input {
         transform: scale(0.85);
         transform-origin: top left;
     }
+
+    /* --- LOT SELECTOR --- */
+    .lot-selector {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+
+    .lot-btn {
+        border: none;
+        color: white;
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .lot-btn:hover {
+        opacity: 0.8;
+    }
+
+    .lot-btn.active {
+        opacity: 1;
+        transform: scale(1.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border: 1px solid white;
+    }
+
+    /* --- PRINT MEDIA QUERY REFINED --- */
+    @media print {
+        @page {
+            size: landscape;
+            margin: 0.5cm;
+        }
+
+        /* Hide UI controls & Header Navigation if it exists outside */
+        .detail-panel,
+        .legend-actions,
+        .add-btn,
+        .node-actions,
+        .delete-mini,
+        .edit-area,
+        .add-note-btn,
+        app-top-nav,
+        /* Supposing Top Nav Component */
+        .mat-toolbar,
+        /* Supposing Material Toolbar */
+        .header-actions button,
+        header,
+        nav {
+            display: none !important;
+        }
+
+        /* Reset layout for paper */
+        .tree-wrapper,
+        .tree-container {
+            height: auto !important;
+            overflow: visible !important;
+            background: white !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+        }
+
+        body {
+            background: white;
+            margin: 0;
+            padding: 0;
+            overflow: visible;
+        }
+
+        /* Force background colors printing */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* Optimize Scale for Single Page */
+        .mindmap {
+            transform: scale(0.65);
+            /* Smaller scale to fit A4 */
+            transform-origin: top left;
+            width: 140%;
+            /* Compensate scale */
+        }
+
+        .node {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+            page-break-inside: avoid;
+        }
+    }
 }
