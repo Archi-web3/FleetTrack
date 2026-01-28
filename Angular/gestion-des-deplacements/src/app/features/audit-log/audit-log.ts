@@ -5,6 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AuditService, AuditLog } from '../../core/services/audit.service';
+import { PaysService } from '../../pays.service';
+
 import { AuthService } from '../../auth.service';
 
 @Component({
@@ -27,18 +29,28 @@ export class AuditLogComponent implements OnInit {
 
     constructor(
         private auditService: AuditService,
-        private authService: AuthService
+        private authService: AuthService,
+        private paysService: PaysService
     ) { }
 
     ngOnInit() {
-        this.loadLogs();
         this.authService.userProfile$.subscribe(profile => {
             this.isSuperAdmin = profile === 'SuperAdmin';
+            this.loadLogs(); // Load logs after knowing profile to apply filter
         });
     }
 
     loadLogs() {
-        this.auditService.getLogs(50).subscribe({
+        let countryFilter: string | undefined;
+
+        if (this.isSuperAdmin) {
+            const selectedCountry = this.paysService.getSelectedCountry();
+            if (selectedCountry && selectedCountry !== 'all' && selectedCountry !== 'none') {
+                countryFilter = selectedCountry;
+            }
+        }
+
+        this.auditService.getLogs(50, undefined, countryFilter).subscribe({
             next: (data: AuditLog[]) => this.logs = data,
             error: (err: any) => console.error('Error loading audit logs', err)
         });

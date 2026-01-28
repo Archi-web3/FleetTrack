@@ -3,15 +3,29 @@ const AuditLog = require('../models/auditLog.model');
 // List Audit Logs
 exports.getLogs = async (req, res) => {
     try {
-        const { limit = 50, category, action } = req.query;
-        const filter = {};
+        const { limit = 50, category, action, pays } = req.query;
+        let filter = {};
+
+        // 1. Filtrage explicite (SuperAdmin selector)
+        if (pays) {
+            filter.pays = pays;
+        }
+        // 2. Filtrage implicite (Admin pays restreint)
+        // Note: req.countryFilter est déjà populé par le middleware sur route /api/audit
+        else if (req.countryFilter && req.countryFilter.pays) {
+            filter.pays = req.countryFilter.pays;
+        }
 
         if (category) filter.category = category;
         if (action) filter.action = action;
 
         const logs = await AuditLog.find(filter)
             .sort({ timestamp: -1 })
-            .limit(parseInt(limit));
+            .limit(parseInt(limit))
+            .populate('actor.userId', 'nom email role') // Populate actor details if needed
+            .populate('pays', 'nom'); // Populate pays name
+
+        res.json(logs);
 
         res.json(logs);
     } catch (error) {

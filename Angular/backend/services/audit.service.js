@@ -16,8 +16,22 @@ exports.logAction = async (req, action, category, target, details = {}) => {
             role: req.utilisateur.profil
         } : (details.actor || null); // Fallback if user not in req (e.g. failed login)
 
+        // DÉTERMINATION INTELLIGENTE DU PAYS
+        // 1. Priorité : Pays explicitement passé dans details (ex: création par SuperAdmin dans autre pays)
+        // 2. Sinon : Pays présent dans le body de la requête (création/modif ressource)
+        // 3. Sinon : Pays de l'acteur (fallback standard)
+        let paysId = null;
+        if (details && details.country) {
+            paysId = details.country;
+        } else if (req.body && req.body.pays) {
+            paysId = req.body.pays;
+        } else if (req.utilisateur && req.utilisateur.pays) {
+            paysId = req.utilisateur.pays;
+        }
+
         const logEntry = new AuditLog({
             actor,
+            pays: paysId,
             action,
             category,
             target,

@@ -25,9 +25,10 @@ export class AuditService {
 
     constructor(private http: HttpClient) { }
 
-    getLogs(limit: number = 50, category?: string): Observable<AuditLog[]> {
+    getLogs(limit: number = 50, category?: string, countryId?: string): Observable<AuditLog[]> {
         let params: any = { limit: limit.toString() };
         if (category) params.category = category;
+        if (countryId) params.pays = countryId;
 
         return this.http.get<AuditLog[]>(this.apiUrl, { params });
     }

@@ -6,6 +6,7 @@ const AuditLogSchema = new mongoose.Schema({
         nom: String,
         role: String
     },
+    pays: { type: mongoose.Schema.Types.ObjectId, ref: 'Pays' }, // NOUVEAU: Pays concerné
     action: { type: String, required: true }, // LOGIN, CREATE, DELETE, UPDATE
     category: { type: String, required: true }, // AUTH, ADMIN, SECURITY, WAIVER, DATA
     target: { type: String }, // 'Waiver #123' or 'User: Jean'
