@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Observable, BehaviorSubject, tap, timeout } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -225,6 +225,7 @@ export class AuthService {
 
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
+      timeout(15000), // Timeout après 15 secondes
       tap((res: any) => {
         if (res.token) {
           localStorage.setItem(this.tokenKey, res.token);
