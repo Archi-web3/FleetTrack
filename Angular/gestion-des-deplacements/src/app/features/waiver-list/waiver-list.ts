@@ -87,4 +87,15 @@ export class WaiverListComponent implements OnInit {
             popup.document.close();
         }
     }
+
+    deleteWaiver(waiver: Waiver) {
+        if (confirm(`Êtes-vous sûr de vouloir supprimer la décharge de ${waiver.visitorName} ?`)) {
+            this.waiverService.deleteWaiver(waiver._id).subscribe({
+                next: () => {
+                    this.loadWaivers();
+                },
+                error: (err) => console.error('Error deleting waiver', err)
+            });
+        }
+    }
 }

@@ -58,6 +58,44 @@ exports.createWaiver = async (req, res) => {
     }
 };
 
+// Supprimer une décharge
+exports.deleteWaiver = async (req, res) => {
+    try {
+        const waiver = await Waiver.findById(req.params.id);
+        if (!waiver) {
+            return res.status(404).json({ error: 'Décharge non trouvée' });
+        }
+
+        // Tenter de supprimer l'image Cloudinary (Optionnel / Best Effort)
+        if (waiver.signatureUrl) {
+            try {
+                // Extraction approximative du public_id depuis l'URL
+                // Ex: https://res.cloudinary.com/cloudname/image/upload/v1234/folder/waiver_123.png
+                // On veut: folder/waiver_123
+                const urlParts = waiver.signatureUrl.split('/');
+                const versionIndex = urlParts.findIndex(part => part.startsWith('v') && !isNaN(part.substring(1)));
+                if (versionIndex !== -1) {
+                    const publicIdWithExt = urlParts.slice(versionIndex + 1).join('/');
+                    const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf('.'));
+
+                    console.log('🗑️ [WAIVER] Tentative suppression image:', publicId);
+                    await cloudinary.uploader.destroy(publicId);
+                }
+            } catch (imgErr) {
+                console.warn('⚠️ [WAIVER] Erreur suppression image Cloudinary:', imgErr.message);
+            }
+        }
+
+        await Waiver.findByIdAndDelete(req.params.id);
+        console.log('✅ [WAIVER] Décharge supprimée:', req.params.id);
+        res.json({ message: 'Décharge supprimée avec succès' });
+
+    } catch (error) {
+        console.error('❌ [WAIVER] Erreur suppression:', error);
+        res.status(500).json({ error: 'Erreur lors de la suppression' });
+    }
+};
+
 // List Waivers (Admin)
 exports.getAllWaivers = async (req, res) => {
     try {

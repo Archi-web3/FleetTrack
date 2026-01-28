@@ -18,4 +18,7 @@ router.post('/', auth(), upload.single('signature'), waiverController.createWaiv
 // GET /api/waivers - List all waivers (Admin only)
 router.get('/', auth(), waiverController.getAllWaivers);
 
+// DELETE /api/waivers/:id - Delete a waiver (Admin only)
+router.delete('/:id', auth(['Admin', 'SuperAdmin', 'Superviseur']), waiverController.deleteWaiver);
+
 module.exports = router;

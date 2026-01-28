@@ -30,4 +30,8 @@ export class WaiverService {
     getAllWaivers(): Observable<Waiver[]> {
         return this.http.get<Waiver[]>(this.apiUrl);
     }
+
+    deleteWaiver(id: string): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/${id}`);
+    }
 }
