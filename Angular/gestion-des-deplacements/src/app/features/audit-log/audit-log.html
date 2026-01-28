@@ -1,0 +1,71 @@
+<div class="audit-container">
+    <div class="page-header">
+        <h1>
+            <mat-icon>security</mat-icon>
+            Journal d'Activité
+        </h1>
+        <button mat-stroked-button color="primary" (click)="loadLogs()">
+            <mat-icon>refresh</mat-icon> Actualiser
+        </button>
+    </div>
+
+    <mat-card>
+        <table mat-table [dataSource]="logs" class="mat-elevation-z0">
+
+            <!-- Date -->
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef> Date </th>
+                <td mat-cell *matCellDef="let log"> {{log.timestamp | date:'dd/MM HH:mm:ss'}} </td>
+            </ng-container>
+
+            <!-- Actor -->
+            <ng-container matColumnDef="actor">
+                <th mat-header-cell *matHeaderCellDef> Acteur </th>
+                <td mat-cell *matCellDef="let log">
+                    <div style="display: flex; align-items: center;">
+                        {{log.actor?.nom || 'Système'}}
+                        <span class="role-badge" *ngIf="log.actor?.role">{{log.actor?.role}}</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Category -->
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef> Catégorie </th>
+                <td mat-cell *matCellDef="let log">
+                    <span class="badge" [ngClass]="log.category">{{log.category}}</span>
+                </td>
+            </ng-container>
+
+            <!-- Action -->
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let log"
+                    [class.action-danger]="log.action.includes('DELETE') || log.action.includes('FAILED')"
+                    [class.action-success]="log.action.includes('SUCCESS')">
+                    {{log.action}}
+                </td>
+            </ng-container>
+
+            <!-- Target / Details -->
+            <ng-container matColumnDef="target">
+                <th mat-header-cell *matHeaderCellDef> Cible / Détails </th>
+                <td mat-cell *matCellDef="let log">
+                    <strong>{{log.target}}</strong>
+                    <div *ngIf="log.details" style="font-size: 11px; color: #888;">
+                        <span *ngIf="log.details.reason">Raison: {{log.details.reason}}</span>
+                        <span *ngIf="log.details.email">Autre: {{log.details.email || '-'}}</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <div *ngIf="logs.length === 0" class="no-data">
+            <mat-icon>history</mat-icon>
+            <p>Aucune activité enregistrée.</p>
+        </div>
+    </mat-card>
+</div>

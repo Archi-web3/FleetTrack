@@ -1,0 +1,113 @@
+.audit-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+}
+
+h1 mat-icon {
+    font-size: 32px;
+    height: 32px;
+    width: 32px;
+    color: #1976d2;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-column-date {
+    width: 150px;
+    color: #666;
+}
+
+.mat-column-actor {
+    width: 180px;
+    font-weight: 500;
+}
+
+.mat-column-action {
+    width: 150px;
+    font-weight: bold;
+}
+
+.mat-column-target {
+    color: #444;
+}
+
+/* Categories Badges */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.badge.AUTH {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge.WAIVER {
+    background: #e0f2f1;
+    color: #00897b;
+}
+
+.badge.SECURITY {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.badge.ADMIN {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+/* Role Badge */
+.role-badge {
+    font-size: 10px;
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 10px;
+    color: #666;
+    margin-left: 6px;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.no-data mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+/* Action Log Colors */
+.action-danger {
+    color: #d32f2f;
+}
+
+.action-success {
+    color: #388e3c;
+}
