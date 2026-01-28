@@ -1,6 +1,8 @@
 .tree-wrapper {
     position: relative;
-    height: calc(100vh - 200px);
+    height: 80vh;
+    /* Better standardized height */
+    min-height: 600px;
     overflow: hidden;
     /* Contain the absolute panel */
 }
@@ -542,14 +544,15 @@ input {
         border: 1px solid white;
     }
 
-    /* --- PRINT MEDIA QUERY REFINED --- */
+    /* --- OPTIMIZED PRINT STYLES --- */
     @media print {
         @page {
             size: landscape;
-            margin: 0.5cm;
+            margin: 5mm;
+            /* Minimal margin */
         }
 
-        /* Hide UI controls & Header Navigation if it exists outside */
+        /* Hide Controls */
         .detail-panel,
         .legend-actions,
         .add-btn,
@@ -557,54 +560,50 @@ input {
         .delete-mini,
         .edit-area,
         .add-note-btn,
-        app-top-nav,
-        /* Supposing Top Nav Component */
-        .mat-toolbar,
-        /* Supposing Material Toolbar */
-        .header-actions button,
-        header,
-        nav {
+        .lot-selector,
+        .header-actions {
             display: none !important;
         }
 
-        /* Reset layout for paper */
+        /* Maximized Container */
         .tree-wrapper,
         .tree-container {
-            height: auto !important;
+            height: 100% !important;
+            width: 100% !important;
             overflow: visible !important;
             background: white !important;
             box-shadow: none !important;
             padding: 0 !important;
             margin: 0 !important;
-            width: 100% !important;
+            border: none !important;
+            border-radius: 0 !important;
         }
 
-        body {
-            background: white;
-            margin: 0;
-            padding: 0;
-            overflow: visible;
-        }
-
-        /* Force background colors printing */
+        /* Force Colors */
         * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
 
-        /* Optimize Scale for Single Page */
+        /* Optimize Scale for A4 Landscape - Maximize Space */
         .mindmap {
-            transform: scale(0.65);
-            /* Smaller scale to fit A4 */
+            transform: scale(0.90);
+            /* Increased from 0.65 to 0.90 */
             transform-origin: top left;
-            width: 140%;
-            /* Compensate scale */
+            width: 110%;
         }
 
-        .node {
-            box-shadow: none !important;
-            border: 1px solid #ddd !important;
-            page-break-inside: avoid;
+        .lot-selector {
+            display: none !important;
+        }
+
+        /* Fix potential cut-off */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: visible;
         }
     }
-}
