@@ -25,9 +25,7 @@ import { TripDetailsDialogComponent } from './trip-details-dialog.component';
 })
 export class TripListComponent implements OnInit {
   trips: Trip[] = [];
-  fuels: any[] = [];
-  maintenances: any[] = [];
-  incidents: any[] = [];
+  trips: Trip[] = [];
   isSyncing = false;
   selectedVehicle: any = null;
   currentUser: any = null;
@@ -160,41 +158,12 @@ export class TripListComponent implements OnInit {
     console.log('Completed planned movement IDs:', Array.from(completedPlannedMovementIds));
     console.log('Trips after filtering duplicates:', this.trips.length);
 
-    // Load fuels
-    this.fuels = await this.offlineService.fuels
-      .where('vehicleId')
-      .equals(vehicleId)
-      .reverse()
-      .sortBy('date');
-
-    // Load maintenances
-    this.maintenances = await this.offlineService.maintenances
-      .where('vehicleId')
-      .equals(vehicleId)
-      .reverse()
-      .sortBy('date');
-
-    // Load incidents
-    this.incidents = await this.offlineService.incidents
-      .where('vehicleId')
-      .equals(vehicleId)
-      .reverse()
-      .sortBy('date');
-
-    // Load lieux for display names
-    const lieux = await this.offlineService.lieux.toArray();
-    this.lieuxMap.clear();
-    lieux.forEach(lieu => this.lieuxMap.set(lieu._id, lieu));
-
     // Load users for passenger names
     const users = await this.offlineService.users.toArray();
     this.usersMap.clear();
     users.forEach(user => this.usersMap.set(user._id, user));
 
     console.log('Trips loaded for vehicle:', vehicleId, this.trips);
-    console.log('Fuels loaded:', this.fuels.length);
-    console.log('Maintenances loaded:', this.maintenances.length);
-    console.log('Incidents loaded:', this.incidents.length);
 
     // Manually trigger change detection to update the view
     this.cdr.detectChanges();

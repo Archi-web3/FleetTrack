@@ -13,7 +13,7 @@
     <div class="tabs">
         <button [class.active]="activeTab === 'trips'" (click)="setActiveTab('trips')">Trajets</button>
         <button [class.active]="activeTab === 'fuel'" (click)="setActiveTab('fuel')">Carburant</button>
-        <button [class.active]="activeTab === 'maintenance'" (click)="setActiveTab('maintenance')">Maintenance</button>
+        <button [class.active]="activeTab === 'maintenance'" (click)="setActiveTab('maintenance')">Réparations</button>
         <button [class.active]="activeTab === 'incidents'" (click)="setActiveTab('incidents')">Incidents</button>
     </div>
 
@@ -21,7 +21,7 @@
         <!-- EDIT FORM OVERLAY -->
         <div *ngIf="editingItem" class="edit-overlay">
             <div class="edit-form">
-                <h3>Modifier {{ editingType }}</h3>
+                <h3>Modifier {{ editingType === 'maintenance' ? 'Réparation' : editingType }}</h3>
 
                 <div *ngIf="editingType === 'fuel'">
                     <label>Quantité (L): <input [(ngModel)]="editingItem.quantity" type="number"></label>
@@ -35,6 +35,7 @@
                     <label>Garage: <input [(ngModel)]="editingItem.garage"></label>
                 </div>
 
+                <!-- ... existing incident edit code ... -->
                 <div *ngIf="editingType === 'incident'">
                     <label>Type: <input [(ngModel)]="editingItem.type"></label>
                     <label>Sévérité:
@@ -54,10 +55,11 @@
             </div>
         </div>
 
-        <!-- TRIPS TAB -->
+        <!-- TRIPS TAB (Unchanged) -->
         <div *ngIf="activeTab === 'trips'">
             <h3>Historique des Trajets</h3>
             <table class="table">
+                <!-- ... existing table content ... -->
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -81,7 +83,6 @@
                         <td>{{ trip.endMileage }}</td>
                         <td>{{ (trip.endMileage - trip.startMileage) | number }} km</td>
                         <td>
-                            <!-- NOUVEAU: Affichage des photos -->
                             <div class="photo-thumbnails" *ngIf="trip.photos && trip.photos.length > 0">
                                 <img *ngFor="let photo of trip.photos" [src]="photo.url || photo" alt="Photo trajet"
                                     class="thumbnail" (click)="openPhotoModal(photo.url || photo)">
@@ -119,7 +120,7 @@
             </table>
         </div>
 
-        <!-- FUEL TAB -->
+        <!-- FUEL TAB (Unchanged) -->
         <div *ngIf=" activeTab==='fuel'">
             <h3>Historique Carburant</h3>
             <table class=" table">
@@ -153,7 +154,6 @@
                         <td>{{ f.fuelType }}</td>
                         <td>{{ f.source }}</td>
                         <td>
-                            <!-- NOUVEAU: Affichage des photos -->
                             <div class="photo-thumbnails" *ngIf="f.photos && f.photos.length > 0">
                                 <img *ngFor="let photo of f.photos" [src]="photo.url || photo" alt="Photo carburant"
                                     class="thumbnail" (click)="openPhotoModal(photo.url || photo)">
@@ -179,7 +179,7 @@
 
         <!-- MAINTENANCE TAB -->
         <div *ngIf="activeTab === 'maintenance'">
-            <h3>Historique Maintenance</h3>
+            <h3>Historique Réparations</h3>
             <table class="table">
                 <thead>
                     <tr>
@@ -204,7 +204,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="maintenances.length === 0">
-                        <td colspan="6">Aucune maintenance enregistrée.</td>
+                        <td colspan="6">Aucune réparation enregistrée.</td>
                     </tr>
                 </tbody>
             </table>
