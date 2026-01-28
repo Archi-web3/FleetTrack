@@ -16,7 +16,7 @@ const WaiverSchema = new mongoose.Schema({
     },
     tripId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Trip'
+        ref: 'Mouvement'
     },
     signedAt: {
         type: Date,
