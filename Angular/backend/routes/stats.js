@@ -183,6 +183,8 @@ router.get('/par-projet', auth(), async (req, res) => {
             ];
         }
 
+        const mongoose = require('mongoose');
+
         // Filtre MULTI-PAYS : Filtrer par pays sélectionné (comme pour stats globales)
         if (req.selectedCountry) {
             if (req.selectedCountry === 'all') {
@@ -190,7 +192,8 @@ router.get('/par-projet', auth(), async (req, res) => {
             } else if (req.selectedCountry === 'none') {
                 matchFilter.$or = [{ pays: null }, { pays: { $exists: false } }];
             } else {
-                matchFilter.pays = req.selectedCountry;
+                // CRUCIAL: Cast to ObjectId for Aggregation $match
+                matchFilter.pays = new mongoose.Types.ObjectId(req.selectedCountry);
             }
         }
 
