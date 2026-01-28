@@ -79,6 +79,13 @@ table {
     color: #7b1fa2;
 }
 
+.badge.TRIP {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+/* Orange for Trips */
+
 /* Role Badge */
 .role-badge {
     font-size: 10px;
