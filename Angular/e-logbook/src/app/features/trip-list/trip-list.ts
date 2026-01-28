@@ -25,7 +25,7 @@ import { TripDetailsDialogComponent } from './trip-details-dialog.component';
 })
 export class TripListComponent implements OnInit {
   trips: Trip[] = [];
-  trips: Trip[] = [];
+
   isSyncing = false;
   selectedVehicle: any = null;
   currentUser: any = null;
