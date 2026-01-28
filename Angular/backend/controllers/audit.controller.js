@@ -8,7 +8,12 @@ exports.getLogs = async (req, res) => {
 
         // 1. Filtrage explicite (SuperAdmin selector)
         if (pays) {
-            filter.pays = pays;
+            if (pays === 'none') {
+                // Filtre "Aucun" : logs sans pays ou pays null
+                filter.$or = [{ pays: null }, { pays: { $exists: false } }];
+            } else {
+                filter.pays = pays;
+            }
         }
         // 2. Filtrage implicite (Admin pays restreint)
         // Note: req.countryFilter est déjà populé par le middleware sur route /api/audit

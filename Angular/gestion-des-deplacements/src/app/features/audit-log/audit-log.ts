@@ -24,7 +24,7 @@ import { AuthService } from '../../auth.service';
 })
 export class AuditLogComponent implements OnInit {
     logs: AuditLog[] = [];
-    displayedColumns: string[] = ['date', 'actor', 'category', 'action', 'target'];
+    displayedColumns: string[] = ['date', 'pays', 'actor', 'category', 'action', 'target'];
     isSuperAdmin = false;
 
     constructor(
@@ -45,7 +45,8 @@ export class AuditLogComponent implements OnInit {
 
         if (this.isSuperAdmin) {
             const selectedCountry = this.paysService.getSelectedCountry();
-            if (selectedCountry && selectedCountry !== 'all' && selectedCountry !== 'none') {
+            // Handle 'all' and explicit 'none' (handled by backend now)
+            if (selectedCountry && selectedCountry !== 'all') {
                 countryFilter = selectedCountry;
             }
         }

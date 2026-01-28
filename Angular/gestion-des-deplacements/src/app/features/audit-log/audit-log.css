@@ -41,6 +41,12 @@ table {
     font-weight: 500;
 }
 
+.mat-column-pays {
+    width: 120px;
+    color: #555;
+    font-weight: 500;
+}
+
 .mat-column-action {
     width: 150px;
     font-weight: bold;

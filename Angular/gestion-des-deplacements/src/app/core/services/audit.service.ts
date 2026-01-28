@@ -15,6 +15,10 @@ export interface AuditLog {
     details: any;
     ip: string;
     timestamp: Date;
+    pays?: {
+        _id: string;
+        nom: string;
+    };
 }
 
 @Injectable({
