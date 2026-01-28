@@ -118,7 +118,8 @@
 }
 
 .legend-dot.exclusive {
-    background-color: #ff9800;
+    /* Removed exclusive style */
+    display: none;
 }
 
 .legend-dot.implemented {
@@ -168,18 +169,14 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+
 .node.exclusive {
-    border-left: 5px solid #ff9800 !important;
-    /* Orange/Gold for FleetTrack Exclusives */
-    background: #fff8e1;
+    /* Removed exclusive styles */
 }
 
 .exclusive-icon {
-    color: #ff9800;
-    margin-right: 5px;
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
+    display: none;
+    /* Hide exclusive icon if present in DOM */
 }
 
 .root-node {
