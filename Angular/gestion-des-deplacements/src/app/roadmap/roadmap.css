@@ -708,3 +708,52 @@
         margin-left: 40px;
     }
 }
+
+/* --- PRINT EXPORT OVERRIDES --- */
+@media print {
+
+    /* Hide Banner, Footer, and Tab Headers */
+    .roadmap-header,
+    .roadmap-footer,
+    .mat-mdc-tab-header,
+    .mat-tab-header,
+    app-top-nav,
+    .mat-toolbar,
+    header {
+        display: none !important;
+    }
+
+    /* Reset Main Containers */
+    .roadmap-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        background: white !important;
+        width: 100% !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .roadmap-content {
+        padding: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        background: white !important;
+    }
+
+    /* Remove margins from tab body */
+    ::ng-deep .roadmap-tabs .mat-mdc-tab-body-wrapper {
+        margin-top: 0 !important;
+    }
+
+    ::ng-deep .mat-mdc-tab-body-content {
+        overflow: visible !important;
+    }
+
+    /* Ensure body is white */
+    body {
+        background-color: white !important;
+    }
+}
