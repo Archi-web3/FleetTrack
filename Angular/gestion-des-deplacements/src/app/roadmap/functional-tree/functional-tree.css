@@ -472,8 +472,42 @@ input {
     margin-right: 15px;
 }
 
+/* --- LOT SELECTOR UI (Screen) --- */
+.lot-selector {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.lot-btn {
+    border: none;
+    color: white;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.lot-btn:hover {
+    opacity: 0.8;
+}
+
+.lot-btn.active {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid white;
+}
+
 /* --- PRINT MEDIA QUERY --- */
 @media print {
+    @page {
+        size: landscape;
+        margin: 5mm;
+    }
 
     /* Hide UI controls */
     .detail-panel,
@@ -482,128 +516,48 @@ input {
     .node-actions,
     .delete-mini,
     .edit-area,
-    .add-note-btn {
+    .add-note-btn,
+    .lot-selector,
+    .header-actions {
         display: none !important;
     }
 
-    /* Reset layout for paper */
+    /* Reset layout */
     .tree-wrapper,
     .tree-container {
         height: auto !important;
+        /* Let content drive height */
+        min-height: 0 !important;
         overflow: visible !important;
         background: white !important;
         box-shadow: none !important;
         padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        border: none !important;
     }
 
-    body {
+    body,
+    html {
         background: white;
         margin: 0;
         padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: visible;
     }
 
-    /* Force background colors printing */
+    /* Force background colors */
     * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
 
-    /* Scale down to fit A4 Landscape if needed */
+    /* Optimize Scale (90%) */
     .mindmap {
-        transform: scale(0.85);
+        transform: scale(0.90);
         transform-origin: top left;
+        width: 110%;
     }
-
-    /* --- LOT SELECTOR --- */
-    .lot-selector {
-        display: flex;
-        gap: 5px;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
-    }
-
-    .lot-btn {
-        border: none;
-        color: white;
-        font-size: 11px;
-        padding: 4px 8px;
-        border-radius: 12px;
-        cursor: pointer;
-        opacity: 0.5;
-        transition: opacity 0.2s, transform 0.2s;
-    }
-
-    .lot-btn:hover {
-        opacity: 0.8;
-    }
-
-    .lot-btn.active {
-        opacity: 1;
-        transform: scale(1.1);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        border: 1px solid white;
-    }
-
-    /* --- OPTIMIZED PRINT STYLES --- */
-    @media print {
-        @page {
-            size: landscape;
-            margin: 5mm;
-            /* Minimal margin */
-        }
-
-        /* Hide Controls */
-        .detail-panel,
-        .legend-actions,
-        .add-btn,
-        .node-actions,
-        .delete-mini,
-        .edit-area,
-        .add-note-btn,
-        .lot-selector,
-        .header-actions {
-            display: none !important;
-        }
-
-        /* Maximized Container */
-        .tree-wrapper,
-        .tree-container {
-            height: 100% !important;
-            width: 100% !important;
-            overflow: visible !important;
-            background: white !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            border: none !important;
-            border-radius: 0 !important;
-        }
-
-        /* Force Colors */
-        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        /* Optimize Scale for A4 Landscape - Maximize Space */
-        .mindmap {
-            transform: scale(0.90);
-            /* Increased from 0.65 to 0.90 */
-            transform-origin: top left;
-            width: 110%;
-        }
-
-        .lot-selector {
-            display: none !important;
-        }
-
-        /* Fix potential cut-off */
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: visible;
-        }
-    }
+}
