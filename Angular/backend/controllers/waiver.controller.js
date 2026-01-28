@@ -23,9 +23,14 @@ const uploadToCloudinary = (fileBuffer, folder, publicId) => {
 // Créer une nouvelle décharge (Upload signature + Save DB)
 exports.createWaiver = async (req, res) => {
     try {
+        console.log('📝 [WAIVER] createWaiver called');
+        console.log('📝 [WAIVER] Body:', req.body);
+        console.log('📝 [WAIVER] File present?', !!req.file);
+
         const { visitorName, vehicleId, tripId } = req.body;
 
         if (!req.file) {
+            console.error('❌ [WAIVER] No signature file');
             return res.status(400).json({ error: 'Signature image is required' });
         }
         if (!visitorName || !vehicleId) {

@@ -13,7 +13,15 @@ const upload = multer({
 
 // POST /api/waivers - Create a new waiver (Public or Auth?)
 // Ideally should be authenticated by the tablet user (driver)
-router.post('/', auth(), upload.single('signature'), waiverController.createWaiver);
+router.post('/',
+    (req, res, next) => {
+        console.log('📡 [API] POST /api/waivers HIT');
+        next();
+    },
+    auth(),
+    upload.single('signature'),
+    waiverController.createWaiver
+);
 
 // GET /api/waivers - List all waivers (Admin only)
 router.get('/', auth(), waiverController.getAllWaivers);
