@@ -1,6 +1,7 @@
 const Waiver = require('../models/waiver.model');
 const cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
+const auditService = require('../services/audit.service');
 
 // Helper pour uploader sur Cloudinary via Stream
 const uploadToCloudinary = (fileBuffer, folder, publicId) => {
@@ -87,6 +88,16 @@ exports.deleteWaiver = async (req, res) => {
         }
 
         await Waiver.findByIdAndDelete(req.params.id);
+
+        // Log Deletion
+        auditService.logAction(
+            req,
+            'DELETE_WAIVER',
+            'WAIVER',
+            `Waiver ID: ${req.params.id}`,
+            { visitor: waiver.visitorName, vehicle: waiver.vehicleId }
+        );
+
         console.log('✅ [WAIVER] Décharge supprimée:', req.params.id);
         res.json({ message: 'Décharge supprimée avec succès' });
 

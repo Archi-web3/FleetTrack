@@ -158,6 +158,10 @@ app.use('/api/push', pushRoute);
 const waiversRoute = require('./routes/waivers');
 app.use('/api/waivers', waiversRoute);
 
+// NOUVEAU : Routes pour les Journaux d'Activité (Audit)
+const auditRoute = require('./routes/audit');
+app.use('/api/audit', auditRoute);
+
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
 const startMaintenanceCron = require('./jobs/maintenanceCron'); // New daily email cron

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Utilisateur = require('../models/utilisateur.model');
 const jwt = require('jsonwebtoken');
+const auth = require('../middleware/authMiddleware');
+const auditService = require('../services/audit.service');
 
 // Récupérer le secret JWT depuis les variables d'environnement
 const jwtSecret = process.env.JWT_SECRET;
@@ -62,12 +64,28 @@ router.post('/login', async (req, res) => {
     // Vérifier si l'utilisateur existe
     const utilisateur = await Utilisateur.findOne({ email });
     if (!utilisateur) {
+      // Log Login Failure
+      auditService.logAction(
+        { ip: req.ip || req.connection.remoteAddress },
+        'LOGIN_FAILED',
+        'AUTH',
+        `Email: ${email}`,
+        { reason: 'User not found' }
+      );
       return res.status(400).json({ message: 'Identifiants invalides' });
     }
 
     // Comparer le mot de passe fourni avec le mot de passe haché
     const isMatch = await utilisateur.comparePassword(motDePasse);
     if (!isMatch) {
+      // Log Login Failure
+      auditService.logAction(
+        { ip: req.ip || req.connection.remoteAddress },
+        'LOGIN_FAILED',
+        'AUTH',
+        `Email: ${email}`,
+        { reason: 'Invalid password' }
+      );
       return res.status(400).json({ message: 'Identifiants invalides' });
     }
 
@@ -93,6 +111,15 @@ router.post('/login', async (req, res) => {
       (err, token) => {
         if (err) throw err;
         // Return both token and user info (without password)
+        // Log Login Success
+        auditService.logAction(
+          { utilisateur: utilisateur, ip: req.ip || req.connection.remoteAddress }, // Use 'utilisateur' instead of 'user'
+          'LOGIN_SUCCESS',
+          'AUTH',
+          `User: ${utilisateur.nom}`,
+          { email: utilisateur.email, role: utilisateur.profil }
+        );
+
         res.json({
           token,
           user: {
