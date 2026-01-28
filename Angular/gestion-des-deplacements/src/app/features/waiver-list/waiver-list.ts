@@ -64,7 +64,16 @@ export class WaiverListComponent implements OnInit {
                             <p><strong>Date :</strong> ${new Date(waiver.signedAt).toLocaleString()}</p>
                             <p><strong>Véhicule :</strong> ${waiver.vehicleId?.immatriculation} (${waiver.vehicleId?.marque})</p>
                             <hr>
-                            <p>Je soussigné(e), reconnais monter à bord d'un véhicule d'Action Contre la Faim (ACF) de mon plein gré...</p>
+                            <p>
+                                Je soussigné(e), reconnais monter à bord d'un véhicule d'Action Contre la Faim (ACF) de mon plein gré.
+                                J'atteste avoir pris connaissance des risques inhérents à ce déplacement et dégage ACF de toute
+                                responsabilité en cas de vol, perte d'effets personnels, accident ou incident survenant durant le trajet, sauf en cas de
+                                faute lourde avérée d'ACF.
+                            </p>
+                            <p>
+                                Je m'engage à respecter les consignes de sécurité données par le chauffeur et le personnel d'ACF.
+                                Je certifie ne transporter aucune substance illicite ou dangereuse.
+                            </p>
                         </div>
                         <div class="signature-box">
                             <p>Signature:</p>
