@@ -1,0 +1,46 @@
+<div class="waiver-container">
+    <div class="waiver-header">
+        <h1>Décharge de Responsabilité</h1>
+        <p>Visiteur / Passager</p>
+    </div>
+
+    <div class="legal-text-box">
+        <h3>ACF - Action Contre la Faim</h3>
+        <p><strong>Conditions de transport :</strong></p>
+        <p>
+            Je soussigné(e), reconnais monter à bord d'un véhicule d'Action Contre la Faim (ACF) de mon plein gré.
+            J'atteste avoir pris connaissance des risques inhérents à ce déplacement et dégage ACF de toute
+            responsabilité
+            en cas de vol, perte d'effets personnels, accident ou incident survenant durant le trajet, sauf en cas de
+            faute lourde avérée d'ACF.
+        </p>
+        <p>
+            Je m'engage à respecter les consignes de sécurité données par le chauffeur et le personnel d'ACF.
+            Je certifie ne transporter aucune substance illicite ou dangereuse.
+        </p>
+    </div>
+
+    <div class="form-section">
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nom & Prénom du Visiteur</mat-label>
+            <input matInput [(ngModel)]="visitorName" placeholder="Ex: Jean Dupont">
+            <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+
+        <label class="signature-label">Signature (obligatoire)</label>
+        <div class="canvas-wrapper">
+            <canvas #canvas></canvas>
+        </div>
+        <button mat-button color="warn" (click)="clearSignature()" class="clear-btn">
+            Effacer la signature
+        </button>
+    </div>
+
+    <div class="actions">
+        <button mat-stroked-button color="basic" routerLink="/dashboard">Annuler</button>
+        <button mat-flat-button color="primary" (click)="submitWaiver()">
+            <mat-icon>check</mat-icon>
+            Valider & Signer
+        </button>
+    </div>
+</div>

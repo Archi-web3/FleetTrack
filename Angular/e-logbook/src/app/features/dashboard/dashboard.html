@@ -109,6 +109,18 @@
                 <h3>Trajets</h3>
                 <p class="card-description">Historique des déplacements</p>
             </mat-card-content>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- NOUVEAU: Visitor Waiver Card -->
+        <mat-card class="dashboard-card waiver-card" (click)="navigateTo('/waiver')">
+            <mat-card-content>
+                <div class="card-icon-container">
+                    <mat-icon class="card-icon" style="color: #607d8b;">draw</mat-icon>
+                </div>
+                <h3>Décharge Visiteur</h3>
+                <p class="card-description">Signer responsabilité</p>
+            </mat-card-content>
         </mat-card>
 
         <!-- Fuel Card -->

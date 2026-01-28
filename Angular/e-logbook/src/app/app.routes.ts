@@ -34,6 +34,10 @@ export const routes: Routes = [
     // Fleet Management
     { path: 'fleet', loadComponent: () => import('./features/fleet-recap/fleet-recap').then(m => m.FleetRecapComponent) },
     { path: 'vehicle/new', loadComponent: () => import('./features/vehicle-form/vehicle-form').then(m => m.VehicleFormComponent) },
-    { path: 'vehicle/edit/:id', loadComponent: () => import('./features/vehicle-form/vehicle-form').then(m => m.VehicleFormComponent) }
+    { path: 'vehicle/new', loadComponent: () => import('./features/vehicle-form/vehicle-form').then(m => m.VehicleFormComponent) },
+    { path: 'vehicle/edit/:id', loadComponent: () => import('./features/vehicle-form/vehicle-form').then(m => m.VehicleFormComponent) },
+
+    // Visitor Waiver
+    { path: 'waiver', loadComponent: () => import('./features/waiver/waiver').then(m => m.WaiverComponent) }
 ];
 

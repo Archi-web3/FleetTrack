@@ -141,6 +141,12 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin', 'Admin'] }
   },
   {
+    path: 'admin/waivers',
+    loadComponent: () => import('./features/waiver-list/waiver-list').then(m => m.WaiverListComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+  },
+  {
     path: 'user-guide',
     loadComponent: () => import('./user-guide/user-guide').then(m => m.UserGuideComponent),
     canActivate: [AuthGuard]

@@ -154,6 +154,10 @@ app.use('/api/alerts', alertsRoute);
 const pushRoute = require('./routes/push');
 app.use('/api/push', pushRoute);
 
+// NOUVEAU : Routes pour les Décharges Visiteurs
+const waiversRoute = require('./routes/waivers');
+app.use('/api/waivers', waiversRoute);
+
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
 const startMaintenanceCron = require('./jobs/maintenanceCron'); // New daily email cron

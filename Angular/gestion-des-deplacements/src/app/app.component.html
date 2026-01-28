@@ -62,6 +62,11 @@
         <mat-icon>folder</mat-icon>
         <span>Gestion Projets</span>
       </button>
+      <button mat-menu-item routerLink="/admin/waivers"
+        *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
+        <mat-icon>folder_shared</mat-icon>
+        <span>Décharges Visiteurs</span>
+      </button>
       <button mat-menu-item routerLink="/guide-utilisateur"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
         <mat-icon>menu_book</mat-icon>
