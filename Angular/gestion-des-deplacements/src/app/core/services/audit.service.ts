@@ -31,4 +31,8 @@ export class AuditService {
 
         return this.http.get<AuditLog[]>(this.apiUrl, { params });
     }
+
+    clearLogs(): Observable<any> {
+        return this.http.delete(this.apiUrl);
+    }
 }

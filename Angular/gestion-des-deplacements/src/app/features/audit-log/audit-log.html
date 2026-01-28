@@ -7,6 +7,9 @@
         <button mat-stroked-button color="primary" (click)="loadLogs()">
             <mat-icon>refresh</mat-icon> Actualiser
         </button>
+        <button mat-flat-button color="warn" (click)="deleteLogs()" *ngIf="isSuperAdmin" style="margin-left: 10px;">
+            <mat-icon>delete_forever</mat-icon> Nettoyer l'historique
+        </button>
     </div>
 
     <mat-card>
