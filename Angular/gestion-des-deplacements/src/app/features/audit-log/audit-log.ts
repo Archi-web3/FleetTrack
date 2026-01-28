@@ -1,3 +1,10 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { AuditService, AuditLog } from '../../core/services/audit.service';
 import { AuthService } from '../../auth.service';
 
 @Component({
@@ -32,8 +39,8 @@ export class AuditLogComponent implements OnInit {
 
     loadLogs() {
         this.auditService.getLogs(50).subscribe({
-            next: (data) => this.logs = data,
-            error: (err) => console.error('Error loading audit logs', err)
+            next: (data: AuditLog[]) => this.logs = data,
+            error: (err: any) => console.error('Error loading audit logs', err)
         });
     }
 
@@ -44,7 +51,7 @@ export class AuditLogComponent implements OnInit {
                     alert('Journal nettoyé avec succès.');
                     this.loadLogs();
                 },
-                error: (err) => {
+                error: (err: any) => {
                     console.error('Error cleaning logs', err);
                     alert('Erreur lors du nettoyage des logs.');
                 }
