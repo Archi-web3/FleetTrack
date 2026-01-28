@@ -26,7 +26,8 @@ exports.logAction = async (req, action, category, target, details = {}) => {
         } else if (req.body && req.body.pays) {
             paysId = req.body.pays;
         } else if (req.utilisateur && req.utilisateur.pays) {
-            paysId = req.utilisateur.pays;
+            // Handle populated object or direct ID
+            paysId = req.utilisateur.pays._id ? req.utilisateur.pays._id : req.utilisateur.pays;
         }
 
         const logEntry = new AuditLog({
