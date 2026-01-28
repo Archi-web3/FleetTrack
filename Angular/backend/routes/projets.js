@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Projet = require('../models/projet.model');
 const auth = require('../middleware/authMiddleware');
+const auditService = require('../services/audit.service');
 
 // GET /api/projets - Liste tous les projets
 router.get('/projets', auth(), async (req, res) => {
@@ -58,6 +59,9 @@ router.post('/projets', auth(['SuperAdmin', 'Admin']), async (req, res) => {
 
         const nouveauProjet = await projet.save();
         console.log(`Projet créé: ${nouveauProjet.nom} par ${req.utilisateur.nom}`);
+
+        auditService.logAction(req, 'CREATE_PROJECT', 'ADMIN', `Project: ${nouveauProjet.nom}`, { code: nouveauProjet.code });
+
         res.status(201).json(nouveauProjet);
     } catch (err) {
         console.error('Erreur POST /projets:', err);
@@ -93,6 +97,9 @@ router.put('/projets/:id', auth(['SuperAdmin', 'Admin']), async (req, res) => {
 
         const projetMisAJour = await projet.save();
         console.log(`Projet modifié: ${projetMisAJour.nom} par ${req.utilisateur.nom}`);
+
+        auditService.logAction(req, 'UPDATE_PROJECT', 'ADMIN', `Project: ${projetMisAJour.nom}`, { changes: req.body });
+
         res.json(projetMisAJour);
     } catch (err) {
         console.error('Erreur PUT /projets/:id:', err);
@@ -110,6 +117,9 @@ router.delete('/projets/:id', auth(['SuperAdmin']), async (req, res) => {
 
         await projet.deleteOne();
         console.log(`Projet supprimé: ${projet.nom} par ${req.utilisateur.nom}`);
+
+        auditService.logAction(req, 'DELETE_PROJECT', 'ADMIN', `Project: ${projet.nom} (${projet.code})`);
+
         res.json({ message: 'Projet supprimé avec succès' });
     } catch (err) {
         console.error('Erreur DELETE /projets/:id:', err);

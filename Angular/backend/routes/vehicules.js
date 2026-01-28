@@ -3,6 +3,7 @@ const router = express.Router();
 const Vehicule = require('../models/vehicule.model');
 const auth = require('../middleware/authMiddleware');
 const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
+const auditService = require('../services/audit.service');
 
 // GET all vehicles (Filtré par base)
 router.get('/vehicules', auth(), countryFilter, async (req, res) => {
@@ -61,6 +62,8 @@ router.post('/vehicules', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (r
     }
 
     res.status(201).json(nouveauVehicule);
+
+    auditService.logAction(req, 'CREATE_VEHICLE', 'ADMIN', `Vehicle: ${nouveauVehicule.immatriculation}`, { brand: nouveauVehicule.marque, model: nouveauVehicule.modele });
   } catch (err) {
     console.error("Erreur CREATE /vehicules:", err);
     res.status(400).json({ message: err.message });
@@ -134,6 +137,7 @@ router.put('/vehicules/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async
       }
     }
 
+    auditService.logAction(req, 'UPDATE_VEHICLE', 'ADMIN', `Vehicle: ${vehiculeMisAJour.immatriculation}`, { changes: req.body });
     res.json(vehiculeMisAJour);
   } catch (err) {
     console.error("Erreur UPDATE /vehicules/:id:", err);
@@ -149,6 +153,7 @@ router.delete('/vehicules/:id', auth(['SuperAdmin', 'Admin']), async (req, res) 
       return res.status(404).json({ message: 'Cannot find vehicle' });
     }
     await vehicule.deleteOne();
+    auditService.logAction(req, 'DELETE_VEHICLE', 'ADMIN', `Vehicle: ${vehicule.immatriculation}`, { brand: vehicule.marque });
     res.json({ message: 'Vehicule supprimé' });
   } catch (err) {
     console.error("Erreur DELETE /vehicules/:id:", err);

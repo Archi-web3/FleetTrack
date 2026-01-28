@@ -3,6 +3,7 @@ const router = express.Router();
 const Utilisateur = require('../models/utilisateur.model');
 const auth = require('../middleware/authMiddleware'); // Importez le middleware auth
 const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
+const auditService = require('../services/audit.service');
 
 // GET all users (Accessible à tout utilisateur connecté pour peupler les listes déroulantes)
 router.get('/utilisateurs', auth(), countryFilter, async (req, res) => {
@@ -72,6 +73,9 @@ router.post('/utilisateurs', auth(['SuperAdmin', 'Admin']), async (req, res) => 
     });
 
     const nouvelUtilisateur = await utilisateur.save();
+
+    auditService.logAction(req, 'CREATE_USER', 'ADMIN', `User: ${nouvelUtilisateur.nom}`, { role: nouvelUtilisateur.profil });
+
     console.log("Nouvel utilisateur créé:", nouvelUtilisateur);
     res.status(201).json(nouvelUtilisateur);
   } catch (err) {
@@ -103,6 +107,7 @@ router.put('/utilisateurs/:id', auth(['SuperAdmin', 'Admin']), async (req, res) 
     if (req.body.disponible != null) utilisateur.disponible = req.body.disponible;
 
     const utilisateurMisAJour = await utilisateur.save();
+    auditService.logAction(req, 'UPDATE_USER', 'ADMIN', `User: ${utilisateurMisAJour.nom}`, { changes: req.body });
     res.json(utilisateurMisAJour);
   } catch (err) {
     console.error("Erreur UPDATE /utilisateurs/:id:", err);
@@ -118,6 +123,7 @@ router.delete('/utilisateurs/:id', auth(['SuperAdmin', 'Admin']), async (req, re
       return res.status(404).json({ message: 'Cannot find user' });
     }
     await utilisateur.deleteOne();
+    auditService.logAction(req, 'DELETE_USER', 'ADMIN', `User: ${utilisateur.nom} (${utilisateur.email})`, { role: utilisateur.profil });
     res.json({ message: 'Utilisateur supprimé' });
   } catch (err) {
     console.error("Erreur DELETE /utilisateurs/:id:", err);

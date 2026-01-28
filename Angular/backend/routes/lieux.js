@@ -3,6 +3,7 @@ const router = express.Router();
 const Lieu = require('../models/lieu.model');
 const auth = require('../middleware/authMiddleware');
 const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
+const auditService = require('../services/audit.service');
 
 // GET all locations (PROTÉGÉE - Accessible à tout utilisateur connecté)
 router.get('/lieux', auth(), countryFilter, async (req, res) => {
@@ -71,6 +72,9 @@ router.post('/lieux', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, 
 
     const nouveauLieu = await lieu.save();
     console.log("Nouveau lieu créé:", nouveauLieu);
+
+    auditService.logAction(req, 'CREATE_LOCATION', 'ADMIN', `Location: ${nouveauLieu.nom}`, { country: nouveauLieu.pays });
+
     res.status(201).json(nouveauLieu);
   } catch (err) {
     console.error("Erreur CREATE /lieux:", err);
@@ -92,6 +96,7 @@ router.put('/lieux/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (re
     if (req.body.niveauSecurite != null) lieu.niveauSecurite = req.body.niveauSecurite;
 
     const lieuMisAJour = await lieu.save();
+    auditService.logAction(req, 'UPDATE_LOCATION', 'ADMIN', `Location: ${lieuMisAJour.nom}`, { changes: req.body });
     res.json(lieuMisAJour);
   } catch (err) {
     console.error("Erreur UPDATE /lieux/:id:", err);
@@ -107,6 +112,7 @@ router.delete('/lieux/:id', auth(['SuperAdmin', 'Admin']), async (req, res) => {
       return res.status(404).json({ message: 'Cannot find location' });
     }
     await lieu.deleteOne();
+    auditService.logAction(req, 'DELETE_LOCATION', 'ADMIN', `Location: ${lieu.nom}`);
     res.json({ message: 'Lieu supprimé' });
   } catch (err) {
     console.error("Erreur DELETE /lieux/:id:", err);

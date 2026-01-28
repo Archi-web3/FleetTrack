@@ -7,6 +7,7 @@ const Chauffeur = require('../models/chauffeur.model');
 const Utilisateur = require('../models/utilisateur.model'); // AJOUT pour vérifier les chauffeurs
 const auth = require('../middleware/authMiddleware');
 const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middleware de filtrage pays
+const auditService = require('../services/audit.service');
 const mongoose = require('mongoose');
 const mailer = require('../utils/mailer');
 // Utilisateur declared at line 7
@@ -403,6 +404,17 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
     console.log('✅ [CREATE MOUVEMENT] Base finale:', nouveauMouvement.base);
     console.log('✅ [CREATE MOUVEMENT] Pays final:', nouveauMouvement.pays);
 
+    auditService.logAction(
+      req,
+      'CREATE_TRIP',
+      'TRIP',
+      `Trip: ${nouveauMouvement.objectif}`,
+      {
+        destination: nouveauMouvement.stops.map(s => s.lieu).join(' -> '),
+        statut: nouveauMouvement.statut
+      }
+    );
+
     // --- NOTIFICATION EMAIL (MODULE 2) ---
     if (mouvement.statut === 'en attente validation sécurité') {
       try {
@@ -585,6 +597,7 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     if (req.body.projetsVentilation != null) mouvement.projetsVentilation = req.body.projetsVentilation; // NOUVEAU : Correction manuelle ventilation
 
     const mouvementMisAJour = await mouvement.save();
+    auditService.logAction(req, 'UPDATE_TRIP', 'TRIP', `Trip: ${mouvementMisAJour.objectif}`, { changes: req.body });
 
     // --- NOTIFICATION EMAIL REFUS (MODULE 2) ---
     if (mouvementMisAJour.statut === 'refusé') {
@@ -653,6 +666,8 @@ router.put('/mouvements/:id/start', auth(), countryFilter, async (req, res) => {
     console.log('✅ [START MOUVEMENT] Mouvement démarré avec succès');
     console.log('✅ [START MOUVEMENT] Nouveau statut:', mouvementMisAJour.statut);
 
+    auditService.logAction(req, 'START_TRIP', 'TRIP', `Trip: ${mouvementMisAJour.objectif}`, { startTime: mouvementMisAJour.realDepartureTime, mileage: mouvementMisAJour.startMileage });
+
     res.json(mouvementMisAJour);
   } catch (err) {
     console.error('❌ [START MOUVEMENT] Erreur:', err);
@@ -697,6 +712,8 @@ router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) =
 
     const mouvementValide = await mouvement.save();
     console.log('✅ [VALIDATE MOUVEMENT] Validé avec succès par:', req.utilisateur.nom);
+
+    auditService.logAction(req, 'VALIDATE_TRIP', 'SECURITY', `Trip: ${mouvementValide.objectif}`, { validatedBy: req.utilisateur.nom, level: requiredLevel });
 
     // --- NOTIFICATION EMAIL (MODULE 2) ---
     try {
@@ -755,6 +772,7 @@ router.delete('/mouvements/:id', auth(['SuperAdmin', 'Admin']), countryFilter, a
       }
     }
 
+    auditService.logAction(req, 'DELETE_TRIP', 'TRIP', `Trip ID: ${req.params.id}`, { vehicle: vehiculeId });
     res.json({ message: 'Mouvement supprimé' });
   } catch (err) {
     console.error("Erreur DELETE /mouvements/:id:", err);
