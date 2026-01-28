@@ -201,11 +201,13 @@
         }
 
         .mobile-time {
+            display: block; // Force display on mobile
             font-size: 0.9em;
             color: #666;
         }
 
         .mobile-arrival-hint {
+            display: block; // Force display on mobile
             font-size: 0.85em;
             color: #888;
             margin-top: 2px;
