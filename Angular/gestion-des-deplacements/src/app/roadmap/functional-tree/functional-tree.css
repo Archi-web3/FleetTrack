@@ -414,3 +414,101 @@ input {
     margin-left: -25px;
     /* Pull closer to connect line from Root */
 }
+
+/* --- LOT BADGES --- */
+.lot-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    background-color: #607d8b;
+    /* Default */
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+.lot-pill[data-lot="1"] {
+    background-color: #795548;
+}
+
+/* Brown */
+.lot-pill[data-lot="2"] {
+    background-color: #f57c00;
+}
+
+/* Orange */
+.lot-pill[data-lot="3"] {
+    background-color: #e91e63;
+}
+
+/* Pink */
+.lot-pill[data-lot="4"] {
+    background-color: #3f51b5;
+}
+
+/* Indigo */
+
+.lot-badge-legend {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    background-color: #795548;
+    margin-right: 5px;
+}
+
+.legend-content {
+    display: flex;
+    gap: 15px;
+}
+
+.print-btn {
+    margin-right: 15px;
+}
+
+/* --- PRINT MEDIA QUERY --- */
+@media print {
+
+    /* Hide UI controls */
+    .detail-panel,
+    .legend-actions,
+    .add-btn,
+    .node-actions,
+    .delete-mini,
+    .edit-area,
+    .add-note-btn {
+        display: none !important;
+    }
+
+    /* Reset layout for paper */
+    .tree-wrapper,
+    .tree-container {
+        height: auto !important;
+        overflow: visible !important;
+        background: white !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Force background colors printing */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Scale down to fit A4 Landscape if needed */
+    .mindmap {
+        transform: scale(0.85);
+        transform-origin: top left;
+    }
+}

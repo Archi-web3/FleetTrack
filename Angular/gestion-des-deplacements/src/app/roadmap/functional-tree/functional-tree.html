@@ -2,13 +2,21 @@
     <!-- LEFT PANEL: TREE -->
     <div class="tree-container">
         <div class="tree-legend">
-            <div class="legend-item">
-                <span class="legend-dot implemented"></span> Déjà inclus dans FleetTrack
-            </div>
-            <div class="legend-item">
-                <span class="legend-dot planned"></span> Planifié / A faire
+            <div class="legend-content">
+                <div class="legend-item">
+                    <span class="legend-dot implemented"></span> Déjà inclus dans FleetTrack
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot planned"></span> Planifié / A faire
+                </div>
+                <div class="legend-item">
+                    <span class="lot-badge-legend">Lot 1</span> Phase
+                </div>
             </div>
             <div class="legend-actions">
+                <button mat-stroked-button class="print-btn" (click)="printTree()">
+                    <mat-icon>print</mat-icon> Export PDF
+                </button>
                 <small>Cliquez sur un élément pour voir les détails à droite 👉</small>
             </div>
         </div>
@@ -62,6 +70,10 @@
                                         <mat-icon *ngIf="func.isImplemented">check_circle</mat-icon>
                                         <mat-icon *ngIf="!func.isImplemented">radio_button_unchecked</mat-icon>
                                     </div>
+
+                                    <!-- Lot Badge -->
+                                    <span *ngIf="func.lot" class="lot-pill" [attr.data-lot]="func.lot">Lot
+                                        {{func.lot}}</span>
 
                                     <span>{{ func.name }}</span>
 
