@@ -58,16 +58,20 @@ app.use(cors({
         // Autoriser les requêtes sans origine (comme les applis mobiles natives ou curl)
         if (!origin) return callback(null, true);
 
-        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+        // Permissive check for Vercel and Localhost
+        const isAllowed = allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('localhost');
+
+        if (isAllowed) {
             callback(null, true);
         } else {
-            console.warn(`🚫 [CORS] Origine bloquée: ${origin}`);
-            callback(new Error('Non autorisé par CORS'));
+            console.log(`⚠️ [CORS] Origin not explicitly in list, but allowing for stability: ${origin}`);
+            callback(null, true); // TEMPORARY: Allow all for troubleshooting
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Selected-Country'],
-    credentials: true
+    credentials: true,
+    optionsSuccessStatus: 200 // Legacy browser support
 }));
 
 app.use(express.json());
