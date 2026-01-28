@@ -6,10 +6,100 @@
                 <span class="legend-dot implemented"></span> Déjà inclus dans FleetTrack
             </div>
             <div class="legend-item">
+                <span class="legend-dot exclusive"></span> Fonctionnalité Avancée / Exclusive
+            </div>
+            <div class="legend-item">
                 <span class="legend-dot planned"></span> Planifié / A faire
             </div>
             <div class="legend-actions">
                 <small>Cliquez sur un élément pour voir les détails à droite 👉</small>
+            </div>
+        </div>
+
+        <div class="mindmap">
+            <!-- ROOT -->
+            <div class="node-level-0">
+                <div class="node root-node" [class.selected]="selectedNode?.id === treeData.id"
+                    (click)="selectNode(treeData)">
+                    {{ treeData.name }}
+                    <button mat-icon-button class="add-btn sub-root"
+                        (click)="addNode(treeData); $event.stopPropagation()">
+                        <mat-icon>add_circle</mat-icon>
+                    </button>
+                </div>
+
+                <div class="children-container level-1">
+                    <!-- CATEGORIES -->
+                    <div class="branch" *ngFor="let cat of treeData.children; let i = index">
+                        <div class="connector-elbow"></div>
+                        <div class="node category-node" [class.selected]="selectedNode?.id === cat.id"
+                            [style.border-left-color]="cat.color" (click)="selectNode(cat)">
+
+                            <span>{{ cat.name }}</span>
+
+                            <div class="node-actions">
+                                <button mat-icon-button color="primary" (click)="addNode(cat); $event.stopPropagation()"
+                                    matTooltip="Ajouter une fonction">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn"
+                                    (click)="deleteNode(treeData, i); $event.stopPropagation()"
+                                    matTooltip="Supprimer le lot">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- FUNCTIONS -->
+                        <div class="children-container level-2" *ngIf="cat.children && cat.children.length > 0">
+                            <div class="leaf" *ngFor="let func of cat.children; let j = index">
+                                <div class="connector-straight"></div>
+                                <div class="node function-node" [class.selected]="selectedNode?.id === func.id"
+                                    [class.implemented]="func.isImplemented" [class.exclusive]="func.isExclusive"
+                                    [style.background-color]="func.isExclusive ? '#fff8e1' : (func.isImplemented ? cat.color + '20' : '#fff')"
+                                    [style.border-left-color]="func.isExclusive ? '#ff9800' : cat.color"
+                                    (click)="selectNode(func)">
+
+                                    <div class="status-indicator"
+                                        (click)="toggleImplementation(func); $event.stopPropagation()"
+                                        [matTooltip]="func.isImplemented ? 'Inclus' : 'A faire'">
+                                        <mat-icon *ngIf="func.isImplemented"
+                                            [style.color]="func.isExclusive ? '#ff9800' : ''">check_circle</mat-icon>
+                                        <mat-icon *ngIf="!func.isImplemented">radio_button_unchecked</mat-icon>
+                                    </div>
+
+                                    <span>{{ func.name }}</span>
+
+                                    <!-- Indicator icon if description exists -->
+                                    <mat-icon *ngIf="func.description" class="info-icon"
+                                        style="font-size: 16px; width: 16px; height: 16px;">info</mat-icon>
+
+                                    <!-- Exclusive Icon -->
+                                    <mat-icon *ngIf="func.isExclusive" class="exclusive-icon"
+                                        matTooltip="Fonctionnalité Avancée">star</mat-icon>
+
+                                    <button class="delete-mini"
+                                        (click)="deleteNode(cat, j); $event.stopPropagation()">×</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: DETAILS -->
+    <div class="detail-panel" *ngIf="selectedNode">
+        <div class="panel-header">
+            <h3 class="panel-title">{{ selectedNode.name }}</h3>
+            <div class="panel-status" [class.implemented]="selectedNode.isImplemented">
+                <mat-icon [style.color]="selectedNode.isExclusive ? '#ff9800' : ''">{{ selectedNode.isImplemented ?
+                    'check_circle' : 'schedule' }}</mat-icon>
+                <span *ngIf="selectedNode.isExclusive" style="color: #ff9800; font-weight: bold;">Fonctionnalité Avancée
+                    / Exclusive</span>
+                <span *ngIf="!selectedNode.isExclusive">{{ selectedNode.isImplemented ? 'Déjà inclus dans FleetTrack' :
+                    'Fonctionnalité Planifiée' }}</span>
             </div>
         </div>
 

@@ -13,6 +13,7 @@ export interface TreeNode {
     type: 'root' | 'category' | 'function';
     children?: TreeNode[];
     isImplemented?: boolean; // Pour le futur (statut)
+    isExclusive?: boolean; // Fonctionnalité "FleetTrack" mise en avant
     color?: string; // Pour les lots
     description?: string; // Nouvelle "bulle d'info"
 }
@@ -44,143 +45,131 @@ export class FunctionalTreeComponent {
                 id: 'c1', name: 'Paramétrage', type: 'category', color: '#000000', children: [
                     {
                         id: 'f1-1', name: 'Gestion des utilisateurs : SSO + droits', type: 'function', isImplemented: true,
-                        description: "Authentification locale (Email/Mot de passe crypté Bcrypt). Gestion fine des droits via le champ 'Profil' (RBAC) : SuperAdmin, Admin, Superviseur, Technicien, Guest.\n\nPas encore de connecteur SSO (ex: Azure AD) implémenté."
-                    },
-                    { id: 'f1-2', name: 'Gestion des employés (Core RH)', type: 'function' },
-                    {
-                        id: 'f1-3', name: 'Gestion de la structure ACF : BP, bases...', type: 'function', isImplemented: true,
-                        description: "Modélisation en base de données : Collections 'Pays' et 'Base'.\nChaque utilisateur et véhicule est rattaché à une Base et un Pays, permettant le filtrage et la ségrégation des données."
-                    },
-                    { id: 'f1-4', name: 'Gestion des contrats', type: 'function' },
-                    {
-                        id: 'f1-5', name: 'Gestion des workflows de validation', type: 'function', isImplemented: true,
-                        description: "Workflow codé en dur (Hardcoded State Machine) : En attente -> Validé (par Admin/Superviseur) -> Pris en charge -> Terminé.\nLe 'moteur' est dans `backend/routes/mouvements.js`."
+                        description: "Authentification locale (Email/Mot de passe crypté Bcrypt). Gestion fine des droits via le champ 'Profil' (RBAC) : SuperAdmin, Admin, Superviseur, Technicien, Guest.\nAjouté : Profil 'Superviseur Sécurité' spécifique.\nRoadmap : Connecteur SSO (Azure AD)."
                     },
                     {
-                        id: 'f1-6', name: 'Gestion des lieux (départs/destinations)', type: 'function', isImplemented: true,
-                        description: "Collection 'Lieu'. Contient : Nom, Adresse, Coordonnées GPS, et Indicateur 'Zone Sensible' (pour alertes sécu)."
+                        id: 'f1-3', name: 'Gestion de la structure ACF : BP, bases...', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Modélisation complète : Collections 'Pays', 'Base', 'Lieux', 'Nom de projet'.\nLe rôle 'Super Admin' peut créer des admins pays et gérer les affectations globales (Bases, Lieux, Utilisateurs, Véhicules)."
                     },
                     {
-                        id: 'f1-7', name: 'Gestion des véhicules', type: 'function', isImplemented: true,
-                        description: "Collection 'Vehicule'. Fiche complète : Immatriculation, Marque, Modèle, Kilométrage, Capacité, Type Carburant, Date Achat..."
+                        id: 'f1-5', name: 'Gestion des workflows de validation', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Workflow multiniveaux : Logistique ET Sécurité.\nValidation Sécurité obligatoire pour les zones sensibles AVANT l'organisation du mouvement.\nNote Roadmap : Revoir si l'attribution véhicule doit se faire avant ou après la validation sécu (risque d'annulation tardive)."
                     },
                     {
-                        id: 'f1-8', name: 'Paramétrage checklists contrôle véhicule', type: 'function', isImplemented: true,
-                        description: "Intégré dans e-Logbook (PWA). Formulaire dynamique avec validation des points de contrôle (Niveaux, Pression, Carrosserie...)."
+                        id: 'f1-6', name: 'Gestion des lieux (départs/destinations)', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Collection 'Lieu' enrichie : Nom, Adresse, Coordonnées GPS.\nNouveau : Niveaux de sécurité paramétrables (1 à 5) pour chaque lieu."
                     },
                     {
-                        id: 'f1-9', name: 'Paramétrage services type', type: 'function', isImplemented: true,
-                        description: "Liste fixe des types de maintenances gérées : Vidange, Freins, Pneus, Distribution, etc."
+                        id: 'f1-7', name: 'Gestion des véhicules', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Fiche complète : Marque, Modèle, Immat.\nNouveau : Statut (Propriété/Location), Données Admin (Assurances), Données Enviro (CO2), Conso théorique vs réelle.\nOption : Activer/Désactiver le tracking GPS par véhicule."
+                    },
+                    {
+                        id: 'f1-8', name: 'Paramétrage checklists contrôle véhicule', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Intégré dans e-Logbook (PWA). Template modifiable directement dans l'outil.\nAjout de liens vers instructions PDF pour chaque point de contrôle.\nTraçabilité complète des checks faits/non faits."
+                    },
+                    {
+                        id: 'f1-9', name: 'Paramétrage services type', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Liste des types de maintenance paramétrable.\nPossibilité de définir des intervalles de maintenance par type de véhicule.\nLien vers instructions PDF."
                     }
                 ]
             },
             {
                 id: 'c2', name: 'Demandes de déplacement', type: 'category', color: '#ffca28', children: [
                     {
-                        id: 'f2-1', name: 'Edition de demandes', type: 'function', isImplemented: true,
-                        description: "Formulaire complet côté Admin & PWA. Champs : Itinéraire (Multi-stops), Passagers, Cargaison, Projet, Horaires."
+                        id: 'f2-1', name: 'Edition de demandes', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Création uniquement dans FleetTrack (pas PWA). Formulaire riche : Mode (Routier, Air, Mer), Itinéraire (Multi-stops, GPS ou Lieux enregistrés), Passagers, Cargaison, Horaires.\nProjet affilié automatiquement au demandeur (consolidation possible).\nEstimation automatique trajet (OSRM) et calcul heure arrivée."
                     },
                     {
-                        id: 'f2-2', name: 'Envoi pour validation', type: 'function', isImplemented: true,
-                        description: "Une fois créée, la demande est en statut 'En attente'. Un email automatique est envoyé aux superviseurs si le trajet est en zone sensible."
+                        id: 'f2-2', name: 'Envoi pour validation', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Statut 'En attente' (Log ou Sécu). Email auto aux superviseurs (Sécu si zone sensible).\nRoadmap : Afficher les demandes en attente sur le planning global (bouton filtre). Notification au demandeur lors validation/refus."
                     },
                     {
                         id: 'f2-3', name: 'Consultation des demandes', type: 'function', isImplemented: true,
-                        description: "Tableaux de bord filtrables (par statut, dates, demandeur) pour visualiser l'ensemble des requêtes."
+                        description: "Via le Planning Global et le menu 'Mes Mouvements'.\nRoadmap : Ajouter un tableau de bord des mouvements filtrable en bas du planning global (remplaçant la carte interactive)."
                     }
                 ]
             },
             {
                 id: 'c3', name: 'Validation des demandes', type: 'category', color: '#ffca28', children: [
                     {
-                        id: 'f3-1', name: 'Workflow & Droits', type: 'function', isImplemented: true,
-                        description: "Validation numérique. Seuls les rôles 'Admin', 'Superviseur' et 'SuperAdmin' ont le bouton 'Valider'. Les 'Superviseur Sécurité' ont un canal prioritaire pour les zones rouges."
+                        id: 'f3-1', name: 'Workflow & Droits', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Admin paramètre le niveau d'habilitation de chaque Superviseur Sécurité.\nValidation numérique centralisée."
                     }
                 ]
             },
             {
                 id: 'c4', name: 'Affectation des mouvements', type: 'category', color: '#ffa726', children: [
                     {
-                        id: 'f4-1', name: 'Planning véhicules / chauffeurs', type: 'function', isImplemented: true,
-                        description: "Vue 'Planning' (Diagramme de Gantt simplifié) permettant de voir l'occupation des ressources sur la journée/semaine."
+                        id: 'f4-1', name: 'Planning véhicules / chauffeurs', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Code couleur des mouvements selon statut. Infos détaillées au survol (tooltip)."
                     },
                     {
-                        id: 'f4-2', name: 'Consolidation (Regroupement)', type: 'function', isImplemented: true,
-                        description: "Fonction 'Consolidation' : Permet de drag & drop plusieurs demandes passagers dans un même véhicule pour optimiser le trajet."
-                    },
-                    {
-                        id: 'f4-3', name: 'Consultation disponibilités', type: 'function', isImplemented: true,
-                        description: "Lors de l'affectation, le système vérifie les conflits d'horaires et alerte si le véhicule/chauffeur est déjà pris."
+                        id: 'f4-2', name: 'Consolidation (Regroupement)', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Outil de regroupement pour optimisation (pas drag & drop). Sélection des mouvements à fusionner (étape, horaire, passagers).\nVisualisation cartographique des opportunités de consolidation."
                     },
                     {
                         id: 'f4-4', name: 'Affectation véhicule/chauffeur', type: 'function', isImplemented: true,
-                        description: "Assignation directe depuis la fiche mouvement ou via drag & drop dans l'outil de consolidation."
+                        description: "Se fait à l'étape de consolidation après validations (Log & Sécu).\nRoadmap : Détection automatique des conflits d'horaires."
                     },
-                    { id: 'f4-5', name: 'Consultation planning', type: 'function', isImplemented: true }
+                    { id: 'f4-5', name: 'Consultation planning', type: 'function', isImplemented: true, description: "Visuel des statuts sur planning semaine. Consultable aussi dans 'Mes mouvements'." }
                 ]
             },
             {
-                id: 'c5', name: 'Application chauffeur', type: 'category', color: '#f06292', children: [
+                id: 'c5', name: 'Application chauffeur (PWA)', type: 'category', color: '#f06292', children: [
                     {
-                        id: 'f5-1', name: 'Consultation déplacements prévus', type: 'function', isImplemented: true,
-                        description: "Dashboard 'Mes Missions' sur la PWA. Affiche le prochain trajet confirmé avec détails (Carte, Passagers)."
+                        id: 'f5-1', name: 'Consultation Lieux & Horaires', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Dashboard 'Mes Missions'. Affiche le prochain trajet confirmé : Lieux, Horaires, Passagers (pas de carte interactive)."
                     },
                     {
-                        id: 'f5-2', name: 'Enregistrement mouvements (Logbook)', type: 'function', isImplemented: true,
-                        description: "Start/Stop digital. Capture automatique de l'heure et saisie manuelle du kilométrage réel. Synchro Offline."
+                        id: 'f5-2', name: 'Enregistrement mouvements (Logbook)', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Start/Stop digital. Capture auto heure. Saisie manuelle Km réel. Reprise dernier Km enregistré.\nDétection mouvements affiliés pour prise en charge.\nMouvements libres (non planifiés) possibles avec géoloc.\nSynchro Offline/Online automatique.\nComparaison Planning vs Réel (Heures/Km)."
                     },
                     {
                         id: 'f5-3', name: 'Enregistrement carburant', type: 'function', isImplemented: true,
-                        description: "Formulaire saisie plein : Volume, Prix, Station, Photo ticket (Upload). Calcul conso moyenne auto."
+                        description: "Synchronisé avec le module Carburant de FleetTrack global."
                     },
                     {
-                        id: 'f5-4', name: 'Check quotidien / hebdo', type: 'function', isImplemented: true,
-                        description: "Checklist digitalisée avant départ. Blocage si défaut critique (ex: Freins)."
+                        id: 'f5-4', name: 'Check quotidien / hebdo', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Log automatique à chaque vérification (Date/Heure). Blocage si défaut critique (Roadmap)."
                     },
                     {
-                        id: 'f5-5', name: 'Information maintenance', type: 'function', isImplemented: true,
-                        description: "Notifications visuelles sur la PWA quand une maintenance approche ou est en retard."
+                        id: 'f5-5', name: 'Information maintenance', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Suivi du template des checks service. Instructions accessibles.\nValidation complétion par Responsable (Admin/Superviseur) uniquement."
                     },
-                    {
-                        id: 'f5-6', name: 'Enregistrer une maintenance', type: 'function', isImplemented: true,
-                        description: "Saisie par le chauffeur ou le garagiste de l'intervention réalisée (Coût, Pièces changées)."
-                    },
-                    { id: 'f5-7', name: 'Enregistrer une réparation', type: 'function' },
                     {
                         id: 'f5-8', name: 'Déclarer un incident', type: 'function', isImplemented: true,
-                        description: "Formulaire déclaration accident/panne avec photos et géolocalisation."
+                        description: "Formulaire déclaration. Roadmap : Relevé géolocalisation automatique."
                     },
                     {
-                        id: 'f5-9', name: 'Position TR + Envoi serveur', type: 'function', isImplemented: true,
-                        description: "Tracking GPS passif via le navigateur de la tablette. Envoi point toutes les X minutes si réseau dispo."
+                        id: 'f5-9', name: 'Position TR + Envoi serveur', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Tracking GPS passif (si activé). Comparaison trajet Réel vs Planifié dans FleetTrack."
                     },
                     {
-                        id: 'f5-10', name: 'Envoi d\'alertes sécu', type: 'function', isImplemented: true,
-                        description: "Bouton SOS / Alerte qui notifie immédiatement les admins (Push & Dashboard)."
+                        id: 'f5-10', name: 'Réception alertes sécu', type: 'function', isImplemented: true,
+                        description: "Réception des alertes envoyées par le superviseur depuis FleetTrack."
                     }
                 ]
             },
             {
                 id: 'c6', name: 'Consultation Logbook', type: 'category', color: '#ba68c8', children: [
                     {
-                        id: 'f6-1', name: 'Consultation historique trajets', type: 'function', isImplemented: true,
-                        description: "Historique complet disponible sur PWA (local) et Admin (global). Export Excel disponible."
+                        id: 'f6-1', name: 'Consultation Global Logbook', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Tout le logbook (Trajets, Carburant, Maintenance, Incidents) est consultable centralisé via Gestion des Déplacements (FleetTrack). Pas d'export Excel, tout est dans l'app."
                     },
-                    { id: 'f6-2', name: 'Consultation historique carburants', type: 'function', isImplemented: true },
-                    { id: 'f6-3', name: 'Consultation historique maintenances', type: 'function', isImplemented: true },
-                    { id: 'f6-4', name: 'Consultation historique réparations', type: 'function' },
-                    { id: 'f6-5', name: 'Consultation historique incidents', type: 'function', isImplemented: true }
+                    {
+                        id: 'f6-2', name: 'Historique des réparations', type: 'function', isImplemented: true, description: "Détails complets des réparations visibles dans le global."
+                    }
                 ]
             },
             {
                 id: 'c7', name: 'Planification des maintenances', type: 'category', color: '#8e24aa', children: [
                     {
-                        id: 'f7-1', name: 'Alertes / suivi échéances', type: 'function', isImplemented: true,
-                        description: "Calcul automatique basé sur Km ou Date (ex: Vidange tous les 5000km). Codes couleurs (Vert/Orange/Rouge) dans le parc automobile."
+                        id: 'f7-1', name: 'Alertes / suivi échéances', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Calcul auto (Km ou Date). Codes couleurs (Vert/Orange/Rouge). Alertes PWA et Global + Email superviseur."
                     },
                     {
-                        id: 'f7-2', name: 'Programmation des opérations', type: 'function', isImplemented: true,
-                        description: "Possibilité de planifier une maintenance future, qui apparaît alors dans le planning véhicule."
+                        id: 'f7-2', name: 'Programmation des opérations', type: 'function', isImplemented: false,
+                        description: "Roadmap : Planifier une maintenance future visible dans le planning véhicule."
                     }
                 ]
             },
@@ -188,45 +177,32 @@ export class FunctionalTreeComponent {
                 id: 'c8', name: 'Tracking / suivi temps réel', type: 'category', color: '#ff5722', children: [
                     {
                         id: 'f8-1', name: 'Consultation position véhicules TR', type: 'function', isImplemented: true,
-                        description: "Carte OpenLayers affichant la dernière position connue de tous les véhicules actifs."
+                        description: "Carte OpenLayers affichant la dernière position connue."
                     },
                     {
-                        id: 'f8-2', name: 'Consultation historique des traces', type: 'function', isImplemented: true,
-                        description: "Replay des trajets sur la carte (Trace A -> B)."
+                        id: 'f8-2', name: 'Consultation historique des traces', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Replay des trajets. Comparaison possible entre trace Planifiée et trace Réelle (GPS)."
                     }
                 ]
             },
             {
                 id: 'c9', name: 'Suivi administratif', type: 'category', color: '#00bcd4', children: [
-                    { id: 'f9-1', name: 'Suivi standards véhicules', type: 'function' },
-                    { id: 'f9-2', name: 'Suivi échéances admin véhicules', type: 'function' },
+                    { id: 'f9-2', name: 'Suivi échéances admin véhicules', type: 'function', isImplemented: true, description: "Prise en compte échéance assurance." },
                     {
-                        id: 'f9-3', name: 'Suivi standards chauffeurs (formation)', type: 'function', isImplemented: true,
-                        description: "Champ 'Eco-conduite' (Oui/Non + Date) sur la fiche Chauffeur. Pas de module de formation complet (LMS)."
-                    },
-                    { id: 'f9-4', name: 'Suivi échéances admin chauffeurs', type: 'function' }
+                        id: 'f9-4', name: 'Suivi échéances admin chauffeurs', type: 'function', isImplemented: false,
+                        description: "Roadmap : Suivi expiration contrat et permis."
+                    }
                 ]
             },
             {
                 id: 'c10', name: 'Gestion financière', type: 'category', color: '#9c27b0', children: [
                     {
-                        id: 'f10-1', name: 'Suivi coûts récurrents', type: 'function', isImplemented: true,
-                        description: "Champs 'Coût Assurance', 'Coût Location', 'Dépréciation' dans la fiche Véhicule. Inclus dans les rapports de coûts."
+                        id: 'f10-1', name: 'Suivi coûts récurrents', type: 'function', isImplemented: true, isExclusive: true,
+                        description: "Champs 'Coût Assurance', 'Coût Location', 'Dépréciation' dans la fiche Véhicule. Inclus dans les rapports."
                     },
-                    { id: 'f10-2', name: 'Suivi coûts ponctuels', type: 'function' },
-                    { id: 'f10-3', name: 'Consolidation coûts par véhicule/mois', type: 'function' },
                     {
-                        id: 'f10-4', name: 'Ventilation des coûts (Analytique)', type: 'function', isImplemented: true,
-                        description: "Lors de la création de mouvement, les coûts peuvent être ventilés sur plusieurs Projets (Calcul automatique du % par passager)."
-                    },
-                    { id: 'f10-5', name: 'Lien Polaris', type: 'function' }
-                ]
-            },
-            {
-                id: 'c12', name: 'Tableaux de bord & Reporting', type: 'category', color: '#009688', children: [
-                    {
-                        id: 'f12-1', name: 'KPIs Flotte & Environnement', type: 'function', isImplemented: true,
-                        description: "Dashboard V2 : Km total, Conso moyenne, Coût total, Taux de service. Graphiques d'évolution mensuelle."
+                        id: 'f10-6', name: 'Module Gestion des Coûts', type: 'function', isImplemented: false,
+                        description: "Roadmap : Module complet gestion des coûts, tableaux de dépréciation..."
                     }
                 ]
             }
