@@ -183,11 +183,51 @@
     }
 
     .trips-table {
-        font-size: 12px;
+        font-size: 13px; // Slightly smaller font for mobile
 
         th,
         td {
-            padding: 8px 4px;
+            padding: 8px 4px; // Reduce padding
+        }
+
+        // Hide standard columns on mobile if not needed or styled differently
+        .desktop-date {
+            display: none;
+        }
+
+        .mobile-date {
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .mobile-time {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .mobile-arrival-hint {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 2px;
         }
     }
+}
+
+// Desktop default styles (hidden on mobile)
+.mobile-date,
+.mobile-time,
+.mobile-arrival-hint {
+    display: none;
+}
+
+.desktop-date {
+    display: inline;
+}
+
+.synced {
+    color: #4caf50;
+}
+
+.pending {
+    color: #ff9800;
 }
