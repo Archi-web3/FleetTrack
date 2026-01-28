@@ -19,6 +19,12 @@
         </div>
     </div>
 
+    <!-- DEBUG: A SUPPRIMER PLUS TARD -->
+    <div style="padding: 10px; color: red;">
+        DEBUG: Trips count: {{ trips?.length }} | Columns: {{ displayedColumns?.length }} | Handset: {{ (isHandset$ |
+        async) }}
+    </div>
+
     <!-- Trips Table -->
     <div class="table-container">
         <table mat-table [dataSource]="trips" class="trips-table">
