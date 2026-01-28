@@ -21,6 +21,9 @@ export class WaiverService {
     constructor(private http: HttpClient) { }
 
     createWaiver(visitorName: string, vehicleId: string, signatureBlob: Blob, tripId?: string): Observable<any> {
+        const token = localStorage.getItem('token');
+        const headers = { 'x-auth-token': token || '' };
+
         const formData = new FormData();
         formData.append('visitorName', visitorName);
         formData.append('vehicleId', vehicleId);
@@ -29,6 +32,6 @@ export class WaiverService {
         }
         formData.append('signature', signatureBlob, 'signature.png');
 
-        return this.http.post<any>(this.apiUrl, formData);
+        return this.http.post<any>(this.apiUrl, formData, { headers });
     }
 }
