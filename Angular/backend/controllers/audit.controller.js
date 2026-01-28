@@ -26,8 +26,6 @@ exports.getLogs = async (req, res) => {
             .populate('pays', 'nom'); // Populate pays name
 
         res.json(logs);
-
-        res.json(logs);
     } catch (error) {
         console.error('❌ [AUDIT] Error fetching logs:', error);
         res.status(500).json({ error: 'Error fetching audit logs' });

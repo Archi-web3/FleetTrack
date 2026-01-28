@@ -25,6 +25,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy (Render/Vercel)
 const port = process.env.PORT || 3000;
 
 // 1. Protection des Headers HTTP
