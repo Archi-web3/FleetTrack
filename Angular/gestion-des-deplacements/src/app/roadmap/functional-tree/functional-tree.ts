@@ -35,6 +35,10 @@ export class FunctionalTreeComponent {
         // Si c'est une catégorie vide ou root, on peut aussi l'éditer
     }
 
+    deselectNode() {
+        this.selectedNode = null;
+    }
+
     // Données initiales enrichies
     treeData: TreeNode = {
         id: 'root',

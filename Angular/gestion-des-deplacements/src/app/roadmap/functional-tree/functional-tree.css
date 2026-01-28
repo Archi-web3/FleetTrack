@@ -1,16 +1,15 @@
 .tree-wrapper {
-    display: flex;
+    position: relative;
     height: calc(100vh - 200px);
-    /* Adjust based on header/footer */
-    gap: 20px;
+    overflow: hidden;
+    /* Contain the absolute panel */
 }
 
 .tree-container {
-    flex: 1;
-    /* Take all available space */
+    width: 100%;
+    height: 100%;
     padding: 20px;
     overflow: auto;
-    /* Enable scrollbars */
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
@@ -18,24 +17,29 @@
 }
 
 .detail-panel {
-    width: 320px;
-    /* Fixed reasonable width */
-    flex-shrink: 0;
-    /* Do not shrink */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    bottom: 20px;
+    width: 400px;
+    /* Wider comfortable width since overlapping */
     background: white;
     padding: 25px;
     border-radius: 8px;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
-    /* Shadow on left */
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
+    /* Stronger shadow for depth */
     display: flex;
     flex-direction: column;
     border-left: 1px solid #eee;
+    overflow-y: auto;
+    z-index: 100;
 }
 
-.panel-header {
-    border-bottom: 2px solid #eee;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
 }
 
 .panel-title {
