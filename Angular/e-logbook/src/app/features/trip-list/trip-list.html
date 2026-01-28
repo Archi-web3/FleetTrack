@@ -19,11 +19,7 @@
         </div>
     </div>
 
-    <!-- DEBUG: A SUPPRIMER PLUS TARD -->
-    <div style="padding: 10px; color: red;">
-        DEBUG: Trips count: {{ trips?.length }} | Columns: {{ displayedColumns?.length }} | Handset: {{ (isHandset$ |
-        async) }}
-    </div>
+
 
     <!-- Trips Table -->
     <div class="table-container">
@@ -46,9 +42,9 @@
             <ng-container matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef>Date</th>
                 <td mat-cell *matCellDef="let trip">
-                    <span class="mobile-date">{{ trip.realDepartureTime | date:'dd/MM' }}</span>
-                    <span class="desktop-date">{{ trip.realDepartureTime | date:'dd/MM/yyyy' }}</span>
-                    <div class="mobile-time">{{ trip.realDepartureTime | date:'HH:mm' }}</div>
+                    <span class="mobile-date">{{ trip.startDateTime | date:'dd/MM' }}</span>
+                    <span class="desktop-date">{{ trip.startDateTime | date:'dd/MM/yyyy' }}</span>
+                    <div class="mobile-time">{{ trip.startDateTime | date:'HH:mm' }}</div>
                 </td>
             </ng-container>
 
@@ -56,7 +52,7 @@
             <ng-container matColumnDef="time">
                 <th mat-header-cell *matHeaderCellDef>Heure</th>
                 <td mat-cell *matCellDef="let trip">
-                    {{ trip.realDepartureTime | date:'HH:mm' }} - {{ trip.realArrivalTime | date:'HH:mm' }}
+                    {{ trip.startDateTime | date:'HH:mm' }} - {{ trip.endDateTime | date:'HH:mm' }}
                 </td>
             </ng-container>
 
