@@ -55,7 +55,139 @@ export class RoadmapComponent {
                 { category: 'Correctif', description: 'Stabilité : Résolution des problèmes de CORS et Rate Limiting sur l\'API.' }
             ]
         },
-        // ... (existing items)
+        {
+            version: 'v2.7.1',
+            date: '26 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Carte Interactive', description: 'Nouveau Filtre : Sélection par Mode de Transport (Route, Aérien, Maritime).' },
+                { category: 'Demande Mouvement', description: 'Récurrence : Possibilité de créer une série de demandes (Quotidienne/Hebdomadaire) sur 3 mois.' },
+                { category: 'UX', description: 'Amélioration de la saisie des dates pour les demandes récurrentes.' },
+                { category: 'Communication', description: 'Emails Transactionnels : Notification automatique aux Superviseurs (demande de validation) et Demandeurs (suivi statut).' },
+                { category: 'Workflow', description: 'Validation Sécurité : Matrice de risque active. Les trajets en zone rouge/orange déclenchent une approbation sécuritaire obligatoire.' },
+                { category: 'Alerting', description: 'Push Notifications : Diffusion instantanée des alertes de sécurité sur les mobiles (même app fermée).' },
+                { category: 'Sécurité', description: 'Durcissement Backend : Rate Limiter, Helmet et CORS strict pour bloquer les accès non autorisés.' },
+                { category: 'Documentation', description: 'Transparence : Nouvel onglet "Sécurité" détaillant les mesures de protection des données.' }
+            ]
+        },
+        {
+            version: 'v2.7.0',
+            date: '26 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Objectifs Environnementaux', description: 'Nouveau Module : Suivi de la consommation (-5%) et Plan d\'Action (Roadmap) trimestriel.' },
+                { category: 'Objectifs Environnementaux', description: 'IAP (Indicateur) : Calcul automatique de l\'Indice d\'Activité Pondéré pour l\'efficacité énergétique.' },
+                { category: 'Objectifs Environnementaux', description: 'UI : Guide méthodologique intégré et configuration personnalisée des pondérations.' }
+            ]
+        },
+        {
+            version: 'v2.6.1',
+            date: '26 Janvier 2026',
+            type: 'patch',
+            changes: [
+                { category: 'Correctif', description: 'Résolution du blocage lors de la connexion (Login) causé par une police manquante.' }
+            ]
+        },
+        {
+            version: 'v2.6.0',
+            date: '25 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Dashboard', description: 'Tour de Contrôle : KPIs CO2 séparés (Flotte vs Aérien) et nouvelles cartes par mode + Correctif Stats Globales.' },
+                { category: 'Logbook', description: 'Visualisation Carte : Correction du tracé planifié (Ligne bleue) et support robuste des coordonnées GPS.' },
+                { category: 'UX / UI', description: 'Amélioration lisibilité : Fonds blancs imposés sur les listes déroulantes, champs de saisie et icônes modes.' },
+                { category: 'Correctif', description: 'Stabilisation de la persistance des dates (Stops) et du calcul distance Aérien.' }
+            ]
+        },
+        {
+            version: 'v2.5.0',
+            date: '25 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Tour de Contrôle', description: 'Dashboard : Filtres avancés par date et sélection multiple interactive sur la carte.' },
+                { category: 'Tour de Contrôle', description: 'Validation : Gestion des trajets "Hors-Liste" (Imprévus) avec indicateurs visuels et validation Manager.' },
+                { category: 'Visualisation', description: 'Carte : Affichage du code véhicule (ACF) dans les infobulles.' },
+                { category: 'e-logbook', description: 'Mode Libre : Possibilité de démarrer un trajet sans mission planifiée (avec GPS complet).' },
+                { category: 'Backend', description: 'Flagging automatique des trajets ad-hoc et intégration dans le flux de consolidation.' }
+            ]
+        },
+        {
+            version: 'v2.4.0',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'e-logbook', description: 'Traceur GPS "Boîte Noire" : Enregistrement auto (Position, Vitesse) pour les véhicules trackés.' },
+                { category: 'e-logbook', description: 'Départ GPS : Nouvelle option pour démarrer depuis la position actuelle (bypass lieux).' },
+                { category: 'e-logbook', description: 'UX : Annulation de Trajet (Bouton d\'urgence) et Indicateurs visuels (Satellite).' },
+                { category: 'e-logbook', description: 'Fix Kilométrage : Logique de suggestion intelligente (Max des 10 derniers trajets).' },
+                { category: 'Web Dashboard', description: 'Visualisation : Carte interactive des trajets réels vs planifiés (Comparaison).' },
+                { category: 'Web Dashboard', description: 'Admin : Toggle "Activer GPS" par véhicule.' },
+                { category: 'Backend', description: 'Analyse : Calcul Distance Réelle (Haversine) et Détection de Déviation (>15%).' }
+            ]
+        },
+        {
+            version: 'v2.3.1',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Maintenance', description: 'Notifications Email Automatiques : Envoi quotidien (08h00) aux Superviseurs pour les véhicules nécessitant une maintenance (Statut Proche ou Retard).' }
+            ]
+        },
+        {
+            version: 'v2.3.0',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Alerting', description: 'Détection automatique de la surconsommation de carburant (>10% vs théorique).' },
+                { category: 'Maintenance', description: 'Calcul dynamique du statut (OK/Proche/Retard) basé sur les intervalles configurables.' },
+                { category: 'Maintenance', description: 'Intégration des configurations de maintenance par type de véhicule (Intervalles personnalisés).' }
+            ]
+        },
+        {
+            version: 'v2.2.0',
+            date: '24 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Validation', description: 'Emails de refus : Notification enrichie avec le motif de refus.' },
+                { category: 'Visualisation', description: 'Carte Interactive : Tracés routiers réels (OSRM) et marqueurs de couleurs.' },
+                { category: 'Intelligence', description: 'Calculs prédictifs : Estimation automatique Distance/Durée lors de la demande.' },
+                { category: 'Expérience Utilisateur', description: 'Pré-remplissage intelligent de l\'heure d\'arrivée (+ marge sécurité).' },
+                { category: 'Correctif', description: 'Résolution des problèmes CORS (Intercepteurs) pour les API externes.' }
+            ]
+        },
+        {
+            version: 'v2.1.0',
+            date: '23 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Gestion Financière', description: 'Ajout d\'une liste déroulante pour la sélection des projets (Ventilation) pour plus de cohérence.' },
+                { category: 'Statistiques', description: 'Correction des filtres Dashboard Global vs Par Projet : respect strict de la ventilation financière.' },
+                { category: 'Statistiques', description: 'Ajout des colonnes "Distance Totale" (Impliquée) vs "Distance Ventilée" (Réelle) dans les rapports.' },
+                { category: 'Sécurité', description: 'Durcissement du service d\'authentification et gestion automatique des erreurs 401 (reconnexion propre).' }
+            ]
+        },
+        {
+            version: 'v2.0.1',
+            date: '21 Janvier 2026',
+            type: 'patch',
+            changes: [
+                { category: 'Correctif', description: 'Rétablissement de la visibilité du menu "Validation" pour le rôle Superviseur Sécurité.' },
+                { category: 'Architecture', description: 'Mise à jour des Interceptors pour la gestion multi-pays.' }
+            ]
+        },
+        {
+            version: 'v2.0.0',
+            date: 'Janvier 2026',
+            type: 'major',
+            changes: [
+                { category: 'Véhicules', description: 'Instauration des IDs automatiques, gestion des Assurances et distinction Propriété/Location.' },
+                { category: 'Lieux', description: 'Niveaux de sécurité (1-5) avec indicateurs visuels.' },
+                { category: 'Utilisateurs', description: 'Ajout des matricules employés et niveaux d\'habilitation sécurité.' },
+                { category: 'Mouvements', description: 'Support des modes Aérien et Maritime.' },
+                { category: 'Validation', description: 'Matrice intelligente (Niveau de risque vs Habilitation user) et historique des signatures.' },
+                { category: 'Ventilation', description: 'Algorithme de répartition automatique des coûts basé sur les passagers.' }
+            ]
+        }
     ];
 
     roadmapItems: RoadmapItem[] = [
