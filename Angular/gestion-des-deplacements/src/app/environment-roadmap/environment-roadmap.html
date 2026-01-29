@@ -36,9 +36,22 @@
                 due à une baisse d'activité.</p>
 
             <h3>🔹 Formule de Calcul</h3>
-            <p><strong>IAP = (Projets × 15%) + (Sites × 20%) + (Staff × 15%) + (Budget × 15%) + ...</strong></p>
-            <p>Si votre ratio <code>Consommation / IAP</code> diminue de <strong>{{targetPercent}}%</strong>, l'objectif
-                est atteint !</p>
+            <div
+                style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.9em;">
+                <strong>IAP = </strong><br>
+                &nbsp;&nbsp;(Nb Projets × Poids_Projets%) + <br>
+                &nbsp;&nbsp;(Nb Sites × Poids_Sites%) + <br>
+                &nbsp;&nbsp;(Staff FTE × Poids_Staff%) + <br>
+                &nbsp;&nbsp;(Budget k$ × Poids_Budget%) + ...
+            </div>
+
+            <h3>🔹 Principe de Comparaison</h3>
+            <p>Nous suivons l'évolution du ratio : <strong style="color: #005FB6;">Litres Consommés / IAP</strong>.</p>
+            <p>Si ce ratio diminue de <strong>{{targetPercent}}%</strong>, cela signifie que vous êtes devenu plus
+                efficace énergetiquement <em>à activité égale</em>.</p>
+
+            <p><em>Exemple : Si votre activité double (IAP x2) mais que votre consommation augmente de moins de deux
+                    fois, votre ratio baisse = Objectif atteint !</em></p>
 
             <div class="guide-alert">
                 <mat-icon>info</mat-icon>
