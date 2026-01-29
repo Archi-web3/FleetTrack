@@ -36,6 +36,11 @@ const mouvementSchema = new mongoose.Schema({
   // Mode de Transport (Module 2)
   modeTransport: { type: String, enum: ['Routier', 'Aérien', 'Maritime'], default: 'Routier' },
 
+  // NOUVEAU: Type de Mouvement (Mission vs Maintenance)
+  type: { type: String, enum: ['mission', 'maintenance'], default: 'mission' },
+  maintenanceType: { type: String, enum: ['Check Hebdo', 'Service', 'Réparation', 'Autre'] },
+  description: { type: String }, // Description optionnelle (ex: détails panne)
+
   // Validation Avancée (Module 2)
   validationLevelRequired: { type: Number, default: 0 }, // 0 = Pas de restriction, 1-5 = Niveau de danger max du trajet
   validationHistory: [{

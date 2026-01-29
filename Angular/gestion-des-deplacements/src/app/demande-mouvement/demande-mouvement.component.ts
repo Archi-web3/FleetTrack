@@ -36,6 +36,12 @@ export class DemandeMouvementComponent implements OnInit {
     modeTransport: 'Routier' // Module 2 : Mode de transport par défaut
   };
 
+  // NOUVEAU : Mode de la demande (Mission vs Maintenance)
+  requestType: 'mission' | 'maintenance' = 'mission';
+  maintenanceType: string = 'Check Hebdo';
+  maintenanceDescription: string = '';
+  maintenanceTypes: string[] = ['Check Hebdo', 'Service', 'Réparation', 'Autre'];
+
   transportModes: string[] = ['Routier', 'Aérien', 'Maritime'];
 
   utilisateurs: any[] = [];
@@ -323,6 +329,45 @@ export class DemandeMouvementComponent implements OnInit {
     console.log('Tentative de soumission de demande...');
 
     try {
+      // --- LOGIQUE MAINTENANCE ---
+      if (this.requestType === 'maintenance') {
+        if (!this.mouvement.vehicule) {
+          alert('Veuillez sélectionner un véhicule pour la maintenance.');
+          return;
+        }
+        if (!this.mouvement.dateDepart || !this.mouvement.dateArrivee) {
+          alert('Veuillez définir la période de maintenance (Début/Fin).');
+          return;
+        }
+
+        const payload = {
+          type: 'maintenance',
+          maintenanceType: this.maintenanceType,
+          description: this.maintenanceDescription,
+          vehicule: this.mouvement.vehicule,
+          dateDepart: new Date(this.mouvement.dateDepart),
+          dateArrivee: new Date(this.mouvement.dateArrivee),
+          demandeur: this.mouvement.demandeur,
+          statut: 'validé', // Auto-validé car Supervisor+
+          stops: [], // Pas de stops
+          // Champs fictifs pour le modèle strict
+          lieuDepart: null,
+          lieuArrivee: null,
+          passagers: []
+        };
+
+        // Envoi simple (pas de boucle récurrence complexe pour l'instant sauf si demandé)
+        // Mais on peut réutiliser la boucle si isRecurring est actif ? 
+        // Simplification V1 : Pas de récurrence pour la maintenance dans un premier temps pour éviter bugs
+
+        await firstValueFrom(this.mouvementService.addMouvement(payload));
+        alert('Créneau de maintenance créé avec succès !');
+        this.router.navigate(['/']);
+        return;
+      }
+
+      // --- LOGIQUE MISSION (Code existant) ---
+
       // 1. Validation de base
       if (!this.mouvement.lieuDepart || !this.mouvement.lieuArrivee || !this.mouvement.dateDepart || !this.mouvement.dateArrivee) {
         if (!this.mouvement.dateDepart || !this.mouvement.dateArrivee) {
@@ -443,6 +488,7 @@ export class DemandeMouvementComponent implements OnInit {
 
         const payload = {
           ...this.mouvement,
+          // type: 'mission' (défaut côté back),
           dateDepart: currentDate,
           dateArrivee: currentArriveeDate,
           stops: stops,

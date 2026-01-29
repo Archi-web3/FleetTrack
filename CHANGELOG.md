@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.9.1] - 2026-01-29
+
+### ⚙️ Maintenance & Planning
+- **Slots de Maintenance :** Possibilité pour les Superviseurs et Admins de créer des créneaux d'indisponibilité directement dans le planning (Service, Réparation, Check Hebdo) en bloquant un véhicule spécifique.
+
 ## [2.9.0] - 2026-01-29
 
 ### 📊 Tableau de Bord & Analytics (Dashboard)

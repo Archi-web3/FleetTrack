@@ -32,6 +32,14 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.9.1',
+            date: '29 Janvier 2026',
+            type: 'patch',
+            changes: [
+                { category: 'Maintenance', description: 'Nouveau Module : Création rapide de créneaux de maintenance/indisponibilité dans le planning pour bloquer les véhicules.' }
+            ]
+        },
+        {
             version: 'v2.9.0',
             date: '29 Janvier 2026',
             type: 'minor',
