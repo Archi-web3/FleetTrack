@@ -143,10 +143,41 @@ export class PlanningMouvementsComponent implements OnInit {
             draggable: true,
             meta: {
               ...mouvement,
-              tooltip: tooltip // Ajouter le tooltip dans meta
+              tooltip: tooltip,
+              hasConflict: false // Init
             }
           };
         });
+
+        // --- DÉTECTION CLIENT DES CONFLITS (VISUEL) ---
+        for (let i = 0; i < this.events.length; i++) {
+          for (let j = i + 1; j < this.events.length; j++) {
+            const e1 = this.events[i];
+            const e2 = this.events[j];
+
+            // Chevauchement temporel
+            if (e1.start < e2.end && e1.end > e2.start) {
+              const ch1 = e1.meta.chauffeur?._id;
+              const ch2 = e2.meta.chauffeur?._id;
+              const v1 = e1.meta.vehicule?._id;
+              const v2 = e2.meta.vehicule?._id;
+
+              let conflictFound = false;
+              if (ch1 && ch2 && ch1 === ch2) conflictFound = true;
+              if (v1 && v2 && v1 === v2) conflictFound = true;
+
+              if (conflictFound) {
+                e1.meta.hasConflict = true;
+                e2.meta.hasConflict = true;
+
+                // Update tooltip if needed or just rely on the visual indicator
+                e1.meta.tooltip = '⚠️ CONFLIT DÉTECTÉ \n' + e1.meta.tooltip;
+                e2.meta.tooltip = '⚠️ CONFLIT DÉTECTÉ \n' + e2.meta.tooltip;
+              }
+            }
+          }
+        }
+
         this.refresh.next(true);
         console.log("Planning des mouvements chargé avec carte:", this.events);
       },

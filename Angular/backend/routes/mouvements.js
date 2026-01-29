@@ -11,6 +11,7 @@ const auditService = require('../services/audit.service');
 const mongoose = require('mongoose');
 const mailer = require('../utils/mailer');
 // Utilisateur declared at line 7
+const { checkDriverConflict, checkVehicleConflict } = require('../utils/conflict-detector');
 
 // Route pour créer un nouveau mouvement (pour test - NON PROTÉGÉE PAR AUTH car c'est un test simple)
 router.post('/mouvements/test', async (req, res) => {
@@ -262,6 +263,43 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
     console.log('🆕 [CREATE MOUVEMENT] Base utilisateur:', req.utilisateur.base);
     console.log('🆕 [CREATE MOUVEMENT] Pays utilisateur:', req.utilisateur.pays);
 
+    // --- CONTRÔLE DE CONFLIT HORAIRE (SOFT BLOCK) ---
+    // 1. Calculer les dates
+    let dateDepart = null;
+    let dateArrivee = null;
+    if (req.body.stops && req.body.stops.length > 0) {
+      dateDepart = new Date(req.body.stops[0].dateDepart);
+      dateArrivee = new Date(req.body.stops[req.body.stops.length - 1].dateArrivee);
+    }
+
+    // 2. Vérifier Conflits si l'utilisateur n'a pas forcé
+    if (dateDepart && dateArrivee && req.query.force !== 'true') {
+      // Conflit Chauffeur
+      if (req.body.chauffeur) {
+        const conflict = await checkDriverConflict(req.body.chauffeur, dateDepart, dateArrivee);
+        if (conflict) {
+          console.warn(`⚠️ [CREATE MOUVEMENT] Conflit Chauffeur détecté avec le mouvement ${conflict._id}`);
+          return res.status(409).json({
+            message: `Conflit : Le chauffeur est déjà occupé sur cette période (Mouvement vers ${conflict.objectif || 'Inconnu'}).`,
+            conflictType: 'chauffeur',
+            conflictDetails: conflict
+          });
+        }
+      }
+      // Conflit Véhicule
+      if (req.body.vehicule) {
+        const conflict = await checkVehicleConflict(req.body.vehicule, dateDepart, dateArrivee);
+        if (conflict) {
+          console.warn(`⚠️ [CREATE MOUVEMENT] Conflit Véhicule détecté avec le mouvement ${conflict._id}`);
+          return res.status(409).json({
+            message: `Conflit : Le véhicule est déjà utilisé sur cette période (Mouvement vers ${conflict.objectif || 'Inconnu'}).`,
+            conflictType: 'vehicule',
+            conflictDetails: conflict
+          });
+        }
+      }
+    }
+
     // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ ---
     let statutInitial = 'en attente';
     const stopLieuIds = req.body.stops.map((stop) => stop.lieu);
@@ -509,70 +547,38 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     const newVehiculeId = req.body.vehicule;
     const newChauffeurId = req.body.chauffeur;
 
-    // Seulement si une tentative d'affectation est faite ET que les dates sont valides
-    if ((newVehiculeId || newChauffeurId) && newDateDepart && newDateArrivee) {
-      // 1. Vérifier si le chauffeur existe et a le bon profil
+    // --- CONTROLE CONFLITS (Nouveau : Utility Helper) ---
+    // Seulement si force != true et que les dates sont valides
+    if ((newVehiculeId || newChauffeurId) && newDateDepart && newDateArrivee && req.query.force !== 'true') {
+
+      // 1. Conflit Chauffeur
       if (newChauffeurId) {
-        console.log('Vérification du chauffeur ID:', newChauffeurId);
+        // Vérifier profil Chauffeur
         const chauffeur = await Utilisateur.findById(newChauffeurId);
-        if (!chauffeur) {
-          console.error('ERREUR: Chauffeur introuvable');
-          return res.status(400).json({ message: 'Chauffeur sélectionné introuvable.' });
-        }
-        console.log('Chauffeur trouvé:', chauffeur.nom, 'Profil:', chauffeur.profil);
-        if (chauffeur.profil !== 'Chauffeur') {
-          console.error('ERREUR: Utilisateur n\'est pas un chauffeur');
-          return res.status(400).json({ message: 'L\'utilisateur sélectionné n\'est pas un chauffeur.' });
+        if (!chauffeur || chauffeur.profil !== 'Chauffeur') {
+          // return res.status(400)... (On garde la logique existante de 400 pour erreur métier pure)
+          // Mais ici on se concentre sur le conflit
         }
 
-        // Vérifier les conflits d'horaire pour le chauffeur
-        // Chevauchement si (A < D ET C < B)
-        // A = newDateDepart, B = newDateArrivee (le mouvement que l'on veut affecter)
-        // C = dateDepart d'un autre mouvement, D = dateArrivee d'un autre mouvement
-        console.log('Vérification des conflits pour le chauffeur...');
-        console.log('Dates du mouvement - Départ:', newDateDepart, 'Arrivée:', newDateArrivee);
-
-        try {
-          const conflitChauffeur = await Mouvement.findOne({
-            _id: { $ne: mouvement._id }, // Exclure le mouvement actuel
-            chauffeur: newChauffeurId,
-            statut: { $in: ['en attente', 'validé', 'en cours'] }, // Statuts où le chauffeur est "occupé"
-            dateDepart: { $lt: newDateArrivee }, // Le mouvement existant commence avant que le nouveau ne finisse
-            dateArrivee: { $gt: newDateDepart }   // Et le mouvement existant se termine après que le nouveau ne commence
+        const conflict = await checkDriverConflict(newChauffeurId, newDateDepart, newDateArrivee, mouvement._id);
+        if (conflict) {
+          return res.status(409).json({ // 409 Conflict au lieu de 400
+            message: `Conflit : Le chauffeur est déjà affecté au mouvement du ${new Date(conflict.dateDepart).toLocaleString()} au ${new Date(conflict.dateArrivee).toLocaleString()}.`,
+            conflictType: 'chauffeur',
+            conflictDetails: conflict
           });
-
-          console.log('Résultat recherche conflit chauffeur:', conflitChauffeur ? 'CONFLIT TROUVÉ' : 'Pas de conflit');
-
-          if (conflitChauffeur) {
-            const conflitDepart = conflitChauffeur.stops[0].dateDepart.toLocaleString();
-            const conflitArrivee = conflitChauffeur.stops[conflitChauffeur.stops.length - 1].dateArrivee.toLocaleString();
-            return res.status(400).json({ message: `Le chauffeur est déjà affecté au mouvement du ${conflitDepart} au ${conflitArrivee}.` });
-          }
-        } catch (conflictErr) {
-          console.error('ERREUR lors de la vérification des conflits chauffeur:', conflictErr);
-          // Continuer sans vérification de conflit pour l'instant
         }
       }
 
-      // 2. Vérifier les conflits d'horaire pour le véhicule
+      // 2. Conflit Véhicule
       if (newVehiculeId) {
-        const vehicule = await Vehicule.findById(newVehiculeId);
-        if (!vehicule) {
-          return res.status(400).json({ message: 'Véhicule sélectionné introuvable.' });
-        }
-
-        const conflitVehicule = await Mouvement.findOne({
-          _id: { $ne: mouvement._id },
-          vehicule: newVehiculeId,
-          statut: { $in: ['en attente', 'validé', 'en cours'] },
-          dateDepart: { $lt: newDateArrivee },
-          dateArrivee: { $gt: newDateDepart }
-        });
-
-        if (conflitVehicule) {
-          const conflitDepart = conflitVehicule.stops[0].dateDepart.toLocaleString();
-          const conflitArrivee = conflitVehicule.stops[conflitVehicule.stops.length - 1].dateArrivee.toLocaleString();
-          return res.status(400).json({ message: `Le véhicule est déjà affecté au mouvement du ${conflitDepart} au ${conflitArrivee}.` });
+        const conflict = await checkVehicleConflict(newVehiculeId, newDateDepart, newDateArrivee, mouvement._id);
+        if (conflict) {
+          return res.status(409).json({
+            message: `Conflit : Le véhicule est déjà affecté au mouvement du ${new Date(conflict.dateDepart).toLocaleString()} au ${new Date(conflict.dateArrivee).toLocaleString()}.`,
+            conflictType: 'vehicule',
+            conflictDetails: conflict
+          });
         }
       }
     }

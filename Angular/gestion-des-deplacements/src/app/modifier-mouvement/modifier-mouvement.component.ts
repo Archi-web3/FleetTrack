@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router'; // ActivatedRoute pour récupérer l'ID
+import { firstValueFrom } from 'rxjs'; // Import NOUVEAU
 import { MouvementService } from '../mouvement.service';
 import { UtilisateurService } from '../utilisateur.service';
 import { VehiculeService } from '../vehicule.service';
@@ -210,7 +211,7 @@ export class ModifierMouvementComponent implements OnInit {
   }
 
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     console.log('🔄 [modifier-mouvement] onSubmit called via click'); // Debug
     if (!this.mouvementId) return;
 
@@ -236,16 +237,29 @@ export class ModifierMouvementComponent implements OnInit {
       }
     }
 
-    this.mouvementService.updateMouvement(this.mouvementId, this.mouvement).subscribe(
-      (response) => {
-        alert('Mouvement mis à jour avec succès !');
-        this.router.navigate(['/mes-mouvements']); // Rediriger vers mes mouvements (plus logique si on vient de là)
-      },
-      (error) => {
+    try {
+      await firstValueFrom(this.mouvementService.updateMouvement(this.mouvementId, this.mouvement));
+      alert('Mouvement mis à jour avec succès !');
+      this.router.navigate(['/mes-mouvements']); // Rediriger vers mes mouvements (plus logique si on vient de là)
+    } catch (error: any) {
+      if (error.status === 409) {
+        // Conflit détecté
+        const msg = error.error.message || 'Conflit détecté.';
+        if (confirm(`${msg}\n\nVoulez-vous forcer la modification malgré ce conflit ?`)) {
+          try {
+            await firstValueFrom(this.mouvementService.updateMouvement(this.mouvementId!, this.mouvement, true));
+            alert('Mouvement mis à jour avec succès (Forcé) !');
+            this.router.navigate(['/mes-mouvements']);
+          } catch (forceErr: any) {
+            console.error('Erreur forcée:', forceErr);
+            alert(`Erreur lors du forçage : ${forceErr.error?.message || forceErr.message}`);
+          }
+        }
+      } else {
         console.error('Erreur lors de la mise à jour du mouvement:', error);
         if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à modifier ce mouvement.');
         else alert('Erreur lors de la mise à jour. Vérifiez la console.');
       }
-    );
+    }
   }
 }

@@ -402,45 +402,27 @@ export class DemandeMouvementComponent implements OnInit {
         }
       }
 
-      // 3. BOUCLE DE RÉCURRENCE OU SIMPLE ENVOI
-      const requests = [];
+      // 3. BOUCLE DE RÉCURRENCE OU SIMPLE ENVOI (Séquentiel pour gérer les confirmations)
       let currentDate = new Date(this.mouvement.dateDepart);
-      // Calculer durée trajet pour repliquer l'arrivée
       const arrivalDateOrigin = new Date(this.mouvement.dateArrivee);
       const tripDurationMs = arrivalDateOrigin.getTime() - currentDate.getTime();
 
       let endDateLoop = this.isRecurring ? new Date(this.recurrenceEndDate) : new Date(this.mouvement.dateDepart);
-      // Set hours for strict comparison logic if needed, but simple loop is fine.
 
-      // Safety limit
       let safeGuard = 0;
+      let countSuccess = 0;
 
       do {
-        // Prepare payload for THIS iteration
-        const currentDepartStr = currentDate.toISOString(); // Or format correctly for backend?
-        // Attention: input datetime-local gives 'YYYY-MM-DDTHH:mm', Date.toISOString gives 'YYYY-MM-DDTHH:mm:ss.sssZ'
-        // Backend likely handles ISO or Date objects. Assuming standard Date handling.
-        // BUT: Components use strings for inputs...
-        // Let's reconstruct the string format needed if backend expects specific string.
-        // Assuming backend handles ISO strings fine (Mongoose Date).
-
+        const currentDepartStr = currentDate.toISOString();
         const currentArriveeDate = new Date(currentDate.getTime() + tripDurationMs);
-
         const stops = [];
 
-        // Helper to format date for backend/consistency if needed, or just use date object
-        // The service addMouvement expects payload matching Mouvement model.
-
+        // Reconstruct stops
         stops.push({
           lieu: this.mouvement.lieuDepart,
           dateDepart: currentDate
         });
 
-        // Stops intermédiaires (Dates need shifting too!)
-        // For simplicity in MVP Recurrence: We might ignore intermediate stop dates shifting logic or assume they are relative.
-        // CURRENT LOGIC: Recurrence copies structure but updating intermediate dates is complex without duration data per leg.
-        // SIMPLIFICATION: We only shift start/end of the whole trip. Intermediate stops keep "same time of day" ? 
-        // Implementation: Shift intermediate dates by same delta as start date.
         const timeDelta = currentDate.getTime() - (new Date(this.mouvement.dateDepart)).getTime();
 
         this.etapes.forEach(etape => {
@@ -464,10 +446,40 @@ export class DemandeMouvementComponent implements OnInit {
           dateDepart: currentDate,
           dateArrivee: currentArriveeDate,
           stops: stops,
-          recurrenceGroupId: this.isRecurring ? 'REC_' + Date.now() : null // Optional: marking them
+          recurrenceGroupId: this.isRecurring ? 'REC_' + Date.now() : null
         };
 
-        requests.push(this.mouvementService.addMouvement(payload));
+        // --- EXÉCUTION AVEC GESTION DE CONFLIT ---
+        try {
+          await firstValueFrom(this.mouvementService.addMouvement(payload));
+          countSuccess++;
+        } catch (error: any) {
+          if (error.status === 409) {
+            // Conflit détecté
+            const msg = error.error.message || 'Conflit détecté.';
+            const confirmForce = confirm(`${msg}\n\nVoulez-vous forcer la création malgré ce conflit ?`);
+
+            if (confirmForce) {
+              try {
+                // Retry avec force=true
+                await firstValueFrom(this.mouvementService.addMouvement(payload, true));
+                countSuccess++;
+              } catch (forceErr: any) {
+                console.error('Erreur forcée:', forceErr);
+                alert(`Erreur lors du forçage : ${forceErr.error?.message || forceErr.message}`);
+                // On arrête ou continue ? Continue pour les autres dates si récurrence
+              }
+            } else {
+              console.log('Création annulée par l\'utilisateur suite au conflit');
+              // On ne fait rien, on passe au suivant
+            }
+          } else {
+            console.error('Erreur creation:', error);
+            alert(`Erreur lors de la création : ${error.error?.message || error.message}`);
+            // Break loop on critical error?
+            if (!this.isRecurring) return; // Stop if simple
+          }
+        }
 
         // INCREMENT DATE
         if (this.recurrenceFrequency === 'Daily') {
@@ -478,15 +490,8 @@ export class DemandeMouvementComponent implements OnInit {
         safeGuard++;
       } while (this.isRecurring && currentDate <= endDateLoop && safeGuard < 100);
 
-      // Execute All
-      if (requests.length > 0) {
-        // Use forkJoin logic via firstValueFrom checking
-        // Since we pushed Observables, we can use forkJoin
-        const { forkJoin } = await import('rxjs');
-        await firstValueFrom(forkJoin(requests));
-
-        console.log(`${requests.length} mouvements créés.`);
-        alert(this.isRecurring ? `${requests.length} demandes de mouvement récurrentes créées !` : 'Demande de mouvement soumise !');
+      if (countSuccess > 0) {
+        alert(this.isRecurring ? `${countSuccess} demandes de mouvement créées !` : 'Demande de mouvement soumise !');
         this.router.navigate(['/']);
       }
 

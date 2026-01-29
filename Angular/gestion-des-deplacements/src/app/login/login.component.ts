@@ -49,10 +49,12 @@ export class LoginComponent {
 
         if (error.status === 401) {
           this.errorMessage = 'Email ou mot de passe incorrect.';
-        } else if (error.status === 0 || error.status === 504) {
-          this.errorMessage = 'Le serveur est en cours de réveil (Cold Start). Veuillez réessayer dans quelques secondes...';
+        } else if (error.status === 0 || error.status === 504 || error.status === 503) {
+          // Message plus sympa pour le "Cold Start"
+          this.errorMessage = 'Le serveur est en train de se réveiller 😴. Cela peut prendre jusqu\'à 30 secondes. Veuillez patienter un instant et réessayer !';
         } else {
-          this.errorMessage = 'Une erreur technique est survenue. Veuillez réessayer.';
+          // Message technique plus doux
+          this.errorMessage = 'Impossible de joindre le serveur. Il est peut-être en train de démarrer. Réessayez dans 30 secondes.';
         }
       }
     });

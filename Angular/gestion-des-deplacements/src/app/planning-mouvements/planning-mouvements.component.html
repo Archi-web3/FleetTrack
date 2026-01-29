@@ -31,10 +31,14 @@
   <ng-template #eventTemplate let-weekEvent="weekEvent" let-tooltipPlacement="tooltipPlacement"
     let-eventClicked="eventClicked">
     <div class="cal-event" [style.backgroundColor]="weekEvent.event.color?.primary"
-      [style.borderColor]="weekEvent.event.color?.primary" [style.color]="'white'"
-      [matTooltip]="weekEvent.event.meta.tooltip" [matTooltipClass]="'event-tooltip'" matTooltipPosition="above"
-      (click)="eventClicked.emit()">
-      <div class="cal-event-title" [style.color]="'white'">{{ weekEvent.event.title }}</div>
+      [style.border]="weekEvent.event.meta.hasConflict ? '3px solid red' : '1px solid ' + weekEvent.event.color?.primary"
+      [style.color]="'white'" [matTooltip]="weekEvent.event.meta.tooltip" [matTooltipClass]="'event-tooltip'"
+      matTooltipPosition="above" (click)="eventClicked.emit()">
+      <div class="cal-event-title" [style.color]="'white'">
+        <mat-icon *ngIf="weekEvent.event.meta.hasConflict"
+          style="font-size:16px; height:16px; width:16px; vertical-align: middle; margin-right:4px; color: yellow;">warning</mat-icon>
+        {{ weekEvent.event.title }}
+      </div>
     </div>
   </ng-template>
 

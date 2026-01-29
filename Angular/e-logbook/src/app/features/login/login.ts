@@ -67,9 +67,15 @@ export class LoginComponent {
       },
       error: (error) => {
         console.error('Login error:', error);
-        alert('Erreur login: ' + error.message);
-        this.errorMessage = 'Email ou mot de passe incorrect';
         this.isLoading = false;
+
+        if (error.status === 401) {
+          this.errorMessage = 'Email ou mot de passe incorrect.';
+        } else if (error.status === 0 || error.status === 504 || error.status === 503) {
+          this.errorMessage = 'Le serveur démarre 😴... Merci de patienter environ 30 secondes avant de réessayer.';
+        } else {
+          this.errorMessage = 'Erreur de connexion : Le serveur est peut-être en veille. Réessayez dans 30s.';
+        }
       },
       complete: () => {
         // Ensure loading is always reset

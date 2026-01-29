@@ -28,16 +28,18 @@ export class MouvementService {
     return this.http.get<any[]>(`${this.apiUrl}/planning`, { headers });
   }
 
-  addMouvement(mouvementData: any): Observable<any> {
+  addMouvement(mouvementData: any, force: boolean = false): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
-    return this.http.post<any>(this.apiUrl, mouvementData, { headers });
+    const url = force ? `${this.apiUrl}?force=true` : this.apiUrl;
+    return this.http.post<any>(url, mouvementData, { headers });
   }
 
-  updateMouvement(id: string, mouvementData: any): Observable<any> {
+  updateMouvement(id: string, mouvementData: any, force: boolean = false): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
-    return this.http.put<any>(`${this.apiUrl}/${id}`, mouvementData, { headers });
+    const url = force ? `${this.apiUrl}/${id}?force=true` : `${this.apiUrl}/${id}`;
+    return this.http.put<any>(url, mouvementData, { headers });
   }
 
   // VALIDATION SÉCURISÉE (MODULE 2)
