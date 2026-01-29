@@ -88,8 +88,8 @@
             <ng-container matColumnDef="vehicule">
                 <th mat-header-cell *matHeaderCellDef> Véhicule </th>
                 <td mat-cell *matCellDef="let element">
-                    <span *ngIf="element.vehicule">{{ element.vehicule.marque }} ({{ element.vehicule.immatriculation
-                        }})</span>
+                    <span *ngIf="element.vehicule">{{ element.vehicule.marque }} ({{ element.vehicule.acfCode ||
+                        element.vehicule.immatriculation }})</span>
                     <span *ngIf="!element.vehicule" class="text-muted">Non assigné</span>
                 </td>
             </ng-container>
