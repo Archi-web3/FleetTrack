@@ -2,7 +2,7 @@
   <h2>Consolidation & Affectation des Mouvements</h2>
 
   <!-- Formulaire d'affectation (apparaît quand un mouvement est sélectionné) -->
-  <div *ngIf="selectedMouvementId"
+  <div *ngIf="selectedMouvementId" id="assignmentFormContainer"
     style="border: 1px solid #007bff; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #e9f7ff;">
     <h3>Affecter Véhicule & Chauffeur au mouvement #{{ selectedMouvementId }}</h3>
     <p><strong>Mouvement sélectionné:</strong> Objectif: {{ mouvementEnSelection?.objectif }} - De: {{

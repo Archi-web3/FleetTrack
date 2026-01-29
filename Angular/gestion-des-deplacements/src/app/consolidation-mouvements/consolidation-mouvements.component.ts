@@ -424,6 +424,14 @@ export class ConsolidationMouvementsComponent implements OnInit {
       (data: any[]) => this.suggestedMouvements = data,
       (error: any) => console.error('Erreur chargement suggestions:', error)
     );
+
+    // Auto-scroll vers le haut du formulaire
+    setTimeout(() => {
+      const element = document.getElementById('assignmentFormContainer');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }
 
   async assignVehiculeAndChauffeur(): Promise<void> {
