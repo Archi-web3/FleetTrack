@@ -453,7 +453,7 @@ export class ConsolidationMouvementsComponent implements OnInit {
         if (confirm(`${msg}\n\nVoulez-vous forcer l'affectation malgré ce conflit ?`)) {
           try {
             // Retry avec force=true
-            await firstValueFrom(this.mouvementService.updateMouvement(this.selectedMouvementId, assignmentData, true));
+            await firstValueFrom(this.mouvementService.updateMouvement(this.selectedMouvementId!, assignmentData, true));
             alert('Affectation réussie (Forcée) !');
             this.selectedMouvementId = null;
             this.selectedVehiculeId = '';
