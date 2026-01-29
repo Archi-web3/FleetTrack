@@ -72,7 +72,10 @@
                 <label>Staff Terrain (Rec: {{defaultWeights.staff}}%)</label>
                 <input type="number" [(ngModel)]="weights.staff" (change)="autoCalculateIAP()"> %
             </div>
-            <!-- Add others as needed -->
+            <div class="weight-input">
+                <label>Budget (Rec: {{defaultWeights.budget}}%)</label>
+                <input type="number" [(ngModel)]="weights.budget" (change)="autoCalculateIAP()"> %
+            </div>
         </div>
         <p class="hint">Ces poids déterminent l'importance de chaque activité dans le calcul de votre score IAP.</p>
     </mat-expansion-panel>
@@ -258,7 +261,8 @@
                                     [(ngModel)]="monthlyData.driver_staff_fte"
                                     (change)="autoCalculateIAP()"></mat-form-field>
                             <mat-form-field><mat-label>Volume Financier</mat-label><input matInput type="number"
-                                    [(ngModel)]="monthlyData.driver_financial_volume"></mat-form-field>
+                                    [(ngModel)]="monthlyData.driver_financial_volume"
+                                    (change)="autoCalculateIAP()"></mat-form-field>
                         </mat-card-content>
                     </mat-card>
                 </div>

@@ -80,7 +80,7 @@ export class EnvironmentRoadmapComponent implements OnInit {
 
   // --- IAP WEIGHTS (Recommandation) ---
   defaultWeights = {
-    projects: 15, sites: 20, staff: 15,
+    projects: 15, sites: 20, staff: 15, budget: 15,
     passengers: 20, cargo: 10, gen: 10, grid: 5, tonnage: 5
   };
 
@@ -171,7 +171,8 @@ export class EnvironmentRoadmapComponent implements OnInit {
     this.iapScore =
       (this.monthlyData.driver_nb_projects * this.weights.projects) +
       (this.monthlyData.driver_staff_fte * this.weights.staff) +
-      (this.monthlyData.driver_nb_sites * this.weights.sites);
+      (this.monthlyData.driver_nb_sites * this.weights.sites) +
+      ((this.monthlyData.driver_financial_volume || 0) / 1000 * (this.weights.budget || 0)); // Div by 1000 to normalize volume (e.g., 50k$ -> 50)
     // Add other drivers as needed...
   }
 
