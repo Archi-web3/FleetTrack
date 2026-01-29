@@ -7,6 +7,8 @@ import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.compone
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { MatIconModule } from '@angular/material/icon';
+
 // Imports pour angular-calendar
 import {
   CalendarModule,
@@ -35,7 +37,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
 @Component({
   selector: 'app-planning-mouvements',
   standalone: true,
-  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MapMouvementsComponent, MatButtonModule, MatTooltipModule],
+  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MapMouvementsComponent, MatButtonModule, MatTooltipModule, MatIconModule],
   templateUrl: './planning-mouvements.component.html',
   styleUrls: ['./planning-mouvements.component.css'],
   providers: [
