@@ -89,6 +89,44 @@
 
       <mat-divider style="margin-bottom: 20px;"></mat-divider>
 
+      <!-- Rangée 2 : Indicateurs Avancés (Trajets Courts, Mutualisation, Utilisation) -->
+      <h3 style="margin-bottom: 15px; color: #444;">Performance & Optimisation</h3>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center; margin-bottom: 30px;">
+
+        <!-- Trajets Courts -->
+        <div class="stat-card" style="border-left: 5px solid #ffa726;">
+          <mat-icon style="font-size: 32px; width: 32px; height: 32px; color: #ef6c00;">directions_walk</mat-icon>
+          <div style="font-size: 1.5em; font-weight: bold; color: #333; margin: 10px 0;">
+            {{ statsGlobales.indicateursAvances?.trajetsCourts?.pourcentage }}%
+          </div>
+          <p style="color: #666; margin: 0;">Trajets Courts (< 2km)</p>
+              <small style="color: #999;">{{ statsGlobales.indicateursAvances?.trajetsCourts?.count }} trajets</small>
+        </div>
+
+        <!-- Kilomètres Mutualisés -->
+        <div class="stat-card" style="border-left: 5px solid #66bb6a;">
+          <mat-icon style="font-size: 32px; width: 32px; height: 32px; color: #2e7d32;">groups</mat-icon>
+          <div style="font-size: 1.5em; font-weight: bold; color: #333; margin: 10px 0;">
+            {{ statsGlobales.indicateursAvances?.kmMutualises?.km | number:'1.0-0' }} km
+          </div>
+          <p style="color: #666; margin: 0;">Kilomètres Mutualisés</p>
+          <small style="color: #999;">{{ statsGlobales.indicateursAvances?.kmMutualises?.pourcentage }}% du
+            total</small>
+        </div>
+
+        <!-- Taux d'Utilisation -->
+        <div class="stat-card" style="border-left: 5px solid #29b6f6;">
+          <mat-icon style="font-size: 32px; width: 32px; height: 32px; color: #0277bd;">timelapse</mat-icon>
+          <div style="font-size: 1.5em; font-weight: bold; color: #333; margin: 10px 0;">
+            {{ statsGlobales.indicateursAvances?.tauxUtilisation }}%
+          </div>
+          <p style="color: #666; margin: 0;">Taux d'Utilisation Flotte</p>
+        </div>
+      </div>
+
+      <mat-divider style="margin-bottom: 20px;"></mat-divider>
+
       <!-- Rangée 2 : Répartition par Mode -->
       <h3 style="margin-bottom: 15px; color: #444;">Répartition des Mouvements</h3>
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">

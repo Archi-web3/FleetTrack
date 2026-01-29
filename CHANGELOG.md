@@ -1,6 +1,25 @@
 # Changelog
 
-## [2.7.0] - 2026-01-27
+## [2.9.0] - 2026-01-29
+
+### 📊 Tableau de Bord & Analytics (Dashboard)
+- **Nouveaux Indicateurs Avancés :**
+    - **Trajets Courts (< 2km) :** Suivi du pourcentage de trajets pouvant potentiellement être remplacés par des mobilités douces.
+    - **Kilomètres Mutualisés :** Indicateur de covoiturage et d'optimisation (trajets avec passagers ou multi-projets).
+    - **Taux d'Utilisation :** Calcul du taux d'utilisation réel de la flotte par rapport à sa capacité théorique sur la période.
+- **KPI Financiers (Roadmap) :** Intégration du Volume Financier dans le calcul de l'Indice d'Activité Pondéré (IAP) pour prioriser le renouvellement des véhicules.
+
+### 🗓️ Planning & Mouvements
+- **Nouveau Dashboard Mouvements :** Refonte de la vue "Planning Global". Remplacement de la carte par un tableau de bord dédié avec KPIs (Validés, En cours, En attente) et liste détaillée filtrable.
+- **Affichage Code ACF :** Le tableau affiche désormais le Code ACF du véhicule (ex: V-ACF-01) pour une identification plus rapide.
+- **Filtre Rapide Carte :** Ajout d'un bouton "Cette Semaine" sur la Carte Interactive pour visualiser instantanément l'activité en cours.
+
+### 🛠️ Améliorations Diverses
+- **Optimisation :** Suppression de la carte Google Maps redondante dans l'onglet Planning pour alléger le chargement.
+
+---
+
+## [2.8.0] - 2026-01-27
 
 ### ✨ Module Alertes : Inbox & Suppression
 

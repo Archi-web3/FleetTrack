@@ -64,6 +64,11 @@ export class TableauBordComponent implements OnInit {
       routier: 0,
       aerien: 0,
       maritime: 0
+    },
+    indicateursAvances: {
+      trajetsCourts: { count: 0, pourcentage: 0 },
+      kmMutualises: { km: 0, pourcentage: 0 },
+      tauxUtilisation: 0
     }
   };
   statsParProjet: any[] = [];

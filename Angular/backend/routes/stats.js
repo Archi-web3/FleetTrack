@@ -49,8 +49,11 @@ router.get('/global', auth(), async (req, res) => {
         const co2Setting = await Setting.findOne({ key: 'co2Factors' });
         const co2Factors = co2Setting ? co2Setting.value : { short: 230, medium: 178, long: 152 };
 
-        // 2. Récupérer les mouvements (Find au lieu d'Aggregate pour gérer le JS complexe air/mer/projets)
+        // 2. Récupérer les mouvements
         const mouvements = await Mouvement.find(matchFilter).populate('stops.lieu');
+
+        // NOUVEAU: Récupérer la taille de la flotte pour le taux d'utilisation
+        const totalVehicules = await Vehicule.countDocuments({});
 
         let kmTotauxRoutier = 0;
         let co2TotalRoutier = 0;
@@ -62,26 +65,38 @@ router.get('/global', auth(), async (req, res) => {
 
         let co2Aerien = 0;
 
+        // Nouveaux Indicateurs Counters
+        let nbTrajetsCourts = 0; // < 2km
+        let kmMutualises = 0; // Trajets avec passagers ou multi-projets
+        let joursUtilisationTotaux = 0; // Pour taux d'utilisation
+
         mouvements.forEach(m => {
             const mode = m.modeTransport || 'Routier';
 
-            // Fitrage Projet (Manuel car complexe avec ventilation et stats globales)
-            // Si projet est spécifié, on vérifie si le mouvement est ventilé sur ce projet.
-            let partPonderation = 1; // 100% par défaut
+            // Fitrage Projet
+            let partPonderation = 1;
             if (projet) {
-                // Vérifier ventilation
                 const ventil = m.projetsVentilation && m.projetsVentilation.length > 0
                     ? m.projetsVentilation
                     : [{ projet: m.projet, percentage: 100 }];
 
                 const targetVentil = ventil.find(v => v.projet === projet);
-                if (!targetVentil) return; // Skip ce mouvement
+                if (!targetVentil) return;
                 partPonderation = targetVentil.percentage / 100;
+            }
+
+            // Calcul Durée Utilisation (Pour tous les mouvements valides)
+            if (m.dateDepart && m.dateArrivee) {
+                const start = new Date(m.dateDepart);
+                const end = new Date(m.dateArrivee);
+                const durationDays = (end - start) / (1000 * 60 * 60 * 24);
+                if (durationDays > 0) {
+                    joursUtilisationTotaux += durationDays * partPonderation;
+                }
             }
 
             if (mode === 'Routier') {
                 nbRoutier++;
-                // Calcul Km Routier
                 let dist = 0;
                 if (m.startMileage != null && m.endMileage != null) {
                     dist = m.endMileage - m.startMileage;
@@ -89,23 +104,37 @@ router.get('/global', auth(), async (req, res) => {
                 const distPonderee = dist * partPonderation;
                 kmTotauxRoutier += distPonderee;
 
-                // CO2/Conso Routier (Formules approximatives existantes)
-                // Conso: ~8L/100km, CO2: ~2.3kg/L
+                // NOUVEAU: Trajets Courts (< 2km)
+                // On considère un trajet court si la distance est faible.
+                // Attention: 0 peut être une erreur de saisie, on peut filtrer > 0.
+                if (dist > 0 && dist < 2) {
+                    nbTrajetsCourts++;
+                }
+
+                // NOUVEAU: Kilomètres Mutualisés
+                const isShared = (m.passagers && m.passagers.length > 0) || (m.projetsVentilation && m.projetsVentilation.length > 1);
+                if (isShared) {
+                    // On compte la distance TOTALE du trajet comme mutualisée (car optimisée), 
+                    // ou pondérée ? Logiquement si c'est mutualisé, le véhicule roule "utile".
+                    // Prenons la distance pondérée pour l'attribution au projet, 
+                    // mais pour la stat globale de mutualisation, c'est la distance du trajet qui compte.
+                    // Si on regarde au niveau global (pas de filtre projet), c'est dist.
+                    // Si on filtre par projet, c'est distPonderee.
+                    kmMutualises += distPonderee;
+                }
+
                 const conso = (distPonderee / 100) * 8;
                 consommationTotale += conso;
                 co2TotalRoutier += conso * 2.3;
 
             } else if (mode === 'Aérien') {
                 nbAerien++;
-                // Calcul CO2 Aérien (ADEME)
-                // 1. Distance Vol d'oiseau Total
                 let totalDistAir = 0;
                 if (m.stops && m.stops.length >= 2) {
                     for (let i = 0; i < m.stops.length - 1; i++) {
                         const s1 = m.stops[i].lieu;
                         const s2 = m.stops[i + 1].lieu;
                         if (s1 && s2 && s1.coordonnees && s2.coordonnees) {
-                            // Gestion coord string vs object
                             const getLatLon = (l) => {
                                 if (typeof l.coordonnees === 'string') {
                                     const p = l.coordonnees.split(',').map(n => parseFloat(n.trim()));
@@ -119,31 +148,43 @@ router.get('/global', auth(), async (req, res) => {
                         }
                     }
                 }
-
-                // 2. Facteur Emission (selon distance totale du vol)
-                let factor = co2Factors.short; // < 1000
+                let factor = co2Factors.short;
                 if (totalDistAir >= 1000 && totalDistAir <= 3500) factor = co2Factors.medium;
                 else if (totalDistAir > 3500) factor = co2Factors.long;
-
-                // 3. Nb Passagers (Impact)
                 const nbPassagers = m.passagers ? m.passagers.length : 1;
-
-                // 4. Calcul (g -> kg)
-                // CO2 = Dist * Passagers * Factor / 1000
                 const co2Vol = (totalDistAir * nbPassagers * factor) / 1000;
-
                 co2Aerien += co2Vol * partPonderation;
 
             } else if (mode === 'Maritime') {
                 nbMaritime++;
-                // Pas de calcul CO2 pour l'instant
             }
         });
 
+        // Calcul finaux des nouveaux indicateurs
+
+        // 1. % Trajets Courts (sur total routier)
+        const pctTrajetsCourts = nbRoutier > 0 ? (nbTrajetsCourts / nbRoutier) * 100 : 0;
+
+        // 2. % Km Mutualisés (sur total km routier)
+        const pctKmMutualises = kmTotauxRoutier > 0 ? (kmMutualises / kmTotauxRoutier) * 100 : 0;
+
+        // 3. Taux d'utilisation
+        // Capacité Théorique = Nb Véhicules * Nb Jours de la période
+        let tauxUtilisation = 0;
+        if (totalVehicules > 0 && dateDebut && dateFin) {
+            const start = new Date(dateDebut);
+            const end = new Date(dateFin);
+            const periodDays = Math.max(1, (end - start) / (1000 * 60 * 60 * 24));
+            const capaciteTheoriqueJours = totalVehicules * periodDays;
+
+            if (capaciteTheoriqueJours > 0) {
+                tauxUtilisation = (joursUtilisationTotaux / capaciteTheoriqueJours) * 100;
+            }
+        }
+
         res.json({
             kmTotaux: Math.round(kmTotauxRoutier),
-            co2Total: Math.round(co2TotalRoutier), // Total CO2 (Flotte Routier UNIQUEMENT, demandé par user)
-            // On ajoute les nouveaux champs explicites
+            co2Total: Math.round(co2TotalRoutier),
             co2Flotte: Math.round(co2TotalRoutier),
             co2Aerien: Math.round(co2Aerien),
             consommationTotale: Math.round(consommationTotale),
@@ -152,6 +193,18 @@ router.get('/global', auth(), async (req, res) => {
                 routier: nbRoutier,
                 aerien: nbAerien,
                 maritime: nbMaritime
+            },
+            // Nouveaux Indicateurs
+            indicateursAvances: {
+                trajetsCourts: {
+                    count: nbTrajetsCourts,
+                    pourcentage: Math.round(pctTrajetsCourts)
+                },
+                kmMutualises: {
+                    km: Math.round(kmMutualises),
+                    pourcentage: Math.round(pctKmMutualises)
+                },
+                tauxUtilisation: Math.round(tauxUtilisation)
             }
         });
 
