@@ -43,6 +43,16 @@
             <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
 
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button mat-stroked-button (click)="selectCurrentWeek()">
+                <mat-icon>calendar_today</mat-icon> Cette semaine
+            </button>
+            <button mat-stroked-button (click)="filterDateStart = null; filterDateEnd = null; applyFilters()"
+                *ngIf="filterDateStart">
+                Effacer
+            </button>
+        </div>
+
         <div class="stats-summary" *ngIf="filteredMouvements.length > 0">
             <p><strong>{{ filteredMouvements.length }}</strong> trajets filtrés</p>
         </div>

@@ -9,10 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
 import { MouvementService } from '../../mouvement.service';
 import { VehiculeService } from '../../vehicule.service';
 import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.component';
 import { ViewChild } from '@angular/core';
+
+import { startOfWeek, endOfWeek } from 'date-fns';
 
 @Component({
   selector: 'app-map',
@@ -29,7 +32,8 @@ import { ViewChild } from '@angular/core';
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
-    MapMouvementsComponent
+    MapMouvementsComponent,
+    MatButtonModule // Added for button
   ],
   templateUrl: './map.html',
   styleUrl: './map.css',
@@ -66,6 +70,13 @@ export class MapComponent implements OnInit {
     private mouvementService: MouvementService,
     private vehiculeService: VehiculeService
   ) { }
+
+  selectCurrentWeek(): void {
+    const now = new Date();
+    this.filterDateStart = startOfWeek(now, { weekStartsOn: 1 });
+    this.filterDateEnd = endOfWeek(now, { weekStartsOn: 1 });
+    this.applyFilters();
+  }
 
   ngOnInit(): void {
     this.loadData();

@@ -77,8 +77,7 @@
   <div *ngIf="events.length === 0">Aucun mouvement validé ou en cours pour cette semaine.</div>
 
   <br />
-  <h3>Carte des mouvements de la semaine</h3>
-  <div class="map-container">
-    <app-map-mouvements [mouvements]="mapEvents"></app-map-mouvements>
-  </div>
+  <br />
+  <!-- NOUVEAU: Tableau de Bord Mouvements -->
+  <app-movement-dashboard [movements]="currentWeekMovements" [dateRangeLabel]="dateRangeLabel"></app-movement-dashboard>
 </div>

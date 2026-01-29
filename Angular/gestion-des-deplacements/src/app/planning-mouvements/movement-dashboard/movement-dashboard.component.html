@@ -1,0 +1,118 @@
+<div class="dashboard-container">
+    <div class="header">
+        <h3>📊 Analyse des Mouvements <span *ngIf="dateRangeLabel">({{ dateRangeLabel }})</span></h3>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+        <mat-card class="kpi-card total">
+            <div class="kpi-content">
+                <div class="kpi-value">{{ kpi.total }}</div>
+                <div class="kpi-label">Total Mouvements</div>
+            </div>
+            <mat-icon>list_alt</mat-icon>
+        </mat-card>
+
+        <mat-card class="kpi-card validated">
+            <div class="kpi-content">
+                <div class="kpi-value">{{ kpi.validated }}</div>
+                <div class="kpi-label">Validés (À venir)</div>
+            </div>
+            <mat-icon>check_circle</mat-icon>
+        </mat-card>
+
+        <mat-card class="kpi-card in-progress">
+            <div class="kpi-content">
+                <div class="kpi-value">{{ kpi.inProgress }}</div>
+                <div class="kpi-label">En Cours</div>
+            </div>
+            <mat-icon>directions_car</mat-icon>
+        </mat-card>
+
+        <mat-card class="kpi-card pending">
+            <div class="kpi-content">
+                <div class="kpi-value">{{ kpi.pending }}</div>
+                <div class="kpi-label">En Attente</div>
+            </div>
+            <mat-icon>hourglass_empty</mat-icon>
+        </mat-card>
+    </div>
+
+    <!-- FILTERS & TABLE -->
+    <mat-card class="table-card">
+        <div class="table-toolbar">
+            <mat-form-field appearance="outline" class="search-field">
+                <mat-label>Rechercher</mat-label>
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput [(ngModel)]="searchQuery" (keyup)="applyFilters()" placeholder="Objectif, Demandeur...">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Statut</mat-label>
+                <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilters()">
+                    <mat-option value="all">Tous</mat-option>
+                    <mat-option value="validé">Validé</mat-option>
+                    <mat-option value="en cours">En Cours / Pris en charge</mat-option>
+                    <mat-option value="terminé">Terminé</mat-option>
+                    <mat-option value="en attente">En Attente</mat-option>
+                    <mat-option value="annulé">Annulé</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0">
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="statut">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="status-badge" [ngClass]="getStatusClass(element.statut)">
+                        {{ element.statut | titlecase }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Objectif Column -->
+            <ng-container matColumnDef="objectif">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Objectif </th>
+                <td mat-cell *matCellDef="let element"> {{ element.objectif }} </td>
+            </ng-container>
+
+            <!-- Date Depart Column -->
+            <ng-container matColumnDef="dateDepart">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Départ Prévu </th>
+                <td mat-cell *matCellDef="let element"> {{ element.stops?.[0]?.dateDepart | date:'short' }} </td>
+            </ng-container>
+
+            <!-- Vehicule Column -->
+            <ng-container matColumnDef="vehicule">
+                <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                <td mat-cell *matCellDef="let element">
+                    <span *ngIf="element.vehicule">{{ element.vehicule.marque }} ({{ element.vehicule.immatriculation
+                        }})</span>
+                    <span *ngIf="!element.vehicule" class="text-muted">Non assigné</span>
+                </td>
+            </ng-container>
+
+            <!-- Chauffeur Column -->
+            <ng-container matColumnDef="chauffeur">
+                <th mat-header-cell *matHeaderCellDef> Chauffeur </th>
+                <td mat-cell *matCellDef="let element">
+                    <span *ngIf="element.chauffeur">{{ element.chauffeur.prenom }} {{ element.chauffeur.nom }}</span>
+                    <span *ngIf="!element.chauffeur" class="text-muted">Non assigné</span>
+                </td>
+            </ng-container>
+
+            <!-- Demandeur Column -->
+            <ng-container matColumnDef="demandeur">
+                <th mat-header-cell *matHeaderCellDef> Demandeur </th>
+                <td mat-cell *matCellDef="let element"> {{ element.demandeur?.nom }} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-card>
+</div>

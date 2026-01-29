@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MouvementService } from '../mouvement.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component';
+import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component'; // Keep for now if needed elsewhere or safer to remove line if unused? Actually I should remove it.
+import { MovementDashboardComponent } from './movement-dashboard/movement-dashboard.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -37,7 +38,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
 @Component({
   selector: 'app-planning-mouvements',
   standalone: true,
-  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MapMouvementsComponent, MatButtonModule, MatTooltipModule, MatIconModule],
+  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MovementDashboardComponent, MatButtonModule, MatTooltipModule, MatIconModule],
   templateUrl: './planning-mouvements.component.html',
   styleUrls: ['./planning-mouvements.component.css'],
   providers: [
@@ -55,7 +56,9 @@ export class PlanningMouvementsComponent implements OnInit {
   viewDate: Date = new Date();
   view: string = 'week';
   events: any[] = [];
-  mapEvents: any[] = [];
+  currentWeekMovements: any[] = []; // Data for Dashboard
+  dateRangeLabel: string = '';
+
   locale: string = 'fr';
   refresh: Subject<any> = new Subject();
   userProfile: string | null = null;
@@ -78,18 +81,15 @@ export class PlanningMouvementsComponent implements OnInit {
         const startOfCurrentWeek = this.getStartOfWeek(this.viewDate);
         const endOfCurrentWeek = this.getEndOfWeek(this.viewDate);
 
+        this.dateRangeLabel = `${format(startOfCurrentWeek, 'd MMM', { locale: fr })} - ${format(endOfCurrentWeek, 'd MMM yyyy', { locale: fr })}`;
+
         console.log('📅 Semaine affichée:', {
           debut: startOfCurrentWeek,
           fin: endOfCurrentWeek
         });
 
-        // Préparer les événements pour la carte - FILTRER PAR SEMAINE EN COURS
-        this.mapEvents = data.filter((m: any) => {
-          // Vérifier que le mouvement a des stops valides
-          if (!m.stops || m.stops.length === 0 || !m.stops.every((stop: any) => stop.lieu && stop.lieu.coordonnees)) {
-            return false;
-          }
-
+        // Préparer les événements pour le Dashboard - FILTRER PAR SEMAINE EN COURS
+        this.currentWeekMovements = data.filter((m: any) => {
           // Vérifier que le mouvement se déroule pendant la semaine en cours
           const mouvementStart = new Date(m.dateDepart);
           const mouvementEnd = new Date(m.dateArrivee);
@@ -99,32 +99,10 @@ export class PlanningMouvementsComponent implements OnInit {
           // - Il se termine après le début de la semaine
           const isInCurrentWeek = mouvementStart <= endOfCurrentWeek && mouvementEnd >= startOfCurrentWeek;
 
-          if (isInCurrentWeek) {
-            console.log('✅ Mouvement dans la semaine:', m.objectif, {
-              debut: mouvementStart,
-              fin: mouvementEnd
-            });
-          }
-
           return isInCurrentWeek;
-        }).map((m: any) => ({
-          id: m._id,
-          title: m.objectif,
-          demandeur: m.demandeur?.nom,
-          vehicule: m.vehicule,
-          chauffeur: m.chauffeur,
-          stops: m.stops.map((stop: any) => ({
-            lieuId: stop.lieu._id,
-            nom: stop.lieu.nom,
-            adresse: stop.lieu.adresse,
-            lat: stop.lieu.coordonnees.latitude,
-            lng: stop.lieu.coordonnees.longitude,
-            dateDepart: stop.dateDepart,
-            dateArrivee: stop.dateArrivee
-          }))
-        }));
+        });
 
-        console.log('🗺️ Mouvements affichés sur la carte:', this.mapEvents.length);
+        console.log('📊 Mouvements pour le dashboard:', this.currentWeekMovements.length);
 
         this.events = data.map((mouvement: any) => {
           // Générer le titre simplifié et le tooltip détaillé
