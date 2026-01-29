@@ -96,12 +96,21 @@
 
         <!-- Trajets Courts -->
         <div class="stat-card" style="border-left: 5px solid #ffa726;">
-          <mat-icon style="font-size: 32px; width: 32px; height: 32px; color: #ef6c00;">directions_walk</mat-icon>
+          <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <mat-icon style="font-size: 32px; width: 32px; height: 32px; color: #ef6c00;">directions_car</mat-icon>
+            <mat-icon style="font-size: 24px; width: 24px; height: 24px; color: #666;">arrow_forward</mat-icon>
+            <mat-icon style="font-size: 32px; width: 32px; height: 32px; color: #4caf50;">directions_walk</mat-icon>
+          </div>
           <div style="font-size: 1.5em; font-weight: bold; color: #333; margin: 10px 0;">
             {{ statsGlobales.indicateursAvances?.trajetsCourts?.pourcentage }}%
           </div>
-          <p style="color: #666; margin: 0;">Trajets Courts (< 2km)</p>
-              <small style="color: #999;">{{ statsGlobales.indicateursAvances?.trajetsCourts?.count }} trajets</small>
+          <p style="color: #666; margin: 0; font-weight: 500;">Trajets "Véhicule" < 2km</p>
+              <small
+                style="color: #999; display: block; margin-top: 5px; font-size: 0.85em; max-width: 200px; margin-left: auto; margin-right: auto;">
+                (Potentiel report modal : Marche / Vélo)
+                <br>
+                {{ statsGlobales.indicateursAvances?.trajetsCourts?.count }} trajets concernés
+              </small>
         </div>
 
         <!-- Kilomètres Mutualisés -->
