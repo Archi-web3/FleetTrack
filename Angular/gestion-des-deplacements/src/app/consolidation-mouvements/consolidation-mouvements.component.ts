@@ -447,8 +447,27 @@ export class ConsolidationMouvementsComponent implements OnInit {
       this.selectedChauffeurId = '';
       this.loadDataForConsolidation();
     } catch (error: any) {
-      console.error('Erreur affectation:', error);
-      alert('Erreur lors de l\'affectation.');
+      if (error.status === 409) {
+        // Conflit détecté
+        const msg = error.error.message || 'Conflit détecté.';
+        if (confirm(`${msg}\n\nVoulez-vous forcer l'affectation malgré ce conflit ?`)) {
+          try {
+            // Retry avec force=true
+            await firstValueFrom(this.mouvementService.updateMouvement(this.selectedMouvementId, assignmentData, true));
+            alert('Affectation réussie (Forcée) !');
+            this.selectedMouvementId = null;
+            this.selectedVehiculeId = '';
+            this.selectedChauffeurId = '';
+            this.loadDataForConsolidation();
+          } catch (forceErr: any) {
+            console.error('Erreur forcée:', forceErr);
+            alert(`Erreur lors du forçage : ${forceErr.error?.message || forceErr.message}`);
+          }
+        }
+      } else {
+        console.error('Erreur affectation:', error);
+        alert('Erreur lors de l\'affectation.');
+      }
     }
   }
 
