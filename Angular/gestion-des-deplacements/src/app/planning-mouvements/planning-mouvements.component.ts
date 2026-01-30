@@ -169,6 +169,11 @@ export class PlanningMouvementsComponent implements OnInit {
 
   // NOUVEAU: Générer un titre simplifié pour l'événement
   getEventTitle(mouvement: any): string {
+    // Si c'est une maintenance, afficher le type (et description courte)
+    if (mouvement.type === 'maintenance') {
+      return `🔧 ${mouvement.maintenanceType}`;
+    }
+
     // Récupérer la destination (dernier stop)
     let destination = 'Destination inconnue';
     if (mouvement.stops && mouvement.stops.length > 0) {

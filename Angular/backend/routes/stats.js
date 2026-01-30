@@ -13,7 +13,8 @@ router.get('/global', auth(), async (req, res) => {
 
         // Construire le filtre de base
         const matchFilter = {
-            statut: 'terminé' // Seulement les mouvements terminés
+            statut: 'terminé', // Seulement les mouvements terminés
+            type: { $ne: 'maintenance' } // Exclure les maintenances
         };
 
         // Filtre par période
@@ -221,7 +222,8 @@ router.get('/par-projet', auth(), async (req, res) => {
 
         // Construire le filtre de base
         const matchFilter = {
-            statut: 'terminé'
+            statut: 'terminé',
+            type: { $ne: 'maintenance' }
         };
 
         // Filtre par période

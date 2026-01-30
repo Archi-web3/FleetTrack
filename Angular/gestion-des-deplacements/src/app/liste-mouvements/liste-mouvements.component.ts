@@ -79,7 +79,7 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
       // Vue par défaut : mouvements actifs (en attente, validé, pris en charge, en cours)
       // Exclure terminés, annulés, refusés, regroupés
       this.filteredMouvements = this.mouvements.filter(
-        m => m.statut !== 'terminé' && m.statut !== 'annulé' && m.statut !== 'refusé' && m.statut !== 'regroupé'
+        m => m.statut !== 'terminé' && m.statut !== 'annulé' && m.statut !== 'refusé' && m.statut !== 'regroupé' && m.type !== 'maintenance'
       );
     }
   }

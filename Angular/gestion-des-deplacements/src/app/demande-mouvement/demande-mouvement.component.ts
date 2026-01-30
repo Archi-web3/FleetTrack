@@ -340,29 +340,74 @@ export class DemandeMouvementComponent implements OnInit {
           return;
         }
 
-        const payload = {
-          type: 'maintenance',
-          maintenanceType: this.maintenanceType,
-          description: this.maintenanceDescription,
-          vehicule: this.mouvement.vehicule,
-          dateDepart: new Date(this.mouvement.dateDepart),
-          dateArrivee: new Date(this.mouvement.dateArrivee),
-          demandeur: this.mouvement.demandeur,
-          statut: 'validé', // Auto-validé car Supervisor+
-          stops: [], // Pas de stops
-          // Champs fictifs pour le modèle strict
-          lieuDepart: null,
-          lieuArrivee: null,
-          passagers: []
-        };
+        // Validation Récurrence Maintenance
+        if (this.isRecurring) {
+          if (!this.recurrenceEndDate) {
+            alert('Veuillez spécifier une date de fin pour la récurrence.');
+            return;
+          }
+          const startDate = new Date(this.mouvement.dateDepart);
+          const endDate = new Date(this.recurrenceEndDate);
+          if (endDate <= startDate) {
+            alert('La date de fin de récurrence doit être postérieure à la date de départ.');
+            return;
+          }
+        }
 
-        // Envoi simple (pas de boucle récurrence complexe pour l'instant sauf si demandé)
-        // Mais on peut réutiliser la boucle si isRecurring est actif ? 
-        // Simplification V1 : Pas de récurrence pour la maintenance dans un premier temps pour éviter bugs
+        let currentDate = new Date(this.mouvement.dateDepart);
+        const arrivalDateOrigin = new Date(this.mouvement.dateArrivee);
+        const tripDurationMs = arrivalDateOrigin.getTime() - currentDate.getTime();
+        let endDateLoop = this.isRecurring ? new Date(this.recurrenceEndDate) : new Date(this.mouvement.dateDepart);
 
-        await firstValueFrom(this.mouvementService.addMouvement(payload));
-        alert('Créneau de maintenance créé avec succès !');
-        this.router.navigate(['/']);
+        let safeGuard = 0;
+        let countSuccess = 0;
+        const recurrenceGroupId = this.isRecurring ? 'REC_MAINT_' + Date.now() : null;
+
+        do {
+          const currentArriveeDate = new Date(currentDate.getTime() + tripDurationMs);
+
+          const payload = {
+            type: 'maintenance',
+            maintenanceType: this.maintenanceType,
+            description: this.maintenanceDescription,
+            vehicule: this.mouvement.vehicule,
+            dateDepart: currentDate, // Clone implicite via new Date dans la boucle
+            dateArrivee: currentArriveeDate,
+            demandeur: this.mouvement.demandeur,
+            statut: 'validé',
+            stops: [],
+            recurrenceGroupId: recurrenceGroupId,
+            // Champs fictifs pour le modèle strict
+            lieuDepart: null,
+            lieuArrivee: null,
+            passagers: []
+          };
+
+          try {
+            await firstValueFrom(this.mouvementService.addMouvement(payload));
+            countSuccess++;
+          } catch (error: any) {
+            console.error('Erreur creation maintenance:', error);
+            if (!confirm(`Erreur pour la date ${currentDate.toLocaleDateString()} : ${error.message || 'Inconnue'}. Continuer ?`)) {
+              break;
+            }
+          }
+
+          // INCREMENT DATE
+          const nextDate = new Date(currentDate);
+          if (this.recurrenceFrequency === 'Daily') {
+            nextDate.setDate(nextDate.getDate() + 1);
+          } else {
+            nextDate.setDate(nextDate.getDate() + 7);
+          }
+          currentDate = nextDate;
+          safeGuard++;
+        } while (this.isRecurring && currentDate <= endDateLoop && safeGuard < 50);
+
+        if (countSuccess > 0) {
+          alert(this.isRecurring ? `${countSuccess} créneaux de maintenance créés !` : 'Créneau de maintenance créé avec succès !');
+          this.router.navigate(['/']);
+        }
         return;
       }
 

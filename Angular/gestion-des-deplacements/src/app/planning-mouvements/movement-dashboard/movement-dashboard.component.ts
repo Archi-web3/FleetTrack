@@ -70,12 +70,15 @@ export class MovementDashboardComponent implements OnChanges {
         if (!this.movements) return;
 
         // 1. Calculate KPIs
-        this.kpi.total = this.movements.length;
-        this.kpi.validated = this.movements.filter(m => m.statut === 'validé').length;
-        this.kpi.inProgress = this.movements.filter(m => m.statut === 'en cours' || m.statut === 'pris en charge').length;
-        this.kpi.pending = this.movements.filter(m => m.statut === 'en attente').length;
-        this.kpi.completed = this.movements.filter(m => m.statut === 'terminé').length;
-        this.kpi.cancelled = this.movements.filter(m => m.statut === 'annulé' || m.statut === 'refusé').length;
+        // 1. Calculate KPIs (Excluding Maintenance)
+        const tripsOnly = this.movements.filter(m => m.type !== 'maintenance');
+
+        this.kpi.total = tripsOnly.length;
+        this.kpi.validated = tripsOnly.filter(m => m.statut === 'validé').length;
+        this.kpi.inProgress = tripsOnly.filter(m => m.statut === 'en cours' || m.statut === 'pris en charge').length;
+        this.kpi.pending = tripsOnly.filter(m => m.statut === 'en attente').length;
+        this.kpi.completed = tripsOnly.filter(m => m.statut === 'terminé').length;
+        this.kpi.cancelled = tripsOnly.filter(m => m.statut === 'annulé' || m.statut === 'refusé').length;
 
         // 2. Update Table Data
         this.applyFilters();
