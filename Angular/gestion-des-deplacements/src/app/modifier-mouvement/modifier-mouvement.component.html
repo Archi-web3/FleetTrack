@@ -23,43 +23,78 @@
           <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
         </select>
       </div>
-    </ng-container>
 
-    <!-- == CHAMPS SPECIFIQUES MAINTENANCE == -->
-    <ng-container *ngIf="mouvement.type === 'maintenance'">
-      <div style="margin-bottom: 15px; padding: 10px; background-color: #fff3e0; border-left: 4px solid #ff9800;">
-        <h3 style="margin-top:0; color: #ff9800;">🔧 Édition Maintenance</h3>
+      <!-- Dates (Pour Mission Unique) -->
+      <div style="margin-bottom: 10px;">
+        <label for="dateDepart">Date et Heure de Départ:</label>
+        <input type="datetime-local" id="dateDepart" name="dateDepart" [(ngModel)]="mouvement.dateDepart" required
+          style="width: 100%; padding: 8px;">
+      </div>
 
-        <!-- Type Maintenance -->
-        <div style="margin-bottom: 10px;">
-          <label for="maintenanceType">Type de Maintenance:</label>
-          <select id="maintenanceType" name="maintenanceType" [(ngModel)]="mouvement.maintenanceType" required
-            style="width: 100%; padding: 8px;">
-            <option *ngFor="let type of maintenanceTypes" [value]="type">{{ type }}</option>
-          </select>
-        </div>
-
-        <!-- Description -->
-        <div style="margin-bottom: 10px;">
-          <label for="description">Description / Notes:</label>
-          <textarea id="description" name="description" [(ngModel)]="mouvement.description"
-            style="width: 100%; padding: 8px; min-height: 80px;"></textarea>
-        </div>
+      <div style="margin-bottom: 10px;">
+        <label for="dateArrivee">Date et Heure d'Arrivée:</label>
+        <input type="datetime-local" id="dateArrivee" name="dateArrivee" [(ngModel)]="mouvement.dateArrivee" required
+          style="width: 100%; padding: 8px;">
       </div>
     </ng-container>
 
-    <!-- Dates -->
-    <div style="margin-bottom: 10px;">
-      <label for="dateDepart">Date et Heure de Départ:</label>
-      <input type="datetime-local" id="dateDepart" name="dateDepart" [(ngModel)]="mouvement.dateDepart" required
-        style="width: 100%; padding: 8px;">
-    </div>
+    <!-- == FORMULAIRE SPECIFIQUE MAINTENANCE (Layout Identique Création) == -->
+    <ng-container *ngIf="mouvement.type === 'maintenance'">
+      <div
+        style="padding: 15px; background-color: #fff3e0; border-radius: 5px; border-left: 5px solid #ff9800; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: #ef6c00;">🔧 Modifier le créneau de maintenance</h3>
+        <p style="margin-bottom: 15px; font-style: italic;">
+          Ce créneau bloque le véhicule dans le planning.
+        </p>
 
-    <div style="margin-bottom: 10px;">
-      <label for="dateArrivee">Date et Heure d'Arrivée:</label>
-      <input type="datetime-local" id="dateArrivee" name="dateArrivee" [(ngModel)]="mouvement.dateArrivee" required
-        style="width: 100%; padding: 8px;">
-    </div>
+        <!-- Sélection Véhicule -->
+        <div style="margin-bottom: 15px;">
+          <label for="maintVehicule" style="font-weight: bold; display: block; margin-bottom: 5px;">Véhicule concerné
+            *</label>
+          <select id="maintVehicule" name="maintVehicule" [(ngModel)]="mouvement.vehicule" required
+            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <option [ngValue]="null">Sélectionnez un véhicule</option>
+            <option *ngFor="let v of vehicules" [value]="v._id">
+              {{ v.marque }} {{ v.modele }} ({{ v.immatriculation }}) - {{ v.statut || 'OK' }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Type de Maintenance -->
+        <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+          <div style="flex: 1;">
+            <label for="maintType" style="font-weight: bold; display: block; margin-bottom: 5px;">Type *</label>
+            <select id="maintType" name="maintType" [(ngModel)]="mouvement.maintenanceType" required
+              style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+              <option *ngFor="let t of maintenanceTypes" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dates (Row) -->
+        <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+          <div style="flex: 1;">
+            <label for="maintStart" style="font-weight: bold; display: block; margin-bottom: 5px;">Début *</label>
+            <input type="datetime-local" id="maintStart" name="maintStart" [(ngModel)]="mouvement.dateDepart" required
+              style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+          </div>
+          <div style="flex: 1;">
+            <label for="maintEnd" style="font-weight: bold; display: block; margin-bottom: 5px;">Fin *</label>
+            <input type="datetime-local" id="maintEnd" name="maintEnd" [(ngModel)]="mouvement.dateArrivee" required
+              style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom: 15px;">
+          <label for="maintDesc" style="font-weight: bold; display: block; margin-bottom: 5px;">Description / Notes
+            :</label>
+          <textarea id="maintDesc" name="maintDesc" [(ngModel)]="mouvement.description" rows="3"
+            placeholder="Détails de l'intervention..."
+            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; min-height: 80px;"></textarea>
+        </div>
+      </div>
+    </ng-container>
 
     <!-- == SUITE CHAMPS MISSION == -->
     <ng-container *ngIf="mouvement.type !== 'maintenance'">
@@ -87,8 +122,8 @@
 
     </ng-container>
 
-    <!-- Véhicule (Commun à Mission et Maintenance) -->
-    <div style="margin-bottom: 10px;">
+    <!-- Véhicule (Pour Mission, car Maintenance a le sien dans son bloc) -->
+    <div *ngIf="mouvement.type !== 'maintenance'" style="margin-bottom: 10px;">
       <label for="vehicule">Véhicule:</label>
       <select id="vehicule" name="vehicule" [(ngModel)]="mouvement.vehicule" style="width: 100%; padding: 8px;">
         <option [ngValue]="null">Aucun</option> <!-- Option pour désaffecter -->
