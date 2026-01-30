@@ -302,6 +302,7 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
     // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ ---
     let statutInitial = 'en attente';
+    let maxSecurityLevel = 0; // Initialisé ici pour être visible partout
 
     // Pour la maintenance, on bypass toute la logique de sécurité des lieux
     if (req.body.type === 'maintenance') {
@@ -324,7 +325,6 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
       // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ (Module 2) ---
       // Calculer le niveau de risque maximum du trajet
-      let maxSecurityLevel = 0;
       lieuxImpliques.forEach(lieu => {
         // Si niveauSecurite n'existe pas encore sur le lieu, on assume 1 (Stable)
         const niveau = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
