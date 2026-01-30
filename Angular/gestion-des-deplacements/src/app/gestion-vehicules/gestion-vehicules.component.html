@@ -169,6 +169,34 @@
         </div>
       </div>
 
+      <!-- INVENTAIRE EQUIPEMENTS (CREATE) -->
+      <div *ngIf="newVehicule.equipementsDisplay"
+        style="border: 2px solid #607D8B; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #ECEFF1;">
+        <h4 style="margin-top: 0; color: #455A64;">📦 Inventaire & Équipements de bord</h4>
+
+        <div style="max-height: 300px; overflow-y: auto; background: white; padding: 10px; border: 1px solid #ccc;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background-color: #f0f0f0; text-align: left;">
+                <th style="padding: 5px;">N°</th>
+                <th style="padding: 5px;">Équipement</th>
+                <th style="padding: 5px; text-align: center;">Présent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of newVehicule.equipementsDisplay" style="border-bottom: 1px solid #eee;">
+                <td style="padding: 5px;">{{ item.code }}</td>
+                <td style="padding: 5px;">{{ item.name }}</td>
+                <td style="padding: 5px; text-align: center;">
+                  <input type="checkbox" name="new_equip_{{item.code}}" [(ngModel)]="item.isPresent"
+                    (change)="updateCheckDate(item)" style="transform: scale(1.2); cursor: pointer;">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div style="margin-bottom: 10px; display: flex; align-items: center;">
         <input type="checkbox" id="newVehiculeGps" name="newVehiculeGps" [(ngModel)]="newVehicule.enableGpsTracking"
           style="margin-right: 10px;">

@@ -74,6 +74,11 @@ export class GestionVehiculesComponent implements OnInit {
     }
 
     this.loadVehicules();
+
+    // Init Inventory for New Vehicle
+    this.newVehicule.equipementsDisplay = this.STANDARD_EQUIPMENTS.map(std => ({
+      ...std, isPresent: false, lastChecked: null
+    }));
   }
 
   // LISTE STANDARD DES ÉQUIPEMENTS (Numéro / Nom)
@@ -156,6 +161,11 @@ export class GestionVehiculesComponent implements OnInit {
   }
 
   addVehicule(): void {
+    // Mapper l'affichage vers le modèle de données
+    if (this.newVehicule.equipementsDisplay) {
+      this.newVehicule.equipements = this.newVehicule.equipementsDisplay;
+    }
+
     this.vehiculeService.addVehicule(this.newVehicule).subscribe(
       (response) => {
         alert('Véhicule créé avec succès !');
@@ -179,6 +189,10 @@ export class GestionVehiculesComponent implements OnInit {
           assurance: { nomAssureur: '', dateFin: null, certificatUrl: '' },
           statut: 'En Service'
         };
+        // Reset Inventory display
+        this.newVehicule.equipementsDisplay = this.STANDARD_EQUIPMENTS.map(std => ({
+          ...std, isPresent: false, lastChecked: null
+        }));
         this.loadVehicules();
       },
       (error) => {
