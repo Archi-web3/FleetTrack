@@ -220,6 +220,7 @@
                         <th>Type</th>
                         <th>Sévérité</th>
                         <th>Description</th>
+                        <th>Localisation</th>
                         <th>Photos</th>
                         <th>Statut</th>
                         <th *ngIf="isAdmin()">Actions</th>
@@ -236,6 +237,14 @@
                             </span>
                         </td>
                         <td>{{ i.description }}</td>
+                        <td>
+                            <div *ngIf="i.location && i.location.lat && i.location.lng">
+                                <button (click)="openMapForIncident(i)" class="btn-map-small" title="Voir sur la carte">
+                                    <mat-icon>place</mat-icon> Voir Carte
+                                </button>
+                            </div>
+                            <span *ngIf="!i.location || !i.location.lat" class="no-data">-</span>
+                        </td>
                         <td>
                             <!-- NOUVEAU: Affichage des photos -->
                             <div class="photo-thumbnails" *ngIf="i.photos && i.photos.length > 0">
@@ -256,7 +265,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="incidents.length === 0">
-                        <td colspan="7">Aucun incident signalé.</td>
+                        <td colspan="8">Aucun incident signalé.</td>
                     </tr>
                 </tbody>
             </table>

@@ -239,6 +239,39 @@ export class LogbookDashboardComponent implements OnInit {
         this.showMapModal = true;
     }
 
+    // NOUVEAU: Gestion Map Incident
+    openMapForIncident(incident: any): void {
+        console.log('Opening map for incident:', incident);
+
+        if (!incident.location || !incident.location.lat) {
+            console.warn('No location for this incident');
+            return;
+        }
+
+        const lat = parseFloat(incident.location.lat);
+        const lng = parseFloat(incident.location.lng);
+
+        this.mapMouvementsData = [{
+            id: incident._id,
+            title: `Incident: ${incident.type} (${incident.severity})`,
+            demandeur: 'Incident Signalé',
+            stops: [{
+                lieuId: 'incident_loc',
+                nom: incident.description || 'Lieu Incident',
+                adresse: incident.location.address || 'Coordonnées GPS',
+                lat: lat,
+                lng: lng,
+                dateArrivee: incident.date,
+                isIncident: true // Flag pour icône spécifique si besoin
+            }],
+            gpsTrace: [], // Pas de trace pour un incident ponctuel
+            vehiculeName: 'Véhicule', // On pourrait aller chercher le nom du véhicule via ID
+            vehiculeCode: ''
+        }];
+
+        this.showMapModal = true;
+    }
+
     closeMapModal(): void {
         this.showMapModal = false;
         this.mapMouvementsData = [];

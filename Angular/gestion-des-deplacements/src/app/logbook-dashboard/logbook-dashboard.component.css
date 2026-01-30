@@ -236,3 +236,32 @@
 .btn-map:hover {
   background: #F57C00;
 }
+
+.btn-map-small {
+  background: #2196F3;
+  /* Blue for info/map */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85em;
+}
+
+.btn-map-small mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.btn-map-small:hover {
+  background: #1976D2;
+}
+
+.no-data {
+  color: #999;
+  font-size: 0.9em;
+}
