@@ -81,6 +81,31 @@
             style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
         </div>
 
+        <!-- NOUVEAU: Récurrence (Copie pour Maintenance) -->
+        <div
+          style="margin-bottom: 15px; padding: 10px; background-color: #f0f4c3; border-radius: 5px; border-left: 5px solid #cddc39;">
+          <div style="font-weight: bold; margin-bottom: 10px; color: #827717;">
+            <mat-icon style="vertical-align: middle;">update</mat-icon> Récurrence (Jusqu'à 3 mois)
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <div>
+              <input type="checkbox" id="isRecurringMaint" name="isRecurringMaint" [(ngModel)]="isRecurring">
+              <label for="isRecurringMaint" style="margin-left: 5px;">Répéter (ex: Check Hebdo)</label>
+            </div>
+
+            <div *ngIf="isRecurring" style="display: flex; gap: 10px;">
+              <select name="recurrenceFrequencyMaint" [(ngModel)]="recurrenceFrequency" style="padding: 5px;">
+                <option value="Daily">Tous les jours</option>
+                <option value="Weekly">Toutes les semaines</option>
+              </select>
+
+              <input type="date" name="recurrenceEndDateMaint" [(ngModel)]="recurrenceEndDate" placeholder="Date de fin"
+                required style="padding: 5px;">
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
