@@ -70,7 +70,7 @@ router.get('/mouvements/planning', auth(), countryFilter, async (req, res) => {
         select: 'nom adresse coordonnees estSensible'
       })
       .populate('demandeur', 'nom email')
-      .populate('vehicule', 'marque modele immatriculation')
+      .populate('vehicule', 'marque modele immatriculation acfCode')
       .populate('chauffeur', 'nom prenom telephone')
       .populate('passagers', 'nom email')
       .sort({ 'stops.0.dateDepart': 1 });
