@@ -33,7 +33,10 @@ export class ModifierMouvementComponent implements OnInit {
     passagers: [],
     materiel: '',
     objectif: '',
-    statut: '' // Permettre la modification du statut si nécessaire
+    statut: '', // Permettre la modification du statut si nécessaire
+    type: 'mission', // Par défaut
+    maintenanceType: '',
+    description: ''
   };
 
   utilisateurs: any[] = [];
@@ -43,6 +46,7 @@ export class ModifierMouvementComponent implements OnInit {
   projets: string[] = []; // Liste des projets pour la ventilation
   transportModes: string[] = ['Routier', 'Aérien', 'Maritime'];
   mouvementStatuts = ['en attente', 'en attente validation sécurité', 'validé', 'en cours', 'terminé', 'annulé', 'refusé'];
+  maintenanceTypes = ['Check Hebdo', 'Service', 'Réparation', 'Autre']; // NOUVEAU
 
   // Ces variables sont pour gérer les nouveaux lieux, mais ici on les désactive
   // car la modification ne devrait concerner que les lieux existants
@@ -108,6 +112,9 @@ export class ModifierMouvementComponent implements OnInit {
             chauffeur: data.chauffeur?._id || null, // Utiliser l'ID du chauffeur, ou null
             dateDepart: this.formatDateForInput(data.dateDepart), // Formater pour input datetime-local
             dateArrivee: this.formatDateForInput(data.dateArrivee), // Formater pour input datetime-local
+            type: data.type || 'mission', // Récupérer le type
+            maintenanceType: data.maintenanceType || '',
+            description: data.description || ''
           };
           this.selectedPassagersIds = data.passagers ? data.passagers.map((p: any) => p._id) : [];
 

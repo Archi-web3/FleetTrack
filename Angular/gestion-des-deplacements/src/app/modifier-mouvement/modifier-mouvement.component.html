@@ -2,25 +2,51 @@
   <h2>Modifier Mouvement (ID: {{ mouvementId }})</h2>
   <form #modifierForm="ngForm">
 
-    <!-- Lieu de Départ -->
-    <div style="margin-bottom: 10px;">
-      <label for="lieuDepart">Lieu de Départ:</label>
-      <select id="lieuDepart" name="lieuDepart" [(ngModel)]="mouvement.lieuDepart" required
-        style="width: 100%; padding: 8px;">
-        <option value="">Sélectionnez un lieu de départ</option>
-        <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
-      </select>
-    </div>
+    <!-- == CHAMPS SPECIFIQUES MISSION (Masqués si Maintenance) == -->
+    <ng-container *ngIf="mouvement.type !== 'maintenance'">
+      <!-- Lieu de Départ -->
+      <div style="margin-bottom: 10px;">
+        <label for="lieuDepart">Lieu de Départ:</label>
+        <select id="lieuDepart" name="lieuDepart" [(ngModel)]="mouvement.lieuDepart" required
+          style="width: 100%; padding: 8px;">
+          <option value="">Sélectionnez un lieu de départ</option>
+          <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+        </select>
+      </div>
 
-    <!-- Lieu d'Arrivée -->
-    <div style="margin-bottom: 10px;">
-      <label for="lieuArrivee">Lieu d'Arrivée:</label>
-      <select id="lieuArrivee" name="lieuArrivee" [(ngModel)]="mouvement.lieuArrivee" required
-        style="width: 100%; padding: 8px;">
-        <option value="">Sélectionnez un lieu d'arrivée</option>
-        <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
-      </select>
-    </div>
+      <!-- Lieu d'Arrivée -->
+      <div style="margin-bottom: 10px;">
+        <label for="lieuArrivee">Lieu d'Arrivée:</label>
+        <select id="lieuArrivee" name="lieuArrivee" [(ngModel)]="mouvement.lieuArrivee" required
+          style="width: 100%; padding: 8px;">
+          <option value="">Sélectionnez un lieu d'arrivée</option>
+          <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+        </select>
+      </div>
+    </ng-container>
+
+    <!-- == CHAMPS SPECIFIQUES MAINTENANCE == -->
+    <ng-container *ngIf="mouvement.type === 'maintenance'">
+      <div style="margin-bottom: 15px; padding: 10px; background-color: #fff3e0; border-left: 4px solid #ff9800;">
+        <h3 style="margin-top:0; color: #ff9800;">🔧 Édition Maintenance</h3>
+
+        <!-- Type Maintenance -->
+        <div style="margin-bottom: 10px;">
+          <label for="maintenanceType">Type de Maintenance:</label>
+          <select id="maintenanceType" name="maintenanceType" [(ngModel)]="mouvement.maintenanceType" required
+            style="width: 100%; padding: 8px;">
+            <option *ngFor="let type of maintenanceTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom: 10px;">
+          <label for="description">Description / Notes:</label>
+          <textarea id="description" name="description" [(ngModel)]="mouvement.description"
+            style="width: 100%; padding: 8px; min-height: 80px;"></textarea>
+        </div>
+      </div>
+    </ng-container>
 
     <!-- Dates -->
     <div style="margin-bottom: 10px;">
@@ -35,29 +61,33 @@
         style="width: 100%; padding: 8px;">
     </div>
 
-    <!-- Demandeur -->
-    <div style="margin-bottom: 10px;">
-      <label for="demandeur">Demandeur:</label>
-      <select id="demandeur" name="demandeur" [(ngModel)]="mouvement.demandeur" required
-        style="width: 100%; padding: 8px;">
-        <option value="">Sélectionnez un demandeur</option>
-        <option *ngFor="let user of utilisateurs" [value]="user._id">{{ user.nom }} ({{ user.email }})</option>
-      </select>
-    </div>
+    <!-- == SUITE CHAMPS MISSION == -->
+    <ng-container *ngIf="mouvement.type !== 'maintenance'">
+      <!-- Demandeur -->
+      <div style="margin-bottom: 10px;">
+        <label for="demandeur">Demandeur:</label>
+        <select id="demandeur" name="demandeur" [(ngModel)]="mouvement.demandeur" required
+          style="width: 100%; padding: 8px;">
+          <option value="">Sélectionnez un demandeur</option>
+          <option *ngFor="let user of utilisateurs" [value]="user._id">{{ user.nom }} ({{ user.email }})</option>
+        </select>
+      </div>
 
-    <!-- Passagers -->
-    <div style="margin-bottom: 10px;">
-      <label for="passagers">Passagers (Ctrl+clic pour sélection multiple):</label>
-      <select multiple id="passagers" name="passagers" [(ngModel)]="selectedPassagersIds"
-        (change)="onPassengersChange()" style="width: 100%; padding: 8px; min-height: 100px;">
-        <option *ngFor="let user of utilisateurs" [value]="user._id">
-          {{ user.nom }} ({{ user.email }})
-          <ng-container *ngIf="user._id === authService.getUserId()"> (Vous)</ng-container>
-        </option>
-      </select>
-    </div>
+      <!-- Passagers -->
+      <div style="margin-bottom: 10px;">
+        <label for="passagers">Passagers (Ctrl+clic pour sélection multiple):</label>
+        <select multiple id="passagers" name="passagers" [(ngModel)]="selectedPassagersIds"
+          (change)="onPassengersChange()" style="width: 100%; padding: 8px; min-height: 100px;">
+          <option *ngFor="let user of utilisateurs" [value]="user._id">
+            {{ user.nom }} ({{ user.email }})
+            <ng-container *ngIf="user._id === authService.getUserId()"> (Vous)</ng-container>
+          </option>
+        </select>
+      </div>
 
-    <!-- Véhicule -->
+    </ng-container>
+
+    <!-- Véhicule (Commun à Mission et Maintenance) -->
     <div style="margin-bottom: 10px;">
       <label for="vehicule">Véhicule:</label>
       <select id="vehicule" name="vehicule" [(ngModel)]="mouvement.vehicule" style="width: 100%; padding: 8px;">
@@ -67,67 +97,71 @@
       </select>
     </div>
 
-    <!-- Chauffeur -->
-    <div style="margin-bottom: 10px;">
-      <label for="chauffeur">Chauffeur:</label>
-      <select id="chauffeur" name="chauffeur" [(ngModel)]="mouvement.chauffeur" style="width: 100%; padding: 8px;">
-        <option [ngValue]="null">Aucun</option> <!-- Option pour désaffecter -->
-        <option *ngFor="let chauffeur of chauffeurs" [value]="chauffeur._id">{{ chauffeur.prenom }} {{ chauffeur.nom }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Objectif -->
-    <div style="margin-bottom: 10px;">
-      <label for="objectif">Objectif du déplacement:</label>
-      <input type="text" id="objectif" name="objectif" [(ngModel)]="mouvement.objectif" required
-        style="width: 100%; padding: 8px;">
-    </div>
-
-    <!-- Mode de Transport (Module 2) -->
-    <div style="margin-bottom: 10px;">
-      <label for="modeTransport">Mode de Transport:</label>
-      <select id="modeTransport" name="modeTransport" [(ngModel)]="mouvement.modeTransport" required
-        style="width: 100%; padding: 8px;">
-        <option *ngFor="let mode of transportModes" [value]="mode">{{ mode }}</option>
-      </select>
-    </div>
-
-    <!-- Ventilation Financière (Module 2) -->
-    <div
-      style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background-color: #fafafa;">
-      <h3 style="margin-top: 0; font-size: 1.1em; color: #333;">💰 Ventilation Financière</h3>
-      <p style="font-size: 0.9em; color: #666;">Répartition automatique basée sur les passagers. Vous pouvez corriger
-        manuellement.</p>
-
-      <div *ngFor="let item of mouvement.projetsVentilation; let i = index"
-        style="display: flex; gap: 10px; margin-bottom: 5px; align-items: center;">
-        <div style="flex: 1;">
-          <select [(ngModel)]="item.projet" name="projet_{{i}}" required style="width: 100%; padding: 5px;">
-            <option value="" disabled selected>Sélectionner un projet</option>
-            <option *ngFor="let p of projets" [value]="p">{{ p }}</option>
-          </select>
-        </div>
-        <div style="width: 80px;">
-          <input type="number" [(ngModel)]="item.percentage" name="percent_{{i}}" placeholder="%" min="0" max="100"
-            style="width: 100%; padding: 5px;">
-        </div>
-        <button type="button" (click)="removeVentilationItem(i)"
-          style="background: #ff5252; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">X</button>
+    <!-- == SUITE CHAMPS MISSION UNIQUEMENT == -->
+    <ng-container *ngIf="mouvement.type !== 'maintenance'">
+      <!-- Chauffeur (Optionnel pour maintenance ?) -> En mission c'est ici. On peut le laisser global ou mission ? Supposons Mission. -->
+      <div style="margin-bottom: 10px;">
+        <label for="chauffeur">Chauffeur:</label>
+        <select id="chauffeur" name="chauffeur" [(ngModel)]="mouvement.chauffeur" style="width: 100%; padding: 8px;">
+          <option [ngValue]="null">Aucun</option> <!-- Option pour désaffecter -->
+          <option *ngFor="let chauffeur of chauffeurs" [value]="chauffeur._id">{{ chauffeur.prenom }} {{ chauffeur.nom
+            }}
+          </option>
+        </select>
       </div>
 
-      <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-        <button type="button" (click)="addVentilationItem()"
-          style="background: #4caf50; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">+
-          Ajouter Projet</button>
-        <div [style.color]="totalVentilation !== 100 ? 'red' : 'green'" style="font-weight: bold;">
-          Total: {{ totalVentilation }}%
+      <!-- Objectif -->
+      <div style="margin-bottom: 10px;">
+        <label for="objectif">Objectif du déplacement:</label>
+        <input type="text" id="objectif" name="objectif" [(ngModel)]="mouvement.objectif" required
+          style="width: 100%; padding: 8px;">
+      </div>
+
+      <!-- Mode de Transport (Module 2) -->
+      <div style="margin-bottom: 10px;">
+        <label for="modeTransport">Mode de Transport:</label>
+        <select id="modeTransport" name="modeTransport" [(ngModel)]="mouvement.modeTransport" required
+          style="width: 100%; padding: 8px;">
+          <option *ngFor="let mode of transportModes" [value]="mode">{{ mode }}</option>
+        </select>
+      </div>
+
+      <!-- Ventilation Financière (Module 2) -->
+      <div
+        style="margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px; background-color: #fafafa;">
+        <h3 style="margin-top: 0; font-size: 1.1em; color: #333;">💰 Ventilation Financière</h3>
+        <p style="font-size: 0.9em; color: #666;">Répartition automatique basée sur les passagers. Vous pouvez corriger
+          manuellement.</p>
+
+        <div *ngFor="let item of mouvement.projetsVentilation; let i = index"
+          style="display: flex; gap: 10px; margin-bottom: 5px; align-items: center;">
+          <div style="flex: 1;">
+            <select [(ngModel)]="item.projet" name="projet_{{i}}" required style="width: 100%; padding: 5px;">
+              <option value="" disabled selected>Sélectionner un projet</option>
+              <option *ngFor="let p of projets" [value]="p">{{ p }}</option>
+            </select>
+          </div>
+          <div style="width: 80px;">
+            <input type="number" [(ngModel)]="item.percentage" name="percent_{{i}}" placeholder="%" min="0" max="100"
+              style="width: 100%; padding: 5px;">
+          </div>
+          <button type="button" (click)="removeVentilationItem(i)"
+            style="background: #ff5252; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">X</button>
+        </div>
+
+        <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <button type="button" (click)="addVentilationItem()"
+            style="background: #4caf50; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">+
+            Ajouter Projet</button>
+          <div [style.color]="totalVentilation !== 100 ? 'red' : 'green'" style="font-weight: bold;">
+            Total: {{ totalVentilation }}%
+          </div>
+        </div>
+        <div *ngIf="totalVentilation !== 100" style="color: red; font-size: 0.8em; margin-top: 5px;">
+          ⚠️ Le total doit être égal à 100%.
         </div>
       </div>
-      <div *ngIf="totalVentilation !== 100" style="color: red; font-size: 0.8em; margin-top: 5px;">
-        ⚠️ Le total doit être égal à 100%.
-      </div>
-    </div>
+    </ng-container>
 
     <!-- Statut (visible seulement pour Admin/Superviseur) -->
     <div *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur'"
@@ -138,8 +172,8 @@
       </select>
     </div>
 
-    <!-- SECTION E-LOGBOOK (DONNÉES RÉELLES) -->
-    <div
+    <!-- SECTION E-LOGBOOK (DONNÉES RÉELLES) - Masqué pour maintenance -->
+    <div *ngIf="mouvement.type !== 'maintenance'"
       style="margin-top: 30px; padding: 15px; background-color: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 5px;">
       <h3 style="color: #2e7d32; display: flex; align-items: center;">
         <mat-icon style="margin-right: 10px;">smartphone</mat-icon>
