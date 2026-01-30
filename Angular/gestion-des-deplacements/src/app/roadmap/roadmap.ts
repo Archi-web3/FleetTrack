@@ -32,6 +32,16 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.10.0',
+            date: '30 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Inventaire Véhicule', description: 'Module complet : Gestion des équipements de bord (Checklist standard 22 points) avec possibilité d\'Ajouter, Modifier et Supprimer des items personnalisés.' },
+                { category: 'Planning', description: 'Maintenance : Affichage clair des événements (Clé 🔧 + Code ACF) et prise en charge de la récurrence hebdomadaire pour les contrôles.' },
+                { category: 'UX / UI', description: 'Fiches Véhicules : Refonte des formulaires Création/Modification avec intégration directe de l\'inventaire dynamique.' }
+            ]
+        },
+        {
             version: 'v2.9.1',
             date: '29 Janvier 2026',
             type: 'patch',
