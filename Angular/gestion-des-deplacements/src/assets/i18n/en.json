@@ -1,0 +1,40 @@
+{
+    "COMMON": {
+        "WELCOME": "Welcome",
+        "LOGOUT": "Logout",
+        "CANCEL": "Cancel",
+        "SAVE": "Save",
+        "CONFIRM": "Confirm",
+        "DELETE": "Delete",
+        "EDIT": "Edit"
+    },
+    "MENU": {
+        "MY_TRIPS": "My Movements",
+        "GLOBAL_PLANNING": "Global Planning",
+        "NEW_REQUEST": "New Request",
+        "INTERACTIVE_MAP": "Interactive Map",
+        "VALIDATION": "Validation",
+        "SECURITY_ALERTS": "Security Alerts (Push)",
+        "VALIDATE_TRIPS": "Validate Movements",
+        "CONSOLIDATION": "Consolidation",
+        "ADMINISTRATION": "Administration",
+        "USER_MANAGEMENT": "User Management",
+        "COUNTRIES_BASES": "Countries & Bases",
+        "PROJECT_MANAGEMENT": "Project Management",
+        "AUDIT_LOGS": "Audit Logs",
+        "WAIVERS": "Visitor Waivers",
+        "USER_GUIDE": "User Guide",
+        "VISION_SECURITY": "Vision & Security",
+        "ENV_OBJECTIVES": "Environmental Objectives",
+        "DRIVER_MANAGEMENT": "Driver Management",
+        "STATISTICS": "Statistics",
+        "LOCATION_MANAGEMENT": "Location Management",
+        "VEHICLE_MANAGEMENT": "Vehicle Management",
+        "FLEET_RECAP": "Fleet Overview",
+        "MAINTENANCE_TRACKING": "Maintenance Tracking",
+        "GENERAL_SETTINGS": "General Settings",
+        "MONTHLY_REPORTS": "Monthly Reports",
+        "LOGBOOK": "Logbook",
+        "DASHBOARD": "Dashboard"
+    }
+}

@@ -2,27 +2,30 @@
   <div style="display: flex; align-items: center;">
     <img src="assets/logo_bandeau.png" alt="Logo" style="height: 40px; margin-right: 10px;">
     <span *ngIf="isAuthenticated">
-      Bienvenue, <span style="font-weight: bold;">{{ userName }}</span> ({{ userProfile }}<span *ngIf="userPays"> - {{
+      {{ 'COMMON.WELCOME' | translate }}: <span style="font-weight: bold;">{{ userName }}</span> ({{ userProfile }}<span
+        *ngIf="userPays"> - {{
         userPays }}</span><span *ngIf="userBase"> / {{ userBase }}</span>)
     </span>
   </div>
 
   <!-- Country Selector -->
   <app-country-selector *ngIf="isAuthenticated"></app-country-selector>
+  <app-language-selector *ngIf="isAuthenticated"></app-language-selector>
 
   <span class="toolbar-spacer"></span>
 
   <!-- Liens de navigation -->
-  <button mat-button *ngIf="isAuthenticated" routerLink="/mes-mouvements">Mes Mouvements</button>
-  <button mat-button *ngIf="isAuthenticated" routerLink="/planning">Planning Global</button>
-  <button mat-button *ngIf="isAuthenticated" routerLink="/demande-mouvement">Nouvelle Demande</button>
-  <button mat-button *ngIf="isAuthenticated" routerLink="/map">Carte Interactive</button>
+  <button mat-button *ngIf="isAuthenticated" routerLink="/mes-mouvements">{{ 'MENU.MY_TRIPS' | translate }}</button>
+  <button mat-button *ngIf="isAuthenticated" routerLink="/planning">{{ 'MENU.GLOBAL_PLANNING' | translate }}</button>
+  <button mat-button *ngIf="isAuthenticated" routerLink="/demande-mouvement">{{ 'MENU.NEW_REQUEST' | translate
+    }}</button>
+  <button mat-button *ngIf="isAuthenticated" routerLink="/map">{{ 'MENU.INTERACTIVE_MAP' | translate }}</button>
 
   <!-- NOUVEAU Menu Validation -->
   <ng-container
     *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin')">
     <button mat-button [matMenuTriggerFor]="validationMenu">
-      Validation <mat-icon>arrow_drop_down</mat-icon>
+      {{ 'MENU.VALIDATION' | translate }} <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #validationMenu="matMenu">
       <button mat-menu-item routerLink="/security-alerts">
@@ -45,7 +48,7 @@
   <ng-container
     *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')">
     <button mat-button [matMenuTriggerFor]="adminMenu">
-      Administration <mat-icon>arrow_drop_down</mat-icon>
+      {{ 'MENU.ADMINISTRATION' | translate }} <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #adminMenu="matMenu">
       <button mat-menu-item routerLink="/gestion-utilisateurs"
@@ -133,7 +136,8 @@
 
 
   <!-- Bouton Déconnexion uniquement -->
-  <button mat-raised-button color="warn" *ngIf="isAuthenticated" (click)="logout()">Déconnexion</button>
+  <button mat-raised-button color="warn" *ngIf="isAuthenticated" (click)="logout()">{{ 'COMMON.LOGOUT' | translate
+    }}</button>
 </mat-toolbar>
 
 <div style="padding: 20px;">

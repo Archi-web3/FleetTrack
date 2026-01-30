@@ -2,7 +2,9 @@ import { ApplicationConfig, Injectable, isDevMode, importProvidersFrom } from '@
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { countryInterceptor } from './interceptors/country.interceptor';
 import { authInterceptor } from './interceptors/auth.interceptor';
 
@@ -30,12 +32,28 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
   }
 }
 
+
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor, countryInterceptor])),
     provideAnimations(), // Nécessaire pour les animations du calendrier
     provideCharts(withDefaultRegisterables()), // NOUVEAU: Provider Charts
+    // NOUVEAU : Configuration i18n
+    // NOUVEAU : Configuration i18n
+    provideTranslateHttpLoader({
+      prefix: './assets/i18n/',
+      suffix: '.json'
+    }),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useClass: TranslateHttpLoader
+        }
+      })
+    ),
     // NOUVEAU : Fournir le CalendarModule via importProvidersFrom
     importProvidersFrom(CalendarModule.forRoot({
       provide: DateAdapter,

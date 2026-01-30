@@ -1,0 +1,35 @@
+{
+    "COMMON": {
+        "WELCOME": "Welcome",
+        "LOGOUT": "Logout",
+        "CANCEL": "Cancel",
+        "SAVE": "Save",
+        "CONFIRM": "Confirm",
+        "DELETE": "Delete",
+        "EDIT": "Edit"
+    },
+    "HEADER": {
+        "CHANGE_VEHICLE": "Change Vehicle",
+        "RESET_DATA": "Reset Data"
+    },
+    "DASHBOARD": {
+        "ACTIVE_TRIP": "Active Trip",
+        "ACTIVE_TRIP_DESC": "Resume Current Trip",
+        "PLANNING": "My Planning",
+        "PLANNING_DESC": "Assigned Missions",
+        "CHECKLIST": "Weekly Checklist",
+        "CHECKLIST_DESC": "Weekly Maintenance",
+        "SERVICES": "Services A/B/C",
+        "SERVICES_DESC": "Scheduled Services",
+        "TRIPS": "Trips",
+        "TRIPS_DESC": "Movement History",
+        "WAIVER": "Visitor Waiver",
+        "WAIVER_DESC": "Sign Liability",
+        "FUEL": "Fuel",
+        "FUEL_DESC": "Refueling",
+        "MAINTENANCE": "Maintenance",
+        "MAINTENANCE_DESC": "Repairs",
+        "INCIDENTS": "Incidents",
+        "INCIDENTS_DESC": "Issues and Anomalies"
+    }
+}

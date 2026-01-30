@@ -1,0 +1,40 @@
+{
+    "COMMON": {
+        "WELCOME": "Bienvenue",
+        "LOGOUT": "Déconnexion",
+        "CANCEL": "Annuler",
+        "SAVE": "Enregistrer",
+        "CONFIRM": "Confirmer",
+        "DELETE": "Supprimer",
+        "EDIT": "Modifier"
+    },
+    "MENU": {
+        "MY_TRIPS": "Mes Mouvements",
+        "GLOBAL_PLANNING": "Planning Global",
+        "NEW_REQUEST": "Nouvelle Demande",
+        "INTERACTIVE_MAP": "Carte Interactive",
+        "VALIDATION": "Validation",
+        "SECURITY_ALERTS": "Alertes Sécurité (Push)",
+        "VALIDATE_TRIPS": "Valider Mouvements",
+        "CONSOLIDATION": "Consolidation",
+        "ADMINISTRATION": "Administration",
+        "USER_MANAGEMENT": "Gestion Utilisateurs",
+        "COUNTRIES_BASES": "Pays & Bases",
+        "PROJECT_MANAGEMENT": "Gestion Projets",
+        "AUDIT_LOGS": "Journal d'Activité",
+        "WAIVERS": "Décharges Visiteurs",
+        "USER_GUIDE": "Guide Utilisateur",
+        "VISION_SECURITY": "Vision & Sécurité",
+        "ENV_OBJECTIVES": "Objectifs Enviro",
+        "DRIVER_MANAGEMENT": "Gestion Chauffeurs",
+        "STATISTICS": "Statistiques",
+        "LOCATION_MANAGEMENT": "Gestion Lieux",
+        "VEHICLE_MANAGEMENT": "Gestion Véhicules",
+        "FLEET_RECAP": "Récapitulatif Flotte",
+        "MAINTENANCE_TRACKING": "Suivi Maintenance",
+        "GENERAL_SETTINGS": "Paramètres Généraux",
+        "MONTHLY_REPORTS": "Rapports Mensuels",
+        "LOGBOOK": "Logbook",
+        "DASHBOARD": "Tableau de Bord"
+    }
+}

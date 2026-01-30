@@ -28,19 +28,20 @@
         </div>
 
         <div class="header-actions">
+            <app-language-selector></app-language-selector>
             <button mat-stroked-button (click)="changeVehicle()">
                 <mat-icon>swap_horiz</mat-icon>
-                Changer de véhicule
+                {{ 'HEADER.CHANGE_VEHICLE' | translate }}
             </button>
             <!-- NOUVEAU: Bouton Reset pour Admin uniquement -->
             <button mat-stroked-button color="accent" (click)="resetLocalData()" *ngIf="showResetButton"
                 style="border-color: #ff9800; color: #ff9800;">
                 <mat-icon>delete_sweep</mat-icon>
-                Reset Données
+                {{ 'HEADER.RESET_DATA' | translate }}
             </button>
             <button mat-stroked-button color="warn" (click)="logout()">
                 <mat-icon>logout</mat-icon>
-                Déconnexion
+                {{ 'COMMON.LOGOUT' | translate }}
             </button>
         </div>
     </div>
@@ -53,8 +54,8 @@
                 <div class="card-icon-container">
                     <mat-icon class="card-icon" style="color: #9c27b0;">trip_origin</mat-icon>
                 </div>
-                <h3 style="color: #9c27b0;">🚗 Mouvement en Cours</h3>
-                <p class="card-description">Reprendre le trajet</p>
+                <h3 style="color: #9c27b0;">🚗 {{ 'DASHBOARD.ACTIVE_TRIP' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.ACTIVE_TRIP_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -67,8 +68,8 @@
                         event_note
                     </mat-icon>
                 </div>
-                <h3>Mon Planning</h3>
-                <p class="card-description">Missions assignées</p>
+                <h3>{{ 'DASHBOARD.PLANNING' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.PLANNING_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -78,8 +79,8 @@
                 <div class="card-icon-container">
                     <mat-icon class="card-icon">checklist</mat-icon>
                 </div>
-                <h3>Checklist Hebdo</h3>
-                <p class="card-description">Maintenance hebdomadaire</p>
+                <h3>{{ 'DASHBOARD.CHECKLIST' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.CHECKLIST_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -92,8 +93,8 @@
                         build_circle
                     </mat-icon>
                 </div>
-                <h3>Services A/B/C</h3>
-                <p class="card-description">Services programmés</p>
+                <h3>{{ 'DASHBOARD.SERVICES' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.SERVICES_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -106,8 +107,8 @@
                         directions_car
                     </mat-icon>
                 </div>
-                <h3>Trajets</h3>
-                <p class="card-description">Historique des déplacements</p>
+                <h3>{{ 'DASHBOARD.TRIPS' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.TRIPS_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -117,8 +118,8 @@
                 <div class="card-icon-container">
                     <mat-icon class="card-icon" style="color: #607d8b;">draw</mat-icon>
                 </div>
-                <h3>Décharge Visiteur</h3>
-                <p class="card-description">Signer responsabilité</p>
+                <h3>{{ 'DASHBOARD.WAIVER' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.WAIVER_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -131,8 +132,8 @@
                         local_gas_station
                     </mat-icon>
                 </div>
-                <h3>Carburant</h3>
-                <p class="card-description">Ravitaillements</p>
+                <h3>{{ 'DASHBOARD.FUEL' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.FUEL_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -145,8 +146,8 @@
                         build
                     </mat-icon>
                 </div>
-                <h3>Maintenance</h3>
-                <p class="card-description">Réparations</p>
+                <h3>{{ 'DASHBOARD.MAINTENANCE' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.MAINTENANCE_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
@@ -159,8 +160,8 @@
                         warning
                     </mat-icon>
                 </div>
-                <h3>Incidents</h3>
-                <p class="card-description">Anomalies et problèmes</p>
+                <h3>{{ 'DASHBOARD.INCIDENTS' | translate }}</h3>
+                <p class="card-description">{{ 'DASHBOARD.INCIDENTS_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
     </div>

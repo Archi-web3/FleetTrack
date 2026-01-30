@@ -10,11 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { CountrySelectorComponent } from './country-selector/country-selector.component';
+import { LanguageSelectorComponent } from './language-selector/language-selector.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, CountrySelectorComponent],
+  imports: [RouterOutlet, RouterLink, CommonModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, CountrySelectorComponent, LanguageSelectorComponent, TranslateModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

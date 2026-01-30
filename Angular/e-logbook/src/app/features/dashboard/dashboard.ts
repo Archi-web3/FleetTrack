@@ -15,6 +15,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NotificationListComponent } from '../../shared/components/notification-list/notification-list.component';
 import { PushNotificationService } from '../../core/services/push-notification.service'; // NOUVEAU
+import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dashboard',
@@ -26,7 +28,10 @@ import { PushNotificationService } from '../../core/services/push-notification.s
         MatButtonModule,
         MatBadgeModule,
         MatSnackBarModule,
-        MatDialogModule
+        MatSnackBarModule,
+        MatDialogModule,
+        LanguageSelectorComponent,
+        TranslateModule
     ],
     templateUrl: './dashboard.html',
     styleUrls: ['./dashboard.scss']
