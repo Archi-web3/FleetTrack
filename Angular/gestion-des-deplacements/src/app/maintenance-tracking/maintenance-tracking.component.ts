@@ -10,8 +10,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs'; // NOUVEAU
 import { MaintenanceTrackingService } from './maintenance-tracking.service';
 import { AdminService } from '../admin.service';
+import { MouvementService } from '../mouvement.service'; // NOUVEAU
+import { Router } from '@angular/router'; // NOUVEAU
 
 @Component({
     selector: 'app-maintenance-tracking',
@@ -27,7 +30,8 @@ import { AdminService } from '../admin.service';
         MatFormFieldModule,
         MatChipsModule,
         MatBadgeModule,
-        MatDialogModule
+        MatDialogModule,
+        MatTabsModule // NOUVEAU
     ],
     templateUrl: './maintenance-tracking.component.html',
     styleUrls: ['./maintenance-tracking.component.css']
@@ -39,17 +43,24 @@ export class MaintenanceTrackingComponent implements OnInit {
     loading = false;
     Math = Math; // Expose Math to template
 
+    // Onglet 2 : Liste des Maintenances
+    maintenanceSlots: any[] = [];
+    loadingSlots = false;
+    displayedColumnsSlots: string[] = ['date', 'vehicule', 'type', 'description', 'statut', 'actions'];
+
     // Filtres
     selectedBase: string = '';
     selectedStatus: string = '';
     selectedType: string = '';
 
-    // Colonnes affichées
+    // Colonnes affichées (Onglet 1)
     displayedColumns: string[] = ['immatriculation', 'type', 'km', 'dernierService', 'prochainService', 'ecart', 'statut', 'actions'];
 
     constructor(
         private trackingService: MaintenanceTrackingService,
         private adminService: AdminService,
+        private mouvementService: MouvementService, // NOUVEAU
+        private router: Router, // NOUVEAU
         private dialog: MatDialog
     ) { }
 
@@ -57,6 +68,7 @@ export class MaintenanceTrackingComponent implements OnInit {
         this.loadBases();
         this.loadOverview();
         this.loadAlerts();
+        this.loadMaintenanceSlots(); // NOUVEAU
     }
 
     loadBases() {
@@ -168,5 +180,43 @@ export class MaintenanceTrackingComponent implements OnInit {
         // TODO: Ouvrir dialog avec détails (Phase 2b)
         console.log('Détail véhicule:', vehicule);
         alert(`Détail pour ${vehicule.vehicule.immatriculation} - À implémenter`);
+    }
+
+    // --- NOUVEAU : GESTION DES SLOTS DE MAINTENANCE ---
+
+    loadMaintenanceSlots() {
+        this.loadingSlots = true;
+        this.mouvementService.getMouvements().subscribe({
+            next: (data) => {
+                // Filtrer uniquement les maintenances
+                this.maintenanceSlots = data.filter((m: any) => m.type === 'maintenance');
+                // Trier par date décroissante
+                this.maintenanceSlots.sort((a, b) => new Date(b.dateDepart).getTime() - new Date(a.dateDepart).getTime());
+                this.loadingSlots = false;
+            },
+            error: (err) => {
+                console.error('Erreur chargement slots maintenance:', err);
+                this.loadingSlots = false;
+            }
+        });
+    }
+
+    deleteSlot(slot: any) {
+        if (confirm(`Confirmer la suppression de la maintenance "${slot.maintenanceType}" pour ${slot.vehicule?.immatriculation} ?`)) {
+            this.mouvementService.deleteMouvement(slot._id).subscribe({
+                next: () => {
+                    alert('Maintenance supprimée.');
+                    this.loadMaintenanceSlots(); // Recharger la liste
+                },
+                error: (err) => {
+                    console.error('Erreur suppression maintenance:', err);
+                    alert('Erreur lors de la suppression.');
+                }
+            });
+        }
+    }
+
+    editSlot(slot: any) {
+        this.router.navigate(['/modifier-mouvement', slot._id]);
     }
 }

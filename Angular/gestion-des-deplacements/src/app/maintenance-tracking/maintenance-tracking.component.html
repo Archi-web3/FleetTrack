@@ -1,7 +1,7 @@
 <div class="maintenance-tracking-container">
     <h2>Suivi Maintenance <mat-icon>build</mat-icon></h2>
 
-    <!-- Alertes urgentes -->
+    <!-- Alertes urgentes (Toujours visibles en haut ?) -> Oui, utile -->
     <mat-card *ngIf="alerts.length > 0" class="alerts-card">
         <mat-card-header>
             <mat-card-title>
@@ -21,131 +21,228 @@
         </mat-card-content>
     </mat-card>
 
-    <!-- Filtres -->
-    <mat-card class="filters-card">
-        <mat-card-content>
-            <div class="filters-row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Base</mat-label>
-                    <mat-select [(ngModel)]="selectedBase" (selectionChange)="applyFilters()">
-                        <mat-option value="">Toutes les bases</mat-option>
-                        <mat-option *ngFor="let base of bases" [value]="base._id">{{ base.nom }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+    <mat-tab-group animationDuration="0ms" class="mt-3">
 
-                <mat-form-field appearance="outline">
-                    <mat-label>Statut</mat-label>
-                    <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
-                        <mat-option value="">Tous les statuts</mat-option>
-                        <mat-option value="ok">🟢 À jour</mat-option>
-                        <mat-option value="proche">🟡 Proche</mat-option>
-                        <mat-option value="retard">🔴 En retard</mat-option>
-                        <mat-option value="critique">🟣 Critique</mat-option>
-                    </mat-select>
-                </mat-form-field>
+        <!-- ONGLET 1 : SUIVI KILOMÉTRIQUE -->
+        <mat-tab label="Suivi Kilométrique & Échéances">
+            <div class="tab-content-wrapper">
+                <!-- Filtres -->
+                <mat-card class="filters-card">
+                    <mat-card-content>
+                        <div class="filters-row">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Base</mat-label>
+                                <mat-select [(ngModel)]="selectedBase" (selectionChange)="applyFilters()">
+                                    <mat-option value="">Toutes les bases</mat-option>
+                                    <mat-option *ngFor="let base of bases" [value]="base._id">{{ base.nom
+                                        }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="applyFilters()">
-                    <mat-icon>search</mat-icon> Filtrer
-                </button>
-                <button mat-button (click)="resetFilters()">
-                    <mat-icon>refresh</mat-icon> Réinitialiser
-                </button>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Statut</mat-label>
+                                <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
+                                    <mat-option value="">Tous les statuts</mat-option>
+                                    <mat-option value="ok">🟢 À jour</mat-option>
+                                    <mat-option value="proche">🟡 Proche</mat-option>
+                                    <mat-option value="retard">🔴 En retard</mat-option>
+                                    <mat-option value="critique">🟣 Critique</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button mat-raised-button color="primary" (click)="applyFilters()">
+                                <mat-icon>search</mat-icon> Filtrer
+                            </button>
+                            <button mat-button (click)="resetFilters()">
+                                <mat-icon>refresh</mat-icon> Réinitialiser
+                            </button>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <!-- Tableau principal -->
+                <mat-card class="table-card">
+                    <mat-card-content>
+                        <div *ngIf="loading" style="text-align: center; padding: 40px;">
+                            Chargement...
+                        </div>
+
+                        <table mat-table [dataSource]="vehicules" *ngIf="!loading" class="maintenance-table">
+                            <!-- Colonne Immatriculation -->
+                            <ng-container matColumnDef="immatriculation">
+                                <th mat-header-cell *matHeaderCellDef>Immatriculation</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <strong>{{ row.vehicule.immatriculation }}</strong><br>
+                                    <small>{{ row.vehicule.marque }} {{ row.vehicule.modele }}</small>
+                                </td>
+                            </ng-container>
+
+                            <!-- Colonne Type -->
+                            <ng-container matColumnDef="type">
+                                <th mat-header-cell *matHeaderCellDef>Type</th>
+                                <td mat-cell *matCellDef="let row">{{ row.vehicule.type || '-' }}</td>
+                            </ng-container>
+
+                            <!-- Colonne Km actuel -->
+                            <ng-container matColumnDef="km">
+                                <th mat-header-cell *matHeaderCellDef>Km actuel</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <strong>{{ row.vehicule.kilometrage | number:'1.0-0' }}</strong> km
+                                </td>
+                            </ng-container>
+
+                            <!-- Colonne Dernier service -->
+                            <ng-container matColumnDef="dernierService">
+                                <th mat-header-cell *matHeaderCellDef>Dernier service</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <span *ngIf="row.dernierService">
+                                        Service {{ row.dernierService.type }}<br>
+                                        <small>{{ formatDate(row.dernierService.date) }} ({{ row.dernierService.km |
+                                            number:'1.0-0'
+                                            }} km)</small>
+                                    </span>
+                                    <span *ngIf="!row.dernierService">-</span>
+                                </td>
+                            </ng-container>
+
+                            <!-- Colonne Prochain service -->
+                            <ng-container matColumnDef="prochainService">
+                                <th mat-header-cell *matHeaderCellDef>Prochain service</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <span *ngIf="row.prochainService">
+                                        Service {{ row.prochainService.type }}<br>
+                                        <small>{{ row.prochainService.kmPrevu | number:'1.0-0' }} km</small>
+                                    </span>
+                                    <span *ngIf="!row.prochainService">-</span>
+                                </td>
+                            </ng-container>
+
+                            <!-- Colonne Écart -->
+                            <ng-container matColumnDef="ecart">
+                                <th mat-header-cell *matHeaderCellDef>Écart</th>
+                                <td mat-cell *matCellDef="let row">
+                                    {{ formatEcart(row.ecartKm) }}
+                                </td>
+                            </ng-container>
+
+                            <!-- Colonne Statut -->
+                            <ng-container matColumnDef="statut">
+                                <th mat-header-cell *matHeaderCellDef>Statut</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <mat-chip [style.background-color]="getStatusColor(row.statusCode)"
+                                        style="color: white;">
+                                        {{ getStatusIcon(row.statusCode) }} {{ getStatusLabel(row.statusCode) }}
+                                    </mat-chip>
+                                </td>
+                            </ng-container>
+
+                            <!-- Colonne Actions -->
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                <td mat-cell *matCellDef="let row">
+                                    <button mat-icon-button color="primary" (click)="viewVehiculeDetail(row)"
+                                        matTooltip="Voir détails">
+                                        <mat-icon>info</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+
+                        <div *ngIf="!loading && vehicules.length === 0"
+                            style="text-align: center; padding: 40px; color: #757575;">
+                            Aucun véhicule trouvé avec ces filtres.
+                        </div>
+                    </mat-card-content>
+                </mat-card>
             </div>
-        </mat-card-content>
-    </mat-card>
+        </mat-tab>
 
-    <!-- Tableau principal -->
-    <mat-card class="table-card">
-        <mat-card-content>
-            <div *ngIf="loading" style="text-align: center; padding: 40px;">
-                Chargement...
+        <!-- ONGLET 2 : LISTE DES MAINTENANCES PLANIFIÉES -->
+        <mat-tab label="Interventions Planifiées">
+            <div class="tab-content-wrapper">
+                <mat-card class="table-card">
+                    <mat-card-content>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+                            <h3>Historique et Prévisions des Maintenances</h3>
+                            <button mat-icon-button (click)="loadMaintenanceSlots()" matTooltip="Rafraîchir">
+                                <mat-icon>refresh</mat-icon>
+                            </button>
+                        </div>
+
+                        <div *ngIf="loadingSlots" style="text-align: center; padding: 40px;">
+                            Chargement...
+                        </div>
+
+                        <table mat-table [dataSource]="maintenanceSlots" *ngIf="!loadingSlots"
+                            class="maintenance-table">
+
+                            <!-- Date -->
+                            <ng-container matColumnDef="date">
+                                <th mat-header-cell *matHeaderCellDef> Date </th>
+                                <td mat-cell *matCellDef="let element"> {{element.dateDepart | date:'dd/MM/yyyy HH:mm'}}
+                                </td>
+                            </ng-container>
+
+                            <!-- Véhicule -->
+                            <ng-container matColumnDef="vehicule">
+                                <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{ element.vehicule?.immatriculation || 'Non assigné' }}
+                                </td>
+                            </ng-container>
+
+                            <!-- Type Maintenance -->
+                            <ng-container matColumnDef="type">
+                                <th mat-header-cell *matHeaderCellDef> Type </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-chip style="background-color: #ffa726; color: white;">
+                                        {{ element.maintenanceType }}
+                                    </mat-chip>
+                                </td>
+                            </ng-container>
+
+                            <!-- Description -->
+                            <ng-container matColumnDef="description">
+                                <th mat-header-cell *matHeaderCellDef> Notes </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.description || '-' }} </td>
+                            </ng-container>
+
+                            <!-- Statut -->
+                            <ng-container matColumnDef="statut">
+                                <th mat-header-cell *matHeaderCellDef> Statut </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.statut }} </td>
+                            </ng-container>
+
+                            <!-- Actions -->
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <button mat-icon-button color="accent" (click)="editSlot(element)"
+                                        matTooltip="Modifier">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="warn" (click)="deleteSlot(element)"
+                                        matTooltip="Supprimer">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsSlots"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumnsSlots;"></tr>
+                        </table>
+
+                        <div *ngIf="!loadingSlots && maintenanceSlots.length === 0"
+                            style="text-align: center; padding: 40px; color: #757575;">
+                            Aucune maintenance planifiée.
+                        </div>
+                    </mat-card-content>
+                </mat-card>
             </div>
+        </mat-tab>
 
-            <table mat-table [dataSource]="vehicules" *ngIf="!loading" class="maintenance-table">
-                <!-- Colonne Immatriculation -->
-                <ng-container matColumnDef="immatriculation">
-                    <th mat-header-cell *matHeaderCellDef>Immatriculation</th>
-                    <td mat-cell *matCellDef="let row">
-                        <strong>{{ row.vehicule.immatriculation }}</strong><br>
-                        <small>{{ row.vehicule.marque }} {{ row.vehicule.modele }}</small>
-                    </td>
-                </ng-container>
-
-                <!-- Colonne Type -->
-                <ng-container matColumnDef="type">
-                    <th mat-header-cell *matHeaderCellDef>Type</th>
-                    <td mat-cell *matCellDef="let row">{{ row.vehicule.type || '-' }}</td>
-                </ng-container>
-
-                <!-- Colonne Km actuel -->
-                <ng-container matColumnDef="km">
-                    <th mat-header-cell *matHeaderCellDef>Km actuel</th>
-                    <td mat-cell *matCellDef="let row">
-                        <strong>{{ row.vehicule.kilometrage | number:'1.0-0' }}</strong> km
-                    </td>
-                </ng-container>
-
-                <!-- Colonne Dernier service -->
-                <ng-container matColumnDef="dernierService">
-                    <th mat-header-cell *matHeaderCellDef>Dernier service</th>
-                    <td mat-cell *matCellDef="let row">
-                        <span *ngIf="row.dernierService">
-                            Service {{ row.dernierService.type }}<br>
-                            <small>{{ formatDate(row.dernierService.date) }} ({{ row.dernierService.km | number:'1.0-0'
-                                }} km)</small>
-                        </span>
-                        <span *ngIf="!row.dernierService">-</span>
-                    </td>
-                </ng-container>
-
-                <!-- Colonne Prochain service -->
-                <ng-container matColumnDef="prochainService">
-                    <th mat-header-cell *matHeaderCellDef>Prochain service</th>
-                    <td mat-cell *matCellDef="let row">
-                        <span *ngIf="row.prochainService">
-                            Service {{ row.prochainService.type }}<br>
-                            <small>{{ row.prochainService.kmPrevu | number:'1.0-0' }} km</small>
-                        </span>
-                        <span *ngIf="!row.prochainService">-</span>
-                    </td>
-                </ng-container>
-
-                <!-- Colonne Écart -->
-                <ng-container matColumnDef="ecart">
-                    <th mat-header-cell *matHeaderCellDef>Écart</th>
-                    <td mat-cell *matCellDef="let row">
-                        {{ formatEcart(row.ecartKm) }}
-                    </td>
-                </ng-container>
-
-                <!-- Colonne Statut -->
-                <ng-container matColumnDef="statut">
-                    <th mat-header-cell *matHeaderCellDef>Statut</th>
-                    <td mat-cell *matCellDef="let row">
-                        <mat-chip [style.background-color]="getStatusColor(row.statusCode)" style="color: white;">
-                            {{ getStatusIcon(row.statusCode) }} {{ getStatusLabel(row.statusCode) }}
-                        </mat-chip>
-                    </td>
-                </ng-container>
-
-                <!-- Colonne Actions -->
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Actions</th>
-                    <td mat-cell *matCellDef="let row">
-                        <button mat-icon-button color="primary" (click)="viewVehiculeDetail(row)"
-                            matTooltip="Voir détails">
-                            <mat-icon>info</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-
-            <div *ngIf="!loading && vehicules.length === 0" style="text-align: center; padding: 40px; color: #757575;">
-                Aucun véhicule trouvé avec ces filtres.
-            </div>
-        </mat-card-content>
-    </mat-card>
+    </mat-tab-group>
 </div>
