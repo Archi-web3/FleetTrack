@@ -1,0 +1,26 @@
+
+> gestion-des-deplacements@2.7.0 build
+> ng build
+
+[1m[33m[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`[39m[22m
+- Generating browser application bundles (phase: setup)...
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+[1m[33m
+Warning: C:\Users\jonat\Documents\ACF\ACF_v2\Angular\gestion-des-deplacements\src\app\map-mouvements\map-mouvements.component.ts depends on 'leaflet'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+[39m[22m
+[1m[31m
+Error: [96msrc/app/map-mouvements/map-mouvements.component.html[0m:[93m36[0m:[93m17[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'matTooltip' since it isn't a known property of 'button'.
+
+[7m36[0m                 [matTooltip]="'MAP.ZOOM_TOOLTIP' | translate">
+[7m  [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/map-mouvements/map-mouvements.component.ts[0m:[93m39[0m:[93m16[0m
+    [7m39[0m   templateUrl: './map-mouvements.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MapMouvementsComponent.
+
+
+[39m[22m

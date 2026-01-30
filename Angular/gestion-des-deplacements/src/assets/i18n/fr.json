@@ -13,8 +13,11 @@
         "EMAIL": "Adresse Email",
         "PASSWORD": "Mot de passe",
         "BUTTON": "Se connecter",
-        "ERROR": "Erreur de connexion",
-        "FORGOT_PASSWORD": "Mot de passe oublié ?"
+        "ERROR": "Identifiants incorrects. Veuillez réessayer.",
+        "FORGOT_PASSWORD": "Mot de passe oublié ?",
+        "EMAIL_REQUIRED": "Veuillez entrer une adresse email valide.",
+        "PASSWORD_REQUIRED": "Le mot de passe est requis.",
+        "LOADING": "Connexion en cours..."
     },
     "MY_TRIPS": {
         "TITLE": "Mes Mouvements",
@@ -54,6 +57,40 @@
             "CANCELLED": "Annulé/Refusé"
         },
         "NO_EVENTS": "Aucun mouvement validé ou en cours pour cette semaine."
+    },
+    "MAP": {
+        "FILTERS": "Filtres",
+        "MODE_TRANSPORT": "Mode Transport",
+        "PLANNED_TRIPS": "Trajets Planifiés",
+        "GPS_TRACKS": "Tracés GPS (Réel)",
+        "LAST_POSITIONS": "Dernières Positions",
+        "ZOOM_TOOLTIP": "Zoomer sur la dernière position connue de tous les véhicules affichés"
+    },
+    "VALIDATION": {
+        "TITLE": "Validation des Mouvements",
+        "PROFILE": "Profil",
+        "NOT_CONNECTED": "Non connecté",
+        "SECURITY_VALIDATION": "Mouvements à valider par la Sécurité",
+        "LOGISTICS_VALIDATION": "Mouvements à valider par la Logistique",
+        "NO_PENDING_SECURITY": "Aucun mouvement en attente de validation sécurité.",
+        "NO_PENDING_LOGS": "Aucun mouvement en attente de validation logistique.",
+        "ID": "ID Mouvement",
+        "STATUS": "Statut",
+        "RISK_LEVEL": "Niveau de Risque",
+        "STABLE": "(Stable)",
+        "MODERATE": "(Modéré)",
+        "DIFFICULT": "(Difficile)",
+        "HIGH": "(Élevé)",
+        "EXTREME": "(Extrême)",
+        "DEPARTURE": "Départ",
+        "ARRIVAL": "Arrivée",
+        "INTERMEDIATE_STOPS": "Étapes intermédiaires",
+        "DATE": "Date",
+        "OBJECTIVE": "Objectif",
+        "REQUESTER": "Demandeur",
+        "VALIDATE_SECURITY": "Valider Sécurité",
+        "VALIDATE_LOGS": "Valider Logistique",
+        "REFUSE": "Refuser"
     },
     "NEW_REQUEST": {
         "TITLE": "Nouvelle Demande de Mouvement",
@@ -146,7 +183,465 @@
         "MAINTENANCE_TRACKING": "Suivi Maintenance",
         "GENERAL_SETTINGS": "Paramètres Généraux",
         "MONTHLY_REPORTS": "Rapports Mensuels",
-        "LOGBOOK": "Logbook",
-        "DASHBOARD": "Tableau de Bord"
+        "DASHBOARD": {
+            "TITLE": "Analyse des Mouvements",
+            "KPI": {
+                "TOTAL": "Total Mouvements",
+                "VALIDATED": "Validés (À venir)",
+                "IN_PROGRESS": "En Cours",
+                "PENDING": "En Attente"
+            },
+            "FILTERS": {
+                "SEARCH": "Rechercher",
+                "SEARCH_PLACEHOLDER": "Objectif, Demandeur...",
+                "STATUS": "Statut",
+                "ALL": "Tous"
+            },
+            "TABLE": {
+                "STATUS": "Statut",
+                "OBJECTIVE": "Objectif",
+                "DEPARTURE": "Départ Prévu",
+                "VEHICLE": "Véhicule",
+                "DRIVER": "Chauffeur",
+                "REQUESTER": "Demandeur",
+                "NOT_ASSIGNED": "Non assigné"
+            }
+        },
+        "LOGBOOK": "Logbook"
+    },
+    "LOGBOOK": {
+        "DASHBOARD": {
+            "TITLE": "Tableau de Bord Logbook",
+            "SELECT_VEHICLE": "Sélectionner un Véhicule :"
+        },
+        "TABS": {
+            "TRIPS": "Trajets",
+            "FUEL": "Carburant",
+            "MAINTENANCE": "Réparations",
+            "INCIDENTS": "Incidents"
+        },
+        "TRIPS": {
+            "TITLE": "Historique des Trajets",
+            "DATE": "Date",
+            "DRIVER": "Chauffeur",
+            "OBJECTIVE": "Objectif",
+            "KM_START": "Km Départ",
+            "KM_END": "Km Arrivée",
+            "DISTANCE": "Distance",
+            "PHOTOS": "Photos",
+            "STATUS": "Statut",
+            "MAP": "Carte",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucun trajet enregistré.",
+            "NO_PHOTO": "Aucune photo"
+        },
+        "FUEL": {
+            "TITLE": "Historique Carburant",
+            "DATE": "Date",
+            "DRIVER": "Chauffeur",
+            "QUANTITY": "Quantité (L)",
+            "MILEAGE": "Km Compteur",
+            "CONSUMPTION": "Conso. (L/100)",
+            "TYPE": "Type",
+            "SOURCE": "Source",
+            "PHOTOS": "Photos",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucun plein enregistré.",
+            "WARNING_CONSUMPTION": "Surconsommation détectée (>10% vs théorique)"
+        },
+        "MAINTENANCE": {
+            "TITLE": "Historique Réparations",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "MILEAGE": "Km",
+            "GARAGE": "Garage",
+            "COST": "Coût",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucune réparation enregistrée.",
+            "INTERNAL": "Interne"
+        },
+        "INCIDENTS": {
+            "TITLE": "Incidents Signalés",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "SEVERITY": "Sévérité",
+            "DESCRIPTION": "Description",
+            "LOCATION": "Localisation",
+            "PHOTOS": "Photos",
+            "STATUS": "Statut",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucun incident signalé.",
+            "VIEW_MAP": "Voir Carte"
+        },
+        "MODALS": {
+            "EDIT_REPAIR": "Modifier Réparation",
+            "EDIT_INCIDENT": "Modifier Incident",
+            "SAVE": "Enregistrer",
+            "CANCEL": "Annuler",
+            "MAP_TITLE": "Visualisation du Trajet",
+            "PLANNED": "Planifié",
+            "REAL": "Réel (GPS)"
+        }
+    },
+    "MAINTENANCE": {
+        "TITLE": "Suivi Maintenance",
+        "ALERTS": {
+            "TITLE": "Interventions urgentes",
+            "DELAY": "Retard"
+        },
+        "TABS": {
+            "TRACKING": "Suivi Kilométrique & Échéances",
+            "PLANNING": "Interventions Planifiées"
+        },
+        "FILTERS": {
+            "BASE": "Base",
+            "ALL_BASES": "Toutes les bases",
+            "STATUS": "Statut",
+            "ALL_STATUS": "Tous les statuts",
+            "FILTER_BTN": "Filtrer",
+            "RESET_BTN": "Réinitialiser"
+        },
+        "TABLE": {
+            "PLATE": "Immatriculation",
+            "TYPE": "Type",
+            "KM_CURRENT": "Km actuel",
+            "LAST_SERVICE": "Dernier service",
+            "NEXT_SERVICE": "Prochain service",
+            "GAP": "Écart",
+            "STATUS": "Statut",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucun véhicule trouvé avec ces filtres.",
+            "SERVICE": "Service"
+        },
+        "PLANNING": {
+            "TITLE": "Historique et Prévisions des Maintenances",
+            "DATE": "Date",
+            "VEHICLE": "Véhicule",
+            "TYPE": "Type",
+            "NOTES": "Notes",
+            "STATUS": "Statut",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucune maintenance planifiée."
+        },
+        "CONFIG": {
+            "TITLE": "Configuration de la Maintenance",
+            "EDIT_TITLE": "Modifier Configuration",
+            "NEW_TITLE": "Nouvelle Configuration",
+            "FIELDS": {
+                "VEHICLE_TYPE": "Type de Véhicule",
+                "ROAD_CONDITIONS": "Conditions de Route",
+                "SERVICE_INTERVAL": "Intervalle Service Général",
+                "FUEL_QUALITY": "Qualité Carburant Attendue"
+            },
+            "TABLE": {
+                "TYPE": "Type",
+                "CONDITIONS": "Conditions",
+                "INTERVAL": "Intervalle",
+                "ACTIONS": "Actions"
+            },
+            "LIST_TITLE": "Configurations Existantes"
+        },
+        "TEMPLATES": {
+            "TITLE": "Gestion des Templates de Checklist",
+            "NEW_BTN": "Nouveau Template",
+            "LIST_TITLE": "Templates Disponibles",
+            "EDIT_TITLE": "Modifier Template",
+            "NEW_TITLE": "Nouveau Template",
+            "FIELDS": {
+                "NAME": "Nom du Template",
+                "TYPE": "Type",
+                "ACTIVE": "Actif"
+            },
+            "TASKS": {
+                "TITLE": "Tâches",
+                "CATEGORY": "Catégorie",
+                "DESCRIPTION": "Description",
+                "MANUAL_PAGE": "N° Page Manuel"
+            },
+            "ADD_TASK": "Ajouter Tâche"
+        },
+        "WEEKLY": {
+            "TITLE": "Suivi des Checklists Hebdomadaires",
+            "TABLE": {
+                "VEHICLE": "Véhicule",
+                "LAST_CHECK": "Dernière Vérification",
+                "STATUS": "Statut",
+                "HISTORY": "Historique"
+            },
+            "NO_VEHICLES": "Aucun véhicule trouvé."
+        }
+    },
+    "USERS": {
+        "TITLE": "Gestion des Utilisateurs",
+        "CREATE_TITLE": "Créer un nouvel utilisateur",
+        "EDIT_TITLE": "Modifier utilisateur",
+        "FORM": {
+            "NAME": "Nom",
+            "FIRSTNAME": "Prénom",
+            "EMPLOYEE_ID": "Numéro Employé",
+            "PHONE": "Numéro de téléphone",
+            "EMAIL": "Email",
+            "PASSWORD": "Mot de passe",
+            "NEW_PASSWORD": "Nouveau mot de passe (laisser vide si inchangé)",
+            "PROFILE": "Profil",
+            "SECURITY_LEVEL": "Niveau Validation Sécurité",
+            "SECURITY_HINT": "Niveau maximum que cet utilisateur peut valider",
+            "COUNTRY": "Pays",
+            "BASE": "Base d'affectation",
+            "PROJECT": "Projet/Programme",
+            "PROJECT_HINT": "Sélectionnez le code du projet"
+        },
+        "DRIVER_INFO": {
+            "TITLE": "Informations Chauffeur",
+            "LICENSE": "Numéro de permis",
+            "ECO_DRIVING": "Formation éco-conduite",
+            "DATE": "Date de la formation",
+            "ASSIGNED_VEHICLE": "Véhicule attitré (optionnel)",
+            "AVAILABLE": "Disponible"
+        },
+        "ACTIONS": {
+            "CREATE": "Créer Utilisateur",
+            "UPDATE": "Mettre à jour",
+            "CANCEL": "Annuler",
+            "DELETE": "Supprimer",
+            "FILTER_PROFILE": "Filtrer par profil",
+            "ALL_PROFILES": "Tous les profils"
+        },
+        "LIST": {
+            "TITLE": "Utilisateurs existants",
+            "NO_DATA": "Aucun utilisateur enregistré."
+        }
+    },
+    "DRIVERS": {
+        "TITLE": "Gestion des Chauffeurs",
+        "EDIT_TITLE": "Modifier chauffeur",
+        "LIST_TITLE": "Liste des Chauffeurs",
+        "NO_DATA": "Aucun chauffeur enregistré."
+    },
+    "VEHICLES": {
+        "TITLE": "Gestion des Véhicules",
+        "CREATE_TITLE": "Créer un nouveau véhicule",
+        "EDIT_TITLE": "Modifier véhicule",
+        "FORM": {
+            "BRAND": "Marque",
+            "MODEL": "Modèle",
+            "PLATE": "Immatriculation",
+            "ACF_CODE": "Numéro de véhicule ACF",
+            "ACF_CODE_HINT": "Généré automatiquement (MOB-XXX)",
+            "OWNERSHIP": "Propriété",
+            "RENTAL_NAME": "Nom du Loueur",
+            "RENTAL_START": "Début Location",
+            "RENTAL_END": "Fin Location",
+            "PURCHASE_DATE": "Date d'achat",
+            "TYPE": "Type",
+            "CAPACITY": "Capacité Passagers",
+            "INITIAL_KM": "Kilométrage Initial",
+            "STATUS": "Statut",
+            "GPS": "Activer le Tracking GPS"
+        },
+        "ENV": {
+            "TITLE": "Données Environnementales",
+            "CO2": "Émissions CO2 (g/km)",
+            "SOURCE": "Source données",
+            "CONSTRUCTOR": "Constructeur",
+            "MANUAL": "Test Manuel",
+            "CONSUMPTION": "Consommation (L/100km)",
+            "TEST_DATE": "Date du test"
+        },
+        "INSURANCE": {
+            "TITLE": "Assurance",
+            "INSURER": "Assureur",
+            "END_DATE": "Date fin d'assurance",
+            "CERTIFICATE": "Lien Certificat"
+        },
+        "EQUIPMENT": {
+            "TITLE": "Inventaire & Équipements de bord",
+            "NAME": "Équipement (Modifiable)",
+            "PRESENT": "Présent",
+            "LAST_CHECK": "Dernière vérif."
+        },
+        "ACTIONS": {
+            "CREATE": "Créer Véhicule",
+            "UPDATE": "Mettre à jour",
+            "ARCHIVE": "Archiver",
+            "UNARCHIVE": "Désarchiver",
+            "SHOW_ALL_COUNTRY": "Afficher tout le pays",
+            "SHOW_MY_BASE": "Afficher ma base uniquement"
+        },
+        "LIST": {
+            "TITLE": "Véhicules existants",
+            "NO_DATA": "Aucun véhicule enregistré."
+        }
+    },
+    "ADMIN_DASHBOARD": {
+        "TITLE": "Tableau de Bord - Statistiques",
+        "FILTERS": {
+            "TITLE": "Filtres",
+            "START_DATE": "Date début",
+            "END_DATE": "Date fin",
+            "PROJECT": "Projet",
+            "VEHICLE": "Véhicule",
+            "ALL_PROJECTS": "Tous les projets",
+            "ALL_VEHICLES": "Tous les véhicules",
+            "REFRESH": "Actualiser"
+        },
+        "GLOBAL": {
+            "TITLE": "Statistiques Globales",
+            "PERIOD": "Période",
+            "DISTANCE": "Distance Flotte (Routier)",
+            "CO2": "CO2 Total (Flotte)",
+            "FUEL": "Carburant Flotte",
+            "ADVANCED_TITLE": "Performance & Optimisation",
+            "SHORT_TRIPS": "Trajets \"Véhicule\" < 2km",
+            "SHORT_TRIPS_HINT": "(Potentiel report modal : Marche / Vélo)",
+            "POOLED_KM": "Kilomètres Mutualisés",
+            "UTILIZATION": "Taux d'Utilisation Flotte"
+        },
+        "MODES": {
+            "TITLE": "Répartition des Mouvements",
+            "ROAD": "Routier",
+            "AIR": "Aérien",
+            "SEA": "Maritime"
+        },
+        "PROJECTS": {
+            "TITLE": "Statistiques par Projet",
+            "NO_DATA": "Aucune donnée disponible pour la période sélectionnée",
+            "PROJECT": "Projet",
+            "TOTAL_DIST": "Distance Totale (km)",
+            "VENTILATED_DIST": "Distance Ventilée (km)",
+            "RATIO_KM": "Ratio Km (%)",
+            "CO2": "CO2 (kg)",
+            "RATIO_CO2": "Ratio CO2 (%)",
+            "FUEL": "Consommation (L)",
+            "RATIO_FUEL": "Ratio Conso (%)",
+            "FILL_RATE": "Taux Remplissage (%)",
+            "MOVEMENTS": "Mouvements"
+        }
+    },
+    "ACTIVITY_LOG": {
+        "TITLE": "Journal d'Activité",
+        "REFRESH": "Actualiser",
+        "CLEAR_HISTORY": "Nettoyer l'historique",
+        "NO_DATA": "Aucune activité enregistrée.",
+        "TABLE": {
+            "DATE": "Date",
+            "COUNTRY": "Pays",
+            "ACTOR": "Acteur",
+            "CATEGORY": "Catégorie",
+            "ACTION": "Action",
+            "DETAILS": "Cible / Détails"
+        }
+    },
+    "WAIVERS": {
+        "TITLE": "Décharges Visiteurs Signées",
+        "NO_DATA": "Aucune décharge enregistrée pour le moment.",
+        "TABLE": {
+            "DATE": "Date",
+            "VISITOR": "Visiteur",
+            "VEHICLE": "Véhicule",
+            "SIGNATURE": "Signature",
+            "ACTIONS": "Actions"
+        }
+    },
+    "ENVIRONMENT": {
+        "TITLE": "Objectifs Environnementaux",
+        "GUIDE_BTN": "Guide & Méthode",
+        "CONFIG_WEIGHTS_BTN": "Configurer la Pondération (IAP)",
+        "TARGET_PERCENT": "Objectif (-%)",
+        "YEAR": "Année",
+        "TABS": {
+            "ACTION_PLAN": "Plan d'Action",
+            "DATA_ENTRY": "Saisie Données (IAP)",
+            "ANALYSIS": "Analyse & Graphiques"
+        },
+        "GUIDE": {
+            "TITLE": "Comment calculer l'évolution au prorata de l'activité (IAP) ?",
+            "PRINCIPLE_TITLE": "Le Principe",
+            "PRINCIPLE_TEXT": "Pour comparer deux années équitablement, nous utilisons l'Indice d'Activité Pondéré (IAP). Il permet de mesurer si la baisse de consommation est réelle (efficacité) ou juste due à une baisse d'activité.",
+            "FORMULA_TITLE": "Formule de Calcul",
+            "COMPARISON_TITLE": "Principe de Comparaison",
+            "COMPARISON_TEXT": "Nous suivons l'évolution du ratio : Litres Consommés / IAP.",
+            "COMPARISON_EXPLANATION": "Si ce ratio diminue de l'objectif, cela signifie que vous êtes devenu plus efficace énergetiquement à activité égale.",
+            "EXAMPLE": "Exemple : Si votre activité double (IAP x2) mais que votre consommation augmente de moins de deux fois, votre ratio baisse = Objectif atteint !",
+            "REMINDER": "Remplissez bien les indicateurs 'Activité' chaque mois dans l'onglet Saisie Données pour que le calcul fonctionne."
+        },
+        "WEIGHTS": {
+            "TITLE": "Pondération de l'Indice d'Activité (Recommandé)",
+            "PROJECTS": "Nb Projets",
+            "SITES": "Nb Sites",
+            "STAFF": "Staff Terrain",
+            "BUDGET": "Budget",
+            "HINT": "Ces poids déterminent l'importance de chaque activité dans le calcul de votre score IAP."
+        },
+        "ACTION_PLAN": {
+            "ADD_ACTION": "Ajouter une action",
+            "QUARTER": "Trimestre",
+            "LEVER": "Levier",
+            "DESCRIPTION": "Description de l'action",
+            "IMPACT": "Impact Estimé"
+        },
+        "QUARTERS": {
+            "T1": "T1 - Jan à Mars",
+            "T2": "T2 - Avril à Juin",
+            "T3": "T3 - Juil à Sept",
+            "T4": "T4 - Oct à Déc"
+        },
+        "DATA": {
+            "MONTH": "Mois",
+            "AUTOFILL": "Pré-remplir (Auto)",
+            "FLEET": "Flotte (Véhicules)",
+            "ENERGY": "Énergie (Base)",
+            "ACTIVITY": "Activité (Drivers IAP)",
+            "KM_TOTAL": "Km Total",
+            "LITERS_TOTAL": "Litres Total",
+            "GEN_HOURS": "Heures Générateurs",
+            "GEN_LITERS": "Litres Générateurs",
+            "GRID_KWH": "kWh Réseau",
+            "ACTIVE_PROJECTS": "Nb Projets Actifs",
+            "SITES": "Nb Sites/Lieux",
+            "STAFF_FTE": "Staff Terrain (FTE)",
+            "FINANCIAL_VOLUME": "Volume Financier"
+        },
+        "ANALYSIS": {
+            "TITLE": "Efficacité Énergétique (Litres / IAP)",
+            "SUBTITLE": "L'objectif est d'être sous la ligne verte. Si l'activité monte, la conso peut monter, mais ce ratio doit baisser."
+        }
+    },
+    "LOCATIONS": {
+        "TITLE": "Gestion des Lieux",
+        "CREATE_TITLE": "Créer un nouveau lieu",
+        "EDIT_TITLE": "Modifier lieu",
+        "CREATE_BTN": "Créer Lieu",
+        "LIST_TITLE": "Lieux existants",
+        "NO_DATA": "Aucun lieu enregistré.",
+        "FIELDS": {
+            "NAME": "Nom",
+            "ADDRESS": "Adresse",
+            "LAT": "Latitude",
+            "LNG": "Longitude",
+            "COUNTRY": "Pays",
+            "BASE": "Base",
+            "ASSIGNED_BASE": "Base d'affectation",
+            "SECURITY_LEVEL": "Niveau de sécurité"
+        }
+    },
+    "PROJECTS": {
+        "TITLE": "Gestion des Projets/Programmes",
+        "CREATE_TITLE": "Nouveau Projet",
+        "CREATE_BTN": "Créer le projet",
+        "LIST_TITLE": "Liste des Projets",
+        "NO_DATA": "Aucun projet enregistré",
+        "FIELDS": {
+            "CODE": "Code du projet",
+            "NAME": "Nom du projet",
+            "DESCRIPTION": "Description",
+            "ACTIVE": "Projet actif"
+        },
+        "TABLE": {
+            "NAME": "Nom",
+            "CODE": "Code",
+            "STATUS": "Statut",
+            "ACTIONS": "Actions"
+        }
     }
 }

@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Assurez-vous d'importer CommonModule
 import { MouvementService } from '../mouvement.service'; // Assurez-vous d'importer MouvementService
 import { AuthService } from '../auth.service'; // Assurez-vous d'importer AuthService
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-validation-mouvements',
   standalone: true,
-  imports: [CommonModule], // CommonModule est nécessaire pour *ngIf, *ngFor, et les pipes
+  imports: [CommonModule, TranslateModule], // CommonModule est nécessaire pour *ngIf, *ngFor, et les pipes
   templateUrl: './validation-mouvements.component.html',
   styleUrls: ['./validation-mouvements.component.css']
 })

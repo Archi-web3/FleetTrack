@@ -1,5 +1,5 @@
 <div class="tracker-container">
-    <h2>Suivi des Checklists Hebdomadaires</h2>
+    <h2>{{ 'MAINTENANCE.WEEKLY.TITLE' | translate }}</h2>
 
     <mat-card class="table-card">
         <mat-card-content>
@@ -7,7 +7,7 @@
 
                 <!-- Vehicle Column -->
                 <ng-container matColumnDef="vehicule">
-                    <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                    <th mat-header-cell *matHeaderCellDef> {{ 'MAINTENANCE.WEEKLY.TABLE.VEHICLE' | translate }} </th>
                     <td mat-cell *matCellDef="let element">
                         <div class="vehicle-info">
                             <span class="plate">{{ element.vehicule.immatriculation }}</span>
@@ -18,7 +18,7 @@
 
                 <!-- Last Date Column -->
                 <ng-container matColumnDef="lastDate">
-                    <th mat-header-cell *matHeaderCellDef> Dernière Vérification </th>
+                    <th mat-header-cell *matHeaderCellDef> {{ 'MAINTENANCE.WEEKLY.TABLE.LAST_CHECK' | translate }} </th>
                     <td mat-cell *matCellDef="let element">
                         {{ element.checklist?.lastDate ? (element.checklist.lastDate | date:'dd/MM/yyyy') : '-' }}
                     </td>
@@ -26,7 +26,7 @@
 
                 <!-- Status Column -->
                 <ng-container matColumnDef="status">
-                    <th mat-header-cell *matHeaderCellDef> Statut </th>
+                    <th mat-header-cell *matHeaderCellDef> {{ 'MAINTENANCE.WEEKLY.TABLE.STATUS' | translate }} </th>
                     <td mat-cell *matCellDef="let element">
                         <mat-chip-option [color]="getStatusColor(element.checklist?.status)" selected disabled>
                             {{ getStatusLabel(element.checklist?.status) }}
@@ -36,7 +36,7 @@
 
                 <!-- Actions Column -->
                 <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef> Historique </th>
+                    <th mat-header-cell *matHeaderCellDef> {{ 'MAINTENANCE.WEEKLY.TABLE.HISTORY' | translate }} </th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-icon-button color="primary" (click)="viewHistory(element)"
                             matTooltip="Voir l'historique (Bientôt)">
@@ -50,10 +50,10 @@
             </table>
 
             <div *ngIf="loading" class="loading-state">
-                <p>Chargement des données...</p>
+                <p>{{ 'LOGIN.LOADING' | translate }}</p>
             </div>
             <div *ngIf="!loading && vehicles.length === 0" class="empty-state">
-                <p>Aucun véhicule trouvé.</p>
+                <p>{{ 'MAINTENANCE.WEEKLY.NO_VEHICLES' | translate }}</p>
             </div>
         </mat-card-content>
     </mat-card>

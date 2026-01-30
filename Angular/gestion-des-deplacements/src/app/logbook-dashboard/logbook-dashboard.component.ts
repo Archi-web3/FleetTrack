@@ -10,11 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component'; // Import Map
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-logbook-dashboard',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatIconModule, MatTabsModule, MatTooltipModule, MapMouvementsComponent],
+    imports: [CommonModule, FormsModule, MatIconModule, MatTabsModule, MatTooltipModule, MapMouvementsComponent, TranslateModule],
     templateUrl: './logbook-dashboard.component.html',
     styleUrls: ['./logbook-dashboard.component.css']
 })

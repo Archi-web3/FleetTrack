@@ -15,6 +15,7 @@ import { MaintenanceTrackingService } from './maintenance-tracking.service';
 import { AdminService } from '../admin.service';
 import { MouvementService } from '../mouvement.service'; // NOUVEAU
 import { Router } from '@angular/router'; // NOUVEAU
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-maintenance-tracking',
@@ -31,7 +32,8 @@ import { Router } from '@angular/router'; // NOUVEAU
         MatChipsModule,
         MatBadgeModule,
         MatDialogModule,
-        MatTabsModule // NOUVEAU
+        MatTabsModule, // NOUVEAU
+        TranslateModule
     ],
     templateUrl: './maintenance-tracking.component.html',
     styleUrls: ['./maintenance-tracking.component.css']

@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { LieuService } from '../lieu.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-gestion-lieux',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './gestion-lieux.component.html',
   styleUrls: ['./gestion-lieux.component.css']
 })

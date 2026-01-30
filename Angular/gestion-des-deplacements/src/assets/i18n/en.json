@@ -13,8 +13,11 @@
         "EMAIL": "Email Address",
         "PASSWORD": "Password",
         "BUTTON": "Sign In",
-        "ERROR": "Login failed",
-        "FORGOT_PASSWORD": "Forgot password?"
+        "ERROR": "Invalid credentials. Please try again.",
+        "FORGOT_PASSWORD": "Forgot password?",
+        "EMAIL_REQUIRED": "Please enter a valid email address.",
+        "PASSWORD_REQUIRED": "Password is required.",
+        "LOADING": "Logging in..."
     },
     "MY_TRIPS": {
         "TITLE": "My Movements",
@@ -54,6 +57,40 @@
             "CANCELLED": "Cancelled/Refused"
         },
         "NO_EVENTS": "No validated or in-progress movements for this week."
+    },
+    "MAP": {
+        "FILTERS": "Filters",
+        "MODE_TRANSPORT": "Transport Mode",
+        "PLANNED_TRIPS": "Planned Trips",
+        "GPS_TRACKS": "GPS Tracks (Real)",
+        "LAST_POSITIONS": "Last Positions",
+        "ZOOM_TOOLTIP": "Zoom to the last known position of all displayed vehicles"
+    },
+    "VALIDATION": {
+        "TITLE": "Movement Validation",
+        "PROFILE": "Profile",
+        "NOT_CONNECTED": "Not connected",
+        "SECURITY_VALIDATION": "Movements pending Security validation",
+        "LOGISTICS_VALIDATION": "Movements pending Logistics validation",
+        "NO_PENDING_SECURITY": "No movements pending security validation.",
+        "NO_PENDING_LOGS": "No movements pending logistics validation.",
+        "ID": "Movement ID",
+        "STATUS": "Status",
+        "RISK_LEVEL": "Risk Level",
+        "STABLE": "(Stable)",
+        "MODERATE": "(Moderate)",
+        "DIFFICULT": "(Difficult)",
+        "HIGH": "(High)",
+        "EXTREME": "(Extreme)",
+        "DEPARTURE": "Departure",
+        "ARRIVAL": "Arrival",
+        "INTERMEDIATE_STOPS": "Intermediate Stops",
+        "DATE": "Date",
+        "OBJECTIVE": "Objective",
+        "REQUESTER": "Requester",
+        "VALIDATE_SECURITY": "Validate Security",
+        "VALIDATE_LOGS": "Validate Logistics",
+        "REFUSE": "Refuse"
     },
     "NEW_REQUEST": {
         "TITLE": "New Movement Request",
@@ -146,7 +183,465 @@
         "MAINTENANCE_TRACKING": "Maintenance Tracking",
         "GENERAL_SETTINGS": "General Settings",
         "MONTHLY_REPORTS": "Monthly Reports",
-        "LOGBOOK": "Logbook",
-        "DASHBOARD": "Dashboard"
+        "DASHBOARD": {
+            "TITLE": "Movements Analysis",
+            "KPI": {
+                "TOTAL": "Total Movements",
+                "VALIDATED": "Validated (Upcoming)",
+                "IN_PROGRESS": "In Progress",
+                "PENDING": "Pending"
+            },
+            "FILTERS": {
+                "SEARCH": "Search",
+                "SEARCH_PLACEHOLDER": "Objective, Requester...",
+                "STATUS": "Status",
+                "ALL": "All"
+            },
+            "TABLE": {
+                "STATUS": "Status",
+                "OBJECTIVE": "Objective",
+                "DEPARTURE": "Planned Departure",
+                "VEHICLE": "Vehicle",
+                "DRIVER": "Driver",
+                "REQUESTER": "Requester",
+                "NOT_ASSIGNED": "Not assigned"
+            }
+        },
+        "LOGBOOK": "Logbook"
+    },
+    "LOGBOOK": {
+        "DASHBOARD": {
+            "TITLE": "Logbook Dashboard",
+            "SELECT_VEHICLE": "Select a Vehicle:"
+        },
+        "TABS": {
+            "TRIPS": "Trips",
+            "FUEL": "Fuel",
+            "MAINTENANCE": "Repairs",
+            "INCIDENTS": "Incidents"
+        },
+        "TRIPS": {
+            "TITLE": "Trip History",
+            "DATE": "Date",
+            "DRIVER": "Driver",
+            "OBJECTIVE": "Objective",
+            "KM_START": "Start Km",
+            "KM_END": "End Km",
+            "DISTANCE": "Distance",
+            "PHOTOS": "Photos",
+            "STATUS": "Status",
+            "MAP": "Map",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No trips recorded.",
+            "NO_PHOTO": "No photo"
+        },
+        "FUEL": {
+            "TITLE": "Fuel History",
+            "DATE": "Date",
+            "DRIVER": "Driver",
+            "QUANTITY": "Quantity (L)",
+            "MILEAGE": "Odometer Km",
+            "CONSUMPTION": "Consump. (L/100)",
+            "TYPE": "Type",
+            "SOURCE": "Source",
+            "PHOTOS": "Photos",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No refueling recorded.",
+            "WARNING_CONSUMPTION": "Overconsumption detected (>10% vs theoretical)"
+        },
+        "MAINTENANCE": {
+            "TITLE": "Repair History",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "MILEAGE": "Km",
+            "GARAGE": "Garage",
+            "COST": "Cost",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No repairs recorded.",
+            "INTERNAL": "Internal"
+        },
+        "INCIDENTS": {
+            "TITLE": "Reported Incidents",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "SEVERITY": "Severity",
+            "DESCRIPTION": "Description",
+            "LOCATION": "Location",
+            "PHOTOS": "Photos",
+            "STATUS": "Status",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No incidents reported.",
+            "VIEW_MAP": "View Map"
+        },
+        "MODALS": {
+            "EDIT_REPAIR": "Edit Repair",
+            "EDIT_INCIDENT": "Edit Incident",
+            "SAVE": "Save",
+            "CANCEL": "Cancel",
+            "MAP_TITLE": "Trip Visualization",
+            "PLANNED": "Planned",
+            "REAL": "Real (GPS)"
+        }
+    },
+    "MAINTENANCE": {
+        "TITLE": "Maintenance Tracking",
+        "ALERTS": {
+            "TITLE": "Urgent Interventions",
+            "DELAY": "Delay"
+        },
+        "TABS": {
+            "TRACKING": "Mileage Tracking & Deadlines",
+            "PLANNING": "Planned Interventions"
+        },
+        "FILTERS": {
+            "BASE": "Base",
+            "ALL_BASES": "All Bases",
+            "STATUS": "Status",
+            "ALL_STATUS": "All Statuses",
+            "FILTER_BTN": "Filter",
+            "RESET_BTN": "Reset"
+        },
+        "TABLE": {
+            "PLATE": "License Plate",
+            "TYPE": "Type",
+            "KM_CURRENT": "Current Km",
+            "LAST_SERVICE": "Last Service",
+            "NEXT_SERVICE": "Next Service",
+            "GAP": "Gap",
+            "STATUS": "Status",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No vehicles found with these filters.",
+            "SERVICE": "Service"
+        },
+        "PLANNING": {
+            "TITLE": "Maintenance History and Forecasts",
+            "DATE": "Date",
+            "VEHICLE": "Vehicle",
+            "TYPE": "Type",
+            "NOTES": "Notes",
+            "STATUS": "Status",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No planned maintenance."
+        },
+        "CONFIG": {
+            "TITLE": "Maintenance Configuration",
+            "EDIT_TITLE": "Edit Configuration",
+            "NEW_TITLE": "New Configuration",
+            "FIELDS": {
+                "VEHICLE_TYPE": "Vehicle Type",
+                "ROAD_CONDITIONS": "Road Conditions",
+                "SERVICE_INTERVAL": "General Service Interval",
+                "FUEL_QUALITY": "Expected Fuel Quality"
+            },
+            "TABLE": {
+                "TYPE": "Type",
+                "CONDITIONS": "Conditions",
+                "INTERVAL": "Interval",
+                "ACTIONS": "Actions"
+            },
+            "LIST_TITLE": "Existing Configurations"
+        },
+        "TEMPLATES": {
+            "TITLE": "Checklist Template Management",
+            "NEW_BTN": "New Template",
+            "LIST_TITLE": "Available Templates",
+            "EDIT_TITLE": "Edit Template",
+            "NEW_TITLE": "New Template",
+            "FIELDS": {
+                "NAME": "Template Name",
+                "TYPE": "Type",
+                "ACTIVE": "Active"
+            },
+            "TASKS": {
+                "TITLE": "Tasks",
+                "CATEGORY": "Category",
+                "DESCRIPTION": "Description",
+                "MANUAL_PAGE": "Manual Page No."
+            },
+            "ADD_TASK": "Add Task"
+        },
+        "WEEKLY": {
+            "TITLE": "Weekly Checklist Tracking",
+            "TABLE": {
+                "VEHICLE": "Vehicle",
+                "LAST_CHECK": "Last Check",
+                "STATUS": "Status",
+                "HISTORY": "History"
+            },
+            "NO_VEHICLES": "No vehicles found."
+        }
+    },
+    "USERS": {
+        "TITLE": "User Management",
+        "CREATE_TITLE": "Create New User",
+        "EDIT_TITLE": "Edit User",
+        "FORM": {
+            "NAME": "Last Name",
+            "FIRSTNAME": "First Name",
+            "EMPLOYEE_ID": "Employee ID",
+            "PHONE": "Phone Number",
+            "EMAIL": "Email",
+            "PASSWORD": "Password",
+            "NEW_PASSWORD": "New Password (leave empty if unchanged)",
+            "PROFILE": "Profile",
+            "SECURITY_LEVEL": "Security Validation Level",
+            "SECURITY_HINT": "Maximum level this user can validate",
+            "COUNTRY": "Country",
+            "BASE": "Assigned Base",
+            "PROJECT": "Project/Program",
+            "PROJECT_HINT": "Select project code"
+        },
+        "DRIVER_INFO": {
+            "TITLE": "Driver Information",
+            "LICENSE": "License Number",
+            "ECO_DRIVING": "Eco-driving Training",
+            "DATE": "Training Date",
+            "ASSIGNED_VEHICLE": "Assigned Vehicle (optional)",
+            "AVAILABLE": "Available"
+        },
+        "ACTIONS": {
+            "CREATE": "Create User",
+            "UPDATE": "Update",
+            "CANCEL": "Cancel",
+            "DELETE": "Delete",
+            "FILTER_PROFILE": "Filter by Profile",
+            "ALL_PROFILES": "All Profiles"
+        },
+        "LIST": {
+            "TITLE": "Existing Users",
+            "NO_DATA": "No users registered."
+        }
+    },
+    "DRIVERS": {
+        "TITLE": "Driver Management",
+        "EDIT_TITLE": "Edit Driver",
+        "LIST_TITLE": "Driver List",
+        "NO_DATA": "No drivers registered."
+    },
+    "VEHICLES": {
+        "TITLE": "Vehicle Management",
+        "CREATE_TITLE": "Create New Vehicle",
+        "EDIT_TITLE": "Edit Vehicle",
+        "FORM": {
+            "BRAND": "Brand",
+            "MODEL": "Model",
+            "PLATE": "License Plate",
+            "ACF_CODE": "ACF Vehicle Number",
+            "ACF_CODE_HINT": "Auto-generated (MOB-XXX)",
+            "OWNERSHIP": "Ownership",
+            "RENTAL_NAME": "Rental Company",
+            "RENTAL_START": "Rental Start",
+            "RENTAL_END": "Rental End",
+            "PURCHASE_DATE": "Purchase Date",
+            "TYPE": "Type",
+            "CAPACITY": "Passenger Capacity",
+            "INITIAL_KM": "Initial Mileage",
+            "STATUS": "Status",
+            "GPS": "Enable GPS Tracking"
+        },
+        "ENV": {
+            "TITLE": "Environmental Data",
+            "CO2": "CO2 Emissions (g/km)",
+            "SOURCE": "Data Source",
+            "CONSTRUCTOR": "Manufacturer",
+            "MANUAL": "Manual Test",
+            "CONSUMPTION": "Consumption (L/100km)",
+            "TEST_DATE": "Test Date"
+        },
+        "INSURANCE": {
+            "TITLE": "Insurance",
+            "INSURER": "Insurer",
+            "END_DATE": "Insurance End Date",
+            "CERTIFICATE": "Certificate Link"
+        },
+        "EQUIPMENT": {
+            "TITLE": "Inventory & Onboard Equipment",
+            "NAME": "Equipment (Editable)",
+            "PRESENT": "Present",
+            "LAST_CHECK": "Last Check"
+        },
+        "ACTIONS": {
+            "CREATE": "Create Vehicle",
+            "UPDATE": "Update",
+            "ARCHIVE": "Archive",
+            "UNARCHIVE": "Unarchive",
+            "SHOW_ALL_COUNTRY": "Show All Country",
+            "SHOW_MY_BASE": "Show My Base Only"
+        },
+        "LIST": {
+            "TITLE": "Existing Vehicles",
+            "NO_DATA": "No vehicles registered."
+        }
+    },
+    "ADMIN_DASHBOARD": {
+        "TITLE": "Dashboard - Statistics",
+        "FILTERS": {
+            "TITLE": "Filters",
+            "START_DATE": "Start Date",
+            "END_DATE": "End Date",
+            "PROJECT": "Project",
+            "VEHICLE": "Vehicle",
+            "ALL_PROJECTS": "All Projects",
+            "ALL_VEHICLES": "All Vehicles",
+            "REFRESH": "Refresh"
+        },
+        "GLOBAL": {
+            "TITLE": "Global Statistics",
+            "PERIOD": "Period",
+            "DISTANCE": "Fleet Distance (Road)",
+            "CO2": "Total CO2 (Fleet)",
+            "FUEL": "Fleet Fuel",
+            "ADVANCED_TITLE": "Performance & Optimization",
+            "SHORT_TRIPS": "Short Trips < 2km",
+            "SHORT_TRIPS_HINT": "(Potential modal shift: Walk / Bike)",
+            "POOLED_KM": "Pooled Kilometers",
+            "UTILIZATION": "Fleet Utilization Rate"
+        },
+        "MODES": {
+            "TITLE": "Movements Distribution",
+            "ROAD": "Road",
+            "AIR": "Air",
+            "SEA": "Sea"
+        },
+        "PROJECTS": {
+            "TITLE": "Statistics by Project",
+            "NO_DATA": "No data available for the selected period",
+            "PROJECT": "Project",
+            "TOTAL_DIST": "Total Distance (km)",
+            "VENTILATED_DIST": "Ventilated Distance (km)",
+            "RATIO_KM": "Km Ratio (%)",
+            "CO2": "CO2 (kg)",
+            "RATIO_CO2": "CO2 Ratio (%)",
+            "FUEL": "Consumption (L)",
+            "RATIO_FUEL": "Fuel Ratio (%)",
+            "FILL_RATE": "Fill Rate (%)",
+            "MOVEMENTS": "Movements"
+        }
+    },
+    "ACTIVITY_LOG": {
+        "TITLE": "Activity Log",
+        "REFRESH": "Refresh",
+        "CLEAR_HISTORY": "Clear History",
+        "NO_DATA": "No activity recorded.",
+        "TABLE": {
+            "DATE": "Date",
+            "COUNTRY": "Country",
+            "ACTOR": "Actor",
+            "CATEGORY": "Category",
+            "ACTION": "Action",
+            "DETAILS": "Target / Details"
+        }
+    },
+    "WAIVERS": {
+        "TITLE": "Signed Visitor Waivers",
+        "NO_DATA": "No waivers recorded yet.",
+        "TABLE": {
+            "DATE": "Date",
+            "VISITOR": "Visitor",
+            "VEHICLE": "Vehicle",
+            "SIGNATURE": "Signature",
+            "ACTIONS": "Actions"
+        }
+    },
+    "ENVIRONMENT": {
+        "TITLE": "Environmental Objectives",
+        "GUIDE_BTN": "Guide & Method",
+        "CONFIG_WEIGHTS_BTN": "Configure Weighting (IAP)",
+        "TARGET_PERCENT": "Target (-%)",
+        "YEAR": "Year",
+        "TABS": {
+            "ACTION_PLAN": "Action Plan",
+            "DATA_ENTRY": "Data Entry (IAP)",
+            "ANALYSIS": "Analysis & Charts"
+        },
+        "GUIDE": {
+            "TITLE": "How to calculate activity-weighted evolution (IAP)?",
+            "PRINCIPLE_TITLE": "The Principle",
+            "PRINCIPLE_TEXT": "To compare two years fairly, we use the Activity Weighted Index (IAP). It allows measuring if consumption reduction is real (efficiency) or just due to lower activity.",
+            "FORMULA_TITLE": "Calculation Formula",
+            "COMPARISON_TITLE": "Comparison Principle",
+            "COMPARISON_TEXT": "We track the evolution of the ratio: Liters Consumed / IAP.",
+            "COMPARISON_EXPLANATION": "If this ratio decreases by the target, it means you have become more energy efficient at equal activity.",
+            "EXAMPLE": "Example: If your activity doubles (IAP x2) but your consumption increases by less than double, your ratio drops = Objective reached!",
+            "REMINDER": "Make sure to fill in 'Activity' indicators every month in the Data Entry tab for the calculation to work."
+        },
+        "WEIGHTS": {
+            "TITLE": "Activity Index Weighting (Recommended)",
+            "PROJECTS": "Nb Projects",
+            "SITES": "Nb Sites",
+            "STAFF": "Field Staff",
+            "BUDGET": "Budget",
+            "HINT": "These weights determine the importance of each activity in your IAP score calculation."
+        },
+        "ACTION_PLAN": {
+            "ADD_ACTION": "Add an Action",
+            "QUARTER": "Quarter",
+            "LEVER": "Lever",
+            "DESCRIPTION": "Action Description",
+            "IMPACT": "Estimated Impact"
+        },
+        "QUARTERS": {
+            "T1": "Q1 - Jan to Mar",
+            "T2": "Q2 - Apr to Jun",
+            "T3": "Q3 - Jul to Sep",
+            "T4": "Q4 - Oct to Dec"
+        },
+        "DATA": {
+            "MONTH": "Month",
+            "AUTOFILL": "Autofill",
+            "FLEET": "Fleet (Vehicles)",
+            "ENERGY": "Energy (Base)",
+            "ACTIVITY": "Activity (IAP Drivers)",
+            "KM_TOTAL": "Total Km",
+            "LITERS_TOTAL": "Total Liters",
+            "GEN_HOURS": "Generator Hours",
+            "GEN_LITERS": "Generator Liters",
+            "GRID_KWH": "Grid kWh",
+            "ACTIVE_PROJECTS": "Nb Active Projects",
+            "SITES": "Nb Sites/Locations",
+            "STAFF_FTE": "Field Staff (FTE)",
+            "FINANCIAL_VOLUME": "Financial Volume"
+        },
+        "ANALYSIS": {
+            "TITLE": "Energy Efficiency (Liters / IAP)",
+            "SUBTITLE": "The goal is to be under the green line. If activity rises, consumption can rise, but this ratio must drop."
+        }
+    },
+    "LOCATIONS": {
+        "TITLE": "Location Management",
+        "CREATE_TITLE": "Create New Location",
+        "EDIT_TITLE": "Edit Location",
+        "CREATE_BTN": "Create Location",
+        "LIST_TITLE": "Existing Locations",
+        "NO_DATA": "No locations recorded.",
+        "FIELDS": {
+            "NAME": "Name",
+            "ADDRESS": "Address",
+            "LAT": "Latitude",
+            "LNG": "Longitude",
+            "COUNTRY": "Country",
+            "BASE": "Base",
+            "ASSIGNED_BASE": "Assigned Base",
+            "SECURITY_LEVEL": "Security Level"
+        }
+    },
+    "PROJECTS": {
+        "TITLE": "Project/Program Management",
+        "CREATE_TITLE": "New Project",
+        "CREATE_BTN": "Create Project",
+        "LIST_TITLE": "Project List",
+        "NO_DATA": "No projects recorded",
+        "FIELDS": {
+            "CODE": "Project Code",
+            "NAME": "Project Name",
+            "DESCRIPTION": "Description",
+            "ACTIVE": "Project Active"
+        },
+        "TABLE": {
+            "NAME": "Name",
+            "CODE": "Code",
+            "STATUS": "Status",
+            "ACTIONS": "Actions"
+        }
     }
 }

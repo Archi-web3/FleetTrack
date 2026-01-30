@@ -30,16 +30,16 @@
     <mat-menu #validationMenu="matMenu">
       <button mat-menu-item routerLink="/security-alerts">
         <mat-icon style="color: #f44336;">notification_important</mat-icon>
-        <span>Alertes Sécurité (Push)</span>
+        <span>{{ 'MENU.SECURITY_ALERTS' | translate }}</span>
       </button>
       <mat-divider></mat-divider>
       <button mat-menu-item routerLink="/valider-mouvements">
         <mat-icon>check_circle</mat-icon>
-        <span>Valider Mouvements</span>
+        <span>{{ 'MENU.VALIDATE_TRIPS' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/consolidation">
         <mat-icon>merge_type</mat-icon>
-        <span>Consolidation</span>
+        <span>{{ 'MENU.CONSOLIDATION' | translate }}</span>
       </button>
     </mat-menu>
   </ng-container>
@@ -54,85 +54,85 @@
       <button mat-menu-item routerLink="/gestion-utilisateurs"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
         <mat-icon>people</mat-icon>
-        <span>Gestion Utilisateurs</span>
+        <span>{{ 'MENU.USER_MANAGEMENT' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="userProfile === 'SuperAdmin'">
         <mat-icon>public</mat-icon>
-        <span>Pays & Bases</span>
+        <span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/gestion-projets"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
         <mat-icon>folder</mat-icon>
-        <span>Gestion Projets</span>
+        <span>{{ 'MENU.PROJECT_MANAGEMENT' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/admin/audit-logs"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
         <mat-icon>security</mat-icon>
-        <span>Journal d'Activité</span>
+        <span>{{ 'MENU.AUDIT_LOGS' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/admin/waivers"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
         <mat-icon>folder_shared</mat-icon>
-        <span>Décharges Visiteurs</span>
+        <span>{{ 'MENU.WAIVERS' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/guide-utilisateur"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
         <mat-icon>menu_book</mat-icon>
-        <span>Guide Utilisateur</span>
+        <span>{{ 'MENU.USER_GUIDE' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/roadmap"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
         <mat-icon>rocket_launch</mat-icon>
-        <span>Vision & Sécurité</span>
+        <span>{{ 'MENU.VISION_SECURITY' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/environment-roadmap"
         *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin' || userProfile === 'Superviseur'">
         <mat-icon>eco</mat-icon>
-        <span>Objectifs Enviro</span>
+        <span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span>
       </button>
       <mat-divider></mat-divider>
       <button mat-menu-item routerLink="/gestion-chauffeurs">
         <mat-icon>people_alt</mat-icon>
-        <span>Gestion Chauffeurs</span>
+        <span>{{ 'MENU.DRIVER_MANAGEMENT' | translate }}</span>
       </button>
       <mat-divider></mat-divider>
 
       <button mat-menu-item routerLink="/statistics">
         <mat-icon>bar_chart</mat-icon>
-        <span>Statistiques</span>
+        <span>{{ 'MENU.STATISTICS' | translate }}</span>
       </button>
       <mat-divider></mat-divider>
       <button mat-menu-item routerLink="/gestion-lieux">
         <mat-icon>place</mat-icon>
-        <span>Gestion Lieux</span>
+        <span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/gestion-vehicules">
         <mat-icon>directions_car</mat-icon>
-        <span>Gestion Véhicules</span>
+        <span>{{ 'MENU.VEHICLE_MANAGEMENT' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/recap-flotte">
         <mat-icon>assessment</mat-icon>
-        <span>Récapitulatif Flotte</span>
+        <span>{{ 'MENU.FLEET_RECAP' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/gestion-maintenance">
         <mat-icon>build</mat-icon>
-        <span>Suivi Maintenance</span>
+        <span>{{ 'MENU.MAINTENANCE_TRACKING' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/admin/settings">
         <mat-icon>settings</mat-icon>
-        <span>Paramètres Généraux</span>
+        <span>{{ 'MENU.GENERAL_SETTINGS' | translate }}</span>
       </button>
       <button mat-menu-item routerLink="/rapports-mensuels">
         <mat-icon>bar_chart</mat-icon>
-        <span>Rapports Mensuels</span>
+        <span>{{ 'MENU.MONTHLY_REPORTS' | translate }}</span>
       </button>
     </mat-menu>
   </ng-container>
 
-  <button mat-button *ngIf="isAuthenticated" routerLink="/logbook">Logbook</button>
+  <button mat-button *ngIf="isAuthenticated" routerLink="/logbook">{{ 'MENU.LOGBOOK' | translate }}</button>
   <button mat-button
     *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')"
-    routerLink="/tableau-bord">Tableau de Bord</button>
+    routerLink="/tableau-bord">{{ 'MENU.DASHBOARD.TITLE' | translate }}</button>
 
 
   <!-- Bouton Déconnexion uniquement -->

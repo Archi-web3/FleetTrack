@@ -22,17 +22,25 @@ import {
 } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { addDays, format, startOfWeek, endOfWeek } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, es, enUS } from 'date-fns/locale';
 import { Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
-// Custom Date Formatter for French
+const DATE_FNS_LOCALES: { [key: string]: any } = {
+  fr: fr,
+  es: es,
+  en: enUS
+};
+
 @Injectable()
 class CustomDateFormatter extends CalendarNativeDateFormatter {
   public override weekViewColumnHeader({ date, locale }: DateFormatterParams): string {
-    return format(date, 'EEEE d', { locale: fr });
+    const dateFnsLocale = DATE_FNS_LOCALES[locale!] || enUS;
+    return format(date, 'EEEE d', { locale: dateFnsLocale });
   }
   public override weekViewTitle({ date, locale }: DateFormatterParams): string {
-    return format(date, 'MMM yyyy', { locale: fr });
+    const dateFnsLocale = DATE_FNS_LOCALES[locale!] || enUS;
+    return format(date, 'MMM yyyy', { locale: dateFnsLocale });
   }
 }
 
@@ -63,12 +71,24 @@ export class PlanningMouvementsComponent implements OnInit {
   locale: string = 'fr';
   refresh: Subject<any> = new Subject();
   userProfile: string | null = null;
+  currentLang: string = 'fr';
 
   constructor(
     private mouvementService: MouvementService,
     private router: Router,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+    private translate: TranslateService
+  ) {
+    this.currentLang = this.translate.currentLang || 'fr';
+    this.locale = this.currentLang;
+
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLang = event.lang;
+      this.locale = event.lang;
+      this.refresh.next(true); // Force calendar refresh
+      this.getPlanningMouvements(); // Re-fetch or at least re-format labels
+    });
+  }
 
   ngOnInit() {
     this.userProfile = this.authService.getUserProfile();
@@ -82,7 +102,8 @@ export class PlanningMouvementsComponent implements OnInit {
         const startOfCurrentWeek = this.getStartOfWeek(this.viewDate);
         const endOfCurrentWeek = this.getEndOfWeek(this.viewDate);
 
-        this.dateRangeLabel = `${format(startOfCurrentWeek, 'd MMM', { locale: fr })} - ${format(endOfCurrentWeek, 'd MMM yyyy', { locale: fr })}`;
+        const dateFnsLocale = DATE_FNS_LOCALES[this.locale] || enUS;
+        this.dateRangeLabel = `${format(startOfCurrentWeek, 'd MMM', { locale: dateFnsLocale })} - ${format(endOfCurrentWeek, 'd MMM yyyy', { locale: dateFnsLocale })}`;
 
         console.log('📅 Semaine affichée:', {
           debut: startOfCurrentWeek,
@@ -225,12 +246,14 @@ export class PlanningMouvementsComponent implements OnInit {
     const lines: string[] = [];
 
     // Objectif
-    lines.push(`📍 Objectif: ${mouvement.objectif || 'Non spécifié'}`);
+    lines.push(`📍 ${this.translate.instant('VALIDATION.OBJECTIVE')}: ${mouvement.objectif || 'Non spécifié'}`);
 
     // Horaires
-    const heureDepart = mouvement.dateDepart ? new Date(mouvement.dateDepart).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
-    const heureArrivee = mouvement.dateArrivee ? new Date(mouvement.dateArrivee).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
-    lines.push(`🕐 Horaires: ${heureDepart} → ${heureArrivee}`);
+    // Simplified locale string usage for time
+    const localeForTime = this.locale === 'en' ? 'en-US' : (this.locale === 'es' ? 'es-ES' : 'fr-FR');
+    const heureDepart = mouvement.dateDepart ? new Date(mouvement.dateDepart).toLocaleTimeString(localeForTime, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+    const heureArrivee = mouvement.dateArrivee ? new Date(mouvement.dateArrivee).toLocaleTimeString(localeForTime, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+    lines.push(`🕐 ${this.translate.instant('NEW_REQUEST.MISSION.DEPARTURE_TIME')}/${this.translate.instant('NEW_REQUEST.MISSION.ARRIVAL_TIME')}: ${heureDepart} → ${heureArrivee}`);
 
     // Demandeur
     if (mouvement.demandeur) {
@@ -264,7 +287,8 @@ export class PlanningMouvementsComponent implements OnInit {
     }
 
     // Statut
-    lines.push(`📊 Statut: ${mouvement.statut}`);
+    const statusKey = this.getStatusKey(mouvement.statut);
+    lines.push(`📊 ${this.translate.instant('MY_TRIPS.STATUS')}: ${this.translate.instant(statusKey)}`);
 
     // Pour les mouvements regroupés, afficher toutes les destinations
     if (mouvement.statut === 'regroupé' && mouvement.enfantsMouvements && mouvement.enfantsMouvements.length > 0) {
@@ -310,7 +334,21 @@ export class PlanningMouvementsComponent implements OnInit {
     this.getPlanningMouvements();
   }
 
-  // Déterminer la couleur selon le statut du mouvement
+  getStatusKey(status: string): string {
+    if (!status) return '';
+    const s = status.toLowerCase();
+    switch (s) {
+      case 'validé': return 'PLANNING.STATUS.VALIDATED';
+      case 'en attente': return 'PLANNING.STATUS.PENDING';
+      case 'terminé': return 'PLANNING.STATUS.COMPLETED';
+      case 'annulé': return 'PLANNING.STATUS.CANCELLED';
+      case 'refusé': return 'PLANNING.STATUS.CANCELLED';
+      case 'en cours': return 'PLANNING.STATUS.IN_PROGRESS';
+      case 'pris en charge': return 'PLANNING.STATUS.TAKEN';
+      default: return status;
+    }
+  }
+
   getColorByStatus(statut: string): { primary: string; secondary: string } {
     switch (statut) {
       case 'validé':

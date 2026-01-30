@@ -5,13 +5,13 @@
     <div class="map-controls">
         <div class="controls-header">
             <mat-icon>layers</mat-icon>
-            <span>Filtres</span>
+            <span>{{ 'MAP.FILTERS' | translate }}</span>
         </div>
 
         <div class="controls-content">
             <!-- Mode Filter -->
             <mat-form-field appearance="outline" class="density-sm" style="width: 100%; margin-bottom: 8px;">
-                <mat-label>Mode Transport</mat-label>
+                <mat-label>{{ 'MAP.MODE_TRANSPORT' | translate }}</mat-label>
                 <mat-select [(ngModel)]="selectedMode" (selectionChange)="onFilterChange()">
                     <mat-option *ngFor="let mode of transportModes" [value]="mode">
                         <mat-icon *ngIf="mode === 'Aérien'">flight</mat-icon>
@@ -23,19 +23,19 @@
             </mat-form-field>
 
             <mat-checkbox [(ngModel)]="showPlanned" (change)="onFilterChange()" color="primary">
-                <span style="color: #2196F3; font-weight: bold;">---</span> Trajets Planifiés
+                <span style="color: #2196F3; font-weight: bold;">---</span> {{ 'MAP.PLANNED_TRIPS' | translate }}
             </mat-checkbox>
 
             <mat-checkbox [(ngModel)]="showReal" (change)="onFilterChange()" color="warn">
-                <span style="color: #d32f2f; font-weight: bold;">———</span> Tracés GPS (Réel)
+                <span style="color: #d32f2f; font-weight: bold;">———</span> {{ 'MAP.GPS_TRACKS' | translate }}
             </mat-checkbox>
         </div>
 
         <div class="controls-actions">
             <button mat-flat-button color="warn" (click)="zoomToLastPositions()"
-                matTooltip="Zoomer sur la dernière position connue de tous les véhicules affichés">
+                [matTooltip]="'MAP.ZOOM_TOOLTIP' | translate">
                 <mat-icon>my_location</mat-icon>
-                Dernières Positions
+                {{ 'MAP.LAST_POSITIONS' | translate }}
             </button>
         </div>
     </div>

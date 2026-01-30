@@ -11,6 +11,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MaintenanceService, MaintenanceConfig } from '../../maintenance.service';
 import { SettingsService } from '../../settings.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 /* const VEHICLE_TYPES removed */
 /* const VEHICLE_TYPES removed */
@@ -29,7 +30,9 @@ import { SettingsService } from '../../settings.service';
         MatSelectModule,
         MatIconModule,
         MatSnackBarModule,
-        MatTableModule
+        MatSnackBarModule,
+        MatTableModule,
+        TranslateModule
     ],
     templateUrl: './service-config.html',
     styleUrls: ['./service-config.scss']

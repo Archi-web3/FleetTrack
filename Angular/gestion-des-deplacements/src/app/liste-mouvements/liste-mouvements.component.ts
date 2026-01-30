@@ -118,6 +118,21 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
     });
   }
 
+  getStatusKey(status: string): string {
+    if (!status) return '';
+    const s = status.toLowerCase();
+    switch (s) {
+      case 'validé': return 'PLANNING.STATUS.VALIDATED';
+      case 'en attente': return 'PLANNING.STATUS.PENDING';
+      case 'terminé': return 'PLANNING.STATUS.COMPLETED';
+      case 'annulé': return 'PLANNING.STATUS.CANCELLED';
+      case 'refusé': return 'PLANNING.STATUS.CANCELLED';
+      case 'en cours': return 'PLANNING.STATUS.IN_PROGRESS';
+      case 'pris en charge': return 'PLANNING.STATUS.TAKEN';
+      default: return status;
+    }
+  }
+
   navigateToEdit(id: string): void {
     console.log('🔄 [liste-mouvements] Navigating to edit:', id);
     this.router.navigate(['/modifier-mouvement', id]);

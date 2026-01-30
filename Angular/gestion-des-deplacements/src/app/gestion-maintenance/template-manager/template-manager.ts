@@ -11,6 +11,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MaintenanceService } from '../../maintenance.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-template-manager',
@@ -27,7 +28,9 @@ import { MaintenanceService } from '../../maintenance.service';
         MatSelectModule,
         MatExpansionModule,
         MatCheckboxModule,
-        MatSnackBarModule
+        MatCheckboxModule,
+        MatSnackBarModule,
+        TranslateModule
     ],
     templateUrl: './template-manager.html',
     styleUrls: ['./template-manager.scss']

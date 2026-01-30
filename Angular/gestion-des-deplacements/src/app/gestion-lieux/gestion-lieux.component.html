@@ -1,32 +1,32 @@
 <div style="padding: 20px;">
-  <h2>Gestion des Lieux</h2>
+  <h2>{{ 'LOCATIONS.TITLE' | translate }}</h2>
 
   <!-- Formulaire de création de lieu -->
   <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'"
     style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-    <h3>Créer un nouveau lieu</h3>
+    <h3>{{ 'LOCATIONS.CREATE_TITLE' | translate }}</h3>
     <form (ngSubmit)="addLieu()" #lieuForm="ngForm">
       <div style="margin-bottom: 10px;">
-        <label for="newLieuNom">Nom:</label>
+        <label for="newLieuNom">{{ 'LOCATIONS.FIELDS.NAME' | translate }}:</label>
         <input type="text" id="newLieuNom" name="newLieuNom" [(ngModel)]="newLieu.nom" required
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newLieuAdresse">Adresse:</label>
+        <label for="newLieuAdresse">{{ 'LOCATIONS.FIELDS.ADDRESS' | translate }}:</label>
         <input type="text" id="newLieuAdresse" name="newLieuAdresse" [(ngModel)]="newLieu.adresse" required
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newLieuLatitude">Latitude:</label>
+        <label for="newLieuLatitude">{{ 'LOCATIONS.FIELDS.LAT' | translate }}:</label>
         <input type="number" id="newLieuLatitude" name="newLieuLatitude" [(ngModel)]="newLieu.coordonnees.latitude"
           required style="width: 48%; padding: 8px; margin-right: 2%;">
-        <label for="newLieuLongitude">Longitude:</label>
+        <label for="newLieuLongitude">{{ 'LOCATIONS.FIELDS.LNG' | translate }}:</label>
         <input type="number" id="newLieuLongitude" name="newLieuLongitude" [(ngModel)]="newLieu.coordonnees.longitude"
           required style="width: 48%; padding: 8px;">
       </div>
       <!-- Sélecteurs Pays et Base pour SuperAdmin -->
       <div *ngIf="userProfile === 'SuperAdmin'" style="margin-bottom: 10px;">
-        <label for="newLieuPays">Pays:</label>
+        <label for="newLieuPays">{{ 'LOCATIONS.FIELDS.COUNTRY' | translate }}:</label>
         <select id="newLieuPays" name="newLieuPays" [(ngModel)]="newLieu.pays" (change)="onPaysChange()" required
           style="width: 100%; padding: 8px;">
           <option value="">Sélectionnez un pays</option>
@@ -34,7 +34,7 @@
         </select>
       </div>
       <div *ngIf="userProfile === 'SuperAdmin'" style="margin-bottom: 10px;">
-        <label for="newLieuBase">Base:</label>
+        <label for="newLieuBase">{{ 'LOCATIONS.FIELDS.BASE' | translate }}:</label>
         <select id="newLieuBase" name="newLieuBase" [(ngModel)]="newLieu.base" required
           style="width: 100%; padding: 8px;">
           <option value="">Sélectionnez une base</option>
@@ -45,7 +45,7 @@
       <!-- Affichage de la base pour Admin/Superviseur (non modifiable) -->
       <div *ngIf="(userProfile === 'Admin' || userProfile === 'Superviseur') && basesList.length > 0"
         style="margin-bottom: 10px;">
-        <label>Base d'affectation:</label>
+        <label>{{ 'LOCATIONS.FIELDS.ASSIGNED_BASE' | translate }}:</label>
         <select disabled style="width: 100%; padding: 8px; background-color: #f0f0f0;">
           <option *ngFor="let base of basesList" [value]="base._id" [selected]="base._id === userBaseId">{{base.nom}}
           </option>
@@ -53,7 +53,7 @@
         <small style="color: #666;">Le lieu sera automatiquement affecté à votre base</small>
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newLieuSensible">Niveau de sécurité:</label>
+        <label for="newLieuSensible">{{ 'LOCATIONS.FIELDS.SECURITY_LEVEL' | translate }}:</label>
         <select id="newLieuSensible" name="newLieuSensible" [(ngModel)]="newLieu.niveauSecurite" required
           style="width: 100%; padding: 8px;">
           <option *ngFor="let level of securityLevels" [value]="level.level" [style.background-color]="level.color"
@@ -63,36 +63,36 @@
         </select>
       </div>
       <button type="submit" [disabled]="!lieuForm.form.valid"
-        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Créer
-        Lieu</button>
+        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">{{
+        'LOCATIONS.CREATE_BTN' | translate }}</button>
     </form>
   </div>
 
   <!-- Formulaire de modification de lieu -->
   <div *ngIf="selectedLieu"
     style="border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #fff3cd;">
-    <h3>Modifier lieu: {{ selectedLieu.nom }}</h3>
+    <h3>{{ 'LOCATIONS.EDIT_TITLE' | translate }}: {{ selectedLieu.nom }}</h3>
     <form (ngSubmit)="updateLieu()" #editLieuForm="ngForm">
       <div style="margin-bottom: 10px;">
-        <label for="editLieuNom">Nom:</label>
+        <label for="editLieuNom">{{ 'LOCATIONS.FIELDS.NAME' | translate }}:</label>
         <input type="text" id="editLieuNom" name="editLieuNom" [(ngModel)]="selectedLieu.nom" required
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="editLieuAdresse">Adresse:</label>
+        <label for="editLieuAdresse">{{ 'LOCATIONS.FIELDS.ADDRESS' | translate }}:</label>
         <input type="text" id="editLieuAdresse" name="editLieuAdresse" [(ngModel)]="selectedLieu.adresse" required
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="editLieuLatitude">Latitude:</label>
+        <label for="editLieuLatitude">{{ 'LOCATIONS.FIELDS.LAT' | translate }}:</label>
         <input type="number" id="editLieuLatitude" name="editLieuLatitude"
           [(ngModel)]="selectedLieu.coordonnees.latitude" required style="width: 48%; padding: 8px; margin-right: 2%;">
-        <label for="editLieuLongitude">Longitude:</label>
+        <label for="editLieuLongitude">{{ 'LOCATIONS.FIELDS.LNG' | translate }}:</label>
         <input type="number" id="editLieuLongitude" name="editLieuLongitude"
           [(ngModel)]="selectedLieu.coordonnees.longitude" required style="width: 48%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="editLieuSensible">Niveau de sécurité:</label>
+        <label for="editLieuSensible">{{ 'LOCATIONS.FIELDS.SECURITY_LEVEL' | translate }}:</label>
         <select id="editLieuSensible" name="editLieuSensible" [(ngModel)]="selectedLieu.niveauSecurite" required
           style="width: 100%; padding: 8px;">
           <option *ngFor="let level of securityLevels" [value]="level.level" [style.background-color]="level.color"
@@ -102,23 +102,25 @@
         </select>
       </div>
       <button type="submit" [disabled]="!editLieuForm.form.valid"
-        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Mettre
-        à jour</button>
+        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">{{
+        'COMMON.UPDATE' | translate }}</button>
       <button type="button" (click)="selectedLieu = null"
-        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">Annuler</button>
+        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">{{
+        'COMMON.CANCEL' | translate }}</button>
     </form>
   </div>
 
 
   <!-- Liste des lieux existants -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-    <h3>Lieux existants</h3>
+    <h3>{{ 'LOCATIONS.LIST_TITLE' | translate }}</h3>
     <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" (click)="toggleShowAllBasesInPays()"
       style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
-      {{ showAllBasesInPays ? 'Afficher ma base uniquement' : 'Afficher tout le pays' }}
+      {{ showAllBasesInPays ? ('VEHICLES.ACTIONS.SHOW_MY_BASE' | translate) : ('VEHICLES.ACTIONS.SHOW_ALL_COUNTRY' |
+      translate) }}
     </button>
   </div>
-  <div *ngIf="lieux.length === 0">Aucun lieu enregistré.</div>
+  <div *ngIf="lieux.length === 0">{{ 'LOCATIONS.NO_DATA' | translate }}</div>
   <ul style="list-style-type: none; padding: 0;">
     <li *ngFor="let lieu of lieux"
       style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
@@ -135,9 +137,11 @@
       </div>
       <div>
         <button (click)="selectLieu(lieu)"
-          style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">Modifier</button>
+          style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">{{
+          'COMMON.EDIT' | translate }}</button>
         <button (click)="deleteLieu(lieu._id)"
-          style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Supprimer</button>
+          style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">{{
+          'COMMON.DELETE' | translate }}</button>
       </div>
     </li>
   </ul>

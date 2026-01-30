@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MaintenanceService } from '../../maintenance.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-weekly-checklist-tracker',
@@ -18,7 +19,9 @@ import { MaintenanceService } from '../../maintenance.service';
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
-    MatTooltipModule
+    MatChipsModule,
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './weekly-checklist-tracker.html',
   styleUrls: ['./weekly-checklist-tracker.css']

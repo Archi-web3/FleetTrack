@@ -18,7 +18,7 @@
           <input matInput type="email" id="email" name="email" [(ngModel)]="credentials.email" required email
             [disabled]="isLoading">
           <mat-error *ngIf="loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched">
-            Veuillez entrer une adresse email valide.
+            {{ 'LOGIN.EMAIL_REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
 
@@ -27,7 +27,7 @@
           <input matInput type="password" id="motDePasse" name="motDePasse" [(ngModel)]="credentials.motDePasse"
             required [disabled]="isLoading">
           <mat-error *ngIf="loginForm.controls['motDePasse']?.invalid && loginForm.controls['motDePasse']?.touched">
-            Le mot de passe est requis.
+            {{ 'LOGIN.PASSWORD_REQUIRED' | translate }}
           </mat-error>
         </mat-form-field>
 
@@ -42,8 +42,7 @@
         <!-- Indicateur de chargement -->
         <div *ngIf="isLoading" style="margin-bottom: 15px; text-align: center;">
           <mat-progress-bar mode="indeterminate" style="margin-bottom: 5px;"></mat-progress-bar>
-          <small style="color: #666; font-style: italic;">Connexion en cours... (Le serveur peut mettre quelques
-            secondes à répondre)</small>
+          <small style="color: #666; font-style: italic;">{{ 'LOGIN.LOADING' | translate }}</small>
         </div>
 
         <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.form.valid || isLoading"

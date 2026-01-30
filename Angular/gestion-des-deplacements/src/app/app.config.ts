@@ -16,10 +16,14 @@ import { CalendarNativeDateFormatter, DateFormatterParams } from 'angular-calend
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { registerLocaleData } from '@angular/common'; // IMPORT NÉCESSAIRE
-import localeFr from '@angular/common/locales/fr'; // IMPORT DE LA LOCALE
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts'; // NOUVEAU: Import Charts
+import localeFr from '@angular/common/locales/fr';
+import localeEs from '@angular/common/locales/es';
+import localeEn from '@angular/common/locales/en';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
-registerLocaleData(localeFr); // ENREGISTREMENT DE LA LOCALE
+registerLocaleData(localeFr);
+registerLocaleData(localeEs);
+registerLocaleData(localeEn);
 
 // Classe de formatage pour les dates (sera fournie globalement)
 @Injectable()
@@ -41,19 +45,16 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(), // Nécessaire pour les animations du calendrier
     provideCharts(withDefaultRegisterables()), // NOUVEAU: Provider Charts
     // NOUVEAU : Configuration i18n
-    // NOUVEAU : Configuration i18n
-    provideTranslateHttpLoader({
-      prefix: './assets/i18n/',
-      suffix: '.json'
-    }),
     importProvidersFrom(
       TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useClass: TranslateHttpLoader
-        }
+        defaultLanguage: 'fr'
       })
     ),
+    provideTranslateHttpLoader({
+      prefix: '/assets/i18n/',
+      suffix: '.json',
+      useHttpBackend: true
+    }),
     // NOUVEAU : Fournir le CalendarModule via importProvidersFrom
     importProvidersFrom(CalendarModule.forRoot({
       provide: DateAdapter,

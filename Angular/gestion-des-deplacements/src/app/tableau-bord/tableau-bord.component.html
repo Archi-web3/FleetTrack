@@ -1,23 +1,23 @@
 <div style="padding: 20px;">
-  <h2>Tableau de Bord - Statistiques</h2>
+  <h2>{{ 'ADMIN_DASHBOARD.TITLE' | translate }}</h2>
 
   <!-- Filtres et Période -->
   <mat-card style="margin-bottom: 20px;">
     <mat-card-header>
-      <mat-card-title>Filtres</mat-card-title>
+      <mat-card-title>{{ 'ADMIN_DASHBOARD.FILTERS.TITLE' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
         <!-- Sélecteur de période -->
         <mat-form-field appearance="outline">
-          <mat-label>Date début</mat-label>
+          <mat-label>{{ 'ADMIN_DASHBOARD.FILTERS.START_DATE' | translate }}</mat-label>
           <input matInput [matDatepicker]="pickerDebut" [(ngModel)]="dateDebut">
           <mat-datepicker-toggle matSuffix [for]="pickerDebut"></mat-datepicker-toggle>
           <mat-datepicker #pickerDebut></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Date fin</mat-label>
+          <mat-label>{{ 'ADMIN_DASHBOARD.FILTERS.END_DATE' | translate }}</mat-label>
           <input matInput [matDatepicker]="pickerFin" [(ngModel)]="dateFin">
           <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
           <mat-datepicker #pickerFin></mat-datepicker>
@@ -25,18 +25,18 @@
 
         <!-- Filtre par projet -->
         <mat-form-field appearance="outline">
-          <mat-label>Projet</mat-label>
+          <mat-label>{{ 'ADMIN_DASHBOARD.FILTERS.PROJECT' | translate }}</mat-label>
           <mat-select [(ngModel)]="projetFiltre">
-            <mat-option value="">Tous les projets</mat-option>
+            <mat-option value="">{{ 'ADMIN_DASHBOARD.FILTERS.ALL_PROJECTS' | translate }}</mat-option>
             <mat-option *ngFor="let p of projets" [value]="p">{{p}}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <!-- Filtre par véhicule -->
         <mat-form-field appearance="outline">
-          <mat-label>Véhicule</mat-label>
+          <mat-label>{{ 'ADMIN_DASHBOARD.FILTERS.VEHICLE' | translate }}</mat-label>
           <mat-select [(ngModel)]="vehiculeFiltre">
-            <mat-option value="">Tous les véhicules</mat-option>
+            <mat-option value="">{{ 'ADMIN_DASHBOARD.FILTERS.ALL_VEHICLES' | translate }}</mat-option>
             <mat-option *ngFor="let v of vehicules" [value]="v._id">
               {{v.immatriculation}} - {{v.marque}} {{v.modele}}
             </mat-option>
@@ -46,7 +46,8 @@
         <!-- Bouton actualiser -->
         <button mat-raised-button color="primary" (click)="chargerStatistiques()" style="height: 56px;">
           <mat-icon>refresh</mat-icon>
-          Actualiser
+          <mat-icon>refresh</mat-icon>
+          {{ 'ADMIN_DASHBOARD.FILTERS.REFRESH' | translate }}
         </button>
       </div>
     </mat-card-content>
@@ -55,9 +56,10 @@
   <!-- Statistiques Globales -->
   <mat-card style="margin-bottom: 20px;">
     <mat-card-header>
-      <mat-card-title>Statistiques Globales</mat-card-title>
+      <mat-card-title>{{ 'ADMIN_DASHBOARD.GLOBAL.TITLE' | translate }}</mat-card-title>
       <mat-card-subtitle *ngIf="dateDebut && dateFin">
-        Période: {{dateDebut | date:'dd/MM/yyyy'}} - {{dateFin | date:'dd/MM/yyyy'}}
+        {{ 'ADMIN_DASHBOARD.GLOBAL.PERIOD' | translate }}: {{dateDebut | date:'dd/MM/yyyy'}} - {{dateFin |
+        date:'dd/MM/yyyy'}}
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
@@ -69,28 +71,28 @@
         <div class="stat-card">
           <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #005fb6;">directions_car</mat-icon>
           <h2 style="margin: 10px 0; color: #005fb6;">{{statsGlobales.kmTotaux | number:'1.0-0'}} km</h2>
-          <p style="color: #666;">Distance Flotte (Routier)</p>
+          <p style="color: #666;">{{ 'ADMIN_DASHBOARD.GLOBAL.DISTANCE' | translate }}</p>
         </div>
 
         <!-- CO2 Total (Flotte UNIQUEMENT) -->
         <div class="stat-card" style="border: 2px solid #e8f5e9; background-color: #f1f8e9;">
           <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #52ae32;">eco</mat-icon>
           <h2 style="margin: 10px 0; color: #52ae32;">{{statsGlobales.co2Total | number:'1.0-0'}} kg</h2>
-          <p style="color: #666;">CO2 Total (Flotte)</p>
+          <p style="color: #666;">{{ 'ADMIN_DASHBOARD.GLOBAL.CO2' | translate }}</p>
         </div>
 
         <!-- Conso (Flotte) -->
         <div class="stat-card">
           <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #ff9800;">local_gas_station</mat-icon>
           <h2 style="margin: 10px 0; color: #ff9800;">{{statsGlobales.consommationTotale | number:'1.0-0'}} L</h2>
-          <p style="color: #666;">Carburant Flotte</p>
+          <p style="color: #666;">{{ 'ADMIN_DASHBOARD.GLOBAL.FUEL' | translate }}</p>
         </div>
       </div>
 
       <mat-divider style="margin-bottom: 20px;"></mat-divider>
 
       <!-- Rangée 2 : Indicateurs Avancés (Trajets Courts, Mutualisation, Utilisation) -->
-      <h3 style="margin-bottom: 15px; color: #444;">Performance & Optimisation</h3>
+      <h3 style="margin-bottom: 15px; color: #444;">{{ 'ADMIN_DASHBOARD.GLOBAL.ADVANCED_TITLE' | translate }}</h3>
       <div
         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center; margin-bottom: 30px;">
 
@@ -104,13 +106,14 @@
           <div style="font-size: 1.5em; font-weight: bold; color: #333; margin: 10px 0;">
             {{ statsGlobales.indicateursAvances?.trajetsCourts?.pourcentage }}%
           </div>
-          <p style="color: #666; margin: 0; font-weight: 500;">Trajets "Véhicule" < 2km</p>
-              <small
-                style="color: #999; display: block; margin-top: 5px; font-size: 0.85em; max-width: 200px; margin-left: auto; margin-right: auto;">
-                (Potentiel report modal : Marche / Vélo)
-                <br>
-                {{ statsGlobales.indicateursAvances?.trajetsCourts?.count }} trajets concernés
-              </small>
+          <p style="color: #666; margin: 0; font-weight: 500;">{{ 'ADMIN_DASHBOARD.GLOBAL.SHORT_TRIPS' | translate }}
+          </p>
+          <small
+            style="color: #999; display: block; margin-top: 5px; font-size: 0.85em; max-width: 200px; margin-left: auto; margin-right: auto;">
+            {{ 'ADMIN_DASHBOARD.GLOBAL.SHORT_TRIPS_HINT' | translate }}
+            <br>
+            {{ statsGlobales.indicateursAvances?.trajetsCourts?.count }} trajets concernés
+          </small>
         </div>
 
         <!-- Kilomètres Mutualisés -->
@@ -119,7 +122,7 @@
           <div style="font-size: 1.5em; font-weight: bold; color: #333; margin: 10px 0;">
             {{ statsGlobales.indicateursAvances?.kmMutualises?.km | number:'1.0-0' }} km
           </div>
-          <p style="color: #666; margin: 0;">Kilomètres Mutualisés</p>
+          <p style="color: #666; margin: 0;">{{ 'ADMIN_DASHBOARD.GLOBAL.POOLED_KM' | translate }}</p>
           <small style="color: #999;">{{ statsGlobales.indicateursAvances?.kmMutualises?.pourcentage }}% du
             total</small>
         </div>
@@ -130,28 +133,28 @@
           <div style="font-size: 1.5em; font-weight: bold; color: #333; margin: 10px 0;">
             {{ statsGlobales.indicateursAvances?.tauxUtilisation }}%
           </div>
-          <p style="color: #666; margin: 0;">Taux d'Utilisation Flotte</p>
+          <p style="color: #666; margin: 0;">{{ 'ADMIN_DASHBOARD.GLOBAL.UTILIZATION' | translate }}</p>
         </div>
       </div>
 
       <mat-divider style="margin-bottom: 20px;"></mat-divider>
 
       <!-- Rangée 2 : Répartition par Mode -->
-      <h3 style="margin-bottom: 15px; color: #444;">Répartition des Mouvements</h3>
+      <h3 style="margin-bottom: 15px; color: #444;">{{ 'ADMIN_DASHBOARD.MODES.TITLE' | translate }}</h3>
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
         <!-- Routier -->
         <div style="text-align: center; padding: 15px; background: #f5f5f5; border-radius: 8px;">
           <strong style="display: block; font-size: 1.2em; color: #005fb6;">{{statsGlobales.repartitionModes?.routier ||
             0}}</strong>
-          <span style="color: #666;">Routier 🚗</span>
+          <span style="color: #666;">{{ 'ADMIN_DASHBOARD.MODES.ROAD' | translate }} 🚗</span>
         </div>
 
         <!-- Aérien -->
         <div style="text-align: center; padding: 15px; background: #e3f2fd; border-radius: 8px;">
           <strong style="display: block; font-size: 1.2em; color: #1976d2;">{{statsGlobales.repartitionModes?.aerien ||
             0}}</strong>
-          <span style="color: #666;">Aérien ✈️</span>
+          <span style="color: #666;">{{ 'ADMIN_DASHBOARD.MODES.AIR' | translate }} ✈️</span>
           <div style="font-size: 0.8em; margin-top: 5px; color: #1565c0;">
             CO2: <strong>{{statsGlobales.co2Aerien | number:'1.0-0'}} kg</strong>
           </div>
@@ -161,7 +164,7 @@
         <div style="text-align: center; padding: 15px; background: #e0f7fa; border-radius: 8px;">
           <strong style="display: block; font-size: 1.2em; color: #0097a7;">{{statsGlobales.repartitionModes?.maritime
             || 0}}</strong>
-          <span style="color: #666;">Maritime ⛴️</span>
+          <span style="color: #666;">{{ 'ADMIN_DASHBOARD.MODES.SEA' | translate }} ⛴️</span>
         </div>
 
       </div>
@@ -171,17 +174,18 @@
   <!-- Statistiques par Projet -->
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Statistiques par Projet</mat-card-title>
+      <mat-card-title>{{ 'ADMIN_DASHBOARD.PROJECTS.TITLE' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div *ngIf="statsParProjet.length === 0" style="text-align: center; padding: 20px; color: #999;">
-        Aucune donnée disponible pour la période sélectionnée
+        {{ 'ADMIN_DASHBOARD.PROJECTS.NO_DATA' | translate }}
       </div>
 
       <table mat-table [dataSource]="statsParProjet" *ngIf="statsParProjet.length > 0" style="width: 100%;">
         <!-- Colonne Projet -->
         <ng-container matColumnDef="projet">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Projet</th>
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'ADMIN_DASHBOARD.PROJECTS.PROJECT' |
+            translate }}</th>
           <td mat-cell *matCellDef="let stat">
             <strong style="color: #005fb6;">{{stat.projet}}</strong>
           </td>
@@ -192,7 +196,7 @@
         <!-- Colonne Km Involved -->
         <ng-container matColumnDef="kmInvolved">
           <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
-            Distance Totale (km)
+            {{ 'ADMIN_DASHBOARD.PROJECTS.TOTAL_DIST' | translate }}
             <mat-icon
               style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
               matTooltip="Distance totale des trajets où ce projet est impliqué (même partiellement)">
@@ -205,7 +209,7 @@
         <!-- Colonne Km -->
         <ng-container matColumnDef="km">
           <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
-            Distance Ventilée (km)
+            {{ 'ADMIN_DASHBOARD.PROJECTS.VENTILATED_DIST' | translate }}
             <mat-icon
               style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
               matTooltip="Part de distance attribuée à ce projet selon le pourcentage de ventilation">
@@ -218,7 +222,7 @@
         <!-- Colonne Ratio Km -->
         <ng-container matColumnDef="ratioKm">
           <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
-            Ratio Km (%)
+            {{ 'ADMIN_DASHBOARD.PROJECTS.RATIO_KM' | translate }}
             <mat-icon
               style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
               matTooltip="Pourcentage des kilomètres parcourus par ce projet par rapport au total de tous les projets">
@@ -232,14 +236,15 @@
 
         <!-- Colonne CO2 -->
         <ng-container matColumnDef="co2">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">CO2 (kg)</th>
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'ADMIN_DASHBOARD.PROJECTS.CO2' | translate
+            }}</th>
           <td mat-cell *matCellDef="let stat">{{stat.co2Total | number:'1.0-0'}}</td>
         </ng-container>
 
         <!-- Colonne Ratio CO2 -->
         <ng-container matColumnDef="ratioCO2">
           <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
-            Ratio CO2 (%)
+            {{ 'ADMIN_DASHBOARD.PROJECTS.RATIO_CO2' | translate }}
             <mat-icon
               style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
               matTooltip="Pourcentage des émissions CO2 de ce projet par rapport au total (formule: 2.3 kg CO2/L de diesel)">
@@ -253,14 +258,15 @@
 
         <!-- Colonne Consommation -->
         <ng-container matColumnDef="consommation">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Consommation (L)</th>
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'ADMIN_DASHBOARD.PROJECTS.FUEL' |
+            translate }}</th>
           <td mat-cell *matCellDef="let stat">{{stat.consommationTotale | number:'1.0-0'}}</td>
         </ng-container>
 
         <!-- Colonne Ratio Consommation -->
         <ng-container matColumnDef="ratioConsommation">
           <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
-            Ratio Conso (%)
+            {{ 'ADMIN_DASHBOARD.PROJECTS.RATIO_FUEL' | translate }}
             <mat-icon
               style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
               matTooltip="Pourcentage de la consommation de carburant de ce projet par rapport au total (moyenne: 8L/100km)">
@@ -275,7 +281,7 @@
         <!-- NOUVEAU: Colonne Taux de Remplissage -->
         <ng-container matColumnDef="tauxRemplissage">
           <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">
-            Taux Remplissage (%)
+            {{ 'ADMIN_DASHBOARD.PROJECTS.FILL_RATE' | translate }}
             <mat-icon
               style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #666; cursor: help;"
               matTooltip="Taux de remplissage moyen des véhicules (nombre de passagers / capacité du véhicule)">
@@ -293,7 +299,8 @@
 
         <!-- Colonne Mouvements -->
         <ng-container matColumnDef="mouvements">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">Mouvements</th>
+          <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'ADMIN_DASHBOARD.PROJECTS.MOVEMENTS' |
+            translate }}</th>
           <td mat-cell *matCellDef="let stat">{{stat.nombreMouvements}}</td>
         </ng-container>
 

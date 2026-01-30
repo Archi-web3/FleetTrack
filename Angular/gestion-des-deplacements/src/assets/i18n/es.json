@@ -13,8 +13,11 @@
         "EMAIL": "Correo electrónico",
         "PASSWORD": "Contraseña",
         "BUTTON": "Entrar",
-        "ERROR": "Error de inicio de sesión",
-        "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?"
+        "ERROR": "Credenciales incorrectas. Por favor, inténtelo de nuevo.",
+        "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+        "EMAIL_REQUIRED": "Por favor ingrese un correo válido.",
+        "PASSWORD_REQUIRED": "La contraseña es obligatoria.",
+        "LOADING": "Iniciando sesión..."
     },
     "MY_TRIPS": {
         "TITLE": "Mis Movimientos",
@@ -54,6 +57,40 @@
             "CANCELLED": "Cancelado/Rechazado"
         },
         "NO_EVENTS": "No hay movimientos validados o en curso para esta semana."
+    },
+    "MAP": {
+        "FILTERS": "Filtros",
+        "MODE_TRANSPORT": "Modo de Transporte",
+        "PLANNED_TRIPS": "Trayectos Planificados",
+        "GPS_TRACKS": "Rastros GPS (Real)",
+        "LAST_POSITIONS": "Últimas Posiciones",
+        "ZOOM_TOOLTIP": "Hacer zoom a la última posición conocida de todos los vehículos mostrados"
+    },
+    "VALIDATION": {
+        "TITLE": "Validación de Movimientos",
+        "PROFILE": "Perfil",
+        "NOT_CONNECTED": "No conectado",
+        "SECURITY_VALIDATION": "Movimientos pendientes de validación de Seguridad",
+        "LOGISTICS_VALIDATION": "Movimientos pendientes de validación de Logística",
+        "NO_PENDING_SECURITY": "No hay movimientos pendientes de validación de seguridad.",
+        "NO_PENDING_LOGS": "No hay movimientos pendientes de validación de logística.",
+        "ID": "ID Movimiento",
+        "STATUS": "Estado",
+        "RISK_LEVEL": "Nivel de Riesgo",
+        "STABLE": "(Estable)",
+        "MODERATE": "(Moderado)",
+        "DIFFICULT": "(Difícil)",
+        "HIGH": "(Alto)",
+        "EXTREME": "(Extremo)",
+        "DEPARTURE": "Salida",
+        "ARRIVAL": "Llegada",
+        "INTERMEDIATE_STOPS": "Paradas intermedias",
+        "DATE": "Fecha",
+        "OBJECTIVE": "Objetivo",
+        "REQUESTER": "Solicitante",
+        "VALIDATE_SECURITY": "Validar Seguridad",
+        "VALIDATE_LOGS": "Validar Logística",
+        "REFUSE": "Rechazar"
     },
     "NEW_REQUEST": {
         "TITLE": "Nueva Solicitud de Movimiento",
@@ -146,7 +183,177 @@
         "MAINTENANCE_TRACKING": "Seguimiento de Mantenimiento",
         "GENERAL_SETTINGS": "Configuración General",
         "MONTHLY_REPORTS": "Informes Mensuales",
+        "DASHBOARD": {
+            "TITLE": "Análisis de Movimientos",
+            "KPI": {
+                "TOTAL": "Total Movimientos",
+                "VALIDATED": "Validados (Próximos)",
+                "IN_PROGRESS": "En Curso",
+                "PENDING": "Pendiente"
+            },
+            "FILTERS": {
+                "SEARCH": "Buscar",
+                "SEARCH_PLACEHOLDER": "Objetivo, Solicitante...",
+                "STATUS": "Estado",
+                "ALL": "Todos"
+            },
+            "TABLE": {
+                "STATUS": "Estado",
+                "OBJECTIVE": "Objetivo",
+                "DEPARTURE": "Salida Prevista",
+                "VEHICLE": "Vehículo",
+                "DRIVER": "Conductor",
+                "REQUESTER": "Solicitante",
+                "NOT_ASSIGNED": "No asignado"
+            }
+        },
         "LOGBOOK": "Cuaderno de Bitácora",
-        "DASHBOARD": "Tablero"
+        "ADMIN_DASHBOARD": {
+            "TITLE": "Tablero - Estadísticas",
+            "FILTERS": {
+                "TITLE": "Filtros",
+                "START_DATE": "Fecha Inicio",
+                "END_DATE": "Fecha Fin",
+                "PROJECT": "Proyecto",
+                "VEHICLE": "Vehículo",
+                "ALL_PROJECTS": "Todos los proyectos",
+                "ALL_VEHICLES": "Todos los vehículos",
+                "REFRESH": "Actualizar"
+            },
+            "GLOBAL": {
+                "TITLE": "Estadísticas Globales",
+                "PERIOD": "Período",
+                "DISTANCE": "Distancia Flota (Ruta)",
+                "CO2": "CO2 Total (Flota)",
+                "FUEL": "Combustible Flota",
+                "ADVANCED_TITLE": "Rendimiento y Optimización",
+                "SHORT_TRIPS": "Viajes Cortos < 2km",
+                "SHORT_TRIPS_HINT": "(Cambio modal potencial: Caminar / Bici)",
+                "POOLED_KM": "Kilómetros Compartidos",
+                "UTILIZATION": "Tasa de Utilización"
+            },
+            "MODES": {
+                "TITLE": "Distribución de Movimientos",
+                "ROAD": "Terrestre",
+                "AIR": "Aéreo",
+                "SEA": "Marítimo"
+            },
+            "PROJECTS": {
+                "TITLE": "Estadísticas por Proyecto",
+                "NO_DATA": "No hay datos disponibles para el período seleccionado",
+                "PROJECT": "Proyecto",
+                "TOTAL_DIST": "Distancia Total (km)",
+                "VENTILATED_DIST": "Distancia Ventilada (km)",
+                "RATIO_KM": "Ratio Km (%)",
+                "CO2": "CO2 (kg)",
+                "RATIO_CO2": "Ratio CO2 (%)",
+                "FUEL": "Consumo (L)",
+                "RATIO_FUEL": "Ratio Consumo (%)",
+                "FILL_RATE": "Tasa Ocupación (%)",
+                "MOVEMENTS": "Movimientos"
+            }
+        },
+        "USERS": {
+            "TITLE": "Gestión de Usuarios",
+            "CREATE_TITLE": "Crear Nuevo Usuario",
+            "EDIT_TITLE": "Editar Usuario",
+            "FORM": {
+                "NAME": "Apellido",
+                "FIRSTNAME": "Nombre",
+                "EMPLOYEE_ID": "ID Empleado",
+                "PHONE": "Teléfono",
+                "EMAIL": "Correo Electrónico",
+                "PASSWORD": "Contraseña",
+                "NEW_PASSWORD": "Nueva Contraseña (dejar vacío si no cambia)",
+                "PROFILE": "Perfil",
+                "SECURITY_LEVEL": "Nivel Validación Seguridad",
+                "SECURITY_HINT": "Nivel máximo que este usuario puede validar",
+                "COUNTRY": "País",
+                "BASE": "Base Asignada",
+                "PROJECT": "Proyecto/Programa",
+                "PROJECT_HINT": "Seleccione el código del proyecto"
+            },
+            "DRIVER_INFO": {
+                "TITLE": "Información del Conductor",
+                "LICENSE": "Número de Licencia",
+                "ECO_DRIVING": "Formación Eco-conducción",
+                "DATE": "Fecha de Formación",
+                "ASSIGNED_VEHICLE": "Vehículo Asignado (opcional)",
+                "AVAILABLE": "Disponible"
+            },
+            "ACTIONS": {
+                "CREATE": "Crear Usuario",
+                "UPDATE": "Actualizar",
+                "CANCEL": "Cancelar",
+                "DELETE": "Eliminar",
+                "FILTER_PROFILE": "Filtrar por Perfil",
+                "ALL_PROFILES": "Todos los perfiles"
+            },
+            "LIST": {
+                "TITLE": "Usuarios Existentes",
+                "NO_DATA": "No hay usuarios registrados."
+            }
+        },
+        "DRIVERS": {
+            "TITLE": "Gestión de Conductores",
+            "EDIT_TITLE": "Editar Conductor",
+            "LIST_TITLE": "Lista de Conductores",
+            "NO_DATA": "No hay conductores registrados."
+        },
+        "VEHICLES": {
+            "TITLE": "Gestión de Vehículos",
+            "CREATE_TITLE": "Crear Nuevo Vehículo",
+            "EDIT_TITLE": "Editar Vehículo",
+            "FORM": {
+                "BRAND": "Marca",
+                "MODEL": "Modelo",
+                "PLATE": "Matrícula",
+                "ACF_CODE": "Número Vehículo ACF",
+                "ACF_CODE_HINT": "Generado auto. (MOB-XXX)",
+                "OWNERSHIP": "Propiedad",
+                "RENTAL_NAME": "Compañía Alquiler",
+                "RENTAL_START": "Inicio Alquiler",
+                "RENTAL_END": "Fin Alquiler",
+                "PURCHASE_DATE": "Fecha Compra",
+                "TYPE": "Tipo",
+                "CAPACITY": "Capacidad Pasajeros",
+                "INITIAL_KM": "Kilometraje Inicial",
+                "STATUS": "Estado",
+                "GPS": "Activar Rastreo GPS"
+            },
+            "ENV": {
+                "TITLE": "Datos Ambientales",
+                "CO2": "Emisiones CO2 (g/km)",
+                "SOURCE": "Fuente Datos",
+                "CONSTRUCTOR": "Fabricante",
+                "MANUAL": "Prueba Manual",
+                "CONSUMPTION": "Consumo (L/100km)",
+                "TEST_DATE": "Fecha Prueba"
+            },
+            "INSURANCE": {
+                "TITLE": "Seguro",
+                "INSURER": "Aseguradora",
+                "END_DATE": "Fin Seguro",
+                "CERTIFICATE": "Enlace Certificado"
+            },
+            "EQUIPMENT": {
+                "TITLE": "Inventario y Equipamiento",
+                "NAME": "Equipo (Editable)",
+                "PRESENT": "Presente",
+                "LAST_CHECK": "Última Verif."
+            },
+            "ACTIONS": {
+                "CREATE": "Crear Vehículo",
+                "UPDATE": "Actualizar",
+                "ARCHIVE": "Archivar",
+                "UNARCHIVE": "Desarchivar",
+                "SHOW_ALL_COUNTRY": "Mostrar Todo el País",
+                "SHOW_MY_BASE": "Mostrar Solo Mi Base"
+            },
+            "LIST": {
+                "TITLE": "Vehículos Existentes",
+                "NO_DATA": "No hay vehículos registrados."
+            }
+        }
     }
 }

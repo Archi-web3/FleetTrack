@@ -1,8 +1,8 @@
 <div class="container">
-    <h2>Tableau de Bord Logbook</h2>
+    <h2>{{ 'LOGBOOK.DASHBOARD.TITLE' | translate }}</h2>
 
     <div class="vehicle-selector">
-        <label for="vehiculeSelect">Sélectionner un Véhicule :</label>
+        <label for="vehiculeSelect">{{ 'LOGBOOK.DASHBOARD.SELECT_VEHICLE' | translate }}</label>
         <select id="vehiculeSelect" [(ngModel)]="selectedVehiculeId" (change)="onVehiculeChange()">
             <option *ngFor="let v of vehicules" [value]="v._id">
                 {{ v.marque }} {{ v.modele }} - {{ v.immatriculation }}
@@ -11,10 +11,14 @@
     </div>
 
     <div class="tabs">
-        <button [class.active]="activeTab === 'trips'" (click)="setActiveTab('trips')">Trajets</button>
-        <button [class.active]="activeTab === 'fuel'" (click)="setActiveTab('fuel')">Carburant</button>
-        <button [class.active]="activeTab === 'maintenance'" (click)="setActiveTab('maintenance')">Réparations</button>
-        <button [class.active]="activeTab === 'incidents'" (click)="setActiveTab('incidents')">Incidents</button>
+        <button [class.active]="activeTab === 'trips'" (click)="setActiveTab('trips')">{{ 'LOGBOOK.TABS.TRIPS' |
+            translate }}</button>
+        <button [class.active]="activeTab === 'fuel'" (click)="setActiveTab('fuel')">{{ 'LOGBOOK.TABS.FUEL' | translate
+            }}</button>
+        <button [class.active]="activeTab === 'maintenance'" (click)="setActiveTab('maintenance')">{{
+            'LOGBOOK.TABS.MAINTENANCE' | translate }}</button>
+        <button [class.active]="activeTab === 'incidents'" (click)="setActiveTab('incidents')">{{
+            'LOGBOOK.TABS.INCIDENTS' | translate }}</button>
     </div>
 
     <div class="tab-content">
@@ -57,21 +61,21 @@
 
         <!-- TRIPS TAB (Unchanged) -->
         <div *ngIf="activeTab === 'trips'">
-            <h3>Historique des Trajets</h3>
+            <h3>{{ 'LOGBOOK.TRIPS.TITLE' | translate }}</h3>
             <table class="table">
                 <!-- ... existing table content ... -->
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Chauffeur</th>
-                        <th>Objectif</th>
-                        <th>Km Départ</th>
-                        <th>Km Arrivée</th>
-                        <th>Distance</th>
-                        <th>Photos</th>
-                        <th>Statut</th>
-                        <th>Carte</th>
-                        <th *ngIf="isAdmin()">Actions</th>
+                        <th>{{ 'LOGBOOK.TRIPS.DATE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.DRIVER' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.OBJECTIVE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.KM_START' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.KM_END' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.DISTANCE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.PHOTOS' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.STATUS' | translate }}</th>
+                        <th>{{ 'LOGBOOK.TRIPS.MAP' | translate }}</th>
+                        <th *ngIf="isAdmin()">{{ 'LOGBOOK.TRIPS.ACTIONS' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,7 +95,7 @@
                                 </span>
                             </div>
                             <span *ngIf="!trip.photos || trip.photos.length === 0" class="no-photos">
-                                Aucune photo
+                                {{ 'LOGBOOK.TRIPS.NO_PHOTO' | translate }}
                             </span>
                         </td>
                         <td>
@@ -114,7 +118,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="trips.length === 0">
-                        <td [attr.colspan]="isAdmin() ? 9 : 8">Aucun trajet enregistré.</td>
+                        <td [attr.colspan]="isAdmin() ? 9 : 8">{{ 'LOGBOOK.TRIPS.NO_DATA' | translate }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -122,19 +126,19 @@
 
         <!-- FUEL TAB (Unchanged) -->
         <div *ngIf=" activeTab==='fuel'">
-            <h3>Historique Carburant</h3>
+            <h3>{{ 'LOGBOOK.FUEL.TITLE' | translate }}</h3>
             <table class=" table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Chauffeur</th>
-                        <th>Quantité (L)</th>
-                        <th>Km Compteur</th>
-                        <th>Conso. (L/100)</th>
-                        <th>Type</th>
-                        <th>Source</th>
-                        <th>Photos</th>
-                        <th *ngIf="isAdmin()">Actions</th>
+                        <th>{{ 'LOGBOOK.FUEL.DATE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.FUEL.DRIVER' | translate }}</th>
+                        <th>{{ 'LOGBOOK.FUEL.QUANTITY' | translate }}</th>
+                        <th>{{ 'LOGBOOK.FUEL.MILEAGE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.FUEL.CONSUMPTION' | translate }}</th>
+                        <th>{{ 'LOGBOOK.FUEL.TYPE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.FUEL.SOURCE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.FUEL.PHOTOS' | translate }}</th>
+                        <th *ngIf="isAdmin()">{{ 'LOGBOOK.FUEL.ACTIONS' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -162,7 +166,7 @@
                                 </span>
                             </div>
                             <span *ngIf="!f.photos || f.photos.length === 0" class="no-photos">
-                                Aucune photo
+                                {{ 'LOGBOOK.TRIPS.NO_PHOTO' | translate }}
                             </span>
                         </td>
                         <td *ngIf="isAdmin()">
@@ -171,7 +175,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="fuels.length === 0">
-                        <td [attr.colspan]="isAdmin() ? 8 : 7">Aucun plein enregistré.</td>
+                        <td [attr.colspan]="isAdmin() ? 8 : 7">{{ 'LOGBOOK.FUEL.NO_DATA' | translate }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -179,16 +183,16 @@
 
         <!-- MAINTENANCE TAB -->
         <div *ngIf="activeTab === 'maintenance'">
-            <h3>Historique Réparations</h3>
+            <h3>{{ 'LOGBOOK.MAINTENANCE.TITLE' | translate }}</h3>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Km</th>
-                        <th>Garage</th>
-                        <th>Coût</th>
-                        <th *ngIf="isAdmin()">Actions</th>
+                        <th>{{ 'LOGBOOK.MAINTENANCE.DATE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.MAINTENANCE.TYPE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.MAINTENANCE.MILEAGE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.MAINTENANCE.GARAGE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.MAINTENANCE.COST' | translate }}</th>
+                        <th *ngIf="isAdmin()">{{ 'LOGBOOK.MAINTENANCE.ACTIONS' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -196,7 +200,7 @@
                         <td>{{ m.date | date:'short' }}</td>
                         <td>{{ m.type }}</td>
                         <td>{{ m.mileage }}</td>
-                        <td>{{ m.garage || 'Interne' }}</td>
+                        <td>{{ m.garage || ('LOGBOOK.MAINTENANCE.INTERNAL' | translate) }}</td>
                         <td>{{ m.cost | currency:'EUR' }}</td>
                         <td *ngIf="isAdmin()">
                             <button (click)="editItem('maintenance', m)">✏️</button>
@@ -204,7 +208,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="maintenances.length === 0">
-                        <td colspan="6">Aucune réparation enregistrée.</td>
+                        <td colspan="6">{{ 'LOGBOOK.MAINTENANCE.NO_DATA' | translate }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -212,18 +216,18 @@
 
         <!-- INCIDENTS TAB -->
         <div *ngIf="activeTab === 'incidents'">
-            <h3>Incidents Signalés</h3>
+            <h3>{{ 'LOGBOOK.INCIDENTS.TITLE' | translate }}</h3>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Sévérité</th>
-                        <th>Description</th>
-                        <th>Localisation</th>
-                        <th>Photos</th>
-                        <th>Statut</th>
-                        <th *ngIf="isAdmin()">Actions</th>
+                        <th>{{ 'LOGBOOK.INCIDENTS.DATE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.INCIDENTS.TYPE' | translate }}</th>
+                        <th>{{ 'LOGBOOK.INCIDENTS.SEVERITY' | translate }}</th>
+                        <th>{{ 'LOGBOOK.INCIDENTS.DESCRIPTION' | translate }}</th>
+                        <th>{{ 'LOGBOOK.INCIDENTS.LOCATION' | translate }}</th>
+                        <th>{{ 'LOGBOOK.INCIDENTS.PHOTOS' | translate }}</th>
+                        <th>{{ 'LOGBOOK.INCIDENTS.STATUS' | translate }}</th>
+                        <th *ngIf="isAdmin()">{{ 'LOGBOOK.INCIDENTS.ACTIONS' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -240,7 +244,7 @@
                         <td>
                             <div *ngIf="i.location && i.location.lat && i.location.lng">
                                 <button (click)="openMapForIncident(i)" class="btn-map-small" title="Voir sur la carte">
-                                    <mat-icon>place</mat-icon> Voir Carte
+                                    <mat-icon>place</mat-icon> {{ 'LOGBOOK.INCIDENTS.VIEW_MAP' | translate }}
                                 </button>
                             </div>
                             <span *ngIf="!i.location || !i.location.lat" class="no-data">-</span>
@@ -255,7 +259,7 @@
                                 </span>
                             </div>
                             <span *ngIf="!i.photos || i.photos.length === 0" class="no-photos">
-                                Aucune photo
+                                {{ 'LOGBOOK.TRIPS.NO_PHOTO' | translate }}
                             </span>
                         </td>
                         <td>{{ i.status }}</td>
@@ -265,7 +269,7 @@
                         </td>
                     </tr>
                     <tr *ngIf="incidents.length === 0">
-                        <td colspan="8">Aucun incident signalé.</td>
+                        <td colspan="8">{{ 'LOGBOOK.INCIDENTS.NO_DATA' | translate }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -284,7 +288,7 @@
     <div *ngIf="showMapModal" class="map-modal-overlay" (click)="closeMapModal()">
         <div class="map-modal-content" (click)="$event.stopPropagation()">
             <div class="map-header">
-                <h3>Visualisation du Trajet</h3>
+                <h3>{{ 'LOGBOOK.MODALS.MAP_TITLE' | translate }}</h3>
                 <button class="close-btn" (click)="closeMapModal()">×</button>
             </div>
             <div class="map-container-wrapper">
@@ -292,8 +296,9 @@
             </div>
             <div class="map-legend"
                 style="padding: 10px; font-size: 0.9em; background: #f5f5f5; margin-top: 10px; border-radius: 4px;">
-                <span style="color: #2196F3; font-weight: bold;">--- Planifié</span> &nbsp;|&nbsp;
-                <span style="color: #d32f2f; font-weight: bold;">___ Réel (GPS)</span>
+                <span style="color: #2196F3; font-weight: bold;">--- {{ 'LOGBOOK.MODALS.PLANNED' | translate }}</span>
+                &nbsp;|&nbsp;
+                <span style="color: #d32f2f; font-weight: bold;">___ {{ 'LOGBOOK.MODALS.REAL' | translate }}</span>
             </div>
         </div>
     </div>

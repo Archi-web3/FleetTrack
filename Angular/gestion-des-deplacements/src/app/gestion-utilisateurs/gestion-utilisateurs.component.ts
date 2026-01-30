@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-gestion-utilisateurs',
@@ -28,7 +29,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSelectModule,
     MatButtonModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatRadioModule,
+    MatCheckboxModule,
+    TranslateModule
   ],
   templateUrl: './gestion-utilisateurs.component.html',
   styleUrls: ['./gestion-utilisateurs.component.css']

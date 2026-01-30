@@ -17,6 +17,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tableau-bord',
@@ -34,7 +35,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatNativeDateModule,
     MatTableModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    TranslateModule
   ],
   templateUrl: './tableau-bord.component.html',
   styleUrls: ['./tableau-bord.component.css']

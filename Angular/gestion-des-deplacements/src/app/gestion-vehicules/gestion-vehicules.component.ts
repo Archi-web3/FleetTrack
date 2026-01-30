@@ -5,11 +5,12 @@ import { VehiculeService } from '../vehicule.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
 import { SettingsService } from '../settings.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-gestion-vehicules',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './gestion-vehicules.component.html',
   styleUrls: ['./gestion-vehicules.component.css']
 })

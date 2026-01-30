@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjetService } from '../projet.service';
 import { AuthService } from '../auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Imports Angular Material
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +26,9 @@ import { MatIconModule } from '@angular/material/icon';
         MatButtonModule,
         MatCheckboxModule,
         MatTableModule,
-        MatIconModule
+        MatTableModule,
+        MatIconModule,
+        TranslateModule
     ],
     templateUrl: './gestion-projets.component.html',
     styleUrls: ['./gestion-projets.component.css']

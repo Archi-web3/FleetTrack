@@ -25,8 +25,7 @@
       <div class="card-header">
         <div class="header-top">
           <span class="status-badge" [ngClass]="mouvement.statut">
-            {{ mouvement.statut | titlecase }}
-            <!-- Status translation might be tricky if backend returns French strings, but let's assume UI translation handles keys or we keep backend strings for now as they match CSS classes -->
+            {{ getStatusKey(mouvement.statut) | translate }}
           </span>
           <span class="id-badge">{{ 'MY_TRIPS.ID' | translate }}: {{ mouvement._id | slice:-4 }}</span>
         </div>
@@ -118,17 +117,19 @@
 
       <!-- FOOTER: Actions -->
       <div class="card-footer">
-        <button mat-icon-button class="action-btn view" (click)="viewMouvement(mouvement)" title="Voir Détails">
+        <button mat-icon-button class="action-btn view" (click)="viewMouvement(mouvement)"
+          [title]="'MY_TRIPS.ACTIONS.VIEW' | translate">
           <mat-icon>visibility</mat-icon>
         </button>
 
         <button mat-icon-button class="action-btn edit"
           *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
-          (click)="navigateToEdit(mouvement._id)" title="Modifier">
+          (click)="navigateToEdit(mouvement._id)" [title]="'MY_TRIPS.ACTIONS.EDIT' | translate">
           <mat-icon>edit</mat-icon>
         </button>
 
-        <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)" title="Supprimer">
+        <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)"
+          [title]="'MY_TRIPS.ACTIONS.DELETE' | translate">
           <mat-icon>delete</mat-icon>
         </button>
 

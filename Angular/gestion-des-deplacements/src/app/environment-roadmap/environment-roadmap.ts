@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { EnvironmentService } from '../environment.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-environment-roadmap',
@@ -24,7 +25,8 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
     MatTabsModule, MatCardModule, MatFormFieldModule, MatInputModule,
     MatSelectModule, MatButtonModule, MatIconModule, MatTableModule,
     MatExpansionModule, MatSnackBarModule, MatTooltipModule,
-    BaseChartDirective
+    BaseChartDirective,
+    TranslateModule
   ],
   templateUrl: './environment-roadmap.html',
   styleUrls: ['./environment-roadmap.css']

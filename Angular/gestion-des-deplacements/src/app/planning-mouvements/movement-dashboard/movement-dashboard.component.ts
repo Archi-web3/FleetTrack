@@ -11,6 +11,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-movement-dashboard',
@@ -27,7 +28,9 @@ import { MatInputModule } from '@angular/material/input';
         MatChipsModule,
         MatFormFieldModule,
         MatSelectModule,
-        MatInputModule
+        MatSelectModule,
+        MatInputModule,
+        TranslateModule
     ],
     templateUrl: './movement-dashboard.component.html',
     styleUrls: ['./movement-dashboard.component.css']
@@ -137,15 +140,32 @@ export class MovementDashboardComponent implements OnChanges {
     }
 
     // Custom CSS classes for status badges
-    getStatusClass(statut: string): string {
-        switch (statut) {
+    getStatusClass(status: string): string {
+        if (!status) return '';
+        const s = status.toLowerCase();
+        switch (s) {
             case 'validé': return 'status-validated';
-            case 'en cours': return 'status-inprogress';
-            case 'pris en charge': return 'status-inprogress';
+            case 'en cours': return 'status-in-progress';
             case 'terminé': return 'status-completed';
             case 'en attente': return 'status-pending';
             case 'annulé': case 'refusé': return 'status-cancelled';
-            default: return 'status-default';
+            case 'pris en charge': return 'status-taken';
+            default: return '';
+        }
+    }
+
+    getStatusKey(status: string): string {
+        if (!status) return '';
+        const s = status.toLowerCase();
+        switch (s) {
+            case 'validé': return 'PLANNING.STATUS.VALIDATED';
+            case 'en attente': return 'PLANNING.STATUS.PENDING';
+            case 'terminé': return 'PLANNING.STATUS.COMPLETED';
+            case 'annulé': return 'PLANNING.STATUS.CANCELLED';
+            case 'refusé': return 'PLANNING.STATUS.CANCELLED';
+            case 'en cours': return 'PLANNING.STATUS.IN_PROGRESS';
+            case 'pris en charge': return 'PLANNING.STATUS.TAKEN';
+            default: return status;
         }
     }
 }

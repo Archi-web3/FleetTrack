@@ -1,36 +1,36 @@
 <div style="padding: 20px;">
-  <h2>Gestion des Véhicules</h2>
+  <h2>{{ 'VEHICLES.TITLE' | translate }}</h2>
 
   <!-- Formulaire de création de véhicule -->
   <div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'"
     style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-    <h3>Créer un nouveau véhicule</h3>
+    <h3>{{ 'VEHICLES.CREATE_TITLE' | translate }}</h3>
     <form (ngSubmit)="addVehicule()" #vehiculeForm="ngForm">
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeMarque">Marque:</label>
+        <label for="newVehiculeMarque">{{ 'VEHICLES.FORM.BRAND' | translate }}:</label>
         <input type="text" id="newVehiculeMarque" name="newVehiculeMarque" [(ngModel)]="newVehicule.marque" required
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeModele">Modèle:</label>
+        <label for="newVehiculeModele">{{ 'VEHICLES.FORM.MODEL' | translate }}:</label>
         <input type="text" id="newVehiculeModele" name="newVehiculeModele" [(ngModel)]="newVehicule.modele" required
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeImmatriculation">Immatriculation:</label>
+        <label for="newVehiculeImmatriculation">{{ 'VEHICLES.FORM.PLATE' | translate }}:</label>
         <input type="text" id="newVehiculeImmatriculation" name="newVehiculeImmatriculation"
           [(ngModel)]="newVehicule.immatriculation" required style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeAcfCode">Numéro de véhicule ACF (Généré auto par Pays):</label>
+        <label for="newVehiculeAcfCode">{{ 'VEHICLES.FORM.ACF_CODE' | translate }}:</label>
         <input type="text" id="newVehiculeAcfCode" name="newVehiculeAcfCode" [(ngModel)]="newVehicule.acfCode"
-          style="width: 100%; padding: 8px; background-color: #e9ecef;" placeholder="Généré automatiquement (MOB-XXX)"
-          readonly disabled>
+          style="width: 100%; padding: 8px; background-color: #e9ecef;"
+          [placeholder]="'VEHICLES.FORM.ACF_CODE_HINT' | translate" readonly disabled>
       </div>
 
       <!-- Propriété -->
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculePropriete">Propriété:</label>
+        <label for="newVehiculePropriete">{{ 'VEHICLES.FORM.OWNERSHIP' | translate }}:</label>
         <select id="newVehiculePropriete" name="newVehiculePropriete" [(ngModel)]="newVehicule.typePropriete" required
           style="width: 100%; padding: 8px;">
           <option *ngFor="let type of ownershipTypes" [value]="type">{{ type }}</option>
@@ -41,18 +41,18 @@
       <div *ngIf="newVehicule.typePropriete === 'Location'"
         style="margin-bottom: 10px; border-left: 3px solid #ffc107; padding-left: 10px;">
         <div style="margin-bottom: 10px;">
-          <label>Nom du Loueur:</label>
+          <label>{{ 'VEHICLES.FORM.RENTAL_NAME' | translate }}:</label>
           <input type="text" name="newNomLoueur" [(ngModel)]="newVehicule.locationDetails.nomLoueur"
             class="form-control" style="width: 100%; padding: 8px;" required>
         </div>
         <div style="display: flex; gap: 10px;">
           <div style="flex: 1;">
-            <label>Début Location:</label>
+            <label>{{ 'VEHICLES.FORM.RENTAL_START' | translate }}:</label>
             <input type="date" name="newDateDebutLoc" [(ngModel)]="newVehicule.locationDetails.dateDebut"
               class="form-control" style="width: 100%; padding: 8px;">
           </div>
           <div style="flex: 1;">
-            <label>Fin Location:</label>
+            <label>{{ 'VEHICLES.FORM.RENTAL_END' | translate }}:</label>
             <input type="date" name="newDateFinLoc" [(ngModel)]="newVehicule.locationDetails.dateFin"
               class="form-control" style="width: 100%; padding: 8px;">
           </div>
@@ -61,42 +61,42 @@
 
       <div *ngIf="newVehicule.typePropriete === 'ACF'"
         style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
-        <label>Date d'achat:</label>
+        <label>{{ 'VEHICLES.FORM.PURCHASE_DATE' | translate }}:</label>
         <input type="date" name="newDateAchat" [(ngModel)]="newVehicule.achatDetails.dateAchat" class="form-control"
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeType">Type:</label>
+        <label for="newVehiculeType">{{ 'VEHICLES.FORM.TYPE' | translate }}:</label>
         <select id="newVehiculeType" name="newVehiculeType" [(ngModel)]="newVehicule.type" required
           style="width: 100%; padding: 8px;">
           <option *ngFor="let type of vehicleTypes" [value]="type">{{ type }}</option>
         </select>
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeCapacite">Capacité Passagers:</label>
+        <label for="newVehiculeCapacite">{{ 'VEHICLES.FORM.CAPACITY' | translate }}:</label>
         <input type="number" id="newVehiculeCapacite" name="newVehiculeCapacite"
           [(ngModel)]="newVehicule.capacitePassagers" required style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeKilometrageInitial">Kilométrage Initial:</label>
+        <label for="newVehiculeKilometrageInitial">{{ 'VEHICLES.FORM.INITIAL_KM' | translate }}:</label>
         <input type="number" id="newVehiculeKilometrageInitial" name="newVehiculeKilometrageInitial"
           [(ngModel)]="newVehicule.kilometrageInitial" min="0" style="width: 100%; padding: 8px;"
           placeholder="Ex: 120000">
       </div>
       <!-- Sélecteurs Pays et Base pour SuperAdmin -->
       <div *ngIf="userProfile === 'SuperAdmin'" style="margin-bottom: 10px;">
-        <label for="newVehiculePays">Pays:</label>
+        <label for="newVehiculePays">{{ 'USERS.FORM.COUNTRY' | translate }}:</label>
         <select id="newVehiculePays" name="newVehiculePays" [(ngModel)]="newVehicule.pays" (change)="onPaysChange()"
           required style="width: 100%; padding: 8px;">
-          <option value="">Sélectionnez un pays</option>
+          <option value="">{{ 'COMMON.SELECT_COUNTRY' | translate }}</option>
           <option *ngFor="let pays of paysList" [value]="pays._id">{{pays.nom}}</option>
         </select>
       </div>
       <div *ngIf="userProfile === 'SuperAdmin' && basesList.length > 0" style="margin-bottom: 10px;">
-        <label for="newVehiculeBase">Base (optionnel):</label>
+        <label for="newVehiculeBase">{{ 'USERS.FORM.BASE' | translate }} (optionnel):</label>
         <select id="newVehiculeBase" name="newVehiculeBase" [(ngModel)]="newVehicule.base"
           style="width: 100%; padding: 8px;">
-          <option value="">Aucune base spécifique</option>
+          <option value="">{{ 'COMMON.NONE' | translate }}</option>
           <option *ngFor="let base of basesList" [value]="base._id">{{base.nom}}</option>
         </select>
       </div>
@@ -104,42 +104,42 @@
       <!-- Données Environnementales -->
       <div
         style="border: 2px solid #4CAF50; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E8F5E9;">
-        <h4 style="margin-top: 0; color: #2E7D32;">🌱 Données Environnementales</h4>
+        <h4 style="margin-top: 0; color: #2E7D32;">🌱 {{ 'VEHICLES.ENV.TITLE' | translate }}</h4>
 
         <div style="margin-bottom: 10px;">
-          <label for="newVehiculeEmissionsCO2">Émissions CO2 (g/km):</label>
+          <label for="newVehiculeEmissionsCO2">{{ 'VEHICLES.ENV.CO2' | translate }}:</label>
           <input type="number" id="newVehiculeEmissionsCO2" name="newVehiculeEmissionsCO2"
             [(ngModel)]="newVehicule.emissionsCO2.valeur" min="0" step="1" style="width: 100%; padding: 8px;"
             placeholder="Ex: 120">
         </div>
 
         <div style="margin-bottom: 10px;">
-          <label for="newVehiculeEmissionsSource">Source données CO2:</label>
+          <label for="newVehiculeEmissionsSource">{{ 'VEHICLES.ENV.SOURCE' | translate }}:</label>
           <select id="newVehiculeEmissionsSource" name="newVehiculeEmissionsSource"
             [(ngModel)]="newVehicule.emissionsCO2.source" style="width: 100%; padding: 8px;">
-            <option value="Constructeur">🏭 Constructeur</option>
-            <option value="Test Manuel">🔬 Test Manuel</option>
+            <option value="Constructeur">🏭 {{ 'VEHICLES.ENV.CONSTRUCTOR' | translate }}</option>
+            <option value="Test Manuel">🔬 {{ 'VEHICLES.ENV.MANUAL' | translate }}</option>
           </select>
         </div>
 
         <div style="margin-bottom: 10px;">
-          <label for="newVehiculeConsommation">Consommation (L/100km):</label>
+          <label for="newVehiculeConsommation">{{ 'VEHICLES.ENV.CONSUMPTION' | translate }}:</label>
           <input type="number" id="newVehiculeConsommation" name="newVehiculeConsommation"
             [(ngModel)]="newVehicule.consommation.valeur" min="0" step="0.1" style="width: 100%; padding: 8px;"
             placeholder="Ex: 7.5">
         </div>
 
         <div style="margin-bottom: 10px;">
-          <label for="newVehiculeConsommationSource">Source données consommation:</label>
+          <label for="newVehiculeConsommationSource">{{ 'VEHICLES.ENV.SOURCE' | translate }}:</label>
           <select id="newVehiculeConsommationSource" name="newVehiculeConsommationSource"
             [(ngModel)]="newVehicule.consommation.source" style="width: 100%; padding: 8px;">
-            <option value="Constructeur">🏭 Constructeur</option>
-            <option value="Test Manuel">🔬 Test Manuel (2 pleins sur 100km)</option>
+            <option value="Constructeur">🏭 {{ 'VEHICLES.ENV.CONSTRUCTOR' | translate }}</option>
+            <option value="Test Manuel">🔬 {{ 'VEHICLES.ENV.MANUAL' | translate }} (2 pleins sur 100km)</option>
           </select>
         </div>
 
         <div *ngIf="newVehicule.consommation.source === 'Test Manuel'" style="margin-bottom: 10px;">
-          <label for="newVehiculeConsommationDate">Date du test:</label>
+          <label for="newVehiculeConsommationDate">{{ 'VEHICLES.ENV.TEST_DATE' | translate }}:</label>
           <input type="date" id="newVehiculeConsommationDate" name="newVehiculeConsommationDate"
             [(ngModel)]="newVehicule.consommation.dateTest" style="width: 100%; padding: 8px;">
         </div>
@@ -149,20 +149,20 @@
       <!-- Assurance -->
       <div
         style="border: 2px solid #2196F3; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E3F2FD;">
-        <h4 style="margin-top: 0; color: #1565C0;">🛡️ Assurance</h4>
+        <h4 style="margin-top: 0; color: #1565C0;">🛡️ {{ 'VEHICLES.INSURANCE.TITLE' | translate }}</h4>
         <div style="margin-bottom: 10px;">
-          <label for="newVehiculeAssureur">Assureur:</label>
+          <label for="newVehiculeAssureur">{{ 'VEHICLES.INSURANCE.INSURER' | translate }}:</label>
           <input type="text" id="newVehiculeAssureur" name="newVehiculeAssureur"
             [(ngModel)]="newVehicule.assurance.nomAssureur" style="width: 100%; padding: 8px;"
             placeholder="Nom de l'assurance">
         </div>
         <div style="margin-bottom: 10px;">
-          <label for="newVehiculeDateFinAssurance">Date fin d'assurance:</label>
+          <label for="newVehiculeDateFinAssurance">{{ 'VEHICLES.INSURANCE.END_DATE' | translate }}:</label>
           <input type="date" id="newVehiculeDateFinAssurance" name="newVehiculeDateFinAssurance"
             [(ngModel)]="newVehicule.assurance.dateFin" style="width: 100%; padding: 8px;">
         </div>
         <div style="margin-bottom: 10px;">
-          <label for="newVehiculeCertificat">Lien Certificat:</label>
+          <label for="newVehiculeCertificat">{{ 'VEHICLES.INSURANCE.CERTIFICATE' | translate }}:</label>
           <input type="text" id="newVehiculeCertificat" name="newVehiculeCertificat"
             [(ngModel)]="newVehicule.assurance.certificatUrl" style="width: 100%; padding: 8px;"
             placeholder="URL du document">
@@ -173,7 +173,7 @@
       <div *ngIf="newVehicule.equipementsDisplay"
         style="border: 2px solid #607D8B; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #ECEFF1;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <h4 style="margin: 0; color: #455A64;">📦 Inventaire & Équipements de bord</h4>
+          <h4 style="margin: 0; color: #455A64;">📦 {{ 'VEHICLES.EQUIPMENT.TITLE' | translate }}</h4>
           <button type="button" (click)="addEquipment(newVehicule)"
             style="background-color: #4CAF50; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
         </div>
@@ -183,8 +183,9 @@
             <thead>
               <tr style="background-color: #f0f0f0; text-align: left;">
                 <th style="padding: 5px; width: 40px;">N°</th>
-                <th style="padding: 5px;">Équipement (Modifiable)</th>
-                <th style="padding: 5px; text-align: center; width: 60px;">Présent</th>
+                <th style="padding: 5px;">{{ 'VEHICLES.EQUIPMENT.NAME' | translate }}</th>
+                <th style="padding: 5px; text-align: center; width: 60px;">{{ 'VEHICLES.EQUIPMENT.PRESENT' | translate
+                  }}</th>
                 <th style="padding: 5px; width: 40px;"></th>
               </tr>
             </thead>
@@ -213,12 +214,13 @@
       <div style="margin-bottom: 10px; display: flex; align-items: center;">
         <input type="checkbox" id="newVehiculeGps" name="newVehiculeGps" [(ngModel)]="newVehicule.enableGpsTracking"
           style="margin-right: 10px;">
-        <label for="newVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6;">Activer le Tracking GPS
+        <label for="newVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6;">{{ 'VEHICLES.FORM.GPS' |
+          translate }}
           🛰️</label>
       </div>
 
       <div style="margin-bottom: 10px;">
-        <label for="newVehiculeStatut">Statut:</label>
+        <label for="newVehiculeStatut">{{ 'VEHICLES.FORM.STATUS' | translate }}:</label>
         <select id="newVehiculeStatut" name="newVehiculeStatut" [(ngModel)]="newVehicule.statut" required
           style="width: 100%; padding: 8px;">
           <option *ngFor="let s of statuses" [value]="s">{{s}}</option>
@@ -227,15 +229,15 @@
 
 
       <button type="submit" [disabled]="!vehiculeForm.form.valid"
-        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">Créer
-        Véhicule</button>
+        style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">{{
+        'VEHICLES.ACTIONS.CREATE' | translate }}</button>
     </form>
   </div>
 
   <!-- Formulaire de modification de véhicule -->
   <div *ngIf="selectedVehicule"
     style="border: 1px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #fff3cd;">
-    <h3>Modifier véhicule: {{ selectedVehicule.marque }} {{ selectedVehicule.modele }}</h3>
+    <h3>{{ 'VEHICLES.EDIT_TITLE' | translate }}: {{ selectedVehicule.marque }} {{ selectedVehicule.modele }}</h3>
     <form (ngSubmit)="updateVehicule()" #editVehiculeForm="ngForm">
       <div style="margin-bottom: 10px;">
         <label for="editVehiculeMarque">Marque:</label>
@@ -321,7 +323,7 @@
       <!-- Données Environnementales (Edit) -->
       <div
         style="border: 2px solid #4CAF50; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E8F5E9;">
-        <h4 style="margin-top: 0; color: #2E7D32;">🌱 Données Environnementales</h4>
+        <h4 style="margin-top: 0; color: #2E7D32;">🌱 {{ 'VEHICLES.ENV.TITLE' | translate }}</h4>
 
         <div style="margin-bottom: 10px;">
           <label for="editVehiculeEmissionsCO2">Émissions CO2 (g/km):</label>
@@ -366,20 +368,20 @@
       <!-- Assurance (Edit) -->
       <div
         style="border: 2px solid #2196F3; border-radius: 8px; padding: 15px; margin: 15px 0; background-color: #E3F2FD;">
-        <h4 style="margin-top: 0; color: #1565C0;">🛡️ Assurance</h4>
+        <h4 style="margin-top: 0; color: #1565C0;">🛡️ {{ 'VEHICLES.INSURANCE.TITLE' | translate }}</h4>
         <div style="margin-bottom: 10px;">
-          <label for="editVehiculeAssureur">Assureur:</label>
+          <label for="editVehiculeAssureur">{{ 'VEHICLES.INSURANCE.INSURER' | translate }}:</label>
           <input type="text" id="editVehiculeAssureur" name="editVehiculeAssureur"
             [(ngModel)]="selectedVehicule.assurance.nomAssureur" style="width: 100%; padding: 8px;">
         </div>
         <div style="margin-bottom: 10px;">
-          <label for="editVehiculeDateFinAssurance">Date fin d'assurance:</label>
+          <label for="editVehiculeDateFinAssurance">{{ 'VEHICLES.INSURANCE.END_DATE' | translate }}:</label>
           <input type="date" id="editVehiculeDateFinAssurance" name="editVehiculeDateFinAssurance"
             [ngModel]="selectedVehicule.assurance.dateFin | date:'yyyy-MM-dd'"
             (ngModelChange)="selectedVehicule.assurance.dateFin = $event" style="width: 100%; padding: 8px;">
         </div>
         <div style="margin-bottom: 10px;">
-          <label for="editVehiculeCertificat">Lien Certificat:</label>
+          <label for="editVehiculeCertificat">{{ 'VEHICLES.INSURANCE.CERTIFICATE' | translate }}:</label>
           <input type="text" id="editVehiculeCertificat" name="editVehiculeCertificat"
             [(ngModel)]="selectedVehicule.assurance.certificatUrl" style="width: 100%; padding: 8px;">
         </div>
@@ -388,7 +390,8 @@
       <div style="margin-bottom: 10px; display: flex; align-items: center;">
         <input type="checkbox" id="editVehiculeGps" name="editVehiculeGps"
           [(ngModel)]="selectedVehicule.enableGpsTracking" style="margin-right: 10px;">
-        <label for="editVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6;">Activer le Tracking GPS
+        <label for="editVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6;">{{ 'VEHICLES.FORM.GPS'
+          | translate }}
           🛰️</label>
       </div>
 
@@ -406,9 +409,10 @@
             <thead>
               <tr style="background-color: #f0f0f0; text-align: left;">
                 <th style="padding: 5px; width: 40px;">N°</th>
-                <th style="padding: 5px;">Équipement (Modifiable)</th>
-                <th style="padding: 5px; text-align: center; width: 60px;">Présent</th>
-                <th style="padding: 5px;">Dernière vérif.</th>
+                <th style="padding: 5px;">{{ 'VEHICLES.EQUIPMENT.NAME' | translate }}</th>
+                <th style="padding: 5px; text-align: center; width: 60px;">{{ 'VEHICLES.EQUIPMENT.PRESENT' | translate
+                  }}</th>
+                <th style="padding: 5px;">{{ 'VEHICLES.EQUIPMENT.LAST_CHECK' | translate }}</th>
                 <th style="padding: 5px; width: 40px;"></th>
               </tr>
             </thead>
@@ -438,7 +442,7 @@
       </div>
 
       <div style="margin-bottom: 10px;">
-        <label for="editVehiculeStatut">Statut:</label>
+        <label for="editVehiculeStatut">{{ 'VEHICLES.FORM.STATUS' | translate }}:</label>
         <select id="editVehiculeStatut" name="editVehiculeStatut" [(ngModel)]="selectedVehicule.statut" required
           style="width: 100%; padding: 8px;">
           <option *ngFor="let s of statuses" [value]="s">{{s}}</option>
@@ -457,13 +461,14 @@
 
   <!-- Liste des véhicules existants -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-    <h3>Véhicules existants</h3>
+    <h3>{{ 'VEHICLES.LIST.TITLE' | translate }}</h3>
     <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" (click)="toggleShowAllBasesInPays()"
       style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
-      {{ showAllBasesInPays ? 'Afficher ma base uniquement' : 'Afficher tout le pays' }}
+      {{ showAllBasesInPays ? ('VEHICLES.ACTIONS.SHOW_MY_BASE' | translate) : ('VEHICLES.ACTIONS.SHOW_ALL_COUNTRY' |
+      translate) }}
     </button>
   </div>
-  <div *ngIf="vehicules.length === 0">Aucun véhicule enregistré.</div>
+  <div *ngIf="vehicules.length === 0">{{ 'VEHICLES.LIST.NO_DATA' | translate }}</div>
   <ul style="list-style-type: none; padding: 0;">
     <li *ngFor="let vehicule of vehicules"
       style="border: 1px solid #eee; padding: 10px; margin-bottom: 5px; border-radius: 3px; display: flex; justify-content: space-between; align-items: center;">
@@ -501,10 +506,12 @@
           style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">Modifier</button>
 
         <button *ngIf="vehicule.statut !== 'Archivé'" (click)="archiveVehicule(vehicule)"
-          style="padding: 5px 10px; background-color: #607d8b; color: white; border: none; cursor: pointer; margin-right: 5px;">Archiver</button>
+          style="padding: 5px 10px; background-color: #607d8b; color: white; border: none; cursor: pointer; margin-right: 5px;">{{
+          'VEHICLES.ACTIONS.ARCHIVE' | translate }}</button>
 
         <button *ngIf="vehicule.statut === 'Archivé'" (click)="unarchiveVehicule(vehicule)"
-          style="padding: 5px 10px; background-color: #ff9800; color: white; border: none; cursor: pointer; margin-right: 5px;">Désarchiver</button>
+          style="padding: 5px 10px; background-color: #ff9800; color: white; border: none; cursor: pointer; margin-right: 5px;">{{
+          'VEHICLES.ACTIONS.UNARCHIVE' | translate }}</button>
 
         <button (click)="deleteVehicule(vehicule._id)"
           style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Supprimer</button>

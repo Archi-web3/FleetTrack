@@ -8,6 +8,7 @@ import { AuditService, AuditLog } from '../../core/services/audit.service';
 import { PaysService } from '../../pays.service';
 
 import { AuthService } from '../../auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-audit-log',
@@ -17,7 +18,9 @@ import { AuthService } from '../../auth.service';
         MatTableModule,
         MatCardModule,
         MatIconModule,
-        MatButtonModule
+        MatIconModule,
+        MatButtonModule,
+        TranslateModule
     ],
     templateUrl: './audit-log.html',
     styleUrls: ['./audit-log.css']

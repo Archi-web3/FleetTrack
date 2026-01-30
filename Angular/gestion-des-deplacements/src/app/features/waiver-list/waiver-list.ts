@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { WaiverService, Waiver } from '../../core/services/waiver.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-waiver-list',
@@ -16,7 +17,9 @@ import { WaiverService, Waiver } from '../../core/services/waiver.service';
         MatCardModule,
         MatIconModule,
         MatButtonModule,
-        MatDialogModule
+        MatButtonModule,
+        MatDialogModule,
+        TranslateModule
     ],
     templateUrl: './waiver-list.html',
     styleUrls: ['./waiver-list.css']

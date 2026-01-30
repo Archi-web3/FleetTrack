@@ -2,7 +2,7 @@
     <div class="page-header">
         <h1>
             <mat-icon>folder_shared</mat-icon>
-            Décharges Visiteurs Signées
+            {{ 'WAIVERS.TITLE' | translate }}
         </h1>
     </div>
 
@@ -11,19 +11,19 @@
 
             <!-- Date Column -->
             <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef> Date </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'WAIVERS.TABLE.DATE' | translate }} </th>
                 <td mat-cell *matCellDef="let w"> {{w.signedAt | date:'dd/MM/yyyy HH:mm'}} </td>
             </ng-container>
 
             <!-- Visitor Column -->
             <ng-container matColumnDef="visitor">
-                <th mat-header-cell *matHeaderCellDef> Visiteur </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'WAIVERS.TABLE.VISITOR' | translate }} </th>
                 <td mat-cell *matCellDef="let w"> <strong>{{w.visitorName}}</strong> </td>
             </ng-container>
 
             <!-- Vehicle Column -->
             <ng-container matColumnDef="vehicle">
-                <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'WAIVERS.TABLE.VEHICLE' | translate }} </th>
                 <td mat-cell *matCellDef="let w">
                     {{w.vehicleId?.immatriculation}} <br>
                     <small class="text-muted">{{w.vehicleId?.marque}} {{w.vehicleId?.modele}}</small>
@@ -32,7 +32,7 @@
 
             <!-- Signature Column -->
             <ng-container matColumnDef="signature">
-                <th mat-header-cell *matHeaderCellDef> Signature </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'WAIVERS.TABLE.SIGNATURE' | translate }} </th>
                 <td mat-cell *matCellDef="let w">
                     <img [src]="w.signatureUrl" class="signature-thumb" (click)="printWaiver(w)">
                 </td>
@@ -40,7 +40,7 @@
 
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'WAIVERS.TABLE.ACTIONS' | translate }} </th>
                 <td mat-cell *matCellDef="let w">
                     <button mat-icon-button color="primary" (click)="printWaiver(w)" title="Imprimer / PDF">
                         <mat-icon>print</mat-icon>
@@ -57,7 +57,7 @@
 
         <div *ngIf="waivers.length === 0" class="no-data">
             <mat-icon>info</mat-icon>
-            <p>Aucune décharge enregistrée pour le moment.</p>
+            <p>{{ 'WAIVERS.NO_DATA' | translate }}</p>
         </div>
     </mat-card>
 </div>

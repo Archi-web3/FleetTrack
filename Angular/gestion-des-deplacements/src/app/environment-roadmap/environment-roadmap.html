@@ -1,21 +1,21 @@
 <div class="env-container">
     <div class="header">
         <div class="header-left">
-            <h1><mat-icon>eco</mat-icon> Objectifs Environnementaux</h1>
+            <h1><mat-icon>eco</mat-icon> {{ 'ENVIRONMENT.TITLE' | translate }}</h1>
             <!-- GUIDE BUTTON -->
             <button mat-stroked-button color="primary" (click)="showGuide = !showGuide">
-                <mat-icon>menu_book</mat-icon> Guide & Méthode
+                <mat-icon>menu_book</mat-icon> {{ 'ENVIRONMENT.GUIDE_BTN' | translate }}
             </button>
         </div>
         <div class="controls">
             <mat-form-field appearance="outline" class="density-sm">
-                <mat-label>Objectif (-%)</mat-label>
+                <mat-label>{{ 'ENVIRONMENT.TARGET_PERCENT' | translate }}</mat-label>
                 <input matInput type="number" [(ngModel)]="targetPercent" (change)="loadDataForChart()">
                 <span matSuffix>%</span>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="density-sm">
-                <mat-label>Année</mat-label>
+                <mat-label>{{ 'ENVIRONMENT.YEAR' | translate }}</mat-label>
                 <mat-select [(ngModel)]="currentYear" (selectionChange)="ngOnInit()">
                     <mat-option *ngFor="let y of years" [value]="y">{{y}}</mat-option>
                 </mat-select>
@@ -27,15 +27,13 @@
     <!-- EMBEDDED GUIDE SECTION -->
     <mat-expansion-panel [expanded]="showGuide" class="guide-panel">
         <mat-expansion-panel-header>
-            <mat-panel-title>📖 Comment calculer l'évolution au prorata de l'activité (IAP) ?</mat-panel-title>
+            <mat-panel-title>📖 {{ 'ENVIRONMENT.GUIDE.TITLE' | translate }}</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="guide-content">
-            <h3>🔹 Le Principe</h3>
-            <p>Pour comparer deux années équitablement, nous utilisons l'<strong>Indice d'Activité Pondéré
-                    (IAP)</strong>. Il permet de mesurer si la baisse de consommation est réelle (efficacité) ou juste
-                due à une baisse d'activité.</p>
+            <h3>🔹 {{ 'ENVIRONMENT.GUIDE.PRINCIPLE_TITLE' | translate }}</h3>
+            <p>{{ 'ENVIRONMENT.GUIDE.PRINCIPLE_TEXT' | translate }}</p>
 
-            <h3>🔹 Formule de Calcul</h3>
+            <h3>🔹 {{ 'ENVIRONMENT.GUIDE.FORMULA_TITLE' | translate }}</h3>
             <div
                 style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 0.9em;">
                 <strong>IAP = </strong><br>
@@ -45,18 +43,15 @@
                 &nbsp;&nbsp;(Budget k$ × Poids_Budget%) + ...
             </div>
 
-            <h3>🔹 Principe de Comparaison</h3>
-            <p>Nous suivons l'évolution du ratio : <strong style="color: #005FB6;">Litres Consommés / IAP</strong>.</p>
-            <p>Si ce ratio diminue de <strong>{{targetPercent}}%</strong>, cela signifie que vous êtes devenu plus
-                efficace énergetiquement <em>à activité égale</em>.</p>
+            <h3>🔹 {{ 'ENVIRONMENT.GUIDE.COMPARISON_TITLE' | translate }}</h3>
+            <p>{{ 'ENVIRONMENT.GUIDE.COMPARISON_TEXT' | translate }}</p>
+            <p>{{ 'ENVIRONMENT.GUIDE.COMPARISON_EXPLANATION' | translate }}</p>
 
-            <p><em>Exemple : Si votre activité double (IAP x2) mais que votre consommation augmente de moins de deux
-                    fois, votre ratio baisse = Objectif atteint !</em></p>
+            <p><em>{{ 'ENVIRONMENT.GUIDE.EXAMPLE' | translate }}</em></p>
 
             <div class="guide-alert">
                 <mat-icon>info</mat-icon>
-                <span>Remplissez bien les indicateurs "Activité" chaque mois dans l'onglet <strong>Saisie
-                        Données</strong> pour que le calcul fonctionne.</span>
+                <span>{{ 'ENVIRONMENT.GUIDE.REMINDER' | translate }}</span>
             </div>
         </div>
     </mat-expansion-panel>
@@ -64,86 +59,90 @@
     <!-- PARAMETERS PANEL -->
     <div class="params-controls" style="margin-bottom: 16px;">
         <button mat-button (click)="showWeights = !showWeights">
-            <mat-icon>tune</mat-icon> {{ showWeights ? 'Masquer' : 'Configurer' }} la Pondération (IAP)
+            <mat-icon>tune</mat-icon> {{ showWeights ? ('ENVIRONMENT.CONFIG_WEIGHTS_BTN' | translate) :
+            ('ENVIRONMENT.CONFIG_WEIGHTS_BTN' | translate) }}
         </button>
     </div>
 
     <mat-expansion-panel [expanded]="showWeights" class="weights-panel">
         <mat-expansion-panel-header>
-            <mat-panel-title>⚖️ Pondération de l'Indice d'Activité (Recommandé)</mat-panel-title>
+            <mat-panel-title>⚖️ {{ 'ENVIRONMENT.WEIGHTS.TITLE' | translate }}</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="weights-grid">
             <div class="weight-input">
-                <label>Nb Projets (Rec: {{defaultWeights.projects}}%)</label>
+                <label>{{ 'ENVIRONMENT.WEIGHTS.PROJECTS' | translate }} (Rec: {{defaultWeights.projects}}%)</label>
                 <input type="number" [(ngModel)]="weights.projects" (change)="autoCalculateIAP()"> %
             </div>
             <div class="weight-input">
-                <label>Nb Sites (Rec: {{defaultWeights.sites}}%)</label>
+                <label>{{ 'ENVIRONMENT.WEIGHTS.SITES' | translate }} (Rec: {{defaultWeights.sites}}%)</label>
                 <input type="number" [(ngModel)]="weights.sites" (change)="autoCalculateIAP()"> %
             </div>
             <div class="weight-input">
-                <label>Staff Terrain (Rec: {{defaultWeights.staff}}%)</label>
+                <label>{{ 'ENVIRONMENT.WEIGHTS.STAFF' | translate }} (Rec: {{defaultWeights.staff}}%)</label>
                 <input type="number" [(ngModel)]="weights.staff" (change)="autoCalculateIAP()"> %
             </div>
             <div class="weight-input">
-                <label>Budget (Rec: {{defaultWeights.budget}}%)</label>
+                <label>{{ 'ENVIRONMENT.WEIGHTS.BUDGET' | translate }} (Rec: {{defaultWeights.budget}}%)</label>
                 <input type="number" [(ngModel)]="weights.budget" (change)="autoCalculateIAP()"> %
             </div>
         </div>
-        <p class="hint">Ces poids déterminent l'importance de chaque activité dans le calcul de votre score IAP.</p>
+        <p class="hint">{{ 'ENVIRONMENT.WEIGHTS.HINT' | translate }}</p>
     </mat-expansion-panel>
 
 
     <mat-tab-group animationDuration="0ms">
 
         <!-- TAB 1: ROADMAP (ACTIONS) -->
-        <mat-tab label="Plan d'Action">
+        <mat-tab label="{{ 'ENVIRONMENT.TABS.ACTION_PLAN' | translate }}">
             <div class="tab-content">
 
                 <!-- Add Action Form -->
                 <mat-expansion-panel class="add-action-panel">
                     <mat-expansion-panel-header>
-                        <mat-panel-title><mat-icon>add_circle</mat-icon> Ajouter une action</mat-panel-title>
+                        <mat-panel-title><mat-icon>add_circle</mat-icon> {{ 'ENVIRONMENT.ACTION_PLAN.ADD_ACTION' |
+                            translate }}</mat-panel-title>
                     </mat-expansion-panel-header>
 
                     <div class="form-grid">
                         <mat-form-field>
-                            <mat-label>Trimestre</mat-label>
+                            <mat-label>{{ 'ENVIRONMENT.ACTION_PLAN.QUARTER' | translate }}</mat-label>
                             <mat-select [(ngModel)]="newAction.quarter">
-                                <mat-option value="T1">T1 (Jan-Mar)</mat-option>
-                                <mat-option value="T2">T2 (Avr-Juin)</mat-option>
-                                <mat-option value="T3">T3 (Juil-Sep)</mat-option>
-                                <mat-option value="T4">T4 (Oct-Dec)</mat-option>
+                                <mat-option value="T1">{{ 'ENVIRONMENT.QUARTERS.T1' | translate }}</mat-option>
+                                <mat-option value="T2">{{ 'ENVIRONMENT.QUARTERS.T2' | translate }}</mat-option>
+                                <mat-option value="T3">{{ 'ENVIRONMENT.QUARTERS.T3' | translate }}</mat-option>
+                                <mat-option value="T4">{{ 'ENVIRONMENT.QUARTERS.T4' | translate }}</mat-option>
                             </mat-select>
                         </mat-form-field>
 
                         <mat-form-field>
-                            <mat-label>Levier</mat-label>
+                            <mat-label>{{ 'ENVIRONMENT.ACTION_PLAN.LEVER' | translate }}</mat-label>
                             <mat-select [(ngModel)]="newAction.category">
                                 <mat-option *ngFor="let l of leviers" [value]="l">{{l}}</mat-option>
                             </mat-select>
                         </mat-form-field>
 
                         <mat-form-field class="full-width">
-                            <mat-label>Description de l'action</mat-label>
+                            <mat-label>{{ 'ENVIRONMENT.ACTION_PLAN.DESCRIPTION' | translate }}</mat-label>
                             <input matInput [(ngModel)]="newAction.action"
                                 placeholder="Ex: Formation éco-conduite pour 10 chauffeurs">
                         </mat-form-field>
 
                         <mat-form-field>
-                            <mat-label>Impact Estimé</mat-label>
+                            <mat-label>{{ 'ENVIRONMENT.ACTION_PLAN.IMPACT' | translate }}</mat-label>
                             <input matInput [(ngModel)]="newAction.impact_estimated" placeholder="Ex: -2% carburant">
                         </mat-form-field>
                     </div>
 
-                    <button mat-raised-button color="primary" (click)="addAction()">Enregistrer</button>
+                    <button mat-raised-button color="primary" (click)="addAction()">{{ 'COMMON.SAVE' | translate
+                        }}</button>
                 </mat-expansion-panel>
 
                 <!-- Quarterly Columns -->
                 <div class="quarters-grid">
                     <!-- T1 -->
                     <mat-card class="quarter-card">
-                        <mat-card-header><mat-card-title>T1 - Jan à Mars</mat-card-title></mat-card-header>
+                        <mat-card-header><mat-card-title>{{ 'ENVIRONMENT.QUARTERS.T1' | translate
+                                }}</mat-card-title></mat-card-header>
                         <mat-card-content>
                             <div class="action-item" *ngFor="let a of actionsT1">
                                 <div class="action-header">
@@ -166,7 +165,8 @@
 
                     <!-- T2 -->
                     <mat-card class="quarter-card">
-                        <mat-card-header><mat-card-title>T2 - Avril à Juin</mat-card-title></mat-card-header>
+                        <mat-card-header><mat-card-title>{{ 'ENVIRONMENT.QUARTERS.T2' | translate
+                                }}</mat-card-title></mat-card-header>
                         <mat-card-content>
                             <div class="action-item" *ngFor="let a of actionsT2">
                                 <div class="action-header"><span class="badge">{{a.category}}</span></div>
@@ -185,7 +185,8 @@
 
                     <!-- T3 -->
                     <mat-card class="quarter-card">
-                        <mat-card-header><mat-card-title>T3 - Juil à Sept</mat-card-title></mat-card-header>
+                        <mat-card-header><mat-card-title>{{ 'ENVIRONMENT.QUARTERS.T3' | translate
+                                }}</mat-card-title></mat-card-header>
                         <mat-card-content>
                             <div class="action-item" *ngFor="let a of actionsT3">
                                 <div class="action-header"><span class="badge">{{a.category}}</span></div>
@@ -196,7 +197,8 @@
 
                     <!-- T4 -->
                     <mat-card class="quarter-card">
-                        <mat-card-header><mat-card-title>T4 - Oct à Déc</mat-card-title></mat-card-header>
+                        <mat-card-header><mat-card-title>{{ 'ENVIRONMENT.QUARTERS.T4' | translate
+                                }}</mat-card-title></mat-card-header>
                         <mat-card-content>
                             <div class="action-item" *ngFor="let a of actionsT4">
                                 <div class="action-header"><span class="badge">{{a.category}}</span></div>
@@ -210,22 +212,22 @@
         </mat-tab>
 
         <!-- TAB 2: DATA ENTRY -->
-        <mat-tab label="Saisie Données (IAP)">
+        <mat-tab label="{{ 'ENVIRONMENT.TABS.DATA_ENTRY' | translate }}">
             <div class="tab-content">
                 <div class="data-toolbar">
                     <mat-form-field appearance="outline">
-                        <mat-label>Mois</mat-label>
+                        <mat-label>{{ 'ENVIRONMENT.DATA.MONTH' | translate }}</mat-label>
                         <mat-select [(ngModel)]="selectedMonth" (selectionChange)="loadMonthlyData()">
                             <mat-option *ngFor="let m of months" [value]="m.id">{{m.name}}</mat-option>
                         </mat-select>
                     </mat-form-field>
 
                     <button mat-flat-button color="accent" (click)="loadMonthlyData()">
-                        <mat-icon>autorenew</mat-icon> Pré-remplir (Auto)
+                        <mat-icon>autorenew</mat-icon> {{ 'ENVIRONMENT.DATA.AUTOFILL' | translate }}
                     </button>
 
                     <button mat-raised-button color="primary" (click)="saveMonthlyData()">
-                        <mat-icon>save</mat-icon> Sauvegarder
+                        <mat-icon>save</mat-icon> {{ 'COMMON.SAVE' | translate }}
                     </button>
 
                     <div class="current-iap">
@@ -236,11 +238,13 @@
                 <div class="forms-container">
                     <!-- FLOTTE -->
                     <mat-card>
-                        <mat-card-header><mat-card-title>Flotte (Véhicules)</mat-card-title></mat-card-header>
+                        <mat-card-header><mat-card-title>{{ 'ENVIRONMENT.DATA.FLEET' | translate
+                                }}</mat-card-title></mat-card-header>
                         <mat-card-content>
-                            <mat-form-field><mat-label>Km Total</mat-label><input matInput type="number"
-                                    [(ngModel)]="monthlyData.fleet_km_total"></mat-form-field>
-                            <mat-form-field><mat-label>Litres Total</mat-label><input matInput type="number"
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.KM_TOTAL' | translate }}</mat-label><input
+                                    matInput type="number" [(ngModel)]="monthlyData.fleet_km_total"></mat-form-field>
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.LITERS_TOTAL' | translate
+                                    }}</mat-label><input matInput type="number"
                                     [(ngModel)]="monthlyData.fleet_liters_total"></mat-form-field>
                             <div class="calc-info">L/100km théorique: {{(monthlyData.fleet_liters_total /
                                 monthlyData.fleet_km_total * 100) | number:'1.1-1'}}</div>
@@ -249,31 +253,35 @@
 
                     <!-- ENERGIE -->
                     <mat-card>
-                        <mat-card-header><mat-card-title>Énergie (Base)</mat-card-title></mat-card-header>
+                        <mat-card-header><mat-card-title>{{ 'ENVIRONMENT.DATA.ENERGY' | translate
+                                }}</mat-card-title></mat-card-header>
                         <mat-card-content>
-                            <mat-form-field><mat-label>Heures Générateurs</mat-label><input matInput type="number"
-                                    [(ngModel)]="monthlyData.energy_gen_hours"></mat-form-field>
-                            <mat-form-field><mat-label>Litres Générateurs</mat-label><input matInput type="number"
-                                    [(ngModel)]="monthlyData.energy_gen_liters"></mat-form-field>
-                            <mat-form-field><mat-label>kWh Réseau (si dispo)</mat-label><input matInput type="number"
-                                    [(ngModel)]="monthlyData.energy_grid_kwh"></mat-form-field>
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.GEN_HOURS' | translate }}</mat-label><input
+                                    matInput type="number" [(ngModel)]="monthlyData.energy_gen_hours"></mat-form-field>
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.GEN_LITERS' | translate }}</mat-label><input
+                                    matInput type="number" [(ngModel)]="monthlyData.energy_gen_liters"></mat-form-field>
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.GRID_KWH' | translate }}</mat-label><input
+                                    matInput type="number" [(ngModel)]="monthlyData.energy_grid_kwh"></mat-form-field>
                         </mat-card-content>
                     </mat-card>
 
                     <!-- ACTIVITE -->
                     <mat-card>
-                        <mat-card-header><mat-card-title>Activité (Drivers IAP)</mat-card-title></mat-card-header>
+                        <mat-card-header><mat-card-title>{{ 'ENVIRONMENT.DATA.ACTIVITY' | translate
+                                }}</mat-card-title></mat-card-header>
                         <mat-card-content>
-                            <mat-form-field><mat-label>Nb Projets Actifs</mat-label><input matInput type="number"
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.ACTIVE_PROJECTS' | translate
+                                    }}</mat-label><input matInput type="number"
                                     [(ngModel)]="monthlyData.driver_nb_projects"
                                     (change)="autoCalculateIAP()"></mat-form-field>
-                            <mat-form-field><mat-label>Nb Sites/Lieux</mat-label><input matInput type="number"
-                                    [(ngModel)]="monthlyData.driver_nb_sites"
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.SITES' | translate }}</mat-label><input
+                                    matInput type="number" [(ngModel)]="monthlyData.driver_nb_sites"
                                     (change)="autoCalculateIAP()"></mat-form-field>
-                            <mat-form-field><mat-label>Staff Terrain (FTE)</mat-label><input matInput type="number"
-                                    [(ngModel)]="monthlyData.driver_staff_fte"
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.STAFF_FTE' | translate }}</mat-label><input
+                                    matInput type="number" [(ngModel)]="monthlyData.driver_staff_fte"
                                     (change)="autoCalculateIAP()"></mat-form-field>
-                            <mat-form-field><mat-label>Volume Financier</mat-label><input matInput type="number"
+                            <mat-form-field><mat-label>{{ 'ENVIRONMENT.DATA.FINANCIAL_VOLUME' | translate
+                                    }}</mat-label><input matInput type="number"
                                     [(ngModel)]="monthlyData.driver_financial_volume"
                                     (change)="autoCalculateIAP()"></mat-form-field>
                         </mat-card-content>
@@ -284,11 +292,11 @@
         </mat-tab>
 
         <!-- TAB 3: CHARTS -->
-        <mat-tab label="Analyse & Graphiques">
+        <mat-tab label="{{ 'ENVIRONMENT.TABS.ANALYSIS' | translate }}">
             <div class="tab-content">
                 <mat-card class="chart-container">
-                    <mat-card-title>Efficacité Énergétique (Litres / IAP)</mat-card-title>
-                    <p class="chart-subtitle">L'objectif est d'être <strong>sous</strong> la ligne verte
+                    <mat-card-title>{{ 'ENVIRONMENT.ANALYSIS.TITLE' | translate }}</mat-card-title>
+                    <p class="chart-subtitle">{{ 'ENVIRONMENT.ANALYSIS.SUBTITLE' | translate }}
                         (-{{targetPercent}}%). Si l'activité monte, la conso peut monter, mais ce ratio doit baisser.
                     </p>
                     <div class="chart-wrapper">
