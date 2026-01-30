@@ -171,7 +171,8 @@ export class PlanningMouvementsComponent implements OnInit {
   getEventTitle(mouvement: any): string {
     // Si c'est une maintenance, afficher le type (et description courte)
     if (mouvement.type === 'maintenance') {
-      return `🔧 ${mouvement.maintenanceType}`;
+      const vehiculeInfo = mouvement.vehicule ? ` - ${mouvement.vehicule.immatriculation}` : '';
+      return `🔧 ${mouvement.maintenanceType}${vehiculeInfo}`;
     }
 
     // Récupérer la destination (dernier stop)
