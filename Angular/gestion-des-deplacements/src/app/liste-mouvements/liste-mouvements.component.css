@@ -267,3 +267,138 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* LIST VIEW MODE (Historique) */
+.movements-grid.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.movements-grid.list-view .movement-card {
+    flex-direction: row;
+    align-items: center;
+    border-left: 5px solid transparent;
+    /* Replace top border with left */
+    border-top: 1px solid #eee;
+}
+
+.movements-grid.list-view .movement-card.status-validated {
+    border-left-color: #4CAF50;
+    border-top-color: #eee;
+}
+
+.movements-grid.list-view .movement-card.status-pending {
+    border-left-color: #FF9800;
+    border-top-color: #eee;
+}
+
+.movements-grid.list-view .movement-card.status-cancelled,
+.movements-grid.list-view .movement-card.status-refused {
+    border-left-color: #F44336;
+    border-top-color: #eee;
+}
+
+.movements-grid.list-view .movement-card.status-terminé {
+    border-left-color: #9E9E9E;
+    border-top-color: #eee;
+}
+
+/* List View Header */
+.movements-grid.list-view .card-header {
+    width: 140px;
+    background: transparent;
+    border-bottom: none;
+    border-right: 1px solid #eee;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.movements-grid.list-view .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+/* List View Body */
+.movements-grid.list-view .card-body {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr;
+    /* Title | Info | Alerts */
+    align-items: center;
+    gap: 15px;
+    padding: 5px 15px;
+}
+
+.movements-grid.list-view .mission-title {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.movements-grid.list-view .route-line {
+    margin: 0;
+    padding: 5px;
+    background: transparent;
+}
+
+.movements-grid.list-view .info-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+}
+
+.movements-grid.list-view .alerts-section {
+    align-items: flex-start;
+}
+
+/* List View Footer */
+.movements-grid.list-view .card-footer {
+    border-top: none;
+    border-left: 1px solid #eee;
+    padding: 5px 10px;
+    flex-direction: column;
+    /* Stack buttons vertically or simple row */
+    justify-content: center;
+    background: transparent;
+}
+
+/* Mobile adjustments for List View to fall back to Cards */
+@media (max-width: 900px) {
+    .movements-grid.list-view .movement-card {
+        flex-direction: column;
+        border-left: none;
+        border-top: 5px solid transparent;
+    }
+
+    .movements-grid.list-view .movement-card.status-validated {
+        border-top-color: #4CAF50;
+    }
+
+    /* ... reset other styles ... */
+    .movements-grid.list-view .card-header {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .movements-grid.list-view .header-top {
+        flex-direction: row;
+    }
+
+    .movements-grid.list-view .card-body {
+        display: block;
+    }
+
+    .movements-grid.list-view .card-footer {
+        border-left: none;
+        border-top: 1px solid #eee;
+        flex-direction: row;
+    }
+}

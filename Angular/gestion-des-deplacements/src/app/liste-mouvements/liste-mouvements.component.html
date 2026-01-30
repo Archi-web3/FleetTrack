@@ -16,7 +16,7 @@
     <p style="font-size: 1.2em; margin: 0;">Aucun mouvement à afficher dans cette catégorie.</p>
   </div>
 
-  <div class="movements-grid">
+  <div class="movements-grid" [class.list-view]="showCompleted">
     <div *ngFor="let mouvement of filteredMouvements" class="movement-card"
       [class.status-validated]="mouvement.statut === 'validé'"
       [class.status-pending]="mouvement.statut === 'en attente'">
