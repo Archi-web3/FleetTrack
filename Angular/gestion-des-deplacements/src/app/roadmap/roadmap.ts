@@ -317,7 +317,7 @@ export class RoadmapComponent {
             category: 'Planning & Scheduling',
             categoryIcon: 'build_circle',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Haute'
         },
         {
@@ -337,7 +337,7 @@ export class RoadmapComponent {
             category: 'Sécurité & Admin',
             categoryIcon: 'vpn_key',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Haute'
         },
         {
@@ -347,7 +347,7 @@ export class RoadmapComponent {
             category: 'Workflow',
             categoryIcon: 'hub',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Moyenne'
         },
         {
@@ -357,7 +357,7 @@ export class RoadmapComponent {
             category: 'Workflow',
             categoryIcon: 'pending_actions',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Moyenne'
         },
         {
@@ -377,7 +377,7 @@ export class RoadmapComponent {
             category: 'Planning & Scheduling',
             categoryIcon: 'event_busy',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Haute'
         },
         {

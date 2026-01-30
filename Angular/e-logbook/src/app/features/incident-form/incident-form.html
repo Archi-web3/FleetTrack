@@ -5,6 +5,22 @@
         </mat-card-header>
         <mat-card-content>
 
+            <!-- NOUVEAU: Indicateur GPS -->
+            <div class="gps-status-container" [ngClass]="locationStatus">
+                <mat-icon *ngIf="locationStatus === 'loading'" class="spin">gps_not_fixed</mat-icon>
+                <mat-icon *ngIf="locationStatus === 'success'">gps_fixed</mat-icon>
+                <mat-icon *ngIf="locationStatus === 'error'">location_disabled</mat-icon>
+
+                <span *ngIf="locationStatus === 'loading'">Acquisition GPS en cours...</span>
+                <span *ngIf="locationStatus === 'success'">Position acquise ({{ location?.accuracy | number:'1.0-0'
+                    }}m)</span>
+                <span *ngIf="locationStatus === 'error'">GPS non disponible (Incident sera sans loc)</span>
+
+                <button mat-icon-button *ngIf="locationStatus === 'error'" (click)="captureLocation()">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+            </div>
+
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Type d'Incident</mat-label>
                 <mat-select [(ngModel)]="incidentType">

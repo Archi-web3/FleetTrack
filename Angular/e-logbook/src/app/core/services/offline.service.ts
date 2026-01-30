@@ -69,6 +69,7 @@ export interface Incident {
     type: string;
     severity: string;
     description: string;
+    location?: { lat: number, lng: number, address?: string }; // NOUVEAU: Coordonnées GPS
     cost?: number; // Cost related to the incident
     photos?: string[]; // NOUVEAU: URLs des photos Cloudinary
     synced: number;
