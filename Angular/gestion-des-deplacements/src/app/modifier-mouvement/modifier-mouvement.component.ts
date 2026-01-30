@@ -58,6 +58,11 @@ export class ModifierMouvementComponent implements OnInit {
   // Pour la sélection multiple des passagers
   selectedPassagersIds: string[] = [];
 
+  // NOUVEAU : Récurrence
+  isRecurring: boolean = false;
+  recurrenceFrequency: 'Daily' | 'Weekly' = 'Daily';
+  recurrenceEndDate: string = '';
+
   constructor(
     private route: ActivatedRoute, // Pour récupérer l'ID du mouvement de l'URL
     public router: Router,
@@ -244,10 +249,86 @@ export class ModifierMouvementComponent implements OnInit {
       }
     }
 
+    // --- LOGIQUE MAINTENANCE RECURRENCE ---
+    if (this.mouvement.type === 'maintenance' && this.isRecurring) {
+      if (!this.recurrenceEndDate) {
+        alert('Veuillez spécifier une date de fin pour la récurrence.');
+        return;
+      }
+      const startDate = new Date(this.mouvement.dateDepart);
+      const endDate = new Date(this.recurrenceEndDate);
+      if (endDate <= startDate) {
+        alert('La date de fin de récurrence doit être postérieure à la date de départ.');
+        return;
+      }
+
+      // D'abord, on met à jour le mouvement courant (le "parent" ou le premier de la série)
+      this.mouvement.recurrenceGroupId = 'REC_MAINT_' + Date.now(); // On initie un groupe si pas présent
+    }
+
     try {
       await firstValueFrom(this.mouvementService.updateMouvement(this.mouvementId, this.mouvement));
-      alert('Mouvement mis à jour avec succès !');
-      this.router.navigate(['/mes-mouvements']); // Rediriger vers mes mouvements (plus logique si on vient de là)
+
+      // Si récurrence activée pour maintenance, on crée les NOUVEAUX créneaux futurs
+      if (this.mouvement.type === 'maintenance' && this.isRecurring) {
+        let currentDate = new Date(this.mouvement.dateDepart);
+        const arrivalDateOrigin = new Date(this.mouvement.dateArrivee);
+        const tripDurationMs = arrivalDateOrigin.getTime() - currentDate.getTime();
+        let endDateLoop = new Date(this.recurrenceEndDate);
+
+        // On commence à la PROCHAINE occurrence (car le courant est déjà mis à jour)
+        if (this.recurrenceFrequency === 'Daily') {
+          currentDate.setDate(currentDate.getDate() + 1);
+        } else {
+          currentDate.setDate(currentDate.getDate() + 7);
+        }
+
+        let safeGuard = 0;
+        let countSuccess = 0;
+        const recurrenceGroupId = this.mouvement.recurrenceGroupId || ('REC_MAINT_' + Date.now()); // Fallback
+
+        while (currentDate <= endDateLoop && safeGuard < 50) {
+          const currentArriveeDate = new Date(currentDate.getTime() + tripDurationMs);
+
+          const payload = {
+            type: 'maintenance',
+            maintenanceType: this.mouvement.maintenanceType,
+            description: this.mouvement.description,
+            vehicule: this.mouvement.vehicule,
+            dateDepart: new Date(currentDate), // Clone
+            dateArrivee: currentArriveeDate,
+            demandeur: this.mouvement.demandeur,
+            statut: 'validé',
+            stops: [],
+            recurrenceGroupId: recurrenceGroupId,
+            lieuDepart: null,
+            lieuArrivee: null,
+            passagers: []
+          };
+
+          try {
+            await firstValueFrom(this.mouvementService.addMouvement(payload));
+            countSuccess++;
+          } catch (error: any) {
+            console.error('Erreur creation recurrence maintenance:', error);
+          }
+
+          // INCREMENT
+          const nextDate = new Date(currentDate);
+          if (this.recurrenceFrequency === 'Daily') {
+            nextDate.setDate(nextDate.getDate() + 1);
+          } else {
+            nextDate.setDate(nextDate.getDate() + 7);
+          }
+          currentDate = nextDate;
+          safeGuard++;
+        }
+        alert(`Mouvement mis à jour et ${countSuccess} récurrences créées !`);
+      } else {
+        alert('Mouvement mis à jour avec succès !');
+      }
+
+      this.router.navigate(['/mes-mouvements']); // Rediriger vers mes mouvements
     } catch (error: any) {
       if (error.status === 409) {
         // Conflit détecté
