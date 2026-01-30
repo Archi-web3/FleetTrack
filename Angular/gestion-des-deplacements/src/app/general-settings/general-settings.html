@@ -3,22 +3,21 @@
         <mat-card-header>
             <mat-card-title>
                 <mat-icon>settings</mat-icon>
-                Paramètres Généraux
+                {{ 'SETTINGS.TITLE' | translate }}
             </mat-card-title>
-            <mat-card-subtitle>Gestion des listes déroulantes de l'application</mat-card-subtitle>
+            <mat-card-subtitle>{{ 'SETTINGS.SUBTITLE' | translate }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
             <div class="settings-section">
-                <h3>Types de Véhicules</h3>
-                <p class="description">Liste des types disponibles lors de la création d'un véhicule et de la
-                    configuration de maintenance.</p>
+                <h3>{{ 'SETTINGS.VEHICLE_TYPES.TITLE' | translate }}</h3>
+                <p class="description">{{ 'SETTINGS.VEHICLE_TYPES.DESC' | translate }}</p>
 
                 <div class="add-row">
                     <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Nouveau type</mat-label>
+                        <mat-label>{{ 'SETTINGS.VEHICLE_TYPES.NEW_LABEL' | translate }}</mat-label>
                         <input matInput [(ngModel)]="newType" (keyup.enter)="addType()"
-                            placeholder="Ex: Quad, Bateau...">
+                            [placeholder]="'SETTINGS.VEHICLE_TYPES.NEW_PLACEHOLDER' | translate">
                         <button mat-icon-button matSuffix (click)="addType()" [disabled]="!newType" color="primary">
                             <mat-icon>add_circle</mat-icon>
                         </button>
@@ -34,30 +33,29 @@
                         </button>
                     </mat-list-item>
                     <mat-list-item *ngIf="vehicleTypes.length === 0">
-                        <div matListItemTitle class="empty-list">Aucun type défini</div>
+                        <div matListItemTitle class="empty-list">{{ 'SETTINGS.VEHICLE_TYPES.EMPTY' | translate }}</div>
                     </mat-list-item>
                 </mat-list>
             </div>
 
             <div class="settings-section" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-                <h3>Facteurs d'Émission CO2 (Aérien)</h3>
-                <p class="description">Paramétrage des facteurs d'émission pour le calcul de l'empreinte carbone des
-                    vols.</p>
+                <h3>{{ 'SETTINGS.CO2.TITLE' | translate }}</h3>
+                <p class="description">{{ 'SETTINGS.CO2.DESC' | translate }}</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
                     <mat-form-field appearance="outline">
-                        <mat-label>Court courrier (&lt; 1000km)</mat-label>
+                        <mat-label>{{ 'SETTINGS.CO2.SHORT' | translate }}</mat-label>
                         <input matInput type="number" [(ngModel)]="co2Factors.short" placeholder="230">
                         <span matSuffix>gCO2e/pkm</span>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline">
-                        <mat-label>Moyen courrier (1000-3500km)</mat-label>
+                        <mat-label>{{ 'SETTINGS.CO2.MEDIUM' | translate }}</mat-label>
                         <input matInput type="number" [(ngModel)]="co2Factors.medium" placeholder="178">
                         <span matSuffix>gCO2e/pkm</span>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline">
-                        <mat-label>Long courrier (&gt; 3500km)</mat-label>
+                        <mat-label>{{ 'SETTINGS.CO2.LONG' | translate }}</mat-label>
                         <input matInput type="number" [(ngModel)]="co2Factors.long" placeholder="152">
                         <span matSuffix>gCO2e/pkm</span>
                     </mat-form-field>
@@ -65,17 +63,17 @@
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <mat-form-field appearance="outline">
-                        <mat-label>Source des données</mat-label>
+                        <mat-label>{{ 'SETTINGS.CO2.SOURCE' | translate }}</mat-label>
                         <input matInput [(ngModel)]="co2Factors.source" placeholder="Ex: ADEME">
                     </mat-form-field>
                     <mat-form-field appearance="outline">
-                        <mat-label>Lien information (URL)</mat-label>
+                        <mat-label>{{ 'SETTINGS.CO2.LINK' | translate }}</mat-label>
                         <input matInput [(ngModel)]="co2Factors.url" placeholder="https://...">
                     </mat-form-field>
                 </div>
 
                 <button mat-raised-button color="primary" (click)="saveCO2()">
-                    <mat-icon>save</mat-icon> Enregistrer Paramètres CO2
+                    <mat-icon>save</mat-icon> {{ 'SETTINGS.CO2.SAVE_BTN' | translate }}
                 </button>
             </div>
         </mat-card-content>

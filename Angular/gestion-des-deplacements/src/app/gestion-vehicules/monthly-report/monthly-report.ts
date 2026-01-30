@@ -14,6 +14,7 @@ import { VehiculeService } from '../../vehicule.service';
 import { LogbookService } from '../../logbook.service';
 import { MaintenanceService } from '../../maintenance.service';
 import { MouvementService } from '../../mouvement.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface MonthlyReportRow {
     month: string;
@@ -59,7 +60,9 @@ interface MonthlyReportRow {
         MatInputModule,
         MatSelectModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatDatepickerModule,
+        MatNativeDateModule,
+        TranslateModule
     ],
     templateUrl: './monthly-report.html',
     styleUrls: ['./monthly-report.scss']

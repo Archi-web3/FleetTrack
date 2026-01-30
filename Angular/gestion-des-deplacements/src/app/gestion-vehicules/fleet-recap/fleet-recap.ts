@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { VehiculeService } from '../../vehicule.service';
 import { LogbookService } from '../../logbook.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Define interface locally or import if I create a model file
 export interface Vehicle {
@@ -51,7 +52,9 @@ interface VehicleRecap extends Vehicle {
         MatTableModule,
         MatButtonModule,
         MatIconModule,
-        MatCardModule
+        MatIconModule,
+        MatCardModule,
+        TranslateModule
     ],
     templateUrl: './fleet-recap.html',
     styleUrls: ['./fleet-recap.scss']

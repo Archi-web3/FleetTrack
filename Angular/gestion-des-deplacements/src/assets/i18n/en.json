@@ -644,4 +644,116 @@
             "ACTIONS": "Actions"
         }
     }
+},
+"FLEET_RECAP": {
+    "TITLE": "Fleet Overview",
+    "MONTHLY_REPORT_BTN": "Monthly Report",
+    "ADD_VEHICLE_BTN": "Add Vehicle",
+    "HEADERS": {
+        "ACF_CODE": "ACF Code",
+        "BASE": "Base",
+        "OWNER": "Owner",
+        "CATEGORY": "Category",
+        "TYPE": "Type",
+        "IMMATRICULATION": "Plate Number",
+        "BRAND": "Brand",
+        "MODEL": "Model",
+        "FUEL_TYPE": "Fuel",
+        "YEAR": "Year",
+        "START_DATE": "1st Use",
+        "PURCHASE_VALUE": "Purchase Value",
+        "DEPRECIATION_MONTHS": "Depreciation (Months)",
+        "INSURANCE_COST": "Ins. Cost (Year)",
+        "INSURANCE_END": "Ins. End",
+        "INITIAL_MILEAGE": "Initial KM",
+        "LAST_MAINT_MILEAGE": "Last Maint. KM",
+        "LAST_SERVICE_TYPE": "Last Service Type",
+        "REMARKS": "Remarks",
+        "ACTIONS": "Actions"
+    }
+},
+"MONTHLY_REPORT": {
+    "TITLE": "Fleet Monthly Report",
+    "EXPORT_EXCEL": "Export Excel",
+    "FILTERS": {
+        "START_DATE": "Start Date",
+        "END_DATE": "End Date",
+        "VEHICLE": "Vehicle",
+        "ALL_VEHICLES": "All Vehicles",
+        "GENERATE_BTN": "Generate"
+    },
+    "HEADERS": {
+        "MONTH": "Month",
+        "ACF_CODE": "ACF Code",
+        "BASE": "Base",
+        "OWNER": "Owner",
+        "CATEGORY": "Category",
+        "TYPE": "Type",
+        "START_KMS": "Start KM",
+        "END_KMS": "End KM",
+        "TOTAL_KM": "Total KM",
+        "FUEL_TYPE": "Fuel",
+        "FUEL_QTY": "Quantity (L)",
+        "CO2": "🌱 CO2 (kg)",
+        "FUEL_COST": "Fuel Cost",
+        "CONSUMPTION": "Consump. (L/100km)",
+        "RENTAL_COST": "Rental Cost",
+        "DRIVER_INCLUDED": "Driver Included",
+        "MAINT_COST": "Maint. Cost",
+        "REPAIR_COST": "Repair Cost",
+        "DEPRECIATION_VAL": "Depreciation Value",
+        "DEPRECIATION_ALLOC": "Depreciation Alloc.",
+        "INSURANCE_COST": "Insurance Cost",
+        "OTHER_COSTS": "Other Costs",
+        "TOTAL_COST": "Total Cost",
+        "COST_PER_KM": "Cost/KM",
+        "CURRENCY": "Currency",
+        "TOTAL_EUR": "Total EUR",
+        "COMPLETION_RATE": "Completion"
+    },
+    "ENV": {
+        "TITLE": "🌱 Environmental Score",
+        "AVAILABLE_DATA": "Available Environmental Data:",
+        "AVAILABLE_DATA_DESC": "Vehicles with CO2 emissions and consumption data allow carbon footprint calculation. This info can be added in Vehicle Management → Edit.",
+        "FORMULAS": "Calculation Formulas:",
+        "CO2_FORMULA": "CO2 (kg) = Emissions (g/km) × Distance (km) / 1000",
+        "FUEL_FORMULA": "Fuel (L) = Consumption (L/100km) × Distance (km) / 100",
+        "CONSTRUCTOR_DATA": "🏭 Manufacturer Data",
+        "CONSTRUCTOR_DATA_DESC": "Official manufacturer values",
+        "MANUAL_TEST": "🔬 Manual Test",
+        "MANUAL_TEST_DESC": "Real measurements on 100km (2 full tanks)"
+    }
+},
+"SETTINGS": {
+    "TITLE": "General Settings",
+    "SUBTITLE": "Application Dropdown Management",
+    "VEHICLE_TYPES": {
+        "TITLE": "Vehicle Types",
+        "DESC": "List of types available during vehicle creation and maintenance configuration.",
+        "NEW_LABEL": "New Type",
+        "NEW_PLACEHOLDER": "Ex: ATV, Boat...",
+        "EMPTY": "No types defined",
+        "EXISTS_ERROR": "This type already exists",
+        "UPDATE_SUCCESS": "List updated"
+    },
+    "CO2": {
+        "TITLE": "CO2 Emission Factors (Air)",
+        "DESC": "Configuration of emission factors for flight carbon footprint calculation.",
+        "SHORT": "Short haul (< 1000km)",
+        "MEDIUM": "Medium haul (1000-3500km)",
+        "LONG": "Long haul (> 3500km)",
+        "SOURCE": "Data Source",
+        "LINK": "Info Link (URL)",
+        "SAVE_BTN": "Save CO2 Settings",
+        "SAVE_SUCCESS": "CO2 factors saved"
+    }
+},
+"STATISTICS": {
+    "TITLE": "Statistics Dashboard",
+    "CHARTS": {
+        "STATUS_TITLE": "Movement Status",
+        "VEHICLE_TITLE": "Top Vehicles (Km)",
+        "DISTANCE_LABEL": "Distance Traveled (km)"
+    }
+}
 }

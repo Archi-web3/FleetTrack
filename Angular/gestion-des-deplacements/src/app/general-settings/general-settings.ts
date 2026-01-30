@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SettingsService } from '../settings.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-general-settings',
@@ -22,7 +23,9 @@ import { SettingsService } from '../settings.service';
         MatButtonModule,
         MatIconModule,
         MatListModule,
-        MatSnackBarModule
+        MatListModule,
+        MatSnackBarModule,
+        TranslateModule
     ],
     templateUrl: './general-settings.html',
     styleUrls: ['./general-settings.scss']
