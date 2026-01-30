@@ -643,117 +643,116 @@
             "STATUS": "Statut",
             "ACTIONS": "Actions"
         }
-    }
-},
-"FLEET_RECAP": {
-    "TITLE": "Récapitulatif Flotte",
-    "MONTHLY_REPORT_BTN": "Rapport Mensuel",
-    "ADD_VEHICLE_BTN": "Ajouter Véhicule",
-    "HEADERS": {
-        "ACF_CODE": "Code ACF",
-        "BASE": "Base",
-        "OWNER": "Propriétaire",
-        "CATEGORY": "Catégorie",
-        "TYPE": "Type",
-        "IMMATRICULATION": "Immatriculation",
-        "BRAND": "Marque",
-        "MODEL": "Modèle",
-        "FUEL_TYPE": "Carburant",
-        "YEAR": "Année",
-        "START_DATE": "1ère Utilisation",
-        "PURCHASE_VALUE": "Valeur Achat",
-        "DEPRECIATION_MONTHS": "Dépréciation (Mois)",
-        "INSURANCE_COST": "Coût Assur. (An)",
-        "INSURANCE_END": "Fin Assur.",
-        "INITIAL_MILEAGE": "KM Initial",
-        "LAST_MAINT_MILEAGE": "KM Dern. Maint.",
-        "LAST_SERVICE_TYPE": "Type Dern. Service",
-        "REMARKS": "Remarques",
-        "ACTIONS": "Actions"
-    }
-},
-"MONTHLY_REPORT": {
-    "TITLE": "Rapport Mensuel Flotte",
-    "EXPORT_EXCEL": "Exporter Excel",
-    "FILTERS": {
-        "START_DATE": "Date Début",
-        "END_DATE": "Date Fin",
-        "VEHICLE": "Véhicule",
-        "ALL_VEHICLES": "Tous les véhicules",
-        "GENERATE_BTN": "Générer"
     },
-    "HEADERS": {
-        "MONTH": "Mois",
-        "ACF_CODE": "Code ACF",
-        "BASE": "Base",
-        "OWNER": "Propriétaire",
-        "CATEGORY": "Catégorie",
-        "TYPE": "Type",
-        "START_KMS": "KM Début",
-        "END_KMS": "KM Fin",
-        "TOTAL_KM": "Total KM",
-        "FUEL_TYPE": "Carburant",
-        "FUEL_QTY": "Quantité (L)",
-        "CO2": "🌱 CO2 (kg)",
-        "FUEL_COST": "Coût Carburant",
-        "CONSUMPTION": "Conso (L/100km)",
-        "RENTAL_COST": "Coût Location",
-        "DRIVER_INCLUDED": "Chauffeur Inclus",
-        "MAINT_COST": "Coût Maintenance",
-        "REPAIR_COST": "Coût Réparation",
-        "DEPRECIATION_VAL": "Valeur Dépréciation",
-        "DEPRECIATION_ALLOC": "Allocation Dépréciation",
-        "INSURANCE_COST": "Coût Assurance",
-        "OTHER_COSTS": "Autres Coûts",
-        "TOTAL_COST": "Coût Total",
-        "COST_PER_KM": "Coût/KM",
-        "CURRENCY": "Devise",
-        "TOTAL_EUR": "Total EUR",
-        "COMPLETION_RATE": "Remplissage"
+    "FLEET_RECAP": {
+        "TITLE": "Récapitulatif Flotte",
+        "MONTHLY_REPORT_BTN": "Rapport Mensuel",
+        "ADD_VEHICLE_BTN": "Ajouter Véhicule",
+        "HEADERS": {
+            "ACF_CODE": "Code ACF",
+            "BASE": "Base",
+            "OWNER": "Propriétaire",
+            "CATEGORY": "Catégorie",
+            "TYPE": "Type",
+            "IMMATRICULATION": "Immatriculation",
+            "BRAND": "Marque",
+            "MODEL": "Modèle",
+            "FUEL_TYPE": "Carburant",
+            "YEAR": "Année",
+            "START_DATE": "1ère Utilisation",
+            "PURCHASE_VALUE": "Valeur Achat",
+            "DEPRECIATION_MONTHS": "Dépréciation (Mois)",
+            "INSURANCE_COST": "Coût Assur. (An)",
+            "INSURANCE_END": "Fin Assur.",
+            "INITIAL_MILEAGE": "KM Initial",
+            "LAST_MAINT_MILEAGE": "KM Dern. Maint.",
+            "LAST_SERVICE_TYPE": "Type Dern. Service",
+            "REMARKS": "Remarques",
+            "ACTIONS": "Actions"
+        }
     },
-    "ENV": {
-        "TITLE": "🌱 Note Environnementale",
-        "AVAILABLE_DATA": "Données environnementales disponibles :",
-        "AVAILABLE_DATA_DESC": "Les véhicules avec des données d'émissions CO2 et de consommation permettent de calculer le bilan carbone. Ces informations peuvent être ajoutées dans Gestion Véhicules → Modifier.",
-        "FORMULAS": "Formules de calcul :",
-        "CO2_FORMULA": "CO2 (kg) = Émissions (g/km) × Distance (km) / 1000",
-        "FUEL_FORMULA": "Carburant (L) = Consommation (L/100km) × Distance (km) / 100",
-        "CONSTRUCTOR_DATA": "🏭 Données Constructeur",
-        "CONSTRUCTOR_DATA_DESC": "Valeurs officielles du fabricant",
-        "MANUAL_TEST": "🔬 Test Manuel",
-        "MANUAL_TEST_DESC": "Mesures réelles sur 100km (2 pleins)"
-    }
-},
-"SETTINGS": {
-    "TITLE": "Paramètres Généraux",
-    "SUBTITLE": "Gestion des listes déroulantes de l'application",
-    "VEHICLE_TYPES": {
-        "TITLE": "Types de Véhicules",
-        "DESC": "Liste des types disponibles lors de la création d'un véhicule et de la configuration de maintenance.",
-        "NEW_LABEL": "Nouveau type",
-        "NEW_PLACEHOLDER": "Ex: Quad, Bateau...",
-        "EMPTY": "Aucun type défini",
-        "EXISTS_ERROR": "Ce type existe déjà",
-        "UPDATE_SUCCESS": "Liste mise à jour"
+    "MONTHLY_REPORT": {
+        "TITLE": "Rapport Mensuel Flotte",
+        "EXPORT_EXCEL": "Exporter Excel",
+        "FILTERS": {
+            "START_DATE": "Date Début",
+            "END_DATE": "Date Fin",
+            "VEHICLE": "Véhicule",
+            "ALL_VEHICLES": "Tous les véhicules",
+            "GENERATE_BTN": "Générer"
+        },
+        "HEADERS": {
+            "MONTH": "Mois",
+            "ACF_CODE": "Code ACF",
+            "BASE": "Base",
+            "OWNER": "Propriétaire",
+            "CATEGORY": "Catégorie",
+            "TYPE": "Type",
+            "START_KMS": "KM Début",
+            "END_KMS": "KM Fin",
+            "TOTAL_KM": "Total KM",
+            "FUEL_TYPE": "Carburant",
+            "FUEL_QTY": "Quantité (L)",
+            "CO2": "🌱 CO2 (kg)",
+            "FUEL_COST": "Coût Carburant",
+            "CONSUMPTION": "Conso (L/100km)",
+            "RENTAL_COST": "Coût Location",
+            "DRIVER_INCLUDED": "Chauffeur Inclus",
+            "MAINT_COST": "Coût Maintenance",
+            "REPAIR_COST": "Coût Réparation",
+            "DEPRECIATION_VAL": "Valeur Dépréciation",
+            "DEPRECIATION_ALLOC": "Allocation Dépréciation",
+            "INSURANCE_COST": "Coût Assurance",
+            "OTHER_COSTS": "Autres Coûts",
+            "TOTAL_COST": "Coût Total",
+            "COST_PER_KM": "Coût/KM",
+            "CURRENCY": "Devise",
+            "TOTAL_EUR": "Total EUR",
+            "COMPLETION_RATE": "Remplissage"
+        },
+        "ENV": {
+            "TITLE": "🌱 Note Environnementale",
+            "AVAILABLE_DATA": "Données environnementales disponibles :",
+            "AVAILABLE_DATA_DESC": "Les véhicules avec des données d'émissions CO2 et de consommation permettent de calculer le bilan carbone. Ces informations peuvent être ajoutées dans Gestion Véhicules → Modifier.",
+            "FORMULAS": "Formules de calcul :",
+            "CO2_FORMULA": "CO2 (kg) = Émissions (g/km) × Distance (km) / 1000",
+            "FUEL_FORMULA": "Carburant (L) = Consommation (L/100km) × Distance (km) / 100",
+            "CONSTRUCTOR_DATA": "🏭 Données Constructeur",
+            "CONSTRUCTOR_DATA_DESC": "Valeurs officielles du fabricant",
+            "MANUAL_TEST": "🔬 Test Manuel",
+            "MANUAL_TEST_DESC": "Mesures réelles sur 100km (2 pleins)"
+        }
     },
-    "CO2": {
-        "TITLE": "Facteurs d'Émission CO2 (Aérien)",
-        "DESC": "Paramétrage des facteurs d'émission pour le calcul de l'empreinte carbone des vols.",
-        "SHORT": "Court courrier (< 1000km)",
-        "MEDIUM": "Moyen courrier (1000-3500km)",
-        "LONG": "Long courrier (> 3500km)",
-        "SOURCE": "Source des données",
-        "LINK": "Lien information (URL)",
-        "SAVE_BTN": "Enregistrer Paramètres CO2",
-        "SAVE_SUCCESS": "Facteurs CO2 enregistrés"
+    "SETTINGS": {
+        "TITLE": "Paramètres Généraux",
+        "SUBTITLE": "Gestion des listes déroulantes de l'application",
+        "VEHICLE_TYPES": {
+            "TITLE": "Types de Véhicules",
+            "DESC": "Liste des types disponibles lors de la création d'un véhicule et de la configuration de maintenance.",
+            "NEW_LABEL": "Nouveau type",
+            "NEW_PLACEHOLDER": "Ex: Quad, Bateau...",
+            "EMPTY": "Aucun type défini",
+            "EXISTS_ERROR": "Ce type existe déjà",
+            "UPDATE_SUCCESS": "Liste mise à jour"
+        },
+        "CO2": {
+            "TITLE": "Facteurs d'Émission CO2 (Aérien)",
+            "DESC": "Paramétrage des facteurs d'émission pour le calcul de l'empreinte carbone des vols.",
+            "SHORT": "Court courrier (< 1000km)",
+            "MEDIUM": "Moyen courrier (1000-3500km)",
+            "LONG": "Long courrier (> 3500km)",
+            "SOURCE": "Source des données",
+            "LINK": "Lien information (URL)",
+            "SAVE_BTN": "Enregistrer Paramètres CO2",
+            "SAVE_SUCCESS": "Facteurs CO2 enregistrés"
+        }
+    },
+    "STATISTICS": {
+        "TITLE": "Tableau de Bord Statistiques",
+        "CHARTS": {
+            "STATUS_TITLE": "État des Mouvements",
+            "VEHICLE_TITLE": "Top Véhicules (Km)",
+            "DISTANCE_LABEL": "Distance Parcourue (km)"
+        }
     }
-},
-"STATISTICS": {
-    "TITLE": "Tableau de Bord Statistiques",
-    "CHARTS": {
-        "STATUS_TITLE": "État des Mouvements",
-        "VEHICLE_TITLE": "Top Véhicules (Km)",
-        "DISTANCE_LABEL": "Distance Parcourue (km)"
-    }
-}
 }
