@@ -92,50 +92,51 @@
         <!-- Alerts Section -->
         <div class="alerts-section">
           <!-- Risk Level -->
-          [ngStyle]="{'background-color': mouvement.validationLevelRequired >= 3 ? '#ffebee' : '#e8f5e9', 'color':
-          mouvement.validationLevelRequired >= 3 ? '#c62828' : '#2e7d32'}">
-          <mat-icon>security</mat-icon>
-          {{ 'MY_TRIPS.RISK' | translate }}: {{ mouvement.validationLevelRequired }}
-          {{ mouvement.validationLevelRequired >= 5 ? ('MY_TRIPS.EXTREME' | translate) :
-          mouvement.validationLevelRequired >= 3 ? ('MY_TRIPS.HIGH' | translate)
-          : ('MY_TRIPS.OK' | translate) }}
+          <div *ngIf="mouvement.validationLevelRequired" class="risk-badge"
+            [ngStyle]="{'background-color': mouvement.validationLevelRequired >= 3 ? '#ffebee' : '#e8f5e9', 'color': mouvement.validationLevelRequired >= 3 ? '#c62828' : '#2e7d32'}">
+            <mat-icon>security</mat-icon>
+            {{ 'MY_TRIPS.RISK' | translate }}: {{ mouvement.validationLevelRequired }}
+            {{ mouvement.validationLevelRequired >= 5 ? ('MY_TRIPS.EXTREME' | translate) :
+            mouvement.validationLevelRequired >= 3 ? ('MY_TRIPS.HIGH' | translate)
+            : ('MY_TRIPS.OK' | translate) }}
+          </div>
+
+          <!-- Ventilation Alert -->
+          <div *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0" class="mini-alert info">
+            <mat-icon>pie_chart</mat-icon> {{ 'MY_TRIPS.VENTILATED' | translate }} ({{
+            mouvement.projetsVentilation.length
+            }} projets)
+          </div>
+
+          <!-- Refusal Reason -->
+          <div *ngIf="mouvement.statut === 'refusé'" class="mini-alert error">
+            <mat-icon>error_outline</mat-icon> {{ 'MY_TRIPS.REFUSAL' | translate }}: {{ mouvement.motifRefus }}
+          </div>
         </div>
 
-        <!-- Ventilation Alert -->
-        <div *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0" class="mini-alert info">
-          <mat-icon>pie_chart</mat-icon> {{ 'MY_TRIPS.VENTILATED' | translate }} ({{ mouvement.projetsVentilation.length
-          }} projets)
-        </div>
+      </div>
 
-        <!-- Refusal Reason -->
-        <div *ngIf="mouvement.statut === 'refusé'" class="mini-alert error">
-          <mat-icon>error_outline</mat-icon> {{ 'MY_TRIPS.REFUSAL' | translate }}: {{ mouvement.motifRefus }}
-        </div>
+      <!-- FOOTER: Actions -->
+      <div class="card-footer">
+        <button mat-icon-button class="action-btn view" (click)="viewMouvement(mouvement)" title="Voir Détails">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        <button mat-icon-button class="action-btn edit"
+          *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
+          (click)="navigateToEdit(mouvement._id)" title="Modifier">
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)" title="Supprimer">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+        <button mat-button class="complete-btn"
+          *ngIf="mouvement.statut === 'validé' && (mouvement.modeTransport === 'Aérien' || mouvement.modeTransport === 'Maritime')"
+          (click)="completeMouvement(mouvement)">
+          <mat-icon>check_circle</mat-icon> {{ 'MY_TRIPS.ACTIONS.COMPLETE' | translate }}
+        </button>
       </div>
 
     </div>
-
-    <!-- FOOTER: Actions -->
-    <div class="card-footer">
-      <button mat-icon-button class="action-btn view" (click)="viewMouvement(mouvement)" title="Voir Détails">
-        <mat-icon>visibility</mat-icon>
-      </button>
-
-      <button mat-icon-button class="action-btn edit"
-        *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
-        (click)="navigateToEdit(mouvement._id)" title="Modifier">
-        <mat-icon>edit</mat-icon>
-      </button>
-
-      <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)" title="Supprimer">
-        <mat-icon>delete</mat-icon>
-      </button>
-
-      <button mat-button class="complete-btn"
-        *ngIf="mouvement.statut === 'validé' && (mouvement.modeTransport === 'Aérien' || mouvement.modeTransport === 'Maritime')"
-        (click)="completeMouvement(mouvement)">
-        <mat-icon>check_circle</mat-icon> {{ 'MY_TRIPS.ACTIONS.COMPLETE' | translate }}
-      </button>
-    </div>
-
-  </div>
