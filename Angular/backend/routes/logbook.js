@@ -659,6 +659,7 @@ router.post('/sync', async (req, res) => {
                     type: incData.type,
                     severity: incData.severity,
                     description: incData.description,
+                    location: incData.location, // AJOUTÉ: Copier la localisation mapping
                     photos: incData.photos || [], // AJOUTÉ: Copier les photos depuis e-logbook
                     cost: incData.cost // AJOUTÉ: Copier le coût
                 });
