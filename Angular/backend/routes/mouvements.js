@@ -537,18 +537,25 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     let newDateArrivee;
 
     // Déterminer les dates à utiliser pour le conflit
-    if (req.body.stops && req.body.stops.length > 0) {
+    // Déterminer les dates à utiliser pour le conflit
+    // MODIFICATION POUR MAINTENANCE : Si maintenance, on utilise les dates racines
+    if (mouvement.type === 'maintenance' || req.body.type === 'maintenance') {
+      console.log('Mode Maintenance détecté pour mise à jour dates');
+      newDateDepart = req.body.dateDepart ? new Date(req.body.dateDepart) : mouvement.dateDepart;
+      newDateArrivee = req.body.dateArrivee ? new Date(req.body.dateArrivee) : mouvement.dateArrivee;
+    }
+    // MODE STANDARD (MISSION) : On utilise les stops
+    else if (req.body.stops && req.body.stops.length > 0) {
       console.log('Utilisation des stops du body');
       newDateDepart = new Date(req.body.stops[0].dateDepart);
       newDateArrivee = new Date(req.body.stops[req.body.stops.length - 1].dateArrivee);
     } else if (mouvement.stops && mouvement.stops.length > 0) {
       console.log('Utilisation des stops existants du mouvement');
-      // Utiliser les stops existants du mouvement
       newDateDepart = new Date(mouvement.stops[0].dateDepart);
       newDateArrivee = new Date(mouvement.stops[mouvement.stops.length - 1].dateArrivee);
     } else {
-      console.error('ERREUR: Aucun stop valide trouvé');
-      return res.status(400).json({ message: 'Le mouvement doit avoir au moins un stop avec des dates valides.' });
+      console.error('ERREUR: Aucun stop valide trouvé et ce n\'est pas une maintenance');
+      return res.status(400).json({ message: 'Le mouvement doit avoir au moins un stop avec des dates valides (sauf maintenance).' });
     }
 
     console.log('Dates calculées - Départ:', newDateDepart, 'Arrivée:', newDateArrivee);
