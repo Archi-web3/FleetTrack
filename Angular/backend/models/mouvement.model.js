@@ -9,7 +9,16 @@ const stopSchema = new mongoose.Schema({
 }, { _id: false });
 
 const mouvementSchema = new mongoose.Schema({
-  stops: { type: [stopSchema], required: true, validate: v => Array.isArray(v) && v.length > 0 },
+  stops: {
+    type: [stopSchema],
+    validate: {
+      validator: function (v) {
+        if (this.type === 'maintenance') return true; // Maintenance ne nécessite pas de stops
+        return Array.isArray(v) && v.length > 0;
+      },
+      message: 'Un mouvement standard doit avoir au moins une étape.'
+    }
+  },
   demandeur: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur', required: true },
   vehicule: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicule' },
   chauffeur: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' }, // MODIFIÉ: ref 'Utilisateur' au lieu de 'Chauffeur'

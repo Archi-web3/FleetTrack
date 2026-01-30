@@ -302,47 +302,56 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
     // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ ---
     let statutInitial = 'en attente';
-    const stopLieuIds = req.body.stops.map((stop) => stop.lieu);
-    console.log('🆕 [CREATE MOUVEMENT] Lieux impliqués (IDs):', stopLieuIds);
 
-    // Vérifier si les lieux sont sensibles
-    const lieuxImpliques = await Lieu.find({
-      _id: { $in: stopLieuIds }
-    });
-    console.log('🆕 [CREATE MOUVEMENT] Lieux trouvés:', lieuxImpliques.length);
-    lieuxImpliques.forEach(lieu => {
-      console.log(`  - Lieu: ${lieu.nom}, Sensible: ${lieu.estSensible}`);
-    });
+    // Pour la maintenance, on bypass toute la logique de sécurité des lieux
+    if (req.body.type === 'maintenance') {
+      statutInitial = 'validé'; // Maintenance auto-validée par défaut (créée par superviseur)
+      // On peut aussi ajouter 'indisponible' si on veut un statut spécifique
+      console.log('🔧 [CREATE MOUVEMENT] Type Maintenance détecté -> Statut: "validé" (Bypass Sécurité)');
 
-    // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ (Module 2) ---
-    // Calculer le niveau de risque maximum du trajet
-    let maxSecurityLevel = 0;
-    lieuxImpliques.forEach(lieu => {
-      // Si niveauSecurite n'existe pas encore sur le lieu, on assume 1 (Stable)
-      const niveau = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
-      if (niveau > maxSecurityLevel) {
-        maxSecurityLevel = niveau;
-      }
-    });
-
-    console.log(`🔒 [CREATE MOUVEMENT] Niveau de sécurité MAX du trajet: ${maxSecurityLevel}`);
-
-    // Si niveau > 1 (Stable), ça nécessite une validation sécurité spécifique si configuré ainsi. 
-    // Pour l'instant, on garde la logique que tout ce qui est sensible (>1 ?) nécessite validation secu.
-    // Ou alors on stocke le niveau requis et le flow dépendra de ça.
-
-    // Si le niveau est élevé (> 1), on peut forcer un statut spécial ou juste stocker le niveau.
-    const validationLevelRequired = maxSecurityLevel;
-
-    // Logique simplifiée temporaire compatible avec l'existant :
-    // Si niveau >= 3 (Difficile/Sensible ancien), on met en attente validation sécu
-    if (validationLevelRequired >= 3) { // 3 correspond à "Difficile" ou ancien "Sensible"
-      statutInitial = 'en attente validation sécurité';
-      console.log('🔒 [CREATE MOUVEMENT] Risque élevé détecté -> Statut: "en attente validation sécurité"');
     } else {
-      console.log('✅ [CREATE MOUVEMENT] Risque faible/moyen -> Statut: "en attente"');
+      const stopLieuIds = req.body.stops.map((stop) => stop.lieu);
+      console.log('🆕 [CREATE MOUVEMENT] Lieux impliqués (IDs):', stopLieuIds);
+
+      // Vérifier si les lieux sont sensibles
+      const lieuxImpliques = await Lieu.find({
+        _id: { $in: stopLieuIds }
+      });
+      console.log('🆕 [CREATE MOUVEMENT] Lieux trouvés:', lieuxImpliques.length);
+      lieuxImpliques.forEach(lieu => {
+        console.log(`  - Lieu: ${lieu.nom}, Sensible: ${lieu.estSensible}`);
+      });
+
+      // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ (Module 2) ---
+      // Calculer le niveau de risque maximum du trajet
+      let maxSecurityLevel = 0;
+      lieuxImpliques.forEach(lieu => {
+        // Si niveauSecurite n'existe pas encore sur le lieu, on assume 1 (Stable)
+        const niveau = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
+        if (niveau > maxSecurityLevel) {
+          maxSecurityLevel = niveau;
+        }
+      });
+
+      console.log(`🔒 [CREATE MOUVEMENT] Niveau de sécurité MAX du trajet: ${maxSecurityLevel}`);
+
+      // Si niveau > 1 (Stable), ça nécessite une validation sécurité spécifique si configuré ainsi. 
+      // Pour l'instant, on garde la logique que tout ce qui est sensible (>1 ?) nécessite validation secu.
+      // Ou alors on stocke le niveau requis et le flow dépendra de ça.
+
+      // Si le niveau est élevé (> 1), on peut forcer un statut spécial ou juste stocker le niveau.
+      const validationLevelRequired = maxSecurityLevel;
+
+      // Logique simplifiée temporaire compatible avec l'existant :
+      // Si niveau >= 3 (Difficile/Sensible ancien), on met en attente validation sécu
+      if (validationLevelRequired >= 3) { // 3 correspond à "Difficile" ou ancien "Sensible"
+        statutInitial = 'en attente validation sécurité';
+        console.log('🔒 [CREATE MOUVEMENT] Risque élevé détecté -> Statut: "en attente validation sécurité"');
+      } else {
+        console.log('✅ [CREATE MOUVEMENT] Risque faible/moyen -> Statut: "en attente"');
+      }
+      // --- FIN NOUVELLE LOGIQUE ---
     }
-    // --- FIN NOUVELLE LOGIQUE ---
 
     const mouvement = new Mouvement({
       stops: req.body.stops, // Utiliser le tableau stops
