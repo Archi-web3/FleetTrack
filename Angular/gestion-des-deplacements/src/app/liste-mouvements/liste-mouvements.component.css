@@ -1,1 +1,269 @@
-/* Ajoutez votre CSS ici (facultatif) */
+/* Grid Layout */
+.movements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* Card Container */
+.movement-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eee;
+    height: 100%;
+    /* Uniform height */
+}
+
+.movement-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Status Colors Border */
+.movement-card.status-validated {
+    border-top: 4px solid #4CAF50;
+}
+
+.movement-card.status-pending {
+    border-top: 4px solid #FF9800;
+}
+
+.movement-card.status-cancelled,
+.movement-card.status-refused {
+    border-top: 4px solid #F44336;
+}
+
+/* Header */
+.card-header {
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-badge.validé {
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.status-badge.en.attente {
+    background: #FFF3E0;
+    color: #EF6C00;
+}
+
+.status-badge.refusé {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+.status-badge.terminé {
+    background: #EEEEEE;
+    color: #616161;
+}
+
+.id-badge {
+    font-size: 0.7rem;
+    color: #90A4AE;
+    font-family: monospace;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #546E7A;
+}
+
+.date-range mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Body */
+.card-body {
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.mission-title {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+    color: #1976D2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mode-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #90A4AE;
+}
+
+/* Route Visual */
+.route-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    background: #F1F8E9;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.route-point {
+    display: flex;
+    flex-direction: column;
+    max-width: 40%;
+}
+
+.point-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.route-arrow {
+    color: #BDBDBD;
+    font-size: 1.2rem;
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #455A64;
+}
+
+.info-item mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #78909C;
+}
+
+.info-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Alerts */
+.alerts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.risk-badge,
+.mini-alert {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.risk-badge mat-icon,
+.mini-alert mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.mini-alert.info {
+    background: #E3F2FD;
+    color: #1565C0;
+}
+
+.mini-alert.error {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+/* Footer */
+.card-footer {
+    padding: 10px 15px;
+    background: white;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 50%;
+    color: #607D8B;
+}
+
+.action-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.action-btn.view:hover {
+    color: #1976d2;
+    background-color: #e3f2fd;
+}
+
+.action-btn.edit:hover {
+    color: #FFA000;
+    background-color: #FFF8E1;
+}
+
+.action-btn.delete:hover {
+    color: #d32f2f;
+    background-color: #ffebee;
+}
+
+.complete-btn {
+    margin-left: auto;
+    font-size: 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .movements-grid {
+        grid-template-columns: 1fr;
+    }
+}

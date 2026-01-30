@@ -1,142 +1,140 @@
 <div style="padding: 20px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2 style="margin: 0;">Mes Mouvements</h2>
+    <h2 style="margin: 0; color: #1976d2; display: flex; align-items: center; gap: 10px;">
+      <mat-icon>history</mat-icon> Mes Mouvements
+    </h2>
     <button mat-raised-button [style.background-color]="showCompleted ? '#52ae32' : '#005fb6'"
       style="color: white; font-weight: 500;" (click)="toggleCompleted()">
-      {{ showCompleted ? '✓ Afficher actifs uniquement' : 'Afficher l\'historique complet' }}
+      {{ showCompleted ? '✓ Afficher actifs uniquement' : 'Afficher l\'historique complet (Terminés/Annulés)' }}
     </button>
   </div>
 
-  <div *ngIf="filteredMouvements.length === 0" style="text-align: center; padding: 40px; color: #999;">
-    Aucun mouvement à afficher
+  <div *ngIf="filteredMouvements.length === 0"
+    style="text-align: center; padding: 60px; color: #999; background: #f5f5f5; border-radius: 8px;">
+    <mat-icon
+      style="font-size: 48px; height: 48px; width: 48px; margin-bottom: 15px; opacity: 0.5;">event_busy</mat-icon>
+    <p style="font-size: 1.2em; margin: 0;">Aucun mouvement à afficher dans cette catégorie.</p>
   </div>
 
-  <ul style="list-style: none; padding: 0;">
-    <li *ngFor="let mouvement of filteredMouvements"
-      style="background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #005fb6;">
-      <div>
-        <!-- ID du Mouvement et Mode de Transport -->
-        <div
-          style="font-size: 0.8em; color: #888; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between;">
-          <div>
-            <strong>ID:</strong> {{ mouvement._id }}
+  <div class="movements-grid">
+    <div *ngFor="let mouvement of filteredMouvements" class="movement-card"
+      [class.status-validated]="mouvement.statut === 'validé'"
+      [class.status-pending]="mouvement.statut === 'en attente'">
+
+      <!-- HEADER: Statut, ID, Date -->
+      <div class="card-header">
+        <div class="header-top">
+          <span class="status-badge" [ngClass]="mouvement.statut">
+            {{ mouvement.statut | titlecase }}
+          </span>
+          <span class="id-badge">ID: {{ mouvement._id | slice:-4 }}</span>
+        </div>
+        <div class="date-range">
+          <mat-icon>date_range</mat-icon>
+          <span>{{ mouvement.dateDepart | date:'dd MMM' }} - {{ mouvement.dateArrivee | date:'dd MMM yyyy' }}</span>
+        </div>
+      </div>
+
+      <!-- BODY: Main Route & Info -->
+      <div class="card-body">
+        <h3 class="mission-title" [title]="mouvement.objectif">
+          <mat-icon class="mode-icon">
+            {{ !mouvement.modeTransport || mouvement.modeTransport === 'Routier' ? 'directions_car' :
+            mouvement.modeTransport === 'Aérien' ? 'flight' : 'directions_boat' }}
+          </mat-icon>
+          {{ mouvement.objectif }}
+        </h3>
+
+        <!-- Route Visual -->
+        <div class="route-line">
+          <div class="route-point start">
+            <span class="point-dot"></span>
+            <span class="point-name"
+              [title]="mouvement.stops && mouvement.stops.length > 0 ? mouvement.stops[0].lieu?.nom : mouvement.lieuDepart?.nom">
+              {{ mouvement.stops && mouvement.stops.length > 0 ? mouvement.stops[0].lieu?.nom :
+              mouvement.lieuDepart?.nom }}
+            </span>
           </div>
-          <!-- ICÔNE MODE TRANSPORT -->
-          <div
-            style="display: flex; align-items: center; gap: 5px; background: #e3f2fd; padding: 2px 8px; border-radius: 12px; color: #0277bd;">
-            <mat-icon style="font-size: 18px; width: 18px; height: 18px;">
-              {{ !mouvement.modeTransport || mouvement.modeTransport === 'Routier' ? 'directions_car' :
-              mouvement.modeTransport === 'Aérien' ? 'flight' : 'directions_boat' }}
-            </mat-icon>
-            <span style="font-weight: 500; font-size: 0.9em;">
-              {{ mouvement.modeTransport || 'Routier' }}
+          <div class="route-arrow">➜</div>
+          <div class="route-point end">
+            <span class="point-dot"></span>
+            <span class="point-name"
+              [title]="mouvement.stops && mouvement.stops.length > 0 ? mouvement.stops[mouvement.stops.length - 1].lieu?.nom : mouvement.lieuArrivee?.nom">
+              {{ mouvement.stops && mouvement.stops.length > 0 ? mouvement.stops[mouvement.stops.length - 1].lieu?.nom :
+              mouvement.lieuArrivee?.nom }}
             </span>
           </div>
         </div>
-        <!-- Affichage de l'itinéraire complet -->
-        <div *ngIf="mouvement.stops && mouvement.stops.length > 0" style="margin-bottom: 10px;">
-          <strong>Itinéraire:</strong>
-          <ul style="margin: 5px 0; padding-left: 20px;">
-            <li *ngFor="let stop of mouvement.stops; let i = index">
-              <strong>{{ i === 0 ? '🚀 Départ' : (i === mouvement.stops.length - 1 ? '🏁 Arrivée' : '📍 Étape ' + i)
-                }}:</strong>
-              {{ stop.lieu?.nom }}
-              <span style="color: #666; font-size: 0.9em;">({{ stop.lieu?.adresse }})</span>
-            </li>
-          </ul>
-        </div>
-        <!-- Fallback pour ancien format -->
-        <div *ngIf="!mouvement.stops || mouvement.stops.length === 0">
-          <strong>Départ:</strong> {{ mouvement.lieuDepart?.nom }} ({{ mouvement.lieuDepart?.adresse }})<br>
-          <strong>Arrivée:</strong> {{ mouvement.lieuArrivee?.nom }} ({{ mouvement.lieuArrivee?.adresse }})<br>
-        </div>
-        <strong>Date:</strong> {{ mouvement.dateDepart | date:'mediumDate' }} - {{ mouvement.dateArrivee |
-        date:'mediumDate' }}<br>
-        <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
-        <ng-container *ngIf="mouvement.projet">
-          <strong>Projet:</strong> {{ mouvement.projet }}
-          <span *ngIf="!mouvement.projetsVentilation || mouvement.projetsVentilation.length === 0"
-            style="color: #666; font-size: 0.9em;">(100%)</span>
-          <span *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0"
-            style="color: #d32f2f; font-size: 0.9em;">(Ventilé ci-dessous)</span>
-          <br>
-        </ng-container>
-        <ng-container *ngIf="mouvement.demandeur">
-          <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
-        </ng-container>
-        <ng-container *ngIf="mouvement.vehicule">
-          <strong>Véhicule:</strong> {{ mouvement.vehicule?.marque }} {{ mouvement.vehicule?.modele }} ({{
-          mouvement.vehicule?.immatriculation }})<br>
-        </ng-container>
-        <ng-container *ngIf="mouvement.chauffeur">
-          <strong>Chauffeur:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }} (Tél: {{
-          mouvement.chauffeur?.telephone }})<br>
-        </ng-container>
 
-        <!-- NOUVEAU : Affichage des passagers -->
-        <ng-container *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
-          <strong>Passagers:</strong>
-          <ul>
-            <li *ngFor="let passager of mouvement.passagers">
-              {{ passager?.nom }} ({{ passager?.email }})
-            </li>
-          </ul>
-        </ng-container>
-
-        <!-- NOUVEAU : Affichage de la Ventilation Financière -->
-        <div *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0"
-          style="margin-bottom: 10px; background-color: #f1f8e9; padding: 10px; border-radius: 5px; border: 1px solid #c5e1a5;">
-          <strong>💰 Ventilation Financière (Calculée):</strong>
-          <ul style="margin: 5px 0; padding-left: 20px;">
-            <li *ngFor="let item of mouvement.projetsVentilation">
-              <strong>{{ item.projet }}:</strong> {{ item.percentage }}%
-            </li>
-          </ul>
-        </div>
-        <!-- NOUVEAU : Affichage du niveau de risque -->
-        <div *ngIf="mouvement.validationLevelRequired" style="margin-bottom: 5px;">
-          <strong>Niveau de Risque:</strong>
-          <span
-            [ngStyle]="{'color': mouvement.validationLevelRequired >= 3 ? '#d32f2f' : '#388e3c', 'font-weight': 'bold'}">
-            {{ mouvement.validationLevelRequired }}
-            <span *ngIf="mouvement.validationLevelRequired === 1">(Stable)</span>
-            <span *ngIf="mouvement.validationLevelRequired === 2">(Modéré)</span>
-            <span *ngIf="mouvement.validationLevelRequired === 3">(Difficile)</span>
-            <span *ngIf="mouvement.validationLevelRequired === 4">(Élevé)</span>
-            <span *ngIf="mouvement.validationLevelRequired === 5">(Extrême)</span>
-          </span>
+        <!-- Compact Details Grid -->
+        <div class="info-grid">
+          <div class="info-item" *ngIf="mouvement.vehicule">
+            <mat-icon>directions_car</mat-icon>
+            <span class="info-text" [title]="mouvement.vehicule.immatriculation">{{ mouvement.vehicule.marque }} {{
+              mouvement.vehicule.modele }}</span>
+          </div>
+          <div class="info-item" *ngIf="mouvement.chauffeur">
+            <mat-icon>person</mat-icon>
+            <span class="info-text" [title]="mouvement.chauffeur.telephone">{{ mouvement.chauffeur.prenom }} {{
+              mouvement.chauffeur.nom }}</span>
+          </div>
+          <div class="info-item" *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
+            <mat-icon>groups</mat-icon>
+            <span class="info-text">{{ mouvement.passagers.length }} Passager(s)</span>
+          </div>
+          <div class="info-item" *ngIf="mouvement.projet">
+            <mat-icon>folder</mat-icon>
+            <span class="info-text">{{ mouvement.projet }}</span>
+          </div>
         </div>
 
-        <!-- NOUVEAU : Affichage du statut -->
-        <strong>Statut:</strong> {{ mouvement.statut | titlecase }}<br>
-        <!-- Utilise le pipe titlecase pour une meilleure présentation -->
+        <!-- Alerts Section -->
+        <div class="alerts-section">
+          <!-- Risk Level -->
+          <div *ngIf="mouvement.validationLevelRequired" class="risk-badge"
+            [ngStyle]="{'background-color': mouvement.validationLevelRequired >= 3 ? '#ffebee' : '#e8f5e9', 'color': mouvement.validationLevelRequired >= 3 ? '#c62828' : '#2e7d32'}">
+            <mat-icon>security</mat-icon>
+            Risque: {{ mouvement.validationLevelRequired }}
+            {{ mouvement.validationLevelRequired >= 5 ? '(Extrême)' : mouvement.validationLevelRequired >= 3 ? '(Élevé)'
+            : '(OK)' }}
+          </div>
 
-        <!-- NOUVEAU : Affichage du motif de refus si le statut est 'refusé' -->
-        <ng-container *ngIf="mouvement.statut === 'refusé'">
-          <strong>Motif de refus:</strong> {{ mouvement.motifRefus }}<br>
-        </ng-container>
+          <!-- Ventilation Alert -->
+          <div *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0" class="mini-alert info">
+            <mat-icon>pie_chart</mat-icon> Ventilé ({{ mouvement.projetsVentilation.length }} projets)
+          </div>
 
-        <button mat-icon-button color="primary" (click)="viewMouvement(mouvement)" title="Voir les détails">
-          <mat-icon>search</mat-icon>
+          <!-- Refusal Reason -->
+          <div *ngIf="mouvement.statut === 'refusé'" class="mini-alert error">
+            <mat-icon>error_outline</mat-icon> Refus: {{ mouvement.motifRefus }}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER: Actions -->
+      <div class="card-footer">
+        <button mat-icon-button class="action-btn view" (click)="viewMouvement(mouvement)" title="Voir Détails">
+          <mat-icon>visibility</mat-icon>
         </button>
-        <button mat-raised-button color="warn" (click)="deleteMouvement(mouvement._id)" style="margin-left: 8px;">
-          Supprimer
-        </button>
-        <button mat-raised-button color="primary" (click)="navigateToEdit(mouvement._id)"
+
+        <button mat-icon-button class="action-btn edit"
           *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
-          style="margin-left: 8px;">
-          Modifier
+          (click)="navigateToEdit(mouvement._id)" title="Modifier">
+          <mat-icon>edit</mat-icon>
         </button>
 
-        <!-- NOUVEAU: BOUTON TERMINER POUR AÉRIEN/MARITIME -->
-        <button mat-raised-button style="background-color: #2e7d32; color: white; margin-left: 8px;"
+        <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)" title="Supprimer">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+        <button mat-button class="complete-btn"
           *ngIf="mouvement.statut === 'validé' && (mouvement.modeTransport === 'Aérien' || mouvement.modeTransport === 'Maritime')"
           (click)="completeMouvement(mouvement)">
-          ✅ Confirmer Voyage Effectué
+          <mat-icon>check_circle</mat-icon> Terminer
         </button>
-
-        <hr> <!-- Séparateur pour chaque mouvement -->
       </div>
-    </li>
-  </ul>
+
+    </div>
+  </div>
 </div>
