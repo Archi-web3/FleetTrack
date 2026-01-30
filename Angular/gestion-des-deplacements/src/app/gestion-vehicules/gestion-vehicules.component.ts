@@ -76,6 +76,32 @@ export class GestionVehiculesComponent implements OnInit {
     this.loadVehicules();
   }
 
+  // LISTE STANDARD DES ÉQUIPEMENTS (Numéro / Nom)
+  readonly STANDARD_EQUIPMENTS = [
+    { code: 1, name: 'Manuel d’instructions véhicule et manuel chauffeur ACF' },
+    { code: 2, name: 'Carnet d’entretien (Logbook)' },
+    { code: 3, name: 'Carnet de bord (Tripbook)' },
+    { code: 4, name: 'Carnet de carburant (Fuelbook)' },
+    { code: 5, name: 'Document enregistrement véhicule' },
+    { code: 6, name: 'Contrat d’assurance' },
+    { code: 7, name: 'Liste de contacts ACF' },
+    { code: 8, name: 'Boite d’outils standard' },
+    { code: 9, name: 'Équipement de tractage (corde, crochet…)' },
+    { code: 10, name: 'Kit standard de premier secours' },
+    { code: 11, name: 'Extincteur' },
+    { code: 12, name: 'Drapeau et visibilité ACF' },
+    { code: 13, name: 'Torche / batteries' },
+    { code: 14, name: 'Boite médicale d’urgence' },
+    { code: 15, name: 'Triangle d’urgence' },
+    { code: 16, name: 'Cric origine' },
+    { code: 17, name: 'Roue de secours' },
+    { code: 18, name: 'Liste des documents et objets' },
+    { code: 19, name: 'Déclaration amiable en cas d’accident' },
+    { code: 20, name: 'Décharge de responsabilité' },
+    { code: 21, name: 'Carte' },
+    { code: 22, name: 'Eau' }
+  ];
+
   loadPays(): void {
     this.adminService.getPays().subscribe(
       (data) => this.paysList = data,
@@ -192,10 +218,27 @@ export class GestionVehiculesComponent implements OnInit {
     if (!this.selectedVehicule.statut) {
       this.selectedVehicule.statut = this.selectedVehicule.enService ? 'En Service' : 'Hors Service';
     }
+
+    // INITIALISER LES ÉQUIPEMENTS (Fusionner avec le standard)
+    if (!this.selectedVehicule.equipements) {
+      this.selectedVehicule.equipements = [];
+    }
+
+    // Pour chaque item standard, vérifier s'il existe déjà, sinon l'ajouter
+    this.selectedVehicule.equipementsDisplay = this.STANDARD_EQUIPMENTS.map(std => {
+      const existing = this.selectedVehicule.equipements.find((e: any) => e.code === std.code);
+      return existing ? { ...existing, name: std.name } : { ...std, isPresent: false, lastChecked: null };
+    });
   }
 
   updateVehicule(): void {
     if (!this.selectedVehicule) return;
+
+    // Mapper l'affichage vers le modèle de données
+    if (this.selectedVehicule.equipementsDisplay) {
+      this.selectedVehicule.equipements = this.selectedVehicule.equipementsDisplay;
+    }
+
     this.vehiculeService.updateVehicule(this.selectedVehicule._id, this.selectedVehicule).subscribe(
       (response) => {
         alert('Véhicule mis à jour avec succès !');
@@ -208,6 +251,15 @@ export class GestionVehiculesComponent implements OnInit {
         else alert('Erreur lors de la mise à jour du véhicule.');
       }
     );
+  }
+
+  // Mettre à jour la date de vérif quand on coche
+  updateCheckDate(item: any): void {
+    if (item.isPresent) {
+      item.lastChecked = new Date();
+    } else {
+      item.lastChecked = null;
+    }
   }
 
   deleteVehicule(id: string): void {

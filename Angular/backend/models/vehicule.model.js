@@ -82,6 +82,15 @@ const vehiculeSchema = new mongoose.Schema({
     certificatUrl: { type: String } // Lien vers le fichier uploadé
   },
 
+  // Equipements de bord (Nouveau) - Liste standard (1-22)
+  equipements: [{
+    code: { type: Number }, // 1 à 22
+    name: { type: String },
+    isPresent: { type: Boolean, default: false },
+    lastChecked: { type: Date },
+    comment: { type: String } // Pour noter si "périmé", "quantité manquante"...
+  }],
+
   remarks: { type: String }
 }, { timestamps: true });
 
