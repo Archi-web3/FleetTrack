@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +21,9 @@ import { AuthService } from '../../core/services/auth.service';
     MatInputModule,
     MatFormFieldModule,
     MatCardModule,
-    MatToolbarModule
+    MatToolbarModule,
+    TranslateModule,
+    LanguageSelectorComponent
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']

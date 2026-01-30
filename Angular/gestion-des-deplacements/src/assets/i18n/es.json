@@ -8,6 +8,14 @@
         "DELETE": "Eliminar",
         "EDIT": "Editar"
     },
+    "LOGIN": {
+        "TITLE": "Iniciar sesión",
+        "EMAIL": "Correo electrónico",
+        "PASSWORD": "Contraseña",
+        "BUTTON": "Entrar",
+        "ERROR": "Error de inicio de sesión",
+        "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?"
+    },
     "MENU": {
         "MY_TRIPS": "Mis Movimientos",
         "GLOBAL_PLANNING": "Planificación Global",

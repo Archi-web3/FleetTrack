@@ -2,6 +2,7 @@
 <mat-toolbar color="primary" class="login-toolbar">
     <img src="/acf-logo.png" alt="Logo ACF" class="toolbar-logo">
     <span class="toolbar-spacer"></span>
+    <app-language-selector></app-language-selector>
 </mat-toolbar>
 
 <div class="login-container">
@@ -13,8 +14,8 @@
         </div>
 
         <mat-card-header>
-            <mat-card-title>Connexion</mat-card-title>
-            <mat-card-subtitle>Chauffeur</mat-card-subtitle>
+            <mat-card-title>{{ 'LOGIN.TITLE' | translate }}</mat-card-title>
+            <mat-card-subtitle>Chauffeur</mat-card-subtitle> <!-- Consider translating 'Chauffeur' if needed -->
         </mat-card-header>
 
         <!-- Warning Offline -->
@@ -28,12 +29,12 @@
         <mat-card-content>
 
             <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Email</mat-label>
+                <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
                 <input matInput type="email" [(ngModel)]="email" required>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Mot de passe</mat-label>
+                <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
                 <input matInput type="password" [(ngModel)]="password" required (keyup.enter)="login()">
             </mat-form-field>
 
@@ -43,7 +44,7 @@
 
             <button mat-raised-button color="primary" class="full-width login-btn" (click)="login()"
                 [disabled]="isLoading || !email || !password">
-                {{ isLoading ? 'Connexion...' : 'SE CONNECTER' }}
+                {{ isLoading ? ('LOGIN.BUTTON' | translate) + '...' : ('LOGIN.BUTTON' | translate) }}
             </button>
 
         </mat-card-content>

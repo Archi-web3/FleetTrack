@@ -8,6 +8,13 @@
         "DELETE": "Eliminar",
         "EDIT": "Editar"
     },
+    "LOGIN": {
+        "TITLE": "E-Logbook Inicio de sesión",
+        "EMAIL": "Correo / Usuario",
+        "PASSWORD": "Contraseña",
+        "BUTTON": "Entrar",
+        "ERROR": "Fallo de autenticación"
+    },
     "HEADER": {
         "CHANGE_VEHICLE": "Cambiar Vehículo",
         "RESET_DATA": "Restablecer Datos"

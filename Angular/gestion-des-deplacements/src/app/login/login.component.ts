@@ -13,11 +13,13 @@ import { MatButtonModule } from '@angular/material/button'; // Pour le bouton de
 
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageSelectorComponent } from '../language-selector/language-selector.component';
 
 @Component({
   selector: 'app-login',
   standalone: true, // <<< DOIT ÊTRE TRUE
-  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatIconModule, TranslateModule, LanguageSelectorComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })

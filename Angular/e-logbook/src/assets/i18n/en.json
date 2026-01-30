@@ -8,6 +8,13 @@
         "DELETE": "Delete",
         "EDIT": "Edit"
     },
+    "LOGIN": {
+        "TITLE": "E-Logbook Login",
+        "EMAIL": "Email / Username",
+        "PASSWORD": "Password",
+        "BUTTON": "Sign In",
+        "ERROR": "Authentication Failed"
+    },
     "HEADER": {
         "CHANGE_VEHICLE": "Change Vehicle",
         "RESET_DATA": "Reset Data"

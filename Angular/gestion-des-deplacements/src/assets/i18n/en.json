@@ -8,6 +8,14 @@
         "DELETE": "Delete",
         "EDIT": "Edit"
     },
+    "LOGIN": {
+        "TITLE": "Login",
+        "EMAIL": "Email Address",
+        "PASSWORD": "Password",
+        "BUTTON": "Sign In",
+        "ERROR": "Login failed",
+        "FORGOT_PASSWORD": "Forgot password?"
+    },
     "MENU": {
         "MY_TRIPS": "My Movements",
         "GLOBAL_PLANNING": "Global Planning",
