@@ -3,17 +3,18 @@
     <div class="maintenance-header">
         <h1>
             <mat-icon>build</mat-icon>
-            Maintenances
+            {{ 'MAINTENANCE.TITLE' | translate }}
         </h1>
         <div class="header-actions">
             <button mat-raised-button color="primary" (click)="addMaintenance()">
                 <mat-icon>add</mat-icon>
-                Nouvelle
+                {{ 'MAINTENANCE.NEW' | translate }}
             </button>
-            <button mat-icon-button (click)="router.navigate(['/dashboard'])" matTooltip="Retour au tableau de bord">
+            <button mat-icon-button (click)="router.navigate(['/dashboard'])"
+                [matTooltip]="'FUEL.BACK_DASHBOARD' | translate">
                 <mat-icon>dashboard</mat-icon>
             </button>
-            <button mat-icon-button [disabled]="isSyncing" (click)="syncData()" matTooltip="Synchroniser">
+            <button mat-icon-button [disabled]="isSyncing" (click)="syncData()" [matTooltip]="'FUEL.SYNC' | translate">
                 <mat-icon [class.spinning]="isSyncing">sync</mat-icon>
             </button>
         </div>
@@ -25,10 +26,10 @@
 
             <!-- Sync Status Column -->
             <ng-container matColumnDef="syncStatus">
-                <th mat-header-cell *matHeaderCellDef>Sync</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TABLE.SYNC' | translate }}</th>
                 <td mat-cell *matCellDef="let maintenance">
                     <mat-icon [color]="maintenance.synced ? 'primary' : 'warn'"
-                        [matTooltip]="maintenance.synced ? 'Synchronisé' : 'En attente de synchronisation'">
+                        [matTooltip]="maintenance.synced ? ('FUEL.TOOLTIPS.SYNCED' | translate) : ('FUEL.TOOLTIPS.WAITING_SYNC' | translate)">
                         {{ maintenance.synced ? 'check_circle' : 'sync' }}
                     </mat-icon>
                 </td>
@@ -36,7 +37,7 @@
 
             <!-- Date Column -->
             <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TABLE.DATE' | translate }}</th>
                 <td mat-cell *matCellDef="let maintenance">
                     {{ maintenance.date | date:'dd/MM/yyyy' }}
                 </td>
@@ -44,7 +45,7 @@
 
             <!-- Type Column -->
             <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TABLE.TYPE' | translate }}</th>
                 <td mat-cell *matCellDef="let maintenance">
                     {{ maintenance.type }}
                 </td>
@@ -52,7 +53,7 @@
 
             <!-- Mileage Column -->
             <ng-container matColumnDef="mileage">
-                <th mat-header-cell *matHeaderCellDef>Kilométrage</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TABLE.MILEAGE' | translate }}</th>
                 <td mat-cell *matCellDef="let maintenance">
                     {{ maintenance.mileage }} km
                 </td>
@@ -60,7 +61,7 @@
 
             <!-- Garage Column -->
             <ng-container matColumnDef="garage">
-                <th mat-header-cell *matHeaderCellDef>Garage</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TABLE.GARAGE' | translate }}</th>
                 <td mat-cell *matCellDef="let maintenance">
                     {{ maintenance.garage }}
                 </td>
@@ -68,7 +69,7 @@
 
             <!-- Cost Column -->
             <ng-container matColumnDef="cost">
-                <th mat-header-cell *matHeaderCellDef>Coût</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TABLE.COST' | translate }}</th>
                 <td mat-cell *matCellDef="let maintenance">
                     {{ maintenance.cost | currency:'EUR':'symbol':'1.2-2' }}
                 </td>
@@ -76,14 +77,14 @@
 
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TABLE.ACTIONS' | translate }}</th>
                 <td mat-cell *matCellDef="let maintenance">
-                    <button mat-icon-button color="primary" matTooltip="Voir détails"
+                    <button mat-icon-button color="primary" [matTooltip]="'FUEL.TOOLTIPS.DETAILS' | translate"
                         (click)="openDetails(maintenance)">
                         <mat-icon>visibility</mat-icon>
                     </button>
                     <button mat-icon-button color="warn" (click)="deleteMaintenance(maintenance, $event)"
-                        matTooltip="Supprimer" *ngIf="isAdmin">
+                        [matTooltip]="'FUEL.TOOLTIPS.DELETE' | translate" *ngIf="isAdmin">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </td>
@@ -98,7 +99,7 @@
                 <td class="mat-cell" [attr.colspan]="displayedColumns.length">
                     <div class="no-data">
                         <mat-icon>inbox</mat-icon>
-                        <p>Aucune maintenance trouvée</p>
+                        <p>{{ 'MAINTENANCE.TABLE.NO_DATA' | translate }}</p>
                     </div>
                 </td>
             </tr>

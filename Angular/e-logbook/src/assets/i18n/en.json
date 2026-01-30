@@ -15,6 +15,61 @@
         "BUTTON": "Sign In",
         "ERROR": "Authentication Failed"
     },
+    "VEHICLE_SELECTOR": {
+        "TITLE": "Select a Vehicle",
+        "LOADING": "Loading vehicles...",
+        "LABEL": "Vehicle",
+        "CONTINUE": "CONTINUE"
+    },
+    "FUEL": {
+        "TITLE": "Refuelings",
+        "NEW": "New",
+        "SYNC": "Sync",
+        "BACK_DASHBOARD": "Back to dashboard",
+        "TABLE": {
+            "SYNC": "Sync",
+            "DATE": "Date",
+            "QUANTITY": "Quantity",
+            "TYPE": "Type",
+            "MILEAGE": "Mileage",
+            "SOURCE": "Source",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No refuelings found"
+        },
+        "TOOLTIPS": {
+            "SYNCED": "Synced",
+            "WAITING_SYNC": "Waiting for sync",
+            "DETAILS": "View details",
+            "DELETE": "Delete"
+        }
+    },
+    "MAINTENANCE": {
+        "TITLE": "Maintenances",
+        "NEW": "New",
+        "TABLE": {
+            "SYNC": "Sync",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "MILEAGE": "Mileage",
+            "GARAGE": "Garage",
+            "COST": "Cost",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No maintenance found"
+        }
+    },
+    "INCIDENT": {
+        "TITLE": "Incidents",
+        "NEW": "New",
+        "TABLE": {
+            "SYNC": "Sync",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "SEVERITY": "Severity",
+            "DESCRIPTION": "Description",
+            "ACTIONS": "Actions",
+            "NO_DATA": "No incidents found"
+        }
+    },
     "HEADER": {
         "CHANGE_VEHICLE": "Change Vehicle",
         "RESET_DATA": "Reset Data"

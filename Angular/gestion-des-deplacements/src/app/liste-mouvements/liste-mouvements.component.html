@@ -1,11 +1,11 @@
 <div style="padding: 20px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
     <h2 style="margin: 0; color: #1976d2; display: flex; align-items: center; gap: 10px;">
-      <mat-icon>history</mat-icon> Mes Mouvements
+      <mat-icon>history</mat-icon> {{ 'MY_TRIPS.TITLE' | translate }}
     </h2>
     <button mat-raised-button [style.background-color]="showCompleted ? '#52ae32' : '#005fb6'"
       style="color: white; font-weight: 500;" (click)="toggleCompleted()">
-      {{ showCompleted ? '✓ Afficher actifs uniquement' : 'Afficher l\'historique complet (Terminés/Annulés)' }}
+      {{ showCompleted ? ('MY_TRIPS.SHOW_ACTIVE' | translate) : ('MY_TRIPS.SHOW_ALL' | translate) }}
     </button>
   </div>
 
@@ -13,7 +13,7 @@
     style="text-align: center; padding: 60px; color: #999; background: #f5f5f5; border-radius: 8px;">
     <mat-icon
       style="font-size: 48px; height: 48px; width: 48px; margin-bottom: 15px; opacity: 0.5;">event_busy</mat-icon>
-    <p style="font-size: 1.2em; margin: 0;">Aucun mouvement à afficher dans cette catégorie.</p>
+    <p style="font-size: 1.2em; margin: 0;">{{ 'MY_TRIPS.NO_DATA' | translate }}</p>
   </div>
 
   <div class="movements-grid" [class.list-view]="showCompleted">
@@ -26,8 +26,9 @@
         <div class="header-top">
           <span class="status-badge" [ngClass]="mouvement.statut">
             {{ mouvement.statut | titlecase }}
+            <!-- Status translation might be tricky if backend returns French strings, but let's assume UI translation handles keys or we keep backend strings for now as they match CSS classes -->
           </span>
-          <span class="id-badge">ID: {{ mouvement._id | slice:-4 }}</span>
+          <span class="id-badge">{{ 'MY_TRIPS.ID' | translate }}: {{ mouvement._id | slice:-4 }}</span>
         </div>
         <div class="date-range">
           <mat-icon>date_range</mat-icon>
@@ -80,7 +81,7 @@
           </div>
           <div class="info-item" *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
             <mat-icon>groups</mat-icon>
-            <span class="info-text">{{ mouvement.passagers.length }} Passager(s)</span>
+            <span class="info-text">{{ mouvement.passagers.length }} {{ 'MY_TRIPS.PASSENGERS' | translate }}</span>
           </div>
           <div class="info-item" *ngIf="mouvement.projet">
             <mat-icon>folder</mat-icon>
@@ -91,50 +92,52 @@
         <!-- Alerts Section -->
         <div class="alerts-section">
           <!-- Risk Level -->
-          <div *ngIf="mouvement.validationLevelRequired" class="risk-badge"
-            [ngStyle]="{'background-color': mouvement.validationLevelRequired >= 3 ? '#ffebee' : '#e8f5e9', 'color': mouvement.validationLevelRequired >= 3 ? '#c62828' : '#2e7d32'}">
-            <mat-icon>security</mat-icon>
-            Risque: {{ mouvement.validationLevelRequired }}
-            {{ mouvement.validationLevelRequired >= 5 ? '(Extrême)' : mouvement.validationLevelRequired >= 3 ? '(Élevé)'
-            : '(OK)' }}
-          </div>
-
-          <!-- Ventilation Alert -->
-          <div *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0" class="mini-alert info">
-            <mat-icon>pie_chart</mat-icon> Ventilé ({{ mouvement.projetsVentilation.length }} projets)
-          </div>
-
-          <!-- Refusal Reason -->
-          <div *ngIf="mouvement.statut === 'refusé'" class="mini-alert error">
-            <mat-icon>error_outline</mat-icon> Refus: {{ mouvement.motifRefus }}
-          </div>
+          [ngStyle]="{'background-color': mouvement.validationLevelRequired >= 3 ? '#ffebee' : '#e8f5e9', 'color':
+          mouvement.validationLevelRequired >= 3 ? '#c62828' : '#2e7d32'}">
+          <mat-icon>security</mat-icon>
+          {{ 'MY_TRIPS.RISK' | translate }}: {{ mouvement.validationLevelRequired }}
+          {{ mouvement.validationLevelRequired >= 5 ? ('MY_TRIPS.EXTREME' | translate) :
+          mouvement.validationLevelRequired >= 3 ? ('MY_TRIPS.HIGH' | translate)
+          : ('MY_TRIPS.OK' | translate) }}
         </div>
 
-      </div>
+        <!-- Ventilation Alert -->
+        <div *ngIf="mouvement.projetsVentilation && mouvement.projetsVentilation.length > 0" class="mini-alert info">
+          <mat-icon>pie_chart</mat-icon> {{ 'MY_TRIPS.VENTILATED' | translate }} ({{ mouvement.projetsVentilation.length
+          }} projets)
+        </div>
 
-      <!-- FOOTER: Actions -->
-      <div class="card-footer">
-        <button mat-icon-button class="action-btn view" (click)="viewMouvement(mouvement)" title="Voir Détails">
-          <mat-icon>visibility</mat-icon>
-        </button>
-
-        <button mat-icon-button class="action-btn edit"
-          *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
-          (click)="navigateToEdit(mouvement._id)" title="Modifier">
-          <mat-icon>edit</mat-icon>
-        </button>
-
-        <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)" title="Supprimer">
-          <mat-icon>delete</mat-icon>
-        </button>
-
-        <button mat-button class="complete-btn"
-          *ngIf="mouvement.statut === 'validé' && (mouvement.modeTransport === 'Aérien' || mouvement.modeTransport === 'Maritime')"
-          (click)="completeMouvement(mouvement)">
-          <mat-icon>check_circle</mat-icon> Terminer
-        </button>
+        <!-- Refusal Reason -->
+        <div *ngIf="mouvement.statut === 'refusé'" class="mini-alert error">
+          <mat-icon>error_outline</mat-icon> {{ 'MY_TRIPS.REFUSAL' | translate }}: {{ mouvement.motifRefus }}
+        </div>
       </div>
 
     </div>
+
+    <!-- FOOTER: Actions -->
+    <div class="card-footer">
+      <button mat-icon-button class="action-btn view" (click)="viewMouvement(mouvement)" title="Voir Détails">
+        <mat-icon>visibility</mat-icon>
+      </button>
+
+      <button mat-icon-button class="action-btn edit"
+        *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
+        (click)="navigateToEdit(mouvement._id)" title="Modifier">
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)" title="Supprimer">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+      <button mat-button class="complete-btn"
+        *ngIf="mouvement.statut === 'validé' && (mouvement.modeTransport === 'Aérien' || mouvement.modeTransport === 'Maritime')"
+        (click)="completeMouvement(mouvement)">
+        <mat-icon>check_circle</mat-icon> {{ 'MY_TRIPS.ACTIONS.COMPLETE' | translate }}
+      </button>
+    </div>
+
   </div>
+</div>
 </div>

@@ -1,9 +1,9 @@
 <div style="padding: 20px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2>Nouvelle Demande de Mouvement</h2>
+    <h2>{{ 'NEW_REQUEST.TITLE' | translate }}</h2>
     <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" type="button" (click)="toggleShowAllLieuxInPays()"
       style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
-      {{ showAllLieuxInPays ? 'Afficher lieux de ma base uniquement' : 'Afficher lieux du pays' }}
+      {{ showAllLieuxInPays ? ('NEW_REQUEST.SHOW_BASE_ONLY' | translate) : ('NEW_REQUEST.SHOW_COUNTRY' | translate) }}
     </button>
   </div>
   <!-- TOGGLE MODE (Visible uniquement pour SuperAdmin/Admin/Superviseur) -->
@@ -13,13 +13,15 @@
       [style.background-color]="requestType === 'mission' ? '#1976d2' : '#e0e0e0'"
       [style.color]="requestType === 'mission' ? 'white' : '#333'"
       style="flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.2s;">
-      <mat-icon style="vertical-align: middle; margin-right: 5px;">directions_car</mat-icon> Mission
+      <mat-icon style="vertical-align: middle; margin-right: 5px;">directions_car</mat-icon> {{
+      'NEW_REQUEST.MODE.MISSION' | translate }}
     </button>
     <button type="button" (click)="requestType = 'maintenance'"
       [style.background-color]="requestType === 'maintenance' ? '#ff9800' : '#e0e0e0'"
       [style.color]="requestType === 'maintenance' ? 'white' : '#333'"
       style="flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.2s;">
-      <mat-icon style="vertical-align: middle; margin-right: 5px;">build</mat-icon> Maintenance / Indisponibilité
+      <mat-icon style="vertical-align: middle; margin-right: 5px;">build</mat-icon> {{ 'NEW_REQUEST.MODE.MAINTENANCE' |
+      translate }}
     </button>
   </div>
 
@@ -316,7 +318,8 @@
 
     <button type="submit" [disabled]="!demandeForm.form.valid"
       style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-top: 20px; width: 100%; font-size: 1.1em;">
-      {{ requestType === 'maintenance' ? 'Créer INDISPONIBILITÉ' : 'Soumettre Demande' }}
+      {{ requestType === 'maintenance' ? ('NEW_REQUEST.SUBMIT.MAINTENANCE' | translate) : ('NEW_REQUEST.SUBMIT.MISSION'
+      | translate) }}
     </button>
   </form>
 </div>

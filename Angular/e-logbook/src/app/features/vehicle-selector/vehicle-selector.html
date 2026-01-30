@@ -1,17 +1,17 @@
 <div class="selector-container">
     <mat-card class="selector-card">
         <mat-card-header>
-            <mat-card-title>Sélectionner un Véhicule</mat-card-title>
+            <mat-card-title>{{ 'VEHICLE_SELECTOR.TITLE' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
 
             <div *ngIf="isLoading" class="loading">
-                Chargement des véhicules...
+                {{ 'VEHICLE_SELECTOR.LOADING' | translate }}
             </div>
 
             <div *ngIf="!isLoading">
                 <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Véhicule</mat-label>
+                    <mat-label>{{ 'VEHICLE_SELECTOR.LABEL' | translate }}</mat-label>
                     <mat-select [(ngModel)]="selectedVehicleId">
                         <mat-option *ngFor="let vehicle of vehicules" [value]="vehicle._id" class="vehicle-option">
                             <div class="vehicle-item">
@@ -30,7 +30,7 @@
 
                 <button mat-raised-button color="primary" class="full-width select-btn" (click)="selectVehicle()"
                     [disabled]="!selectedVehicleId">
-                    CONTINUER
+                    {{ 'VEHICLE_SELECTOR.CONTINUE' | translate }}
                 </button>
             </div>
 

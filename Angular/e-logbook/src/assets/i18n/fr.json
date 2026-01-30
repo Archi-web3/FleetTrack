@@ -15,6 +15,61 @@
         "BUTTON": "Se connecter",
         "ERROR": "Erreur d'authentification"
     },
+    "VEHICLE_SELECTOR": {
+        "TITLE": "Sélectionner un Véhicule",
+        "LOADING": "Chargement des véhicules...",
+        "LABEL": "Véhicule",
+        "CONTINUE": "CONTINUER"
+    },
+    "FUEL": {
+        "TITLE": "Ravitaillements",
+        "NEW": "Nouveau",
+        "SYNC": "Synchroniser",
+        "BACK_DASHBOARD": "Retour au tableau de bord",
+        "TABLE": {
+            "SYNC": "Sync",
+            "DATE": "Date",
+            "QUANTITY": "Quantité",
+            "TYPE": "Type",
+            "MILEAGE": "Kilométrage",
+            "SOURCE": "Source",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucun ravitaillement trouvé"
+        },
+        "TOOLTIPS": {
+            "SYNCED": "Synchronisé",
+            "WAITING_SYNC": "En attente de synchronisation",
+            "DETAILS": "Voir détails",
+            "DELETE": "Supprimer"
+        }
+    },
+    "MAINTENANCE": {
+        "TITLE": "Maintenances",
+        "NEW": "Nouvelle",
+        "TABLE": {
+            "SYNC": "Sync",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "MILEAGE": "Kilométrage",
+            "GARAGE": "Garage",
+            "COST": "Coût",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucune maintenance trouvée"
+        }
+    },
+    "INCIDENT": {
+        "TITLE": "Incidents",
+        "NEW": "Nouveau",
+        "TABLE": {
+            "SYNC": "Sync",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "SEVERITY": "Gravité",
+            "DESCRIPTION": "Description",
+            "ACTIONS": "Actions",
+            "NO_DATA": "Aucun incident trouvé"
+        }
+    },
     "HEADER": {
         "CHANGE_VEHICLE": "Changer de véhicule",
         "RESET_DATA": "Reset Données"

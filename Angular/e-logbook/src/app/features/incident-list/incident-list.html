@@ -3,17 +3,18 @@
     <div class="incident-header">
         <h1>
             <mat-icon>warning</mat-icon>
-            Incidents
+            {{ 'INCIDENT.TITLE' | translate }}
         </h1>
         <div class="header-actions">
             <button mat-raised-button color="primary" (click)="addIncident()">
                 <mat-icon>add</mat-icon>
-                Nouveau
+                {{ 'INCIDENT.NEW' | translate }}
             </button>
-            <button mat-icon-button (click)="router.navigate(['/dashboard'])" matTooltip="Retour au tableau de bord">
+            <button mat-icon-button (click)="router.navigate(['/dashboard'])"
+                [matTooltip]="'FUEL.BACK_DASHBOARD' | translate">
                 <mat-icon>dashboard</mat-icon>
             </button>
-            <button mat-icon-button [disabled]="isSyncing" (click)="syncData()" matTooltip="Synchroniser">
+            <button mat-icon-button [disabled]="isSyncing" (click)="syncData()" [matTooltip]="'FUEL.SYNC' | translate">
                 <mat-icon [class.spinning]="isSyncing">sync</mat-icon>
             </button>
         </div>
@@ -25,10 +26,10 @@
 
             <!-- Sync Status Column -->
             <ng-container matColumnDef="syncStatus">
-                <th mat-header-cell *matHeaderCellDef>Sync</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'INCIDENT.TABLE.SYNC' | translate }}</th>
                 <td mat-cell *matCellDef="let incident">
                     <mat-icon [color]="incident.synced ? 'primary' : 'warn'"
-                        [matTooltip]="incident.synced ? 'Synchronisé' : 'En attente de synchronisation'">
+                        [matTooltip]="incident.synced ? ('FUEL.TOOLTIPS.SYNCED' | translate) : ('FUEL.TOOLTIPS.WAITING_SYNC' | translate)">
                         {{ incident.synced ? 'check_circle' : 'sync' }}
                     </mat-icon>
                 </td>
@@ -36,7 +37,7 @@
 
             <!-- Date Column -->
             <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'INCIDENT.TABLE.DATE' | translate }}</th>
                 <td mat-cell *matCellDef="let incident">
                     {{ incident.date | date:'dd/MM/yyyy' }}
                 </td>
@@ -44,7 +45,7 @@
 
             <!-- Type Column -->
             <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'INCIDENT.TABLE.TYPE' | translate }}</th>
                 <td mat-cell *matCellDef="let incident">
                     {{ incident.type }}
                 </td>
@@ -52,7 +53,7 @@
 
             <!-- Severity Column -->
             <ng-container matColumnDef="severity">
-                <th mat-header-cell *matHeaderCellDef>Gravité</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'INCIDENT.TABLE.SEVERITY' | translate }}</th>
                 <td mat-cell *matCellDef="let incident">
                     <span class="severity-badge" [class.severity-high]="incident.severity === 'High'"
                         [class.severity-medium]="incident.severity === 'Medium'"
@@ -64,7 +65,7 @@
 
             <!-- Description Column -->
             <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'INCIDENT.TABLE.DESCRIPTION' | translate }}</th>
                 <td mat-cell *matCellDef="let incident">
                     {{ incident.description }}
                 </td>
@@ -72,13 +73,14 @@
 
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'INCIDENT.TABLE.ACTIONS' | translate }}</th>
                 <td mat-cell *matCellDef="let incident">
-                    <button mat-icon-button color="primary" matTooltip="Voir détails" (click)="openDetails(incident)">
+                    <button mat-icon-button color="primary" [matTooltip]="'FUEL.TOOLTIPS.DETAILS' | translate"
+                        (click)="openDetails(incident)">
                         <mat-icon>visibility</mat-icon>
                     </button>
                     <button mat-icon-button color="warn" (click)="deleteIncident(incident, $event)"
-                        matTooltip="Supprimer" *ngIf="isAdmin">
+                        [matTooltip]="'FUEL.TOOLTIPS.DELETE' | translate" *ngIf="isAdmin">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </td>
@@ -93,7 +95,7 @@
                 <td class="mat-cell" [attr.colspan]="displayedColumns.length">
                     <div class="no-data">
                         <mat-icon>inbox</mat-icon>
-                        <p>Aucun incident trouvé</p>
+                        <p>{{ 'INCIDENT.TABLE.NO_DATA' | translate }}</p>
                     </div>
                 </td>
             </tr>

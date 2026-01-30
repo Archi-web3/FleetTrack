@@ -1,20 +1,20 @@
 <div style="padding: 20px;">
-  <h2>Planning des Mouvements Validés</h2>
+  <h2>{{ 'PLANNING.TITLE' | translate }}</h2>
 
   <!-- Contrôles de navigation du calendrier -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
     <div style="display: flex; gap: 10px;">
       <button mat-raised-button style="background-color: #52ae32; color: white; font-weight: 500; padding: 0 20px;"
         (click)="today()">
-        Aujourd'hui
+        {{ 'PLANNING.TODAY' | translate }}
       </button>
       <button mat-raised-button style="background-color: #005fb6; color: white; font-weight: 500; padding: 0 20px;"
         (click)="previousWeek()">
-        ← Précédent
+        {{ 'PLANNING.PREVIOUS' | translate }}
       </button>
       <button mat-raised-button style="background-color: #005fb6; color: white; font-weight: 500; padding: 0 20px;"
         (click)="nextWeek()">
-        Suivant →
+        {{ 'PLANNING.NEXT' | translate }}
       </button>
     </div>
     <h3 style="margin: 0; color: #005fb6;">{{ viewDate | date:'EEEE dd MMMM yyyy' }}</h3>
@@ -74,7 +74,7 @@
   </div>
 
   <br />
-  <div *ngIf="events.length === 0">Aucun mouvement validé ou en cours pour cette semaine.</div>
+  <div *ngIf="events.length === 0">{{ 'PLANNING.NO_EVENTS' | translate }}</div>
 
   <br />
   <br />
