@@ -100,7 +100,10 @@ export class LogbookDashboardComponent implements OnInit {
                 const matchStatut = allowedStatuses.includes(m.statut);
 
                 // Debug detailed
-                console.log(`[LogbookDashboard] Check Mvt ${m._id}: VehiculeMatch=${matchVehicule}, StatutMatch=${matchStatut} (Got: '${m.statut}'), VehiculeId=${mVehiculeId}`);
+                // console.log(`[LogbookDashboard] Check Mvt ${m._id}: VehiculeMatch=${matchVehicule}, StatutMatch=${matchStatut} (Got: '${m.statut}'), VehiculeId=${mVehiculeId}`);
+
+                // Ignore maintenance movements (shown in Maintenance tab)
+                if (m.type === 'maintenance') return false;
 
                 return matchVehicule && matchStatut;
             });
