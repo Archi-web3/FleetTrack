@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { OfflineService } from '../../core/services/offline.service';
 import { SyncService } from '../../core/services/sync.service';
 import { environment } from '../../../environments/environment';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vehicle-selector',
@@ -22,7 +23,8 @@ import { environment } from '../../../environments/environment';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TranslateModule
   ],
   templateUrl: './vehicle-selector.html',
   styleUrls: ['./vehicle-selector.scss']

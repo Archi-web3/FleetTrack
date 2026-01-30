@@ -8,11 +8,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MouvementDetailsDialogComponent } from './mouvement-details-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-liste-mouvements',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule], // <<< AJOUT MatButtonModule
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, TranslateModule], // <<< AJOUT MatButtonModule
   templateUrl: './liste-mouvements.component.html',
   styleUrls: ['./liste-mouvements.component.css']
 })

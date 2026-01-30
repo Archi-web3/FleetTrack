@@ -15,11 +15,12 @@ import { OfflineService } from '../../core/services/offline.service';
 import { SyncService } from '../../core/services/sync.service';
 import { AuthService } from '../../core/services/auth.service';
 import { FuelDetailsDialogComponent } from './fuel-details-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-fuel-list',
   standalone: true,
-  imports: [CommonModule, MatListModule, MatIconModule, MatButtonModule, MatTableModule, MatTooltipModule, MatCardModule, MatDialogModule],
+  imports: [CommonModule, MatListModule, MatIconModule, MatButtonModule, MatTableModule, MatTooltipModule, MatCardModule, MatDialogModule, TranslateModule],
   templateUrl: './fuel-list.html',
   styleUrls: ['./fuel-list.scss']
 })

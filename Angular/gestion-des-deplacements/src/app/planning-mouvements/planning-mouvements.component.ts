@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Imports pour angular-calendar
 import {
@@ -38,7 +39,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
 @Component({
   selector: 'app-planning-mouvements',
   standalone: true,
-  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MovementDashboardComponent, MatButtonModule, MatTooltipModule, MatIconModule],
+  imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MovementDashboardComponent, MatButtonModule, MatTooltipModule, MatIconModule, TranslateModule],
   templateUrl: './planning-mouvements.component.html',
   styleUrls: ['./planning-mouvements.component.css'],
   providers: [

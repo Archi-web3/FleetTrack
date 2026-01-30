@@ -12,11 +12,12 @@ import { AuthService } from '../auth.service'; // NOUVEAU : Importer AuthService
 import { OsrmService } from '../core/services/osrm.service'; // NOUVEAU
 
 import { MatIconModule } from '@angular/material/icon'; // Fix Build error
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-demande-mouvement',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, TranslateModule],
   templateUrl: './demande-mouvement.component.html',
   styleUrls: ['./demande-mouvement.component.css']
 })

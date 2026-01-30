@@ -15,11 +15,12 @@ import { OfflineService } from '../../core/services/offline.service';
 import { SyncService } from '../../core/services/sync.service';
 import { AuthService } from '../../core/services/auth.service';
 import { IncidentDetailsDialogComponent } from './incident-details-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-incident-list',
   standalone: true,
-  imports: [CommonModule, MatListModule, MatIconModule, MatButtonModule, MatTableModule, MatTooltipModule, MatCardModule, MatDialogModule],
+  imports: [CommonModule, MatListModule, MatIconModule, MatButtonModule, MatTableModule, MatTooltipModule, MatCardModule, MatDialogModule, TranslateModule],
   templateUrl: './incident-list.html',
   styleUrls: ['./incident-list.scss']
 })
