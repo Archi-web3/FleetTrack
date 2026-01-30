@@ -89,119 +89,137 @@ export class IncidentFormComponent {
       this.locationStatus = 'error';
     }
   }
-  // ...
-  const incident: Incident = {
-    vehicleId: this.vehicleId,
-    driverId: driverId,
-    date: new Date(),
-    type: this.incidentType,
-    severity: this.severity,
-    description: this.description,
-    location: this.location ? { lat: this.location.lat, lng: this.location.lng } : undefined, // AJOUT
-    cost: this.cost,
-    photos: this.photos.filter(p => p.synced).map(p => p.url!),
-    synced: 0
-  };
+  async saveIncident() {
+    if (!this.incidentType || !this.description) return;
+
+    // Vérifier si des photos sont en cours d'upload
+    const pendingCount = this.getPendingUploadsCount();
+    if (pendingCount > 0) {
+      const confirmSave = confirm(
+        `⚠️ Attention : ${pendingCount} photo(s) sont encore en cours d'upload.\n\n` +
+        `Si vous continuez maintenant, ces photos ne seront pas incluses dans l'incident.\n\n` +
+        `Voulez-vous continuer quand même ?`
+      );
+      if (!confirmSave) {
+        return; // Annuler la sauvegarde
+      }
+    }
+
+    const currentUser = this.authService.getCurrentUser();
+    const driverId = currentUser ? currentUser._id : 'mock-driver-id';
+
+    const incident: Incident = {
+      vehicleId: this.vehicleId,
+      driverId: driverId,
+      date: new Date(),
+      type: this.incidentType,
+      severity: this.severity,
+      description: this.description,
+      location: this.location ? { lat: this.location.lat, lng: this.location.lng, address: (this.location as any).address } : undefined,
+      cost: this.cost,
+      photos: this.photos.filter(p => p.synced).map(p => p.url!),
+      synced: 0
+    };
 
     console.log('Saving incident:', incident);
     await this.offlineService.addIncident(incident);
-console.log('Incident saved successfully');
-this.router.navigate(['/trip-list']);
+    console.log('Incident saved successfully');
+    this.router.navigate(['/trip-list']);
   }
 
-cancel() {
-  this.router.navigate(['/trip-list']);
-}
+  cancel() {
+    this.router.navigate(['/trip-list']);
+  }
 
-// NOUVEAU: Méthodes de gestion des photos
-takePhoto() {
-  this.fileInput.nativeElement.click();
-}
+  // NOUVEAU: Méthodes de gestion des photos
+  takePhoto() {
+    this.fileInput.nativeElement.click();
+  }
 
-// NOUVEAU: Compter les photos en attente d'upload
-getPendingUploadsCount(): number {
-  return this.photos.filter(p => !p.synced).length;
-}
+  // NOUVEAU: Compter les photos en attente d'upload
+  getPendingUploadsCount(): number {
+    return this.photos.filter(p => !p.synced).length;
+  }
 
   async onPhotoSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+    const file = event.target.files[0];
+    if (!file) return;
 
-  console.log('📸 Photo sélectionnée:', file.name);
+    console.log('📸 Photo sélectionnée:', file.name);
 
-  // Créer URL locale pour affichage immédiat
-  const localUrl = this.photoService.createLocalUrl(file);
+    // Créer URL locale pour affichage immédiat
+    const localUrl = this.photoService.createLocalUrl(file);
 
-  const photo: Photo = {
-    file,
-    localUrl,
-    synced: false
-  };
+    const photo: Photo = {
+      file,
+      localUrl,
+      synced: false
+    };
 
-  this.photos.push(photo);
-  this.cdr.detectChanges();
+    this.photos.push(photo);
+    this.cdr.detectChanges();
 
-  // Si online, uploader immédiatement
-  if (navigator.onLine) {
-    await this.uploadPhoto(photo);
-  } else {
-    console.log('⚠️ Offline - Photo sera uploadée plus tard');
-    // TODO: Stocker dans IndexedDB pour sync ultérieur
+    // Si online, uploader immédiatement
+    if (navigator.onLine) {
+      await this.uploadPhoto(photo);
+    } else {
+      console.log('⚠️ Offline - Photo sera uploadée plus tard');
+      // TODO: Stocker dans IndexedDB pour sync ultérieur
+    }
+
+    // Réinitialiser l'input
+    event.target.value = '';
   }
-
-  // Réinitialiser l'input
-  event.target.value = '';
-}
 
   async uploadPhoto(photo: Photo) {
-  try {
-    const currentUser = this.authService.getCurrentUser();
-    if (!currentUser || !photo.file) return;
-
-    console.log('📤 Upload photo vers Cloudinary...');
-
-    // Compresser l'image avant upload
-    const compressedFile = await this.photoService.compressImage(photo.file);
-
-    const result = await this.photoService.uploadPhoto(
-      compressedFile,
-      'incidents',
-      'temp_' + Date.now(), // ID temporaire, sera remplacé après sauvegarde
-      currentUser.pays.code,
-      currentUser.base.nom
-    );
-
-    photo.url = result.url;
-    photo.publicId = result.publicId;
-    photo.synced = true;
-
-    console.log('✅ Photo uploadée:', result.url);
-    this.cdr.detectChanges();
-  } catch (error) {
-    console.error('❌ Erreur upload photo:', error);
-    // Garder la photo en local pour retry plus tard
-  }
-}
-
-  async removePhoto(index: number) {
-  const photo = this.photos[index];
-
-  // Si la photo est sur Cloudinary, la supprimer
-  if (photo.publicId) {
     try {
-      await this.photoService.deletePhoto(photo.publicId);
-      console.log('✅ Photo supprimée de Cloudinary');
+      const currentUser = this.authService.getCurrentUser();
+      if (!currentUser || !photo.file) return;
+
+      console.log('📤 Upload photo vers Cloudinary...');
+
+      // Compresser l'image avant upload
+      const compressedFile = await this.photoService.compressImage(photo.file);
+
+      const result = await this.photoService.uploadPhoto(
+        compressedFile,
+        'incidents',
+        'temp_' + Date.now(), // ID temporaire, sera remplacé après sauvegarde
+        currentUser.pays.code,
+        currentUser.base.nom
+      );
+
+      photo.url = result.url;
+      photo.publicId = result.publicId;
+      photo.synced = true;
+
+      console.log('✅ Photo uploadée:', result.url);
+      this.cdr.detectChanges();
     } catch (error) {
-      console.error('❌ Erreur suppression photo:', error);
+      console.error('❌ Erreur upload photo:', error);
+      // Garder la photo en local pour retry plus tard
     }
   }
 
-  // Libérer l'URL locale
-  if (photo.localUrl) {
-    this.photoService.revokeLocalUrl(photo.localUrl);
-  }
+  async removePhoto(index: number) {
+    const photo = this.photos[index];
 
-  this.photos.splice(index, 1);
-  this.cdr.detectChanges();
-}
+    // Si la photo est sur Cloudinary, la supprimer
+    if (photo.publicId) {
+      try {
+        await this.photoService.deletePhoto(photo.publicId);
+        console.log('✅ Photo supprimée de Cloudinary');
+      } catch (error) {
+        console.error('❌ Erreur suppression photo:', error);
+      }
+    }
+
+    // Libérer l'URL locale
+    if (photo.localUrl) {
+      this.photoService.revokeLocalUrl(photo.localUrl);
+    }
+
+    this.photos.splice(index, 1);
+    this.cdr.detectChanges();
+  }
 }
