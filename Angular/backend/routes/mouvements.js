@@ -367,7 +367,14 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       // Nouveaux champs Module 2
       modeTransport: req.body.modeTransport,
       validationLevelRequired: maxSecurityLevel, // On stocke le niveau max calculé
-      projetsVentilation: req.body.projetsVentilation
+      projetsVentilation: req.body.projetsVentilation,
+      // Nouveaux champs Maintenance
+      type: req.body.type,
+      maintenanceType: req.body.maintenanceType,
+      description: req.body.description,
+      dateDepart: req.body.dateDepart, // Nécessaire si pas de stops
+      dateArrivee: req.body.dateArrivee, // Nécessaire si pas de stops
+      recurrenceGroupId: req.body.recurrenceGroupId // Pour la récurrence
     });
 
     if (!mouvement.demandeur) {
