@@ -276,6 +276,31 @@ export class GestionVehiculesComponent implements OnInit {
     }
   }
 
+  // GESTION DYNAMIQUE DE L'INVENTAIRE
+  addEquipment(vehicule: any): void {
+    const newCode = vehicule.equipementsDisplay && vehicule.equipementsDisplay.length > 0
+      ? Math.max(...vehicule.equipementsDisplay.map((e: any) => e.code)) + 1
+      : 1;
+
+    if (!vehicule.equipementsDisplay) {
+      vehicule.equipementsDisplay = [];
+    }
+
+    vehicule.equipementsDisplay.push({
+      code: newCode,
+      name: 'Nouvel équipement',
+      isPresent: false,
+      lastChecked: null,
+      isCustom: true // Indicateur pour le frontend si besoin
+    });
+  }
+
+  removeEquipment(vehicule: any, index: number): void {
+    if (confirm('Voulez-vous supprimer cet élément de la liste ?')) {
+      vehicule.equipementsDisplay.splice(index, 1);
+    }
+  }
+
   deleteVehicule(id: string): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')) {
       this.vehiculeService.deleteVehicule(id).subscribe(
