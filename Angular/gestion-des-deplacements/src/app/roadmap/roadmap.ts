@@ -32,6 +32,16 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.10.1',
+            date: '30 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Incidents', description: 'Géolocalisation automatique lors du signalement d\'un incident depuis l\'e-logbook.' },
+                { category: 'Dashboard', description: 'Visualisation sur carte des lieux d\'incidents directement depuis le tableau de bord (Admin).' },
+                { category: 'Correctif', description: 'Amélioration du filtre "Trajets" pour exclure les mouvements techniques et de maintenance.' }
+            ]
+        },
+        {
             version: 'v2.10.0',
             date: '30 Janvier 2026',
             type: 'minor',
@@ -397,7 +407,7 @@ export class RoadmapComponent {
             category: 'Mobile & Localisation',
             categoryIcon: 'add_location',
             targetApp: 'e-logbook',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Moyenne'
         },
         {
