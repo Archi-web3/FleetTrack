@@ -90,7 +90,20 @@
         "PLANNED_TRIPS": "Planned Trips",
         "GPS_TRACKS": "GPS Tracks (Real)",
         "LAST_POSITIONS": "Last Positions",
-        "ZOOM_TOOLTIP": "Zoom to the last known position of all displayed vehicles"
+        "ZOOM_TOOLTIP": "Zoom to the last known position of all displayed vehicles",
+        "SEARCH_PLACEHOLDER": "Search (ID, Objective)",
+        "VEHICLE": "Vehicle",
+        "ALL_VEHICLES": "All Vehicles",
+        "STATUS": "Movement Status",
+        "PERIOD": "Period",
+        "START": "Start",
+        "END": "End",
+        "THIS_WEEK": "This Week",
+        "CLEAR": "Clear",
+        "FILTERED_TRIPS": "filtered trips",
+        "SELECT_ALL": "Select All",
+        "DISPLAYED": "displayed",
+        "REQUESTER": "Requester"
     },
     "VALIDATION": {
         "TITLE": "Movement Validation",
@@ -780,5 +793,57 @@
             "VEHICLE_TITLE": "Top Vehicles (Km)",
             "DISTANCE_LABEL": "Distance Traveled (km)"
         }
+    },
+    "SECURITY_ALERTS": {
+        "TITLE": "Security Alert Center (Push)",
+        "SUBTITLE": "Send instant notifications to e-logbook tablets.",
+        "NEW_ALERT": "New Alert",
+        "FORM": {
+            "TITLE": "Alert Title",
+            "TITLE_PLACEHOLDER": "Ex: Road closed RN7",
+            "SEVERITY": "Severity Level",
+            "TARGET": "Target",
+            "CHOOSE_VEHICLE": "Choose Vehicle",
+            "MESSAGE": "Detailed Message",
+            "MESSAGE_PLACEHOLDER": "Type your message here...",
+            "SUBMIT": "Send Alert"
+        },
+        "SEVERITY": {
+            "INFO": "Information (Blue)",
+            "WARNING": "Warning (Yellow)",
+            "DANGER": "DANGER (Red)"
+        },
+        "TARGET": {
+            "ALL": "Entire Fleet",
+            "SPECIFIC": "Specific Vehicle"
+        },
+        "HISTORY": {
+            "TITLE": "Sending History",
+            "EMPTY": "No alerts sent recently.",
+            "READS": "reads"
+        },
+        "TABLE": {
+            "DATE": "Date",
+            "TITLE": "Title",
+            "LEVEL": "Level",
+            "TARGET": "Target",
+            "READ": "Read",
+            "ACTIONS": "Actions"
+        }
+    },
+    "MAINTENANCE_TYPES": {
+        "CHECK_HEBDO": "Weekly Check",
+        "SERVICE": "Service",
+        "RÉPARATION": "Repair",
+        "AUTRE": "Other"
+    },
+    "TRANSPORT_MODES": {
+        "ROUTIER": "Road",
+        "AÉRIEN": "Air",
+        "MARITIME": "Sea"
+    },
+    "NEW_REQUEST_EXTRA": {
+        "START": "Start",
+        "END": "End"
     }
 }

@@ -56,7 +56,8 @@
               'NEW_REQUEST.MAINTENANCE.TYPE' | translate }}</label>
             <select id="maintType" name="maintType" [(ngModel)]="maintenanceType" required
               style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-              <option *ngFor="let t of maintenanceTypes" [value]="t">{{ t }}</option>
+              <option *ngFor="let t of maintenanceTypes" [value]="t">{{ 'MAINTENANCE_TYPES.' + t.toUpperCase().replace('
+                ', '_').replace('É', 'E') | translate }}</option>
             </select>
           </div>
         </div>
@@ -64,12 +65,14 @@
         <!-- Dates -->
         <div style="display: flex; gap: 20px; margin-bottom: 15px;">
           <div style="flex: 1;">
-            <label for="maintStart" style="font-weight: bold; display: block; margin-bottom: 5px;">Début *</label>
+            <label for="maintStart" style="font-weight: bold; display: block; margin-bottom: 5px;">{{
+              'NEW_REQUEST_EXTRA.START' | translate }} *</label>
             <input type="datetime-local" id="maintStart" name="maintStart" [(ngModel)]="mouvement.dateDepart" required
               style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
           </div>
           <div style="flex: 1;">
-            <label for="maintEnd" style="font-weight: bold; display: block; margin-bottom: 5px;">Fin *</label>
+            <label for="maintEnd" style="font-weight: bold; display: block; margin-bottom: 5px;">{{
+              'NEW_REQUEST_EXTRA.END' | translate }} *</label>
             <input type="datetime-local" id="maintEnd" name="maintEnd" [(ngModel)]="mouvement.dateArrivee" required
               style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
           </div>
@@ -122,7 +125,8 @@
           translate }}</label>
         <select id="modeTransport" name="modeTransport" [(ngModel)]="mouvement.modeTransport" required
           style="width: 100%; padding: 8px; margin-top: 5px;">
-          <option *ngFor="let mode of transportModes" [value]="mode">{{ mode }}</option>
+          <option *ngFor="let mode of transportModes" [value]="mode">{{ 'TRANSPORT_MODES.' +
+            mode.toUpperCase().replace('É', 'E') | translate }}</option>
         </select>
       </div>
 

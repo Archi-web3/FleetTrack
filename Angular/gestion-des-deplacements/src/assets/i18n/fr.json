@@ -90,7 +90,20 @@
         "PLANNED_TRIPS": "Trajets Planifiés",
         "GPS_TRACKS": "Tracés GPS (Réel)",
         "LAST_POSITIONS": "Dernières Positions",
-        "ZOOM_TOOLTIP": "Zoomer sur la dernière position connue de tous les véhicules affichés"
+        "ZOOM_TOOLTIP": "Zoomer sur la dernière position connue de tous les véhicules affichés",
+        "SEARCH_PLACEHOLDER": "Recherche (ID, Objectif)",
+        "VEHICLE": "Véhicule",
+        "ALL_VEHICLES": "Tous les véhicules",
+        "STATUS": "Statut Mouvement",
+        "PERIOD": "Période",
+        "START": "Début",
+        "END": "Fin",
+        "THIS_WEEK": "Cette semaine",
+        "CLEAR": "Effacer",
+        "FILTERED_TRIPS": "trajets filtrés",
+        "SELECT_ALL": "Tout sélectionner",
+        "DISPLAYED": "affichés",
+        "REQUESTER": "Demandeur"
     },
     "VALIDATION": {
         "TITLE": "Validation des Mouvements",
@@ -780,5 +793,57 @@
             "VEHICLE_TITLE": "Top Véhicules (Km)",
             "DISTANCE_LABEL": "Distance Parcourue (km)"
         }
+    },
+    "SECURITY_ALERTS": {
+        "TITLE": "Centre d'Alertes Sécurité (Push)",
+        "SUBTITLE": "Envoyez des notifications instantanées aux tablettes e-logbook.",
+        "NEW_ALERT": "Nouvelle Alerte",
+        "FORM": {
+            "TITLE": "Titre de l'alerte",
+            "TITLE_PLACEHOLDER": "Ex: Route barrée RN7",
+            "SEVERITY": "Niveau d'urgence",
+            "TARGET": "Cible",
+            "CHOOSE_VEHICLE": "Choisir le véhicule",
+            "MESSAGE": "Message détaillé",
+            "MESSAGE_PLACEHOLDER": "Tapez votre message ici...",
+            "SUBMIT": "Envoyer l'alerte"
+        },
+        "SEVERITY": {
+            "INFO": "Information (Bleu)",
+            "WARNING": "Avertissement (Jaune)",
+            "DANGER": "DANGER (Rouge)"
+        },
+        "TARGET": {
+            "ALL": "Toute la flotte",
+            "SPECIFIC": "Véhicule spécifique"
+        },
+        "HISTORY": {
+            "TITLE": "Historique des envois",
+            "EMPTY": "Aucune alerte envoyée récemment.",
+            "READS": "lectures"
+        },
+        "TABLE": {
+            "DATE": "Date",
+            "TITLE": "Titre",
+            "LEVEL": "Niveau",
+            "TARGET": "Cible",
+            "READ": "Lus",
+            "ACTIONS": "Actions"
+        }
+    },
+    "MAINTENANCE_TYPES": {
+        "CHECK_HEBDO": "Check Hebdo",
+        "SERVICE": "Service",
+        "RÉPARATION": "Réparation",
+        "AUTRE": "Autre"
+    },
+    "TRANSPORT_MODES": {
+        "ROUTIER": "Routier",
+        "AÉRIEN": "Aérien",
+        "MARITIME": "Maritime"
+    },
+    "NEW_REQUEST_EXTRA": {
+        "START": "Début",
+        "END": "Fin"
     }
 }

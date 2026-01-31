@@ -1,11 +1,11 @@
 <div class="page-container">
     <!-- Sidebar Filters -->
     <div class="sidebar-filters">
-        <h2><mat-icon>tune</mat-icon> Filtres</h2>
+        <h2><mat-icon>tune</mat-icon> {{ 'MAP.FILTERS' | translate }}</h2>
 
         <!-- Search Filter -->
         <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Recherche (ID, Objectif)</mat-label>
+            <mat-label>{{ 'MAP.SEARCH_PLACEHOLDER' | translate }}</mat-label>
             <input matInput [(ngModel)]="selectedSearchQuery" (keyup)="applyFilters()" placeholder="Ex: Mission..."
                 autocomplete="off">
             <mat-icon matSuffix>search</mat-icon>
@@ -13,9 +13,9 @@
 
         <!-- Vehicle Filter -->
         <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Véhicule</mat-label>
+            <mat-label>{{ 'MAP.VEHICLE' | translate }}</mat-label>
             <mat-select [(ngModel)]="selectedVehicleId" (selectionChange)="applyFilters()">
-                <mat-option value="all">Tous les véhicules</mat-option>
+                <mat-option value="all">{{ 'MAP.ALL_VEHICLES' | translate }}</mat-option>
                 <mat-option *ngFor="let v of vehicles" [value]="v._id">
                     {{ v.marque }} {{ v.modele }} - {{ v.immatriculation }}
                 </mat-option>
@@ -24,7 +24,7 @@
 
         <!-- Status Filter -->
         <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Statut Mouvement</mat-label>
+            <mat-label>{{ 'MAP.STATUS' | translate }}</mat-label>
             <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
                 <mat-option *ngFor="let s of statusOptions" [value]="s.value">
                     {{ s.label }}
@@ -34,10 +34,12 @@
 
         <!-- Date Range Filter -->
         <mat-form-field appearance="outline" class="filter-field">
-            <mat-label>Période</mat-label>
+            <mat-label>{{ 'MAP.PERIOD' | translate }}</mat-label>
             <mat-date-range-input [rangePicker]="picker">
-                <input matStartDate [(ngModel)]="filterDateStart" (dateChange)="applyFilters()" placeholder="Début">
-                <input matEndDate [(ngModel)]="filterDateEnd" (dateChange)="applyFilters()" placeholder="Fin">
+                <input matStartDate [(ngModel)]="filterDateStart" (dateChange)="applyFilters()"
+                    placeholder="{{ 'MAP.START' | translate }}">
+                <input matEndDate [(ngModel)]="filterDateEnd" (dateChange)="applyFilters()"
+                    placeholder="{{ 'MAP.END' | translate }}">
             </mat-date-range-input>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-date-range-picker #picker></mat-date-range-picker>
@@ -45,25 +47,25 @@
 
         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
             <button mat-stroked-button (click)="selectCurrentWeek()">
-                <mat-icon>calendar_today</mat-icon> Cette semaine
+                <mat-icon>calendar_today</mat-icon> {{ 'MAP.THIS_WEEK' | translate }}
             </button>
             <button mat-stroked-button (click)="filterDateStart = null; filterDateEnd = null; applyFilters()"
                 *ngIf="filterDateStart">
-                Effacer
+                {{ 'MAP.CLEAR' | translate }}
             </button>
         </div>
 
         <div class="stats-summary" *ngIf="filteredMouvements.length > 0">
-            <p><strong>{{ filteredMouvements.length }}</strong> trajets filtrés</p>
+            <p><strong>{{ filteredMouvements.length }}</strong> {{ 'MAP.FILTERED_TRIPS' | translate }}</p>
         </div>
 
         <!-- Multi-Selection Actions -->
         <div class="selection-actions" *ngIf="filteredMouvements.length > 0">
             <mat-checkbox [checked]="isAllSelected" (change)="toggleSelectAll($event)">
-                Tout sélectionner
+                {{ 'MAP.SELECT_ALL' | translate }}
             </mat-checkbox>
             <span class="selection-count" *ngIf="selectedTripIds.size > 0">
-                ({{ selectedTripIds.size }} affichés)
+                ({{ selectedTripIds.size }} {{ 'MAP.DISPLAYED' | translate }})
             </span>
         </div>
 
@@ -83,7 +85,7 @@
                         </div>
                         <div class="result-body">
                             <p>{{ m.title }}</p>
-                            <small>Demandeur: {{ m.demandeur }}</small>
+                            <small>{{ 'MAP.REQUESTER' | translate }}: {{ m.demandeur }}</small>
                             <small class="acf-code" *ngIf="m.vehiculeCode">{{ m.vehiculeCode }}</small>
                         </div>
                     </div>

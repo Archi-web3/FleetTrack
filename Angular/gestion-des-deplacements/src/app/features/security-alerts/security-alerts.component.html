@@ -1,47 +1,51 @@
 <div class="container">
-    <h1>📢 Centre d'Alertes Sécurité (Push)</h1>
-    <p class="subtitle">Envoyez des notifications instantanées aux tablettes e-logbook.</p>
+    <h1>📢 {{ 'SECURITY_ALERTS.TITLE' | translate }}</h1>
+    <p class="subtitle">{{ 'SECURITY_ALERTS.SUBTITLE' | translate }}</p>
 
     <div class="layout">
         <!-- Formulaire de Création -->
         <mat-card class="create-card">
             <mat-card-header>
                 <mat-icon mat-card-avatar color="warn">notification_important</mat-icon>
-                <mat-card-title>Nouvelle Alerte</mat-card-title>
+                <mat-card-title>{{ 'SECURITY_ALERTS.NEW_ALERT' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
                 <form [formGroup]="alertForm" (ngSubmit)="onSubmit()">
 
                     <!-- Titre -->
                     <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Titre de l'alerte</mat-label>
-                        <input matInput formControlName="title" placeholder="Ex: Route barrée RN7">
+                        <mat-label>{{ 'SECURITY_ALERTS.FORM.TITLE' | translate }}</mat-label>
+                        <input matInput formControlName="title"
+                            placeholder="{{ 'SECURITY_ALERTS.FORM.TITLE_PLACEHOLDER' | translate }}">
                         <mat-icon matSuffix>title</mat-icon>
                     </mat-form-field>
 
                     <!-- Niveau d'urgence -->
                     <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Niveau d'urgence</mat-label>
+                        <mat-label>{{ 'SECURITY_ALERTS.FORM.SEVERITY' | translate }}</mat-label>
                         <mat-select formControlName="severity">
-                            <mat-option value="info">ℹ️ Information (Bleu)</mat-option>
-                            <mat-option value="warning">⚠️ Avertissement (Jaune)</mat-option>
-                            <mat-option value="danger">🚨 DANGER (Rouge)</mat-option>
+                            <mat-option value="info">ℹ️ {{ 'SECURITY_ALERTS.SEVERITY.INFO' | translate }}</mat-option>
+                            <mat-option value="warning">⚠️ {{ 'SECURITY_ALERTS.SEVERITY.WARNING' | translate
+                                }}</mat-option>
+                            <mat-option value="danger">🚨 {{ 'SECURITY_ALERTS.SEVERITY.DANGER' | translate
+                                }}</mat-option>
                         </mat-select>
                     </mat-form-field>
 
                     <!-- Cible -->
                     <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Cible</mat-label>
+                        <mat-label>{{ 'SECURITY_ALERTS.FORM.TARGET' | translate }}</mat-label>
                         <mat-select formControlName="targetType">
-                            <mat-option value="all">🌍 Toute la flotte</mat-option>
-                            <mat-option value="vehicle">🚙 Véhicule spécifique</mat-option>
+                            <mat-option value="all">🌍 {{ 'SECURITY_ALERTS.TARGET.ALL' | translate }}</mat-option>
+                            <mat-option value="vehicle">🚙 {{ 'SECURITY_ALERTS.TARGET.SPECIFIC' | translate
+                                }}</mat-option>
                         </mat-select>
                     </mat-form-field>
 
                     <!-- Sélection Véhicule (Si cible = vehicle) -->
                     <mat-form-field appearance="outline" class="full-width"
                         *ngIf="alertForm.get('targetType')?.value === 'vehicle'">
-                        <mat-label>Choisir le véhicule</mat-label>
+                        <mat-label>{{ 'SECURITY_ALERTS.FORM.CHOOSE_VEHICLE' | translate }}</mat-label>
                         <mat-select formControlName="targetVehicleId">
                             <mat-option *ngFor="let v of vehicles" [value]="v._id">
                                 {{ v.marque }} {{ v.modele }} - {{ v.immatriculation }}
@@ -51,15 +55,15 @@
 
                     <!-- Message -->
                     <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Message détaillé</mat-label>
+                        <mat-label>{{ 'SECURITY_ALERTS.FORM.MESSAGE' | translate }}</mat-label>
                         <textarea matInput formControlName="message" cdkTextareaAutosize #autosize="cdkTextareaAutosize"
                             cdkAutosizeMinRows="3" cdkAutosizeMaxRows="10"
-                            placeholder="Tapez votre message ici..."></textarea>
+                            placeholder="{{ 'SECURITY_ALERTS.FORM.MESSAGE_PLACEHOLDER' | translate }}"></textarea>
                     </mat-form-field>
 
                     <button mat-raised-button color="warn" type="submit" [disabled]="alertForm.invalid"
                         class="submit-btn">
-                        <mat-icon>send</mat-icon> Envoyer l'alerte
+                        <mat-icon>send</mat-icon> {{ 'SECURITY_ALERTS.FORM.SUBMIT' | translate }}
                     </button>
                 </form>
             </mat-card-content>
@@ -69,20 +73,20 @@
         <mat-card class="history-card">
             <mat-card-header>
                 <mat-icon mat-card-avatar>history</mat-icon>
-                <mat-card-title>Historique des envois</mat-card-title>
+                <mat-card-title>{{ 'SECURITY_ALERTS.HISTORY.TITLE' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
                 <table mat-table [dataSource]="history" class="mat-elevation-z0">
 
                     <!-- Date -->
                     <ng-container matColumnDef="date">
-                        <th mat-header-cell *matHeaderCellDef> Date </th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'SECURITY_ALERTS.TABLE.DATE' | translate }} </th>
                         <td mat-cell *matCellDef="let alert"> {{ alert.createdAt | date:'dd/MM HH:mm' }} </td>
                     </ng-container>
 
                     <!-- Titre -->
                     <ng-container matColumnDef="title">
-                        <th mat-header-cell *matHeaderCellDef> Titre </th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'SECURITY_ALERTS.TABLE.TITLE' | translate }} </th>
                         <td mat-cell *matCellDef="let alert" class="title-cell">
                             <strong>{{ alert.title }}</strong>
                         </td>
@@ -90,7 +94,7 @@
 
                     <!-- Sévérité -->
                     <ng-container matColumnDef="severity">
-                        <th mat-header-cell *matHeaderCellDef> Niveau </th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'SECURITY_ALERTS.TABLE.LEVEL' | translate }} </th>
                         <td mat-cell *matCellDef="let alert">
                             <span [class]="'badge ' + alert.severity">{{ alert.severity | uppercase }}</span>
                         </td>
@@ -98,9 +102,10 @@
 
                     <!-- Target -->
                     <ng-container matColumnDef="target">
-                        <th mat-header-cell *matHeaderCellDef> Cible </th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'SECURITY_ALERTS.TABLE.TARGET' | translate }} </th>
                         <td mat-cell *matCellDef="let alert">
-                            <span *ngIf="alert.targetType === 'all'">🌍 Tous</span>
+                            <span *ngIf="alert.targetType === 'all'">🌍 {{ 'SECURITY_ALERTS.TARGET.ALL' | translate
+                                }}</span>
                             <span *ngIf="alert.targetType === 'vehicle'">🚙 {{ getVehicleName(alert.targetVehicleId)
                                 }}</span>
                         </td>
@@ -108,18 +113,18 @@
 
                     <!-- Lu par -->
                     <ng-container matColumnDef="readCount">
-                        <th mat-header-cell *matHeaderCellDef> Lus </th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'SECURITY_ALERTS.TABLE.READ' | translate }} </th>
                         <td mat-cell *matCellDef="let alert">
                             <mat-chip-listbox>
                                 <mat-chip-option color="primary" selected>{{ alert.readBy?.length || 0 }}
-                                    lectures</mat-chip-option>
+                                    {{ 'SECURITY_ALERTS.HISTORY.READS' | translate }}</mat-chip-option>
                             </mat-chip-listbox>
                         </td>
                     </ng-container>
 
                     <!-- Actions -->
                     <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'SECURITY_ALERTS.TABLE.ACTIONS' | translate }} </th>
                         <td mat-cell *matCellDef="let alert">
                             <button mat-icon-button color="warn" (click)="deleteAlert(alert)"
                                 title="Supprimer définitivement">
@@ -133,7 +138,7 @@
                 </table>
 
                 <div *ngIf="history.length === 0" class="empty-state">
-                    Aucune alerte envoyée récemment.
+                    {{ 'SECURITY_ALERTS.HISTORY.EMPTY' | translate }}
                 </div>
             </mat-card-content>
         </mat-card>
