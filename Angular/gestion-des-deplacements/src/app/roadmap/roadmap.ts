@@ -32,6 +32,18 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.13.0',
+            date: '31 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Intelligence Artificielle', description: 'Smart Forecast : Prévision des coûts de maintenance sur 1M, 3M, 6M et 1 An.' },
+                { category: 'Intelligence Artificielle', description: 'Algorithme : Projection kilométrique intelligente + Détection des services A/B/C + Marge imprévus.' },
+                { category: 'Configuration', description: 'Coûts Configurables : Possibilité de définir manuellement le prix des services via une interface dédiée.' },
+                { category: 'Analytics', description: 'Fiabilité (MTBF) : Analyse comparative de la fiabilité par marque/modèle (Score 0-100).' },
+                { category: 'Correctif', description: 'Logique : Correction du calcul "Prochain Service" pour les véhicules d\'occasion (kilométrage élevé).' }
+            ]
+        },
+        {
             version: 'v2.12.1', // Patch version for the fix
             date: '31 Janvier 2026',
             type: 'patch',

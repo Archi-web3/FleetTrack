@@ -113,8 +113,13 @@ class CostAnalyticsService {
 
         // 2. Coût Moyen Historique des Services (A, B, C)
         // On regarde en base combien coûtent VRAIMENT les services
-        // Si pas de données, on utilise ces valeurs par défaut (Fallback)
-        const defaultServiceCosts = {
+        // Si pas de données, on utilise les valeurs configurées (ou défauts hardcodés)
+
+        // Récupérer la config manuelle si existante
+        const Setting = require('../models/setting.model');
+        const costSetting = await Setting.findOne({ key: 'serviceCosts' });
+
+        const defaultServiceCosts = costSetting ? costSetting.value : {
             'Service A': 150, // Vidange simple
             'Service B': 350, // Intermédiaire
             'Service C': 800, // Grand service
@@ -129,7 +134,11 @@ class CostAnalyticsService {
                 { $match: { type: type } }, // On pourrait filtrer par pays aussi
                 { $group: { _id: null, avgCost: { $avg: '$cost' } } }
             ]);
-            realServiceCosts[type] = history[0]?.avgCost || defaultServiceCosts[type];
+            // RÈGLE : Si historique existe, on le prend le réel. Sinon, le configuré.
+            realServiceCosts[type] = history[0]?.avgCost || defaultServiceCosts[type] || 0;
+
+            // Si le user a forcé "Utiliser manuel uniquement" (option future), on pourrait changer ça.
+            // Pour l'instant : Historique > Manuel > Défaut
         }
 
         // 3. Simulation : Quels services vont tomber ?

@@ -96,4 +96,19 @@ export class SettingsService {
     saveCO2Factors(factors: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/co2Factors`, { value: factors });
     }
+
+    // Service Costs
+    getServiceCosts(): Observable<any> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/serviceCosts`).pipe(
+            map(setting => setting ? setting.value : null),
+            catchError(err => {
+                console.error('Erreur chargement Service Costs', err);
+                return of(null);
+            })
+        );
+    }
+
+    saveServiceCosts(costs: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/serviceCosts`, { value: costs });
+    }
 }

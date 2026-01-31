@@ -4,8 +4,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CostAnalyticsService, TCOData, CostForecast, ReliabilityStat } from '../cost-analytics/cost-analytics.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { SettingsService } from '../../settings.service'; // Import SettingsService
+import { ServiceCostDialogComponent } from './service-cost-dialog.component';
 
 @Component({
     selector: 'app-smart-cost-dashboard',
@@ -15,7 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
         MatCardModule,
         MatIconModule,
         MatProgressSpinnerModule,
-        MatButtonModule
+        MatButtonModule,
+        MatDialogModule
     ],
     templateUrl: './smart-cost-dashboard.component.html',
     styleUrls: ['./smart-cost-dashboard.component.scss']
@@ -29,7 +32,11 @@ export class SmartCostDashboardComponent implements OnInit {
 
     forecastMonths = 1; // Default 1 month
 
-    constructor(private analyticsService: CostAnalyticsService) { }
+    constructor(
+        private analyticsService: CostAnalyticsService,
+        private settingsService: SettingsService,
+        private dialog: MatDialog
+    ) { }
 
     ngOnInit() {
         this.loadData();
@@ -67,6 +74,24 @@ export class SmartCostDashboardComponent implements OnInit {
         });
     }
 
+    openConfigDialog() {
+        this.settingsService.getServiceCosts().subscribe(currentCosts => {
+            const dialogRef = this.dialog.open(ServiceCostDialogComponent, {
+                width: '400px',
+                data: currentCosts || {} // Pass current or empty (dialog handles defaults)
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.settingsService.saveServiceCosts(result).subscribe(() => {
+                        // Reload forecast to reflect changes
+                        this.loadForecast(this.forecastMonths);
+                    });
+                }
+            });
+        });
+    }
+
     private checkLoading() {
         if (this.tcoData && this.forecast && this.reliabilityStats) {
             this.loading = false;
@@ -78,7 +103,6 @@ export class SmartCostDashboardComponent implements OnInit {
         return this.tcoData ? (this.tcoData.totalCost / estTotalKm) : 0;
     }
 
-    // NOUVEAU : Helpers pour la table de prédiction
     getHealthColor(score: number): string {
         if (score >= 80) return 'primary';
         if (score >= 50) return 'accent';
