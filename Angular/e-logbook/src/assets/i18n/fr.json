@@ -238,5 +238,105 @@
             "ARRIVAL_TIME": "Arrivée :",
             "CLOSE": "Fermer"
         }
+    },
+    "TRIP_DETAILS": {
+        "TITLE": "Détails du Trajet",
+        "DATE_TIME": "Date & Heure",
+        "END": "Fin :",
+        "ITINERARY": "Itinéraire",
+        "DEPARTURE": "Départ :",
+        "ARRIVAL": "Arrivée :",
+        "MILEAGE": "Kilométrage",
+        "START": "Début :",
+        "FINISH": "Fin :",
+        "DISTANCE": "Distance :",
+        "CONSUMPTION": "Consommation",
+        "ACCURATE": "Précise :",
+        "ESTIMATED": "Estimée :",
+        "REFILLS": "pleins",
+        "INSUFFICIENT_DATA": "Données insuffisantes",
+        "PASSENGERS": "Passagers",
+        "PURPOSE": "Motif",
+        "NO_PURPOSE": "Aucun motif spécifié",
+        "SYNC_STATUS": "Statut de synchronisation",
+        "SYNCED": "Synchronisé",
+        "WAITING": "En attente",
+        "CLOSE": "Fermer"
+    },
+    "FUEL_PAGE": {
+        "TITLE": "Ravitaillement",
+        "QUANTITY": "Quantité (Litres)",
+        "QUANTITY_REQUIRED": "La quantité est requise",
+        "QUANTITY_POSITIVE": "La quantité doit être positive",
+        "MILEAGE": "Kilométrage",
+        "LAST_KM": "Dernier kilométrage :",
+        "TYPE": "Type de Carburant",
+        "SOURCE": "Source",
+        "COST": "Coût Total (Devise locale)",
+        "COST_POSITIVE": "Le coût doit être positif",
+        "FULL_TANK": "Plein complet",
+        "FULL_TANK_HINT": "(Cochez si le réservoir a été rempli complètement - nécessaire pour le calcul précis de la consommation)",
+        "PHOTOS": "Photos (Ticket, Compteur)",
+        "TAKE_PHOTO": "Prendre une photo",
+        "SAVE": "ENREGISTRER",
+        "VALIDATING": "Validation...",
+        "CANCEL": "ANNULER",
+        "DETAILS": {
+            "TITLE": "Détails du Ravitaillement",
+            "DATE": "Date",
+            "QUANTITY": "Quantité",
+            "TYPE": "Type de carburant",
+            "MILEAGE": "Kilométrage",
+            "SOURCE": "Source",
+            "SYNC_STATUS": "Statut de synchronisation"
+        }
+    },
+    "MAINTENANCE_PAGE": {
+        "TITLE": "Maintenance",
+        "TYPE": "Type de Maintenance",
+        "MILEAGE": "Kilométrage",
+        "LAST_KM": "Dernier kilométrage :",
+        "GARAGE": "Garage (optionnel)",
+        "COST": "Coût (optionnel)",
+        "COST_POSITIVE": "Le coût doit être positif",
+        "SAVE": "ENREGISTRER",
+        "VALIDATING": "Validation...",
+        "CANCEL": "ANNULER",
+        "DETAILS": {
+            "TITLE": "Détails de la Maintenance",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "COST": "Coût",
+            "MILEAGE": "Kilométrage",
+            "GARAGE": "Garage",
+            "SYNC_STATUS": "Statut de synchronisation"
+        }
+    },
+    "INCIDENT_PAGE": {
+        "TITLE": "Signaler un Incident",
+        "GPS": {
+            "LOADING": "Acquisition GPS en cours...",
+            "SUCCESS": "Position acquise",
+            "ERROR": "GPS non disponible (Incident sera sans loc)"
+        },
+        "TYPE": "Type d'Incident",
+        "SEVERITY": "Gravité",
+        "DESCRIPTION": "Description",
+        "COST": "Coût (optionnel)",
+        "PHOTOS": "Photos",
+        "TAKE_PHOTO": "Prendre une photo",
+        "REPORT": "SIGNALER",
+        "CANCEL": "ANNULER",
+        "DETAILS": {
+            "TITLE": "Détails de l'Incident",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "SEVERITY": "Gravité",
+            "DESCRIPTION": "Description",
+            "SYNC_STATUS": "Statut de synchronisation"
+        }
+    },
+    "WAIVER_PAGE": {
+        "BACK_MENU": "Retour au Menu"
     }
 }

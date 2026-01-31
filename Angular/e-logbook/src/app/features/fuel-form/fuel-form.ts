@@ -14,6 +14,8 @@ import { OfflineService, Fuel } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PhotoService, Photo } from '../../core/services/photo.service';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-fuel-form',
   standalone: true,
@@ -27,7 +29,8 @@ import { PhotoService, Photo } from '../../core/services/photo.service';
     MatSelectModule,
     MatCheckboxModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './fuel-form.html',
   styleUrls: ['./fuel-form.scss']

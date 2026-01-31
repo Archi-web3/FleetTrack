@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { OfflineService, Incident } from '../../core/services/offline.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { PhotoService, Photo } from '../../core/services/photo.service';
 
 @Component({
@@ -25,7 +26,8 @@ import { PhotoService, Photo } from '../../core/services/photo.service';
     MatCardModule,
     MatSelectModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './incident-form.html',
   styleUrls: ['./incident-form.scss']

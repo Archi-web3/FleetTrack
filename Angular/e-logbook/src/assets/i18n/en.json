@@ -238,5 +238,105 @@
             "ARRIVAL_TIME": "Arrival:",
             "CLOSE": "Close"
         }
+    },
+    "TRIP_DETAILS": {
+        "TITLE": "Trip Details",
+        "DATE_TIME": "Date & Time",
+        "END": "End:",
+        "ITINERARY": "Itinerary",
+        "DEPARTURE": "Departure:",
+        "ARRIVAL": "Arrival:",
+        "MILEAGE": "Mileage",
+        "START": "Start:",
+        "FINISH": "Finish:",
+        "DISTANCE": "Distance:",
+        "CONSUMPTION": "Consumption",
+        "ACCURATE": "Accurate:",
+        "ESTIMATED": "Estimated:",
+        "REFILLS": "refills",
+        "INSUFFICIENT_DATA": "Insufficient data",
+        "PASSENGERS": "Passengers",
+        "PURPOSE": "Purpose",
+        "NO_PURPOSE": "No purpose specified",
+        "SYNC_STATUS": "Synchronization Status",
+        "SYNCED": "Synced",
+        "WAITING": "Pending",
+        "CLOSE": "Close"
+    },
+    "FUEL_PAGE": {
+        "TITLE": "Refueling",
+        "QUANTITY": "Quantity (Liters)",
+        "QUANTITY_REQUIRED": "Quantity is required",
+        "QUANTITY_POSITIVE": "Quantity must be positive",
+        "MILEAGE": "Mileage",
+        "LAST_KM": "Last mileage:",
+        "TYPE": "Fuel Type",
+        "SOURCE": "Source",
+        "COST": "Total Cost (Local Currency)",
+        "COST_POSITIVE": "Cost must be positive",
+        "FULL_TANK": "Full tank",
+        "FULL_TANK_HINT": "(Check if tank was filled completely - needed for accurate consumption)",
+        "PHOTOS": "Photos (Receipt, Odometer)",
+        "TAKE_PHOTO": "Take a photo",
+        "SAVE": "SAVE",
+        "VALIDATING": "Validating...",
+        "CANCEL": "CANCEL",
+        "DETAILS": {
+            "TITLE": "Refueling Details",
+            "DATE": "Date",
+            "QUANTITY": "Quantity",
+            "TYPE": "Fuel Type",
+            "MILEAGE": "Mileage",
+            "SOURCE": "Source",
+            "SYNC_STATUS": "Sync Status"
+        }
+    },
+    "MAINTENANCE_PAGE": {
+        "TITLE": "Maintenance",
+        "TYPE": "Maintenance Type",
+        "MILEAGE": "Mileage",
+        "LAST_KM": "Last mileage:",
+        "GARAGE": "Garage (optional)",
+        "COST": "Cost (optional)",
+        "COST_POSITIVE": "Cost must be positive",
+        "SAVE": "SAVE",
+        "VALIDATING": "Validating...",
+        "CANCEL": "CANCEL",
+        "DETAILS": {
+            "TITLE": "Maintenance Details",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "COST": "Cost",
+            "MILEAGE": "Mileage",
+            "GARAGE": "Garage",
+            "SYNC_STATUS": "Sync Status"
+        }
+    },
+    "INCIDENT_PAGE": {
+        "TITLE": "Report Incident",
+        "GPS": {
+            "LOADING": "Acquiring GPS...",
+            "SUCCESS": "Position acquired",
+            "ERROR": "GPS unavailable (Incident will be without loc)"
+        },
+        "TYPE": "Incident Type",
+        "SEVERITY": "Severity",
+        "DESCRIPTION": "Description",
+        "COST": "Cost (optional)",
+        "PHOTOS": "Photos",
+        "TAKE_PHOTO": "Take a photo",
+        "REPORT": "REPORT",
+        "CANCEL": "CANCEL",
+        "DETAILS": {
+            "TITLE": "Incident Details",
+            "DATE": "Date",
+            "TYPE": "Type",
+            "SEVERITY": "Severity",
+            "DESCRIPTION": "Description",
+            "SYNC_STATUS": "Sync Status"
+        }
+    },
+    "WAIVER_PAGE": {
+        "BACK_MENU": "Back to Menu"
     }
 }

@@ -1,7 +1,7 @@
 <div class="container">
     <mat-card>
         <mat-card-header>
-            <mat-card-title>Signaler un Incident</mat-card-title>
+            <mat-card-title>{{ 'INCIDENT_PAGE.TITLE' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
 
@@ -11,10 +11,11 @@
                 <mat-icon *ngIf="locationStatus === 'success'">gps_fixed</mat-icon>
                 <mat-icon *ngIf="locationStatus === 'error'">location_disabled</mat-icon>
 
-                <span *ngIf="locationStatus === 'loading'">Acquisition GPS en cours...</span>
-                <span *ngIf="locationStatus === 'success'">Position acquise ({{ location?.accuracy | number:'1.0-0'
+                <span *ngIf="locationStatus === 'loading'">{{ 'INCIDENT_PAGE.GPS.LOADING' | translate }}</span>
+                <span *ngIf="locationStatus === 'success'">{{ 'INCIDENT_PAGE.GPS.SUCCESS' | translate }} ({{
+                    location?.accuracy | number:'1.0-0'
                     }}m)</span>
-                <span *ngIf="locationStatus === 'error'">GPS non disponible (Incident sera sans loc)</span>
+                <span *ngIf="locationStatus === 'error'">{{ 'INCIDENT_PAGE.GPS.ERROR' | translate }}</span>
 
                 <button mat-icon-button *ngIf="locationStatus === 'error'" (click)="captureLocation()">
                     <mat-icon>refresh</mat-icon>
@@ -22,7 +23,7 @@
             </div>
 
             <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Type d'Incident</mat-label>
+                <mat-label>{{ 'INCIDENT_PAGE.TYPE' | translate }}</mat-label>
                 <mat-select [(ngModel)]="incidentType">
                     <mat-option value="Panne">Panne</mat-option>
                     <mat-option value="Accident">Accident</mat-option>
@@ -33,7 +34,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Gravité</mat-label>
+                <mat-label>{{ 'INCIDENT_PAGE.SEVERITY' | translate }}</mat-label>
                 <mat-select [(ngModel)]="severity">
                     <mat-option value="Faible">Faible</mat-option>
                     <mat-option value="Moyenne">Moyenne</mat-option>
@@ -42,23 +43,23 @@
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Description</mat-label>
+                <mat-label>{{ 'INCIDENT_PAGE.DESCRIPTION' | translate }}</mat-label>
                 <textarea matInput [(ngModel)]="description" rows="4" required></textarea>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Coût (optionnel)</mat-label>
+                <mat-label>{{ 'INCIDENT_PAGE.COST' | translate }}</mat-label>
                 <input matInput type="number" [(ngModel)]="cost" step="0.01">
             </mat-form-field>
 
             <!-- NOUVEAU: Section Photos -->
             <div class="photos-section">
-                <h3>Photos</h3>
+                <h3>{{ 'INCIDENT_PAGE.PHOTOS' | translate }}</h3>
 
                 <!-- Bouton Prendre Photo -->
                 <button mat-raised-button color="primary" type="button" (click)="takePhoto()" class="photo-btn">
                     <mat-icon>photo_camera</mat-icon>
-                    Prendre une photo
+                    {{ 'INCIDENT_PAGE.TAKE_PHOTO' | translate }}
                 </button>
 
                 <!-- Input caché pour sélection fichier -->
@@ -90,11 +91,11 @@
 
             <button mat-raised-button color="warn" class="full-width action-btn" (click)="saveIncident()"
                 [disabled]="!incidentType || !description">
-                SIGNALER
+                {{ 'INCIDENT_PAGE.REPORT' | translate }}
             </button>
 
             <button mat-button class="full-width" (click)="cancel()">
-                ANNULER
+                {{ 'INCIDENT_PAGE.CANCEL' | translate }}
             </button>
 
         </mat-card-content>

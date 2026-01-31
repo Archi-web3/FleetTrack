@@ -9,6 +9,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { OfflineService, Maintenance } from '../../core/services/offline.service';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-maintenance-form',
   standalone: true,
@@ -19,7 +21,8 @@ import { OfflineService, Maintenance } from '../../core/services/offline.service
     MatInputModule,
     MatFormFieldModule,
     MatCardModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslateModule
   ],
   templateUrl: './maintenance-form.html',
   styleUrls: ['./maintenance-form.scss']

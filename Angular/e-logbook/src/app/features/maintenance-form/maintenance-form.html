@@ -1,12 +1,12 @@
 <div class="container">
     <mat-card>
         <mat-card-header>
-            <mat-card-title>Maintenance</mat-card-title>
+            <mat-card-title>{{ 'MAINTENANCE_PAGE.TITLE' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <form [formGroup]="maintenanceForm" (ngSubmit)="saveMaintenance()">
                 <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Type de Maintenance</mat-label>
+                    <mat-label>{{ 'MAINTENANCE_PAGE.TYPE' | translate }}</mat-label>
                     <mat-select formControlName="maintenanceType">
                         <mat-option value="Révision">Révision</mat-option>
                         <mat-option value="Vidange">Vidange</mat-option>
@@ -19,35 +19,36 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Kilométrage</mat-label>
+                    <mat-label>{{ 'MAINTENANCE_PAGE.MILEAGE' | translate }}</mat-label>
                     <input matInput type="number" formControlName="mileage">
-                    <mat-hint *ngIf="lastMileage > 0">Dernier kilométrage: {{ lastMileage }} km</mat-hint>
+                    <mat-hint *ngIf="lastMileage > 0">{{ 'MAINTENANCE_PAGE.LAST_KM' | translate }} {{ lastMileage }}
+                        km</mat-hint>
                     <mat-error *ngIf="maintenanceForm.get('mileage')?.invalid">
                         {{ getMileageError() }}
                     </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Garage (optionnel)</mat-label>
+                    <mat-label>{{ 'MAINTENANCE_PAGE.GARAGE' | translate }}</mat-label>
                     <input matInput formControlName="garage">
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" class="full-width">
-                    <mat-label>Coût (optionnel)</mat-label>
+                    <mat-label>{{ 'MAINTENANCE_PAGE.COST' | translate }}</mat-label>
                     <input matInput type="number" formControlName="cost" step="0.01">
                     <mat-error *ngIf="maintenanceForm.get('cost')?.hasError('min')">
-                        Le coût doit être positif
+                        {{ 'MAINTENANCE_PAGE.COST_POSITIVE' | translate }}
                     </mat-error>
                 </mat-form-field>
 
                 <button mat-raised-button color="primary" class="full-width action-btn" type="submit"
                     [disabled]="maintenanceForm.invalid || maintenanceForm.pending">
-                    <span *ngIf="!maintenanceForm.pending">ENREGISTRER</span>
-                    <span *ngIf="maintenanceForm.pending">Validation...</span>
+                    <span *ngIf="!maintenanceForm.pending">{{ 'MAINTENANCE_PAGE.SAVE' | translate }}</span>
+                    <span *ngIf="maintenanceForm.pending">{{ 'MAINTENANCE_PAGE.VALIDATING' | translate }}</span>
                 </button>
 
                 <button mat-button class="full-width" type="button" (click)="cancel()">
-                    ANNULER
+                    {{ 'MAINTENANCE_PAGE.CANCEL' | translate }}
                 </button>
             </form>
         </mat-card-content>
