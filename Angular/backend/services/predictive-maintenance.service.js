@@ -15,7 +15,8 @@ class PredictiveMaintenanceService {
         const mongoose = require('mongoose');
 
         // Filtrer les véhicules actifs (Exclure Vendu, Rebut)
-        const matchStage = { $match: { statut: { $nin: ['Vendu', 'Rebut', 'Inactif'] } } };
+        // DISABLE FILTER FOR DEBUGGING
+        const matchStage = { $match: {} };
 
         if (userCountry && userCountry !== 'All') {
             // Vérifier si c'est un ObjectId valide
