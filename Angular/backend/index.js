@@ -185,6 +185,10 @@ app.use('/api/audit', auditRoute);
 const predictiveRoute = require('./routes/predictive');
 app.use('/api/predictive', predictiveRoute);
 
+// DEBUG ROUTE (TEMPORAIRE)
+const debugRoute = require('./routes/debug_vehicles');
+app.use('/api', debugRoute);
+
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
 const startMaintenanceCron = require('./jobs/maintenanceCron'); // New daily email cron
