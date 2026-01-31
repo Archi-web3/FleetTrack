@@ -214,3 +214,74 @@
         text-align: right;
     }
 }
+
+/* NOUVEAU : Styles pour la table de prédictions */
+.predictions-table-container {
+    margin-top: 32px;
+
+    h3 {
+        color: #1e293b;
+        margin-bottom: 16px;
+        font-size: 18px;
+    }
+}
+
+.full-width-table {
+    width: 100%;
+
+    th {
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    td {
+        color: #334155;
+    }
+}
+
+.health-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+
+    mat-progress-bar {
+        flex: 1;
+        height: 8px;
+        border-radius: 4px;
+    }
+
+    span {
+        font-size: 12px;
+        font-weight: 600;
+        width: 35px;
+        text-align: right;
+    }
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+
+    &.critical {
+        background: #fef2f2;
+        color: #ef4444;
+    }
+
+    &.warning {
+        background: #fffbeb;
+        color: #f59e0b;
+    }
+
+    &.ok {
+        background: #ecfdf5;
+        color: #10b981;
+    }
+}
+
+.sub-text {
+    font-size: 11px;
+    color: #94a3b8;
+}

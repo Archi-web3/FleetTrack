@@ -253,10 +253,17 @@
             </div>
         </mat-tab>
 
-        <!-- ONGLET 3 : SMART COST & PREDICTIVE -->
+        <!-- ONGLET 3 : SMART COST -->
         <mat-tab label="Smart Cost & Analytics">
             <div class="tab-content-wrapper">
                 <app-smart-cost-dashboard></app-smart-cost-dashboard>
+            </div>
+        </mat-tab>
+
+        <!-- ONGLET 4 : PRÉDICTIONS (IA & SANTÉ) [RETOUR] -->
+        <mat-tab [label]="'MAINTENANCE.TABS.PREDICTIVE' | translate">
+            <div class="tab-content-wrapper">
+                <app-predictive-dashboard></app-predictive-dashboard>
             </div>
         </mat-tab>
 

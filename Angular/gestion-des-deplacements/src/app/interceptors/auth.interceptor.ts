@@ -42,7 +42,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
                 console.warn('[AuthInterceptor] 401 Unauthorized détecté (sans token). Déconnexion forcée.');
-                const authService = inject(AuthService); // Ré-injection nécessaire ici si on passe par ce chemin
+                // Fix: Utiliser l'instance authService déjà injectée plus haut, ne pas rappeler inject() ici
                 authService.logout();
             }
             return throwError(() => error);

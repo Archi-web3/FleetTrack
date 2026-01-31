@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface VehicleOverview {
@@ -69,14 +69,6 @@ export class MaintenanceTrackingService {
 
     constructor(private http: HttpClient) { }
 
-    private getHeaders(): HttpHeaders {
-        const token = localStorage.getItem('token');
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        });
-    }
-
     /**
      * Récupère la vue d'ensemble de tous les véhicules
      */
@@ -90,28 +82,28 @@ export class MaintenanceTrackingService {
 
         if (params.length > 0) url += '?' + params.join('&');
 
-        return this.http.get<VehicleOverview[]>(url, { headers: this.getHeaders() });
+        return this.http.get<VehicleOverview[]>(url);
     }
 
     /**
      * Récupère les détails complets d'un véhicule
      */
     getVehicleDetail(vehicleId: string): Observable<VehicleDetail> {
-        return this.http.get<VehicleDetail>(`${this.apiUrl}/vehicle/${vehicleId}`, { headers: this.getHeaders() });
+        return this.http.get<VehicleDetail>(`${this.apiUrl}/vehicle/${vehicleId}`);
     }
 
     /**
      * Récupère les alertes urgentes
      */
     getAlerts(): Observable<Alert[]> {
-        return this.http.get<Alert[]>(`${this.apiUrl}/alerts`, { headers: this.getHeaders() });
+        return this.http.get<Alert[]>(`${this.apiUrl}/alerts`);
     }
 
     /**
      * Récupère le planning prévisionnel d'un véhicule
      */
     getPredictivePlan(vehicleId: string): Observable<PredictivePlan> {
-        return this.http.get<PredictivePlan>(`${this.apiUrl}/predictive/${vehicleId}`, { headers: this.getHeaders() });
+        return this.http.get<PredictivePlan>(`${this.apiUrl}/predictive/${vehicleId}`);
     }
 
     /**
@@ -122,6 +114,6 @@ export class MaintenanceTrackingService {
         // index.js définit app.use('/api/predictive', ...) et router.get('/fleet-health', ...)
         // Donc URL = /api/predictive/fleet-health
         const predictiveApi = this.apiUrl.replace('maintenance-tracking', 'predictive');
-        return this.http.get<any>(`${predictiveApi}/fleet-health`, { headers: this.getHeaders() });
+        return this.http.get<any>(`${predictiveApi}/fleet-health`);
     }
 }

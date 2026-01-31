@@ -16,7 +16,8 @@ import { Router } from '@angular/router';
 import { MaintenanceTrackingService } from './maintenance-tracking.service';
 import { AdminService } from '../admin.service';
 import { MouvementService } from '../mouvement.service';
-import { SmartCostDashboardComponent } from './smart-cost-dashboard/smart-cost-dashboard.component'; // NOUVEAU
+import { SmartCostDashboardComponent } from './smart-cost-dashboard/smart-cost-dashboard.component';
+import { PredictiveDashboardComponent } from './predictive-dashboard/predictive-dashboard.component'; // RETOUR
 
 @Component({
     selector: 'app-maintenance-tracking',
@@ -35,7 +36,8 @@ import { SmartCostDashboardComponent } from './smart-cost-dashboard/smart-cost-d
         MatDialogModule,
         MatTabsModule,
         TranslateModule,
-        SmartCostDashboardComponent // NOUVEAU
+        SmartCostDashboardComponent,
+        PredictiveDashboardComponent // RETOUR
     ],
     templateUrl: './maintenance-tracking.component.html',
     styleUrls: ['./maintenance-tracking.component.css']

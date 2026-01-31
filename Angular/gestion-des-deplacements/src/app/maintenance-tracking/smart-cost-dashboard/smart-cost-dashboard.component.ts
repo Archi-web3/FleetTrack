@@ -8,7 +8,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
     selector: 'app-smart-cost-dashboard',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule],
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatIconModule,
+        MatProgressSpinnerModule
+    ],
     templateUrl: './smart-cost-dashboard.component.html',
     styleUrls: ['./smart-cost-dashboard.component.scss']
 })
@@ -16,6 +21,7 @@ export class SmartCostDashboardComponent implements OnInit {
     tcoData: TCOData | null = null;
     forecast: CostForecast | null = null;
     reliabilityStats: ReliabilityStat[] = [];
+
     loading = true;
 
     constructor(private analyticsService: CostAnalyticsService) { }
@@ -58,9 +64,18 @@ export class SmartCostDashboardComponent implements OnInit {
     }
 
     getCostPerKm(): number {
-        // Estimons 1500km par véhicule par mois pour le MVP si pas de données réelles
-        // Idéalement on récupérerait le KM total de la période via le service
         const estTotalKm = (this.tcoData?.vehicleCount || 1) * 1500;
         return this.tcoData ? (this.tcoData.totalCost / estTotalKm) : 0;
+    }
+
+    // NOUVEAU : Helpers pour la table de prédiction
+    getHealthColor(score: number): string {
+        if (score >= 80) return 'primary';
+        if (score >= 50) return 'accent';
+        return 'warn';
+    }
+
+    formatDate(dateStr: string): string {
+        return new Date(dateStr).toLocaleDateString();
     }
 }
