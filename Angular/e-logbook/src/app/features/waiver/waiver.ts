@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { WaiverService } from '../../core/services/waiver.service';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,9 +21,9 @@ import { TranslateModule } from '@ngx-translate/core';
         MatInputModule,
         MatFormFieldModule,
         MatIconModule,
-        MatIconModule,
         MatSnackBarModule,
-        TranslateModule
+        TranslateModule,
+        RouterModule
     ],
     templateUrl: './waiver.html',
     styleUrls: ['./waiver.css']
