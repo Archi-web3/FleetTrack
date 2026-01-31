@@ -50,11 +50,6 @@ export class GeneralSettingsComponent implements OnInit {
         this.settingsService.getVehicleTypes(true).subscribe({
             next: (types) => {
                 this.vehicleTypes = types || [];
-                // map response correctly if service returns raw object, but service handles it
-                if (!Array.isArray(this.vehicleTypes)) {
-                    // Fallback hack if service returns object
-                    this.vehicleTypes = (this.vehicleTypes as any).value || [];
-                }
                 this.loading = false;
             },
             error: () => this.loading = false

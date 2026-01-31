@@ -41,14 +41,16 @@
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
           <mat-label>{{ 'USERS.FORM.PROFILE' | translate }}</mat-label>
           <mat-select name="newUserProfile" [(ngModel)]="newUser.profil" (selectionChange)="onProfilChange()" required>
-            <mat-option *ngFor="let profile of profiles" [value]="profile">{{ profile }}</mat-option>
+            <mat-option *ngFor="let profile of profiles" [value]="profile">{{ 'PROFILES.' + profile | translate
+              }}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}</mat-label>
           <mat-select name="newUserSecurityLevel" [(ngModel)]="newUser.niveauValidationSecu" required>
-            <mat-option *ngFor="let level of securityLevels" [value]="level">{{ level }}</mat-option>
+            <mat-option *ngFor="let level of securityLevels" [value]="level">{{ 'PROFILES.' + level | translate
+              }}</mat-option>
           </mat-select>
           <mat-hint>{{ 'USERS.FORM.SECURITY_HINT' | translate }}</mat-hint>
         </mat-form-field>
@@ -171,14 +173,16 @@
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
           <mat-label>{{ 'USERS.FORM.PROFILE' | translate }}</mat-label>
           <mat-select name="editUserProfile" [(ngModel)]="selectedUser.profil" required>
-            <mat-option *ngFor="let profile of profiles" [value]="profile">{{ profile }}</mat-option>
+            <mat-option *ngFor="let profile of profiles" [value]="profile">{{ 'PROFILES.' + profile | translate
+              }}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}</mat-label>
           <mat-select name="editUserSecurityLevel" [(ngModel)]="selectedUser.niveauValidationSecu" required>
-            <mat-option *ngFor="let level of securityLevels" [value]="level">{{ level }}</mat-option>
+            <mat-option *ngFor="let level of securityLevels" [value]="level">{{ 'PROFILES.' + level | translate
+              }}</mat-option>
           </mat-select>
           <mat-hint>{{ 'USERS.FORM.SECURITY_HINT' | translate }}</mat-hint>
         </mat-form-field>
@@ -268,7 +272,7 @@
       <mat-select [(ngModel)]="selectedProfileFilter" (selectionChange)="filterByProfile()">
         <mat-option value="">{{ 'USERS.ACTIONS.ALL_PROFILES' | translate }}</mat-option>
         <mat-option *ngFor="let profile of profiles" [value]="profile">
-          {{ profile }}
+          {{ 'PROFILES.' + profile | translate }}
         </mat-option>
       </mat-select>
     </mat-form-field>

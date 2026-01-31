@@ -41,8 +41,7 @@ export class SettingsService {
             return this.vehicleTypes$;
         }
 
-        return this.http.get<{ key: string, value: string[] }>(`${this.apiUrl}/vehicleTypes`).pipe(
-            map(setting => setting.value),
+        return this.http.get<string[]>(`${this.apiUrl}/vehicleTypes`).pipe(
             tap(types => {
                 this.loaded = true;
                 this.vehicleTypesSubject.next(types);
@@ -58,9 +57,9 @@ export class SettingsService {
 
     // Version propre avec map
     fetchVehicleTypes(): Observable<string[]> {
-        return this.http.get<{ key: string, value: string[] }>(`${this.apiUrl}/vehicleTypes`).pipe(
-            tap(setting => {
-                this.vehicleTypesSubject.next(setting.value);
+        return this.http.get<string[]>(`${this.apiUrl}/vehicleTypes`).pipe(
+            tap(types => {
+                this.vehicleTypesSubject.next(types);
                 this.loaded = true;
             }),
             catchError(() => {
@@ -69,9 +68,7 @@ export class SettingsService {
                 this.vehicleTypesSubject.next(this.defaultTypes);
                 this.loaded = true;
                 return of(this.defaultTypes);
-            }),
-            // Return request result mapped or defaults
-            tap(val => val) as any
+            })
         );
     }
 

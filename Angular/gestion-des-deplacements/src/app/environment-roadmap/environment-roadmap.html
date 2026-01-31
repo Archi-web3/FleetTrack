@@ -117,7 +117,8 @@
                         <mat-form-field>
                             <mat-label>{{ 'ENVIRONMENT.ACTION_PLAN.LEVER' | translate }}</mat-label>
                             <mat-select [(ngModel)]="newAction.category">
-                                <mat-option *ngFor="let l of leviers" [value]="l">{{l}}</mat-option>
+                                <mat-option *ngFor="let l of leviers" [value]="l">{{ 'LEVERS.' + l | translate
+                                    }}</mat-option>
                             </mat-select>
                         </mat-form-field>
 

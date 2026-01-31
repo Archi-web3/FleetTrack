@@ -6,7 +6,33 @@
         "SAVE": "Enregistrer",
         "CONFIRM": "Confirmer",
         "DELETE": "Supprimer",
-        "EDIT": "Modifier"
+        "EDIT": "Modifier",
+        "YES": "Oui",
+        "NO": "Non",
+        "NONE": "Aucun"
+    },
+    "PROFILES": {
+        "SuperAdmin": "Super Admin",
+        "Admin": "Administrateur",
+        "Superviseur": "Superviseur",
+        "Superviseur Sécurité": "Superviseur Sécurité",
+        "Technicien": "Technicien",
+        "Chauffeur": "Chauffeur",
+        "Guest": "Invité",
+        "All Profiles": "Tous les profils"
+    },
+    "LEVERS": {
+        "Pooling": "Pooling",
+        "Planification": "Planification",
+        "Choix Véhicule": "Choix Véhicule",
+        "Eco-conduite": "Eco-conduite",
+        "Maintenance": "Maintenance",
+        "Substitution": "Substitution",
+        "Géolocalisation": "Géolocalisation",
+        "Stock Carburant": "Stock Carburant",
+        "Générateurs": "Générateurs",
+        "Politique Transport": "Politique Transport",
+        "Autre": "Autre"
     },
     "LOGIN": {
         "TITLE": "Connexion",
