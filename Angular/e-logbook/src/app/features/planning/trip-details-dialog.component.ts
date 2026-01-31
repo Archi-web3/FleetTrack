@@ -6,48 +6,50 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-trip-details-dialog',
-    standalone: true,
-    imports: [
-        CommonModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatIconModule,
-        MatListModule,
-        MatDividerModule,
-        MatChipsModule
-    ],
-    template: `
+  selector: 'app-trip-details-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatDividerModule,
+    MatChipsModule,
+    TranslateModule
+  ],
+  template: `
     <h2 mat-dialog-title>
       <mat-icon class="title-icon">info</mat-icon>
-      Détails de la mission
+      {{ 'DIALOG.DETAILS.TITLE' | translate }}
     </h2>
     
     <mat-dialog-content class="details-content">
       <!-- Status Chip -->
       <div class="status-container">
         <mat-chip [color]="getStatusColor(data.movement.statut)" selected>
-            {{ data.movement.statut | titlecase }}
+            {{ getStatusKey(data.movement.statut) | translate | titlecase }}
         </mat-chip>
       </div>
 
       <!-- General Info -->
       <div class="section">
-        <h3><mat-icon>description</mat-icon> Mission</h3>
-        <p><strong>Motif/Objectif:</strong> {{ data.movement.objectif || data.movement.purpose || 'Non spécifié' }}</p>
-        <p><strong>Projet:</strong> {{ data.movement.projet || 'Non spécifié' }}</p>
+        <h3><mat-icon>description</mat-icon> {{ 'DIALOG.DETAILS.MISSION' | translate }}</h3>
+        <p><strong>{{ 'DIALOG.DETAILS.PURPOSE' | translate }}</strong> {{ data.movement.objectif || data.movement.purpose || ('DIALOG.DETAILS.NOT_SPECIFIED' | translate) }}</p>
+        <p><strong>{{ 'DIALOG.DETAILS.PROJECT' | translate }}</strong> {{ data.movement.projet || ('DIALOG.DETAILS.NOT_SPECIFIED' | translate) }}</p>
       </div>
       
       <mat-divider></mat-divider>
 
       <!-- Vehicle -->
       <div class="section" *ngIf="data.movement.vehicule">
-        <h3><mat-icon>directions_car</mat-icon> Véhicule</h3>
+        <h3><mat-icon>directions_car</mat-icon> {{ 'DIALOG.DETAILS.VEHICLE' | translate }}</h3>
         <p>
             {{ data.movement.vehicule.marque }} {{ data.movement.vehicule.modele }}<br>
-            <span class="text-secondary">Immat: {{ data.movement.vehicule.immatriculation }}</span>
+            <span class="text-secondary">{{ 'DIALOG.DETAILS.IMMAT' | translate }} {{ data.movement.vehicule.immatriculation }}</span>
         </p>
       </div>
 
@@ -55,7 +57,7 @@ import { MatChipsModule } from '@angular/material/chips';
 
       <!-- Passengers -->
       <div class="section" *ngIf="data.movement.passagers?.length > 0">
-        <h3><mat-icon>group</mat-icon> Passagers ({{data.movement.passagers.length}})</h3>
+        <h3><mat-icon>group</mat-icon> {{ 'DIALOG.DETAILS.PASSENGERS' | translate }} ({{data.movement.passagers.length}})</h3>
         <mat-list dense>
           <mat-list-item *ngFor="let passager of data.movement.passagers">
             <mat-icon matListItemIcon>person</mat-icon>
@@ -69,16 +71,16 @@ import { MatChipsModule } from '@angular/material/chips';
 
       <!-- Itinerary -->
       <div class="section">
-        <h3><mat-icon>map</mat-icon> Itinéraire</h3>
+        <h3><mat-icon>map</mat-icon> {{ 'DIALOG.DETAILS.ITINERARY' | translate }}</h3>
         <div class="timeline">
             <div class="timeline-item" *ngFor="let stop of data.movement.stops; let i = index; let last = last">
                 <div class="timeline-marker" [class.start]="i===0" [class.end]="last"></div>
                 <div class="timeline-content">
-                    <h4>{{ stop.lieu?.nom || 'Lieu inconnu' }}</h4>
+                    <h4>{{ stop.lieu?.nom || ('DIALOG.DETAILS.UNKNOWN_LOCATION' | translate) }}</h4>
                     <p class="text-secondary">{{ stop.lieu?.adresse }}</p>
                     <div class="time-info">
-                        <span *ngIf="stop.dateDepart">Départ: {{ stop.dateDepart | date:'shortTime' }}</span>
-                        <span *ngIf="stop.dateArrivee">Arrivée: {{ stop.dateArrivee | date:'shortTime' }}</span>
+                        <span *ngIf="stop.dateDepart">{{ 'DIALOG.DETAILS.DEPARTURE_TIME' | translate }} {{ stop.dateDepart | date:'shortTime' }}</span>
+                        <span *ngIf="stop.dateArrivee">{{ 'DIALOG.DETAILS.ARRIVAL_TIME' | translate }} {{ stop.dateArrivee | date:'shortTime' }}</span>
                     </div>
                 </div>
             </div>
@@ -88,10 +90,10 @@ import { MatChipsModule } from '@angular/material/chips';
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Fermer</button>
+      <button mat-button mat-dialog-close>{{ 'DIALOG.DETAILS.CLOSE' | translate }}</button>
     </mat-dialog-actions>
   `,
-    styles: [`
+  styles: [`
     .title-icon {
         vertical-align: middle;
         margin-right: 8px;
@@ -143,21 +145,34 @@ import { MatChipsModule } from '@angular/material/chips';
   `]
 })
 export class TripDetailsDialogComponent {
-    constructor(
-        public dialogRef: MatDialogRef<TripDetailsDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { movement: any }
-    ) { }
+  constructor(
+    public dialogRef: MatDialogRef<TripDetailsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { movement: any }
+  ) { }
 
-    getStatusColor(status: string): string {
-        const colors: any = {
-            'en attente': 'warn',
-            'validé': 'accent',
-            'pris en charge': 'primary',
-            'en cours': 'primary',
-            'terminé': '',
-            'annulé': 'warn',
-            'refusé': 'warn'
-        };
-        return colors[status] || '';
-    }
+  getStatusColor(status: string): string {
+    const colors: any = {
+      'en attente': 'warn',
+      'validé': 'accent',
+      'pris en charge': 'primary',
+      'en cours': 'primary',
+      'terminé': '',
+      'annulé': 'warn',
+      'refusé': 'warn'
+    };
+    return colors[status] || '';
+  }
+
+  getStatusKey(status: string): string {
+    const statusMap: any = {
+      'en attente': 'STATUS.WAITING',
+      'validé': 'STATUS.VALIDATED',
+      'pris en charge': 'STATUS.TAKEN_CHARGE',
+      'en cours': 'STATUS.IN_PROGRESS',
+      'terminé': 'STATUS.COMPLETED',
+      'annulé': 'STATUS.CANCELLED',
+      'refusé': 'STATUS.REFUSED'
+    };
+    return statusMap[status] || status;
+  }
 }

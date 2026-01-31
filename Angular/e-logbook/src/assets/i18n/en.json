@@ -212,5 +212,31 @@
             "ARRIVAL_REQUIRED": "Arrival place is required",
             "END_KM_LOWER": "End mileage must be greater than start"
         }
+    },
+    "STATUS": {
+        "WAITING": "Pending",
+        "VALIDATED": "Validated",
+        "TAKEN_CHARGE": "Taken Charge",
+        "IN_PROGRESS": "In Progress",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled",
+        "REFUSED": "Refused"
+    },
+    "DIALOG": {
+        "DETAILS": {
+            "TITLE": "Mission Details",
+            "MISSION": "Mission",
+            "PURPOSE": "Purpose/Goal:",
+            "PROJECT": "Project:",
+            "NOT_SPECIFIED": "Not specified",
+            "VEHICLE": "Vehicle",
+            "IMMAT": "Immat:",
+            "PASSENGERS": "Passengers",
+            "ITINERARY": "Itinerary",
+            "UNKNOWN_LOCATION": "Unknown location",
+            "DEPARTURE_TIME": "Departure:",
+            "ARRIVAL_TIME": "Arrival:",
+            "CLOSE": "Close"
+        }
     }
 }

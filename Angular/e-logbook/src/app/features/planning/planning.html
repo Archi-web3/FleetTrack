@@ -42,7 +42,7 @@
                                 </mat-card-title>
                                 <mat-card-subtitle>
                                     <mat-chip [color]="getStatusColor(movement.statut)" selected>
-                                        {{ movement.statut }}
+                                        {{ getStatusKey(movement.statut) | translate | titlecase }}
                                     </mat-chip>
                                 </mat-card-subtitle>
                             </mat-card-header>
@@ -124,7 +124,8 @@
                                     </span>
                                 </mat-card-title>
                                 <mat-card-subtitle>
-                                    {{ movement.statut }} - {{ movement.stops[0].dateDepart | date:'shortDate' }}
+                                    {{ getStatusKey(movement.statut) | translate | titlecase }} - {{
+                                    movement.stops[0].dateDepart | date:'shortDate' }}
                                 </mat-card-subtitle>
                             </mat-card-header>
                             <mat-card-actions>

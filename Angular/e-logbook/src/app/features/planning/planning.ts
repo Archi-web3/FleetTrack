@@ -103,6 +103,19 @@ export class PlanningComponent implements OnInit {
         return icons[status] || 'info';
     }
 
+    getStatusKey(status: string): string {
+        const statusMap: any = {
+            'en attente': 'STATUS.WAITING',
+            'validé': 'STATUS.VALIDATED',
+            'pris en charge': 'STATUS.TAKEN_CHARGE',
+            'en cours': 'STATUS.IN_PROGRESS',
+            'terminé': 'STATUS.COMPLETED',
+            'annulé': 'STATUS.CANCELLED',
+            'refusé': 'STATUS.REFUSED'
+        };
+        return statusMap[status] || status;
+    }
+
     canTakeCharge(movement: any): boolean {
         return movement.statut === 'validé';
     }

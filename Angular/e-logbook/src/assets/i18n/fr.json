@@ -212,5 +212,31 @@
             "ARRIVAL_REQUIRED": "Le lieu d'arrivée est requis",
             "END_KM_LOWER": "Le kilométrage d'arrivée doit être supérieur au départ"
         }
+    },
+    "STATUS": {
+        "WAITING": "En attente",
+        "VALIDATED": "Validé",
+        "TAKEN_CHARGE": "Pris en charge",
+        "IN_PROGRESS": "En cours",
+        "COMPLETED": "Terminé",
+        "CANCELLED": "Annulé",
+        "REFUSED": "Refusé"
+    },
+    "DIALOG": {
+        "DETAILS": {
+            "TITLE": "Détails de la mission",
+            "MISSION": "Mission",
+            "PURPOSE": "Motif/Objectif :",
+            "PROJECT": "Projet :",
+            "NOT_SPECIFIED": "Non spécifié",
+            "VEHICLE": "Véhicule",
+            "IMMAT": "Immat :",
+            "PASSENGERS": "Passagers",
+            "ITINERARY": "Itinéraire",
+            "UNKNOWN_LOCATION": "Lieu inconnu",
+            "DEPARTURE_TIME": "Départ :",
+            "ARRIVAL_TIME": "Arrivée :",
+            "CLOSE": "Fermer"
+        }
     }
 }
