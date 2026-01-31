@@ -16,7 +16,8 @@ class PredictiveMaintenanceService {
 
         // Filtrer les véhicules actifs (Exclure Vendu, Rebut)
         // DISABLE FILTER FOR DEBUGGING
-        const matchStage = { $match: {} };
+        // Filtrer les véhicules actifs (Exclure Vendu, Rebut)
+        const matchStage = { $match: { statut: { $nin: ['Vendu', 'Rebut', 'Inactif'] } } };
 
         if (userCountry && userCountry !== 'All') {
             // Vérifier si c'est un ObjectId valide
