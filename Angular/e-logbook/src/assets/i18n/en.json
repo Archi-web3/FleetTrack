@@ -93,5 +93,124 @@
         "MAINTENANCE_DESC": "Repairs",
         "INCIDENTS": "Incidents",
         "INCIDENTS_DESC": "Issues and Anomalies"
+    },
+    "PLANNING": {
+        "TITLE": "My Planning",
+        "LOADING": "Loading planning...",
+        "TABS": {
+            "MISSIONS": "Missions",
+            "HISTORY": "History"
+        },
+        "EMPTY_ACTIVE": {
+            "TITLE": "No active mission",
+            "DESC": "You have no mission to perform at the moment."
+        },
+        "EMPTY_HISTORY": {
+            "TITLE": "No history",
+            "DESC": "Your completed trips will appear here."
+        },
+        "BUTTONS": {
+            "DETAILS": "Details",
+            "TAKE_CHARGE": "Take Charge",
+            "START": "Start",
+            "RESUME": "Resume",
+            "VIEW_DETAILS": "View Details"
+        }
+    },
+    "CHECKLIST": {
+        "TITLE": "Weekly Checklist",
+        "WEEK": "Week",
+        "COMPLETION": "% completed",
+        "TASKS": "tasks",
+        "CONGRATS": "Congratulations! Checklist completed on",
+        "LOADING": "Loading checklist...",
+        "MANUAL_BTN": "Manual",
+        "NO_DATA": "No checklist available for this week.",
+        "RELOAD": "Reload"
+    },
+    "SERVICE": {
+        "TITLE": "Scheduled Services",
+        "NEXT_AT": "Next service at",
+        "LOADING": "Loading service...",
+        "CURRENT_KM": "Current Km",
+        "EXPECTED_KM": "Expected Km",
+        "REMAINING_KM": "Remaining Km",
+        "NEXT_INFO": "After this service:",
+        "TASKS_TITLE": "Tasks to Perform",
+        "COMPLETED_TASKS": "tasks completed",
+        "COMPLETE_BTN": "Mark Service Completed",
+        "NO_SERVICE": "No service scheduled at the moment",
+        "AUTO_CALC": "The next service will be calculated automatically"
+    },
+    "TRIPS": {
+        "TITLE": "Trips",
+        "NEW_BTN": "New Trip",
+        "TABLE": {
+            "DATE": "Date",
+            "TIME": "Time",
+            "DEPARTURE": "Departure",
+            "ARRIVAL": "Arrival",
+            "PASSENGERS": "Passengers",
+            "PURPOSE": "Purpose",
+            "ACTIONS": "Actions",
+            "EMPTY": "No trips found"
+        }
+    },
+    "WAIVER": {
+        "TITLE": "Responsibility Waiver",
+        "SUBTITLE": "Visitor / Passenger",
+        "LEGAL": {
+            "ORG": "ACF - Action Against Hunger",
+            "CONDITIONS": "Transport Conditions:",
+            "TEXT_1": "I, the undersigned, acknowledge boarding an Action Against Hunger (ACF) vehicle of my own free will. I attest that I am aware of the risks inherent to this travel and release ACF from any liability in case of theft, loss of personal effects, accident, or incident occurring during the trip, except in cases of proven gross negligence by ACF.",
+            "TEXT_2": "I agree to respect the safety instructions given by the driver and ACF staff. I certify that I am not transporting any illicit or dangerous substances."
+        },
+        "FORM": {
+            "NAME": "Visitor Name & Surname",
+            "SIGNATURE": "Signature (mandatory)",
+            "CLEAR": "Clear signature"
+        },
+        "ACTIONS": {
+            "VALIDATE": "Validate & Sign"
+        }
+    },
+    "ACTIVE_TRIP": {
+        "TITLE_NEW": "New Trip",
+        "TITLE_ONGOING": "Ongoing Trip",
+        "FORM": {
+            "START_KM": "Start Mileage",
+            "LAST_KM_HINT": "Last mileage:",
+            "DEPARTURE_PLACE": "Departure Place",
+            "GPS_START": "Use my current position (Off-site)",
+            "PURPOSE": "Purpose of trip",
+            "PASSENGERS": "Passengers",
+            "BTN_START": "START",
+            "BTN_VALIDATING": "Validating..."
+        },
+        "ONGOING": {
+            "START_TIME": "Start:",
+            "GPS_OK": "GPS OK",
+            "GPS_SEARCH": "Searching GPS...",
+            "GPS_WEAK": "GPS Weak",
+            "ABORT_BTN": "Abort this trip (Error)",
+            "GPS_END": "Use my current position (Off-site)",
+            "ARRIVAL_PLACE": "Arrival Place",
+            "END_KM": "Arrival Mileage",
+            "PHOTOS": {
+                "TITLE": "Photos (Odometer, Trip)",
+                "BTN": "Take a photo",
+                "UPLOADING": "Uploading..."
+            },
+            "BTN_MENU": "RETURN TO MENU",
+            "BTN_FINISH": "FINISH"
+        },
+        "ERRORS": {
+            "START_KM_REQUIRED": "Start mileage is required",
+            "START_KM_LOWER": "Mileage must be greater than previous",
+            "DEPARTURE_REQUIRED": "Departure place is required",
+            "PURPOSE_REQUIRED": "Purpose is required",
+            "ARRIVAL_REQUIRED": "Arrival place is required",
+            "END_KM_LOWER": "End mileage must be greater than start"
+        }
     }
 }

@@ -15,11 +15,12 @@ import { OfflineService, Trip } from '../../core/services/offline.service';
 import { SyncService } from '../../core/services/sync.service';
 import { AuthService } from '../../core/services/auth.service';
 import { TripDetailsDialogComponent } from './trip-details-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trip-list',
   standalone: true,
-  imports: [CommonModule, MatListModule, MatIconModule, MatButtonModule, MatTableModule, MatTooltipModule, MatCardModule, MatDialogModule],
+  imports: [CommonModule, MatListModule, MatIconModule, MatButtonModule, MatTableModule, MatTooltipModule, MatCardModule, MatDialogModule, TranslateModule],
   templateUrl: './trip-list.html',
   styleUrls: ['./trip-list.scss']
 })

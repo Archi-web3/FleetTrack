@@ -15,6 +15,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService, WeeklyChecklist, Task } from '../../core/services/maintenance.service';
 import { ManualViewerComponent } from '../../shared/components/manual-viewer/manual-viewer';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-weekly-checklist',
@@ -31,7 +32,9 @@ import { AuthService } from '../../core/services/auth.service';
         MatFormFieldModule,
         MatInputModule,
         MatTooltipModule,
-        MatDialogModule
+        MatTooltipModule,
+        MatDialogModule,
+        TranslateModule
     ],
     templateUrl: './weekly-checklist.html',
     styleUrls: ['./weekly-checklist.scss']

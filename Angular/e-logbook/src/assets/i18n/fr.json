@@ -93,5 +93,124 @@
         "MAINTENANCE_DESC": "Réparations",
         "INCIDENTS": "Incidents",
         "INCIDENTS_DESC": "Anomalies et problèmes"
+    },
+    "PLANNING": {
+        "TITLE": "Mon Planning",
+        "LOADING": "Chargement du planning...",
+        "TABS": {
+            "MISSIONS": "Missions",
+            "HISTORY": "Historique"
+        },
+        "EMPTY_ACTIVE": {
+            "TITLE": "Aucune mission active",
+            "DESC": "Vous n'avez pas de mission à effectuer pour le moment."
+        },
+        "EMPTY_HISTORY": {
+            "TITLE": "Aucun historique",
+            "DESC": "Vos trajets terminés apparaîtront ici."
+        },
+        "BUTTONS": {
+            "DETAILS": "Détails",
+            "TAKE_CHARGE": "Prendre en charge",
+            "START": "Démarrer",
+            "RESUME": "Reprendre",
+            "VIEW_DETAILS": "Voir détails"
+        }
+    },
+    "CHECKLIST": {
+        "TITLE": "Checklist Hebdomadaire",
+        "WEEK": "Semaine",
+        "COMPLETION": "% complété",
+        "TASKS": "tâches",
+        "CONGRATS": "Félicitations ! Checklist complétée le",
+        "LOADING": "Chargement de la checklist...",
+        "MANUAL_BTN": "Manuel",
+        "NO_DATA": "Aucune checklist disponible pour cette semaine.",
+        "RELOAD": "Recharger"
+    },
+    "SERVICE": {
+        "TITLE": "Services Programmés",
+        "NEXT_AT": "Prochain service à",
+        "LOADING": "Chargement du service...",
+        "CURRENT_KM": "Km Actuel",
+        "EXPECTED_KM": "Km Prévu",
+        "REMAINING_KM": "Km Restants",
+        "NEXT_INFO": "Après ce service :",
+        "TASKS_TITLE": "Tâches à Effectuer",
+        "COMPLETED_TASKS": "tâches complétées",
+        "COMPLETE_BTN": "Marquer Service Complété",
+        "NO_SERVICE": "Aucun service programmé pour le moment",
+        "AUTO_CALC": "Le prochain service sera calculé automatiquement"
+    },
+    "TRIPS": {
+        "TITLE": "Trajets",
+        "NEW_BTN": "Nouveau trajet",
+        "TABLE": {
+            "DATE": "Date",
+            "TIME": "Heure",
+            "DEPARTURE": "Départ",
+            "ARRIVAL": "Arrivée",
+            "PASSENGERS": "Passagers",
+            "PURPOSE": "Objectif",
+            "ACTIONS": "Actions",
+            "EMPTY": "Aucun trajet trouvé"
+        }
+    },
+    "WAIVER": {
+        "TITLE": "Décharge de Responsabilité",
+        "SUBTITLE": "Visiteur / Passager",
+        "LEGAL": {
+            "ORG": "ACF - Action Contre la Faim",
+            "CONDITIONS": "Conditions de transport :",
+            "TEXT_1": "Je soussigné(e), reconnais monter à bord d'un véhicule d'Action Contre la Faim (ACF) de mon plein gré. J'atteste avoir pris connaissance des risques inhérents à ce déplacement et dégage ACF de toute responsabilité en cas de vol, perte d'effets personnels, accident ou incident survenant durant le trajet, sauf en cas de faute lourde avérée d'ACF.",
+            "TEXT_2": "Je m'engage à respecter les consignes de sécurité données par le chauffeur et le personnel d'ACF. Je certifie ne transporter aucune substance illicite ou dangereuse."
+        },
+        "FORM": {
+            "NAME": "Nom & Prénom du Visiteur",
+            "SIGNATURE": "Signature (obligatoire)",
+            "CLEAR": "Effacer la signature"
+        },
+        "ACTIONS": {
+            "VALIDATE": "Valider & Signer"
+        }
+    },
+    "ACTIVE_TRIP": {
+        "TITLE_NEW": "Nouveau Trajet",
+        "TITLE_ONGOING": "Trajet en cours",
+        "FORM": {
+            "START_KM": "Kilométrage de départ",
+            "LAST_KM_HINT": "Dernier kilométrage :",
+            "DEPARTURE_PLACE": "Lieu de départ",
+            "GPS_START": "Utiliser ma position actuelle (Hors-site)",
+            "PURPOSE": "Motif du déplacement",
+            "PASSENGERS": "Passagers",
+            "BTN_START": "DÉMARRER",
+            "BTN_VALIDATING": "Validation..."
+        },
+        "ONGOING": {
+            "START_TIME": "Début :",
+            "GPS_OK": "GPS OK",
+            "GPS_SEARCH": "Recherche GPS...",
+            "GPS_WEAK": "GPS Faible",
+            "ABORT_BTN": "Annuler ce trajet (Erreur)",
+            "GPS_END": "Utiliser ma position actuelle (Hors-site)",
+            "ARRIVAL_PLACE": "Lieu d'arrivée",
+            "END_KM": "Kilométrage d'arrivée",
+            "PHOTOS": {
+                "TITLE": "Photos (Compteur, Trajet)",
+                "BTN": "Prendre une photo",
+                "UPLOADING": "Upload en cours..."
+            },
+            "BTN_MENU": "REVENIR AU MENU",
+            "BTN_FINISH": "TERMINER"
+        },
+        "ERRORS": {
+            "START_KM_REQUIRED": "Le kilométrage est requis",
+            "START_KM_LOWER": "Le kilométrage doit être supérieur au précédent",
+            "DEPARTURE_REQUIRED": "Le lieu de départ est requis",
+            "PURPOSE_REQUIRED": "Le motif est requis",
+            "ARRIVAL_REQUIRED": "Le lieu d'arrivée est requis",
+            "END_KM_LOWER": "Le kilométrage d'arrivée doit être supérieur au départ"
+        }
     }
 }

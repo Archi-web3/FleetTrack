@@ -15,6 +15,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService } from '../../core/services/maintenance.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ManualViewerComponent } from '../../shared/components/manual-viewer/manual-viewer';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface ServiceSchedule {
     _id: string;
@@ -59,7 +60,9 @@ interface ServiceTask {
         MatCheckboxModule,
         MatTooltipModule,
         MatChipsModule,
-        MatTabsModule
+        MatChipsModule,
+        MatTabsModule,
+        TranslateModule
     ],
     templateUrl: './scheduled-service.html',
     styleUrls: ['./scheduled-service.scss']

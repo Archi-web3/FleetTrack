@@ -14,6 +14,7 @@ import { OfflineService, Trip, Lieu, User, GpsPoint } from '../../core/services/
 import { AuthService } from '../../core/services/auth.service';
 import { PhotoService, Photo } from '../../core/services/photo.service';
 import { SyncService } from '../../core/services/sync.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-active-trip',
@@ -27,7 +28,8 @@ import { SyncService } from '../../core/services/sync.service';
     MatCardModule,
     MatSelectModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './active-trip.html',
   styleUrls: ['./active-trip.scss']

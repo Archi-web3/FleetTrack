@@ -3,12 +3,12 @@
     <div class="trips-header">
         <h1>
             <mat-icon>directions_car</mat-icon>
-            Trajets
+            {{ 'TRIPS.TITLE' | translate }}
         </h1>
         <div class="header-actions">
             <button mat-raised-button color="primary" (click)="startNewTrip()">
                 <mat-icon>add</mat-icon>
-                Nouveau trajet
+                {{ 'TRIPS.NEW_BTN' | translate }}
             </button>
             <button mat-icon-button (click)="router.navigate(['/dashboard'])" matTooltip="Retour au tableau de bord">
                 <mat-icon>dashboard</mat-icon>
@@ -18,7 +18,6 @@
             </button>
         </div>
     </div>
-
 
 
     <!-- Trips Table -->
@@ -40,7 +39,7 @@
 
             <!-- Date Column -->
             <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.DATE' | translate }}</th>
                 <td mat-cell *matCellDef="let trip">
                     <span class="mobile-date">{{ trip.startDateTime | date:'dd/MM' }}</span>
                     <span class="desktop-date">{{ trip.startDateTime | date:'dd/MM/yyyy' }}</span>
@@ -50,7 +49,7 @@
 
             <!-- Time Column (Desktop only) -->
             <ng-container matColumnDef="time">
-                <th mat-header-cell *matHeaderCellDef>Heure</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.TIME' | translate }}</th>
                 <td mat-cell *matCellDef="let trip">
                     {{ trip.startDateTime | date:'HH:mm' }} - {{ trip.endDateTime | date:'HH:mm' }}
                 </td>
@@ -58,7 +57,7 @@
 
             <!-- Departure Column -->
             <ng-container matColumnDef="departure">
-                <th mat-header-cell *matHeaderCellDef>Départ</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.DEPARTURE' | translate }}</th>
                 <td mat-cell *matCellDef="let trip">
                     {{ getDepartureName(trip) }}
                     <div class="mobile-arrival-hint">⬇ {{ getArrivalName(trip) }}</div>
@@ -67,13 +66,13 @@
 
             <!-- Arrival Column (Desktop only) -->
             <ng-container matColumnDef="arrival">
-                <th mat-header-cell *matHeaderCellDef>Arrivée</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.ARRIVAL' | translate }}</th>
                 <td mat-cell *matCellDef="let trip">{{ getArrivalName(trip) }}</td>
             </ng-container>
 
             <!-- Passengers Column (Desktop only) -->
             <ng-container matColumnDef="passengers">
-                <th mat-header-cell *matHeaderCellDef>Passagers</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.PASSENGERS' | translate }}</th>
                 <td mat-cell *matCellDef="let trip">
                     <div class="passenger-count" [matTooltip]="getPassengerNames(trip)">
                         <mat-icon class="small-icon">people</mat-icon>
@@ -84,18 +83,18 @@
 
             <!-- Purpose Column (Desktop only) -->
             <ng-container matColumnDef="purpose">
-                <th mat-header-cell *matHeaderCellDef>Objectif</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.PURPOSE' | translate }}</th>
                 <td mat-cell *matCellDef="let trip">{{ trip.purpose }}</td>
             </ng-container>
             <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.ACTIONS' | translate }}</th>
                 <td mat-cell *matCellDef="let trip">
                     <button mat-icon-button color="primary" [matTooltip]="'ID: ' + trip._id + ' (Voir détails)'"
                         (click)="openDetails(trip)">
                         <mat-icon>visibility</mat-icon>
                     </button>
-                    <button mat-icon-button color="warn" (click)="deleteTrip(trip, $event)" matTooltip="Supprimer"
-                        *ngIf="isAdmin">
+                    <button mat-icon-button color="warn" (click)="deleteTrip(trip, $event)"
+                        [matTooltip]="'COMMON.DELETE' | translate" *ngIf="isAdmin">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </td>
@@ -110,7 +109,7 @@
                 <td class="mat-cell" [attr.colspan]="displayedColumns.length">
                     <div class="no-data">
                         <mat-icon>inbox</mat-icon>
-                        <p>Aucun trajet trouvé</p>
+                        <p>{{ 'TRIPS.TABLE.EMPTY' | translate }}</p>
                     </div>
                 </td>
             </tr>

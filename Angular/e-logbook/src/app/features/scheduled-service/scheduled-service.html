@@ -7,10 +7,10 @@
             </button>
             <mat-card-title>
                 <mat-icon>build</mat-icon>
-                Services Programmés <span style="font-size: 0.6em; opacity: 0.7;">[v2.2]</span>
+                {{ 'SERVICE.TITLE' | translate }} <span style="font-size: 0.6em; opacity: 0.7;">[v2.2]</span>
             </mat-card-title>
             <mat-card-subtitle *ngIf="nextService">
-                Prochain service à {{ nextService.kilometragePrevu }} km
+                {{ 'SERVICE.NEXT_AT' | translate }} {{ nextService.kilometragePrevu }} km
             </mat-card-subtitle>
         </mat-card-header>
     </mat-card>
@@ -18,7 +18,7 @@
     <!-- Loading -->
     <div *ngIf="loading" class="loading">
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        <p>Chargement du service...</p>
+        <p>{{ 'SERVICE.LOADING' | translate }}</p>
     </div>
 
     <!-- Prochain Service -->
@@ -43,15 +43,15 @@
                 <div class="km-progress">
                     <div class="km-info">
                         <div class="km-item">
-                            <span class="label">Km Actuel</span>
+                            <span class="label">{{ 'SERVICE.CURRENT_KM' | translate }}</span>
                             <span class="value">{{ nextService.kilometrageActuel }} km</span>
                         </div>
                         <div class="km-item">
-                            <span class="label">Km Prévu</span>
+                            <span class="label">{{ 'SERVICE.EXPECTED_KM' | translate }}</span>
                             <span class="value">{{ nextService.kilometragePrevu }} km</span>
                         </div>
                         <div class="km-item highlight">
-                            <span class="label">Km Restants</span>
+                            <span class="label">{{ 'SERVICE.REMAINING_KM' | translate }}</span>
                             <span class="value">{{ getKmRemaining() }} km</span>
                         </div>
                     </div>
@@ -62,7 +62,8 @@
                 <!-- Prochain Service -->
                 <div *ngIf="nextService.prochainService" class="next-service-info">
                     <mat-icon>info</mat-icon>
-                    <span>Après ce service : <strong>Service {{ nextService.prochainService.type }}</strong> à {{
+                    <span>{{ 'SERVICE.NEXT_INFO' | translate }} <strong>Service {{ nextService.prochainService.type
+                            }}</strong> à {{
                         nextService.prochainService.kilometrage }} km</span>
                 </div>
             </mat-card-content>
@@ -73,10 +74,11 @@
             <mat-card-header>
                 <mat-card-title>
                     <mat-icon>checklist</mat-icon>
-                    Tâches à Effectuer
+                    {{ 'SERVICE.TASKS_TITLE' | translate }}
                 </mat-card-title>
                 <mat-card-subtitle>
-                    {{ getValidatedTasksCount() }}/{{ getTotalTasksCount() }} tâches complétées
+                    {{ getValidatedTasksCount() }}/{{ getTotalTasksCount() }} {{ 'SERVICE.COMPLETED_TASKS' | translate
+                    }}
                 </mat-card-subtitle>
             </mat-card-header>
 
@@ -92,7 +94,7 @@
                         <!-- Bouton voir manuel -->
                         <button mat-icon-button *ngIf="tache.numeroTacheManuel"
                             (click)="openManual(tache.numeroTacheManuel)"
-                            matTooltip="Voir le manuel (Tâche {{ tache.numeroTacheManuel }})" class="manual-button">
+                            [matTooltip]="'CHECKLIST.MANUAL_BTN' | translate" class="manual-button">
                             <mat-icon>menu_book</mat-icon>
                         </button>
 
@@ -108,7 +110,7 @@
                     <button mat-raised-button color="primary" (click)="completeService()"
                         [disabled]="getValidatedTasksCount() < getTotalTasksCount()">
                         <mat-icon>check_circle</mat-icon>
-                        Marquer Service Complété
+                        {{ 'SERVICE.COMPLETE_BTN' | translate }}
                     </button>
                 </div>
             </mat-card-content>
@@ -119,8 +121,8 @@
     <mat-card *ngIf="!loading && !nextService" class="no-service">
         <mat-card-content>
             <mat-icon>check_circle</mat-icon>
-            <p>Aucun service programmé pour le moment</p>
-            <p class="subtitle">Le prochain service sera calculé automatiquement</p>
+            <p>{{ 'SERVICE.NO_SERVICE' | translate }}</p>
+            <p class="subtitle">{{ 'SERVICE.AUTO_CALC' | translate }}</p>
         </mat-card-content>
     </mat-card>
 </div>

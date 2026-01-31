@@ -13,10 +13,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
     provideAnimationsAsync(),
-    provideTranslateHttpLoader({
-      prefix: './assets/i18n/',
-      suffix: '.json'
-    }),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
@@ -25,6 +21,11 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
+    provideTranslateHttpLoader({
+      useHttpBackend: true,
+      prefix: './assets/i18n/',
+      suffix: '.json'
+    }),
     provideRouter(routes), provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'

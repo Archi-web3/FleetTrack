@@ -1,46 +1,41 @@
 <div class="waiver-container">
     <div class="waiver-header">
-        <h1>Décharge de Responsabilité</h1>
-        <p>Visiteur / Passager</p>
+        <h1>{{ 'WAIVER.TITLE' | translate }}</h1>
+        <p>{{ 'WAIVER.SUBTITLE' | translate }}</p>
     </div>
 
     <div class="legal-text-box">
-        <h3>ACF - Action Contre la Faim</h3>
-        <p><strong>Conditions de transport :</strong></p>
+        <h3>{{ 'WAIVER.LEGAL.ORG' | translate }}</h3>
+        <p><strong>{{ 'WAIVER.LEGAL.CONDITIONS' | translate }}</strong></p>
         <p>
-            Je soussigné(e), reconnais monter à bord d'un véhicule d'Action Contre la Faim (ACF) de mon plein gré.
-            J'atteste avoir pris connaissance des risques inhérents à ce déplacement et dégage ACF de toute
-            responsabilité
-            en cas de vol, perte d'effets personnels, accident ou incident survenant durant le trajet, sauf en cas de
-            faute lourde avérée d'ACF.
+            {{ 'WAIVER.LEGAL.TEXT_1' | translate }}
         </p>
         <p>
-            Je m'engage à respecter les consignes de sécurité données par le chauffeur et le personnel d'ACF.
-            Je certifie ne transporter aucune substance illicite ou dangereuse.
+            {{ 'WAIVER.LEGAL.TEXT_2' | translate }}
         </p>
     </div>
 
     <div class="form-section">
         <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Nom & Prénom du Visiteur</mat-label>
+            <mat-label>{{ 'WAIVER.FORM.NAME' | translate }}</mat-label>
             <input matInput [(ngModel)]="visitorName" placeholder="Ex: Jean Dupont">
             <mat-icon matSuffix>person</mat-icon>
         </mat-form-field>
 
-        <label class="signature-label">Signature (obligatoire)</label>
+        <label class="signature-label">{{ 'WAIVER.FORM.SIGNATURE' | translate }}</label>
         <div class="canvas-wrapper">
             <canvas #canvas></canvas>
         </div>
         <button mat-button color="warn" (click)="clearSignature()" class="clear-btn">
-            Effacer la signature
+            {{ 'WAIVER.FORM.CLEAR' | translate }}
         </button>
     </div>
 
     <div class="actions">
-        <button mat-stroked-button color="basic" routerLink="/dashboard">Annuler</button>
+        <button mat-stroked-button color="basic" routerLink="/dashboard">{{ 'COMMON.CANCEL' | translate }}</button>
         <button mat-flat-button color="primary" (click)="submitWaiver()">
             <mat-icon>check</mat-icon>
-            Valider & Signer
+            {{ 'WAIVER.ACTIONS.VALIDATE' | translate }}
         </button>
     </div>
 </div>

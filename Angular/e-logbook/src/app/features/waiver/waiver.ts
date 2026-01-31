@@ -9,6 +9,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { WaiverService } from '../../core/services/waiver.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-waiver',
@@ -20,7 +21,9 @@ import { AuthService } from '../../core/services/auth.service';
         MatInputModule,
         MatFormFieldModule,
         MatIconModule,
-        MatSnackBarModule
+        MatIconModule,
+        MatSnackBarModule,
+        TranslateModule
     ],
     templateUrl: './waiver.html',
     styleUrls: ['./waiver.css']

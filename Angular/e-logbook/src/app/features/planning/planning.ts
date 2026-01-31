@@ -11,11 +11,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { environment } from '../../../environments/environment';
 import { TripDetailsDialogComponent } from './trip-details-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-planning',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatIconModule, MatChipsModule, MatButtonModule, MatSnackBarModule, MatTabsModule, MatDialogModule],
+    imports: [CommonModule, MatCardModule, MatIconModule, MatChipsModule, MatButtonModule, MatSnackBarModule, MatTabsModule, MatDialogModule, TranslateModule],
     templateUrl: './planning.html',
     styleUrls: ['./planning.scss']
 })

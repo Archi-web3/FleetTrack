@@ -1,7 +1,8 @@
 <div class="trip-container">
     <mat-card class="trip-card">
         <mat-card-header>
-            <mat-card-title>{{ tripStarted ? 'Trajet en cours' : 'Nouveau Trajet' }}</mat-card-title>
+            <mat-card-title>{{ tripStarted ? ('ACTIVE_TRIP.TITLE_ONGOING' | translate) : ('ACTIVE_TRIP.TITLE_NEW' |
+                translate) }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
 
@@ -9,39 +10,47 @@
             <div *ngIf="!tripStarted">
                 <form [formGroup]="startForm">
                     <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Kilométrage de départ</mat-label>
+                        <mat-label>{{ 'ACTIVE_TRIP.FORM.START_KM' | translate }}</mat-label>
                         <input matInput type="number" formControlName="startMileage">
-                        <mat-hint *ngIf="lastMileage > 0">Dernier kilométrage: {{ lastMileage }} km</mat-hint>
-                        <mat-error *ngIf="startForm.get('startMileage')?.invalid">
-                            {{ getStartMileageError() }}
+                        <mat-hint *ngIf="lastMileage > 0">{{ 'ACTIVE_TRIP.FORM.LAST_KM_HINT' | translate }} {{
+                            lastMileage
+                            }} km</mat-hint>
+                        <mat-error *ngIf="startForm.get('startMileage')?.hasError('required')">
+                            {{ 'ACTIVE_TRIP.ERRORS.START_KM_REQUIRED' | translate }}
+                        </mat-error>
+                        <mat-error *ngIf="startForm.get('startMileage')?.hasError('mileageTooLow')">
+                            {{ 'ACTIVE_TRIP.ERRORS.START_KM_LOWER' | translate }}
+                        </mat-error>
+                        <mat-error *ngIf="startForm.get('startMileage')?.hasError('min')">
+                            {{ 'ACTIVE_TRIP.ERRORS.START_KM_LOWER' | translate }}
                         </mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Lieu de départ</mat-label>
+                        <mat-label>{{ 'ACTIVE_TRIP.FORM.DEPARTURE_PLACE' | translate }}</mat-label>
                         <mat-select formControlName="departurePlaceId">
                             <mat-option *ngFor="let lieu of lieux" [value]="lieu._id">
                                 {{ lieu.nom }}
                             </mat-option>
                         </mat-select>
-                        <mat-error>Le lieu de départ est requis</mat-error>
+                        <mat-error>{{ 'ACTIVE_TRIP.ERRORS.DEPARTURE_REQUIRED' | translate }}</mat-error>
                     </mat-form-field>
 
                     <!-- NOUVEAU: Option ou départ GPS -->
                     <div style="margin-bottom: 15px; display: flex; align-items: center;">
                         <input type="checkbox" [checked]="useGpsStart" (change)="toggleGpsStart()" id="gpsStart">
-                        <label for="gpsStart" style="margin-left: 8px;">Utiliser ma position actuelle
-                            (Hors-site)</label>
+                        <label for="gpsStart" style="margin-left: 8px;">{{ 'ACTIVE_TRIP.FORM.GPS_START' | translate
+                            }}</label>
                     </div>
 
                     <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Motif du déplacement</mat-label>
+                        <mat-label>{{ 'ACTIVE_TRIP.FORM.PURPOSE' | translate }}</mat-label>
                         <input matInput formControlName="purpose">
-                        <mat-error>Le motif est requis</mat-error>
+                        <mat-error>{{ 'ACTIVE_TRIP.ERRORS.PURPOSE_REQUIRED' | translate }}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Passagers</mat-label>
+                        <mat-label>{{ 'ACTIVE_TRIP.FORM.PASSENGERS' | translate }}</mat-label>
                         <mat-select formControlName="passengerIds" multiple>
                             <mat-option *ngFor="let user of users" [value]="user._id">
                                 {{ user.nom }}
@@ -50,11 +59,12 @@
                     </mat-form-field>
 
                     <div class="actions">
-                        <button mat-raised-button color="warn" type="button" (click)="cancel()">ANNULER</button>
+                        <button mat-raised-button color="warn" type="button" (click)="cancel()">{{ 'COMMON.CANCEL' |
+                            translate }}</button>
                         <button mat-raised-button color="primary" type="button" (click)="startTrip()"
                             [disabled]="startForm.invalid || startForm.pending">
-                            <span *ngIf="!startForm.pending">DÉMARRER</span>
-                            <span *ngIf="startForm.pending">Validation...</span>
+                            <span *ngIf="!startForm.pending">{{ 'ACTIVE_TRIP.FORM.BTN_START' | translate }}</span>
+                            <span *ngIf="startForm.pending">{{ 'ACTIVE_TRIP.FORM.BTN_VALIDATING' | translate }}</span>
                         </button>
                     </div>
                 </form>
@@ -64,7 +74,7 @@
             <div *ngIf="tripStarted">
                 <div class="info-row">
                     <mat-icon>schedule</mat-icon>
-                    <span>Début: {{ startTime | date:'HH:mm' }}</span>
+                    <span>{{ 'ACTIVE_TRIP.ONGOING.START_TIME' | translate }} {{ startTime | date:'HH:mm' }}</span>
 
                     <!-- NOUVEAU: Indicateur GPS -->
                     <span *ngIf="gpsEnabled"
@@ -72,15 +82,16 @@
                         [ngStyle]="{'color': gpsSignalStatus === 'good' ? '#4CAF50' : (gpsSignalStatus === 'searching' ? '#FF9800' : '#f44336')}">
                         <mat-icon
                             style="font-size: 18px; margin-right: 4px; height: 18px; width: 18px;">satellite_alt</mat-icon>
-                        {{ gpsSignalStatus === 'good' ? 'GPS OK' : (gpsSignalStatus === 'searching' ? 'Recherche GPS...'
-                        : 'GPS Faible') }}
+                        {{ gpsSignalStatus === 'good' ? ('ACTIVE_TRIP.ONGOING.GPS_OK' | translate) : (gpsSignalStatus
+                        === 'searching' ? ('ACTIVE_TRIP.ONGOING.GPS_SEARCH' | translate)
+                        : ('ACTIVE_TRIP.ONGOING.GPS_WEAK' | translate)) }}
                     </span>
                 </div>
 
                 <!-- NOUVEAU: Bouton d'annulation d'urgence -->
                 <div style="text-align: right; margin-bottom: 10px;">
                     <button mat-button color="warn" (click)="abortTrip()" style="font-size: 0.8em;">
-                        <mat-icon inline="true">cancel</mat-icon> Annuler ce trajet (Erreur)
+                        <mat-icon inline="true">cancel</mat-icon> {{ 'ACTIVE_TRIP.ONGOING.ABORT_BTN' | translate }}
                     </button>
                 </div>
 
@@ -88,35 +99,43 @@
                     <!-- NOUVEAU: Option arrivée GPS -->
                     <div style="margin-bottom: 15px; display: flex; align-items: center;">
                         <input type="checkbox" [checked]="useGpsEnd" (change)="toggleGpsEnd()" id="gpsEnd">
-                        <label for="gpsEnd" style="margin-left: 8px;">Utiliser ma position actuelle (Hors-site)</label>
+                        <label for="gpsEnd" style="margin-left: 8px;">{{ 'ACTIVE_TRIP.ONGOING.GPS_END' | translate
+                            }}</label>
                     </div>
 
                     <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Lieu d'arrivée</mat-label>
+                        <mat-label>{{ 'ACTIVE_TRIP.ONGOING.ARRIVAL_PLACE' | translate }}</mat-label>
                         <mat-select formControlName="arrivalPlaceId">
                             <mat-option *ngFor="let lieu of lieux" [value]="lieu._id">
                                 {{ lieu.nom }}
                             </mat-option>
                         </mat-select>
-                        <mat-error>Le lieu d'arrivée est requis</mat-error>
+                        <mat-error>{{ 'ACTIVE_TRIP.ERRORS.ARRIVAL_REQUIRED' | translate }}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="fill" class="full-width">
-                        <mat-label>Kilométrage d'arrivée</mat-label>
+                        <mat-label>{{ 'ACTIVE_TRIP.ONGOING.END_KM' | translate }}</mat-label>
                         <input matInput type="number" formControlName="endMileage">
-                        <mat-hint>Kilométrage de départ: {{ startForm.get('startMileage')?.value }} km</mat-hint>
-                        <mat-error *ngIf="endForm.get('endMileage')?.invalid">
-                            {{ getEndMileageError() }}
+                        <mat-hint>{{ 'ACTIVE_TRIP.FORM.LAST_KM_HINT' | translate }} {{
+                            startForm.get('startMileage')?.value }} km</mat-hint>
+                        <mat-error *ngIf="endForm.get('endMileage')?.hasError('required')">
+                            {{ 'ACTIVE_TRIP.ERRORS.START_KM_REQUIRED' | translate }}
+                        </mat-error>
+                        <mat-error *ngIf="endForm.get('endMileage')?.hasError('mileageTooLow')">
+                            {{ 'ACTIVE_TRIP.ERRORS.END_KM_LOWER' | translate }}
+                        </mat-error>
+                        <mat-error *ngIf="endForm.get('endMileage')?.hasError('endLessThanStart')">
+                            {{ 'ACTIVE_TRIP.ERRORS.END_KM_LOWER' | translate }}
                         </mat-error>
                     </mat-form-field>
 
                     <!-- NOUVEAU: Section Photos -->
                     <div class="photos-section">
-                        <h3>Photos (Compteur, Trajet)</h3>
+                        <h3>{{ 'ACTIVE_TRIP.ONGOING.PHOTOS.TITLE' | translate }}</h3>
 
                         <button mat-raised-button color="primary" type="button" (click)="takePhoto()" class="photo-btn">
                             <mat-icon>photo_camera</mat-icon>
-                            Prendre une photo
+                            {{ 'ACTIVE_TRIP.ONGOING.PHOTOS.BTN' | translate }}
                         </button>
 
                         <input #fileInput type="file" accept="image/*" capture="environment"
@@ -129,10 +148,11 @@
                                     <mat-icon>delete</mat-icon>
                                 </button>
                                 <mat-icon *ngIf="!photo.synced" class="sync-icon"
-                                    matTooltip="En attente de synchronisation">
+                                    [matTooltip]="'FUEL.TOOLTIPS.WAITING_SYNC' | translate">
                                     cloud_upload
                                 </mat-icon>
-                                <mat-icon *ngIf="photo.synced" class="synced-icon" matTooltip="Synchronisé">
+                                <mat-icon *ngIf="photo.synced" class="synced-icon"
+                                    [matTooltip]="'FUEL.TOOLTIPS.SYNCED' | translate">
                                     cloud_done
                                 </mat-icon>
                             </div>
@@ -140,18 +160,19 @@
 
                         <div class="upload-status" *ngIf="getPendingUploadsCount() > 0">
                             <mat-icon class="upload-icon">cloud_upload</mat-icon>
-                            <span>Upload en cours... ({{ getPendingUploadsCount() }} photo(s))</span>
+                            <span>{{ 'ACTIVE_TRIP.ONGOING.PHOTOS.UPLOADING' | translate }} ({{
+                                getPendingUploadsCount() }} photo(s))</span>
                         </div>
                     </div>
 
                     <div class="actions">
                         <button mat-stroked-button type="button" (click)="returnToMenu()">
-                            REVENIR AU MENU
+                            {{ 'ACTIVE_TRIP.ONGOING.BTN_MENU' | translate }}
                         </button>
                         <button mat-raised-button color="accent" type="button" (click)="stopTrip()"
                             [disabled]="endForm.invalid || endForm.pending">
-                            <span *ngIf="!endForm.pending">TERMINER</span>
-                            <span *ngIf="endForm.pending">Validation...</span>
+                            <span *ngIf="!endForm.pending">{{ 'ACTIVE_TRIP.ONGOING.BTN_FINISH' | translate }}</span>
+                            <span *ngIf="endForm.pending">{{ 'ACTIVE_TRIP.FORM.BTN_VALIDATING' | translate }}</span>
                         </button>
                     </div>
                 </form>
