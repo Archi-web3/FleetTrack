@@ -59,11 +59,13 @@ interface PredictivePlan {
     }>;
 }
 
+import { environment } from 'src/environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class MaintenanceTrackingService {
-    private apiUrl = 'https://fleettrack-api.onrender.com/api/maintenance-tracking';
+    private apiUrl = `${environment.apiUrl}/maintenance-tracking`;
 
     constructor(private http: HttpClient) { }
 

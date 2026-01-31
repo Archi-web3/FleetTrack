@@ -19,12 +19,12 @@ class PredictiveMaintenanceService {
 
         if (userCountry && userCountry !== 'All') {
             // Vérifier si c'est un ObjectId valide
+            /*
+            // DISABLE FILTER FOR DEBUGGING - Production seems to have mismatch
             if (mongoose.Types.ObjectId.isValid(userCountry)) {
-                matchStage.$match.pays = userCountry;
-            } else {
-                // Si on veut être strict, on pourrait retourner [] ou chercher par nom
-                // Pour l'instant, on ignore le filtre pour ne pas crasher
+                 matchStage.$match.pays = userCountry;
             }
+            */
         }
 
         const vehicles = await Vehicle.find(matchStage.$match);
