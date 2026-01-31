@@ -13,11 +13,11 @@ const auth = require('../middleware/authMiddleware');
  *       200:
  *         description: Fleet health data
  */
-router.get('/fleet-health', auth, async (req, res) => {
+router.get('/fleet-health', auth(), async (req, res) => {
     try {
-        // Supposons que l'objet user est attaché à req par le middleware auth
-        // Et qu'il contient le pays (scope)
-        const userCountry = req.user.userPays || 'All'; // 'All' pour SuperAdmin si non défini
+        // req.utilisateur est défini par authMiddleware
+        // contient .base et .pays
+        const userCountry = req.utilisateur.pays || 'All'; // 'All' si undefined (SuperAdmin sans pays)
 
         const data = await predictiveService.getFleetHealthPrediction(userCountry);
         res.json(data);
