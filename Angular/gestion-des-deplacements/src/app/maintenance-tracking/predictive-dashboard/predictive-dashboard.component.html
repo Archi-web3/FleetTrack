@@ -1,0 +1,137 @@
+<div class="dashboard-container">
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+        <mat-card class="kpi-card health-card"
+            [ngClass]="{'good': stats.globalHealth >= 80, 'medium': stats.globalHealth < 80 && stats.globalHealth >= 50, 'bad': stats.globalHealth < 50}">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>health_and_safety</mat-icon>
+                <mat-card-title>Santé du Parc</mat-card-title>
+                <mat-card-subtitle>
+                    Score Global
+                    <mat-icon class="info-icon" matTooltip="Le score de santé (0-100%) diminue à l'approche des révisions. 
+- Calcul basé sur l'usage moyen journalier
+- Alerte si < 1000km restants
+- Risque 'Surconsommation' si > 150k km" matTooltipClass="custom-tooltip-white">info</mat-icon>
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="kpi-value">{{ stats.globalHealth }}%</div>
+                <mat-progress-bar mode="determinate" [value]="stats.globalHealth"
+                    [color]="getHealthColor(stats.globalHealth)"></mat-progress-bar>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="kpi-card alert-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar color="warn">warning</mat-icon>
+                <mat-card-title>Alertes Critiques</mat-card-title>
+                <mat-card-subtitle>
+                    Maintenance Imminente
+                    <mat-icon class="info-icon"
+                        matTooltip="Véhicules nécessitant une intervention immédiate (Retard ou < 500km restants) ou présentant une anomalie critique."
+                        matTooltipClass="custom-tooltip-white">info</mat-icon>
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="kpi-value">{{ stats.alertsCount }}</div>
+                <p>Véhicules nécessitant attention</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="kpi-card vehicle-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>directions_car</mat-icon>
+                <mat-card-title>Véhicules Suivis</mat-card-title>
+                <mat-card-subtitle>
+                    Total Flotte
+                    <mat-icon class="info-icon"
+                        matTooltip="Nombre total de véhicules actifs éligibles au programme de maintenance prédictive (hors 'Vendu' ou 'Rebut')."
+                        matTooltipClass="custom-tooltip-white">info</mat-icon>
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="kpi-value">{{ stats.totalVehicles }}</div>
+                <p>Analysés par l'algorithme</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Alerts Section -->
+    <div *ngIf="alerts.length > 0" class="alerts-section">
+        <h3>🚨 Alertes Prioritaires</h3>
+        <div class="alert-list">
+            <mat-card *ngFor="let alert of alerts" class="alert-item" [class.high-severity]="alert.severity === 'high'">
+                <div class="alert-content">
+                    <mat-icon color="warn">error_outline</mat-icon>
+                    <div class="alert-text">
+                        <strong>{{ alert.immatriculation }} ({{ alert.marque }} {{ alert.modele }})</strong>
+                        <p>{{ alert.message }}</p>
+                    </div>
+                    <mat-chip-listbox>
+                        <mat-chip-option color="warn" selected>Urgent</mat-chip-option>
+                    </mat-chip-listbox>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <!-- Predictions Table -->
+    <div class="predictions-table">
+        <h3>📅 Prévisions de Maintenance</h3>
+        <table mat-table [dataSource]="predictions" class="mat-elevation-z2">
+
+            <!-- Vehicule Column -->
+            <ng-container matColumnDef="vehicule">
+                <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                <td mat-cell *matCellDef="let element"> {{element.immatriculation}} </td>
+            </ng-container>
+
+            <!-- Current Km Column -->
+            <ng-container matColumnDef="currentKm">
+                <th mat-header-cell *matHeaderCellDef> Km Actuel </th>
+                <td mat-cell *matCellDef="let element"> {{element.currentKm | number}} km </td>
+            </ng-container>
+
+            <!-- Next Service Column -->
+            <ng-container matColumnDef="nextService">
+                <th mat-header-cell *matHeaderCellDef> Prochain Service </th>
+                <td mat-cell *matCellDef="let element"> {{element.nextServiceKm | number}} km </td>
+            </ng-container>
+
+            <!-- Estimated Date Column -->
+            <ng-container matColumnDef="estimatedDate">
+                <th mat-header-cell *matHeaderCellDef> Date Estimée </th>
+                <td mat-cell *matCellDef="let element">
+                    <strong>{{ formatDate(element.estimatedDate) }}</strong>
+                </td>
+            </ng-container>
+
+            <!-- Health Score Column -->
+            <ng-container matColumnDef="health">
+                <th mat-header-cell *matHeaderCellDef> Santé </th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="health-indicator">
+                        <mat-progress-bar mode="determinate" [value]="element.healthScore"
+                            [color]="getHealthColor(element.healthScore)"></mat-progress-bar>
+                        <span>{{element.healthScore}}%</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Statut </th>
+                <td mat-cell *matCellDef="let element">
+                    <span *ngIf="element.healthScore < 50" class="status-badge critical">Critique</span>
+                    <span *ngIf="element.healthScore >= 50 && element.healthScore < 80"
+                        class="status-badge warning">Attention</span>
+                    <span *ngIf="element.healthScore >= 80" class="status-badge ok">Bon</span>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+</div>

@@ -1,47 +1,52 @@
 <div style="padding: 20px;">
-  <h2>Consolidation & Affectation des Mouvements</h2>
+  <h2>{{ 'CONSOLIDATION.TITLE' | translate }}</h2>
 
   <!-- Formulaire d'affectation (apparaît quand un mouvement est sélectionné) -->
   <div *ngIf="selectedMouvementId" id="assignmentFormContainer"
     style="border: 1px solid #007bff; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #e9f7ff;">
-    <h3>Affecter Véhicule & Chauffeur au mouvement #{{ selectedMouvementId }}</h3>
-    <p><strong>Mouvement sélectionné:</strong> Objectif: {{ mouvementEnSelection?.objectif }} - De: {{
-      getOrigin(mouvementEnSelection) }} - À: {{ getFinalDestination(mouvementEnSelection) }}</p>
+    <h3>{{ 'CONSOLIDATION.ASSIGNMENT.TITLE' | translate:{id: selectedMouvementId} }}</h3>
+    <p><strong>{{ 'CONSOLIDATION.ASSIGNMENT.SELECTED_MOVEMENT' | translate }}:</strong> {{
+      'CONSOLIDATION.WAITING_LIST.OBJECTIVE' | translate }}: {{ mouvementEnSelection?.objectif }} - {{ 'COMMON.NONE' |
+      translate }}: {{
+      getOrigin(mouvementEnSelection) }} - {{ 'COMMON.NONE' | translate }}: {{ getFinalDestination(mouvementEnSelection)
+      }}</p>
 
     <form (ngSubmit)="assignVehiculeAndChauffeur()" #assignmentForm="ngForm">
       <div style="margin-bottom: 10px;">
-        <label for="vehiculeAssignment">Véhicule:</label>
+        <label for="vehiculeAssignment">{{ 'CONSOLIDATION.ASSIGNMENT.VEHICLE' | translate }}:</label>
         <select id="vehiculeAssignment" name="vehiculeAssignment" [(ngModel)]="selectedVehiculeId" required
           style="width: 100%; padding: 8px;">
-          <option value="">Sélectionnez un véhicule</option>
+          <option value="">{{ 'CONSOLIDATION.ASSIGNMENT.SELECT_VEHICLE' | translate }}</option>
           <option *ngFor="let vehicule of vehicules" [value]="vehicule._id">{{ vehicule.marque }} {{ vehicule.modele }}
             ({{ vehicule.immatriculation }})</option>
         </select>
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="chauffeurAssignment">Chauffeur:</label>
+        <label for="chauffeurAssignment">{{ 'CONSOLIDATION.ASSIGNMENT.DRIVER' | translate }}:</label>
         <select id="chauffeurAssignment" name="chauffeurAssignment" [(ngModel)]="selectedChauffeurId" required
           style="width: 100%; padding: 8px;">
-          <option value="">Sélectionnez un chauffeur</option>
+          <option value="">{{ 'CONSOLIDATION.ASSIGNMENT.SELECT_DRIVER' | translate }}</option>
           <option *ngFor="let chauffeur of chauffeurs" [value]="chauffeur._id">{{ chauffeur.prenom }} {{ chauffeur.nom
             }} ({{ chauffeur.telephone }})</option>
         </select>
       </div>
       <button type="submit" [disabled]="!assignmentForm.form.valid"
-        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">Affecter</button>
+        style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-right: 10px;">{{
+        'CONSOLIDATION.ASSIGNMENT.ASSIGN_BTN' | translate }}</button>
       <button type="button" (click)="cancelAssignment()"
-        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">Annuler</button>
+        style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; cursor: pointer;">{{
+        'CONSOLIDATION.ASSIGNMENT.CANCEL_BTN' | translate }}</button>
     </form>
 
-    <h4 style="margin-top: 20px;">Suggestions de regroupement :</h4>
-    <div *ngIf="suggestedMouvements.length === 0">Aucune suggestion trouvée pour ce mouvement.</div>
+    <h4 style="margin-top: 20px;">{{ 'CONSOLIDATION.ASSIGNMENT.SUGGESTIONS_TITLE' | translate }}</h4>
+    <div *ngIf="suggestedMouvements.length === 0">{{ 'CONSOLIDATION.ASSIGNMENT.NO_SUGGESTIONS' | translate }}</div>
     <ul style="list-style-type: none; padding: 0;">
       <li *ngFor="let suggestion of suggestedMouvements"
         style="border: 1px solid #e0f2f7; padding: 10px; margin-bottom: 5px; border-radius: 3px;">
-        <strong>Objectif:</strong> {{ suggestion.objectif }}<br>
+        <strong>{{ 'CONSOLIDATION.WAITING_LIST.OBJECTIVE' | translate }}:</strong> {{ suggestion.objectif }}<br>
         <strong>De:</strong> {{ getOrigin(suggestion) }}<br>
         <strong>À:</strong> {{ getFinalDestination(suggestion) }}<br>
-        <strong>Demandeur:</strong> {{ suggestion.demandeur?.nom }}
+        <strong>{{ 'CONSOLIDATION.WAITING_LIST.REQUESTER' | translate }}:</strong> {{ suggestion.demandeur?.nom }}
         <!-- Ajoutez ici un bouton ou une case à cocher pour ajouter à la sélection de regroupement -->
       </li>
     </ul>
@@ -54,28 +59,29 @@
 display: flex; align-items: center; justify-content: center;">
     <div style="background: white; padding: 30px; border-radius: 10px; max-width: 900px; max-height: 85vh; overflow-y: auto;
 width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-      <h3 style="margin-top: 0; color: #007bff;"><strong>🔄 Édition de la
-          Consolidation</strong></h3>
-      <p><strong>Objectif :</strong> {{ consolidationData.objectif }}</p>
-      <p><strong>Nombre de mouvements :</strong> {{ mouvementsToRegroup.length }}</p>
+      <h3 style="margin-top: 0; color: #007bff;"><strong>{{ 'CONSOLIDATION.EDIT_DIALOG.TITLE' | translate }}</strong>
+      </h3>
+      <p><strong>{{ 'CONSOLIDATION.EDIT_DIALOG.OBJECTIVE' | translate }} :</strong> {{ consolidationData.objectif }}</p>
+      <p><strong>{{ 'CONSOLIDATION.EDIT_DIALOG.COUNT' | translate }} :</strong> {{ mouvementsToRegroup.length }}</p>
 
-      <h4 style="margin-top: 20px; color: #28a745;">Étapes du mouvement consolidé :</h4>
+      <h4 style="margin-top: 20px; color: #28a745;">{{ 'CONSOLIDATION.EDIT_DIALOG.STEPS_TITLE' | translate }}</h4>
       <p style="color: #666; font-size: 0.9em; font-style: italic;">
-        ✏️ Vous pouvez modifier les dates et heures de chaque étape avant de confirmer
+        {{ 'CONSOLIDATION.EDIT_DIALOG.INSTRUCTION' | translate }}
       </p>
 
       <div *ngFor="let stop of consolidationStops; let i = index" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; background-color:
 #f9f9f9;">
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <strong style="font-size: 1.1em; color: #333;">Étape {{ i + 1 }}</strong>
+          <strong style="font-size: 1.1em; color: #333;">{{ 'CONSOLIDATION.EDIT_DIALOG.STEP' | translate }} {{ i + 1
+            }}</strong>
         </div>
 
 
         <!-- Sélecteur de lieu avec dropdown -->
         <div style="margin: 12px 0;">
           <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
-            📍 Lieu :
+            {{ 'CONSOLIDATION.EDIT_DIALOG.LOCATION' | translate }} :
           </label>
           <select [(ngModel)]="stop.lieu._id" (change)="changeStopLocation(i, stop.lieu._id)"
             style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
@@ -90,24 +96,24 @@ width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
           <button (click)="moveStopUp(i)" [disabled]="i === 0"
             style="padding: 6px 12px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 0.85em;"
             [style.opacity]="i === 0 ? '0.5' : '1'">
-            ⬆️ Monter
+            {{ 'CONSOLIDATION.EDIT_DIALOG.MOVE_UP' | translate }}
           </button>
           <button (click)="moveStopDown(i)" [disabled]="i === consolidationStops.length - 1"
             style="padding: 6px 12px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 0.85em;"
             [style.opacity]="i === consolidationStops.length - 1 ? '0.5' : '1'">
-            ⬇️ Descendre
+            {{ 'CONSOLIDATION.EDIT_DIALOG.MOVE_DOWN' | translate }}
           </button>
           <button (click)="removeStop(i)" [disabled]="consolidationStops.length <= 2"
             style="padding: 6px 12px; background-color: #dc3545; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 0.85em;"
             [style.opacity]="consolidationStops.length <= 2 ? '0.5' : '1'">
-            🗑️ Supprimer
+            {{ 'CONSOLIDATION.EDIT_DIALOG.DELETE' | translate }}
           </button>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
           <div *ngIf="i > 0">
             <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
-              📍 Date/Heure d'arrivée :
+              {{ 'CONSOLIDATION.EDIT_DIALOG.ARRIVAL' | translate }} :
             </label>
             <input type="datetime-local" [(ngModel)]="stop.dateArrivee"
               style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
@@ -115,7 +121,7 @@ width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
 
           <div *ngIf="i < consolidationStops.length - 1">
             <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">
-              🚀 Date/Heure de départ :
+              {{ 'CONSOLIDATION.EDIT_DIALOG.DEPARTURE' | translate }} :
             </label>
             <input type="datetime-local" [(ngModel)]="stop.dateDepart"
               style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;">
@@ -127,23 +133,24 @@ width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
 padding-top: 20px;">
         <button (click)="cancelConsolidation()" style="padding: 12px 24px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 5px;
 font-size: 1em; font-weight: 500;">
-          ❌ Annuler
+          {{ 'CONSOLIDATION.EDIT_DIALOG.CANCEL' | translate }}
         </button>
         <button (click)="confirmConsolidation()" style="padding: 12px 24px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px;
 font-size: 1em; font-weight: 500;">
-          ✅ Confirmer la consolidation
+          {{ 'CONSOLIDATION.EDIT_DIALOG.CONFIRM' | translate }}
         </button>
       </div>
     </div>
   </div> <!-- Liste des mouvements validés en attente d'affectation -->
-  <h3>Mouvements validés en attente d'affectation</h3>
-  <p *ngIf="mouvementsValides.length === 0">Aucun mouvement validé n'attend d'affectation de véhicule/chauffeur.</p>
+  <h3>{{ 'CONSOLIDATION.WAITING_LIST.TITLE' | translate }}</h3>
+  <p *ngIf="mouvementsValides.length === 0">{{ 'CONSOLIDATION.WAITING_LIST.EMPTY' | translate }}</p>
 
   <!-- Bouton de regroupement -->
   <button (click)="regrouperMouvementsSelectionnes()" [disabled]="mouvementsToRegroup.length < 2"
-    style="padding: 10px 20px; background-color: #ffc107; color: black; border: none; cursor: pointer;">Regrouper les {{
-    mouvementsToRegroup.length }} mouvements sélectionnés</button>
-  <p *ngIf="mouvementsToRegroup.length > 0" style="margin-top: 5px;">Mouvements sélectionnés pour regroupement: {{
+    style="padding: 10px 20px; background-color: #ffc107; color: black; border: none; cursor: pointer;">{{
+    'CONSOLIDATION.WAITING_LIST.GROUP_BTN' | translate:{count: mouvementsToRegroup.length} }}</button>
+  <p *ngIf="mouvementsToRegroup.length > 0" style="margin-top: 5px;">{{ 'CONSOLIDATION.WAITING_LIST.SELECTED_COUNT' |
+    translate }}: {{
     mouvementsToRegroup.length }}</p>
 
   <ul style="list-style-type: none; padding: 0;">
@@ -152,47 +159,54 @@ font-size: 1em; font-weight: 500;">
       <div>
         <!-- Case à cocher pour le regroupement -->
         <input type="checkbox" [value]="mouvement._id" (change)="onCheckboxChange($event, mouvement)"
-          style="margin-right: 10px;"> Sélectionner pour regroupement
+          style="margin-right: 10px;"> {{ 'CONSOLIDATION.WAITING_LIST.SELECT_GROUP' | translate }}
         <br>
         <!-- CORRECTION ICI : UNE SEULE CASE À COCHER POUR LA CARTE -->
         <input type="checkbox" [checked]="isMouvementSelectedForMap(mouvement._id)"
-          (change)="onToggleMapDisplay($event, mouvement)" style="margin-right: 10px;"> Afficher sur la carte
+          (change)="onToggleMapDisplay($event, mouvement)" style="margin-right: 10px;"> {{
+        'CONSOLIDATION.WAITING_LIST.SHOW_MAP' | translate }}
         <br>
         <!-- MODIFIÉ : Affichage détaillé des étapes -->
-        <p><strong>Itinéraire:</strong></p>
+        <p><strong>{{ 'CONSOLIDATION.WAITING_LIST.ITINERARY' | translate }}:</strong></p>
         <ul>
           <li *ngFor="let stop of mouvement.stops; let i = index">
-            <strong>Étape {{ i + 1 }}:</strong> {{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})
+            <strong>{{ 'CONSOLIDATION.EDIT_DIALOG.STEP' | translate }} {{ i + 1 }}:</strong> {{ stop.lieu?.nom }} ({{
+            stop.lieu?.adresse }})
             <span *ngIf="i < mouvement.stops.length - 1"> Départ: {{ stop.dateDepart | date:'short' }}</span>
             <span *ngIf="i > 0"> Arrivée: {{ stop.dateArrivee | date:'short' }}</span>
           </li>
         </ul>
 
-        <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
+        <strong>{{ 'CONSOLIDATION.WAITING_LIST.OBJECTIVE' | translate }}:</strong> {{ mouvement.objectif }}<br>
         <ng-container *ngIf="mouvement.demandeur">
-          <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
+          <strong>{{ 'CONSOLIDATION.WAITING_LIST.REQUESTER' | translate }}:</strong> {{ mouvement.demandeur?.nom }} ({{
+          mouvement.demandeur?.email }})<br>
         </ng-container>
         <ng-container *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
-          <strong>Passagers:</strong> {{ getPassagersNoms(mouvement) }}<br>
+          <strong>{{ 'CONSOLIDATION.WAITING_LIST.PASSENGERS' | translate }}:</strong> {{ getPassagersNoms(mouvement)
+          }}<br>
         </ng-container>
         <ng-container *ngIf="mouvement.vehicule">
-          <strong>Véhicule affecté:</strong> {{ mouvement.vehicule?.marque }} ({{ mouvement.vehicule?.immatriculation
+          <strong>{{ 'CONSOLIDATION.WAITING_LIST.ASSIGNED_VEHICLE' | translate }}:</strong> {{
+          mouvement.vehicule?.marque }} ({{ mouvement.vehicule?.immatriculation
           }})<br>
         </ng-container>
         <ng-container *ngIf="mouvement.chauffeur">
-          <strong>Chauffeur affecté:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}<br>
+          <strong>{{ 'CONSOLIDATION.WAITING_LIST.ASSIGNED_DRIVER' | translate }}:</strong> {{
+          mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}<br>
         </ng-container>
       </div>
       <div>
         <button (click)="selectMouvementForAssignment(mouvement)"
-          style="padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">Affecter</button>
+          style="padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">{{
+          'CONSOLIDATION.WAITING_LIST.ASSIGN_BTN' | translate }}</button>
       </div>
     </li>
   </ul>
 
   <br />
   <!-- CARTE MONTÉE ICI -->
-  <h3 style="margin-top: 30px;">Carte des Mouvements à Consolider</h3>
+  <h3 style="margin-top: 30px;">{{ 'CONSOLIDATION.MAP_TITLE' | translate }}</h3>
   <app-map-mouvements [mouvements]="mapEvents" style="height: 500px; display: block; width: 100%;"></app-map-mouvements>
   <br />
 
@@ -200,27 +214,28 @@ font-size: 1em; font-weight: 500;">
   <div
     style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
     <h3 (click)="showConsolidesHistory = !showConsolidesHistory" style="cursor: pointer; margin: 0; flex-grow: 1;">
-      Historique des mouvements consolidés/affectés (cliquer pour {{ showConsolidesHistory ? 'masquer' : 'afficher' }})
+      {{ 'CONSOLIDATION.HISTORY.TITLE' | translate }} (cliquer pour {{ showConsolidesHistory ?
+      ('CONSOLIDATION.HISTORY.HIDE' | translate) : ('CONSOLIDATION.HISTORY.SHOW' | translate) }})
     </h3>
 
     <!-- Bouton de nettoyage (visible seulement pour Admin/SuperAdmin) -->
     <button *ngIf="['Admin', 'SuperAdmin'].includes(userProfile || '')" (click)="cleanGhosts()"
       style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8em;">
-      🧹 Nettoyer Fantômes
+      {{ 'CONSOLIDATION.HISTORY.CLEANUP_BTN' | translate }}
     </button>
   </div>
 
   <div *ngIf="showConsolidesHistory" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
     <!-- Filtres de date pour l'historique -->
     <div style="margin-bottom: 15px;">
-      <label for="filterStartDate">Date de début:</label>
+      <label for="filterStartDate">{{ 'CONSOLIDATION.HISTORY.START_DATE' | translate }}:</label>
       <input type="date" id="filterStartDate" [(ngModel)]="filterStartDate" (change)="applyConsolidesFilters()"
         style="margin-right: 10px;">
-      <label for="filterEndDate">Date de fin:</label>
+      <label for="filterEndDate">{{ 'CONSOLIDATION.HISTORY.END_DATE' | translate }}:</label>
       <input type="date" id="filterEndDate" [(ngModel)]="filterEndDate" (change)="applyConsolidesFilters()">
     </div>
 
-    <p *ngIf="filteredMouvementsConsolides.length === 0">Aucun mouvement n'a été consolidé pour le moment.</p>
+    <p *ngIf="filteredMouvementsConsolides.length === 0">{{ 'CONSOLIDATION.HISTORY.EMPTY' | translate }}</p>
 
     <ul style="list-style-type: none; padding: 0;">
       <li *ngFor="let mouvement of filteredMouvementsConsolides"
@@ -228,39 +243,44 @@ font-size: 1em; font-weight: 500;">
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
           <div>
             <!-- Affichage détaillé des étapes -->
-            <p><strong>Itinéraire:</strong></p>
+            <p><strong>{{ 'CONSOLIDATION.WAITING_LIST.ITINERARY' | translate }}:</strong></p>
             <ul>
               <li *ngFor="let stop of mouvement.stops; let i = index">
-                <strong>Étape {{ i + 1 }}:</strong> {{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})
+                <strong>{{ 'CONSOLIDATION.EDIT_DIALOG.STEP' | translate }} {{ i + 1 }}:</strong> {{ stop.lieu?.nom }}
+                ({{ stop.lieu?.adresse }})
                 <span *ngIf="i < mouvement.stops.length - 1"> Départ: {{ stop.dateDepart | date:'short' }}</span>
                 <span *ngIf="i > 0"> Arrivée: {{ stop.dateArrivee | date:'short' }}</span>
               </li>
             </ul>
 
-            <strong>Objectif:</strong> {{ mouvement.objectif }}<br>
+            <strong>{{ 'CONSOLIDATION.WAITING_LIST.OBJECTIVE' | translate }}:</strong> {{ mouvement.objectif }}<br>
             <ng-container *ngIf="mouvement.demandeur">
-              <strong>Demandeur:</strong> {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})<br>
+              <strong>{{ 'CONSOLIDATION.WAITING_LIST.REQUESTER' | translate }}:</strong> {{ mouvement.demandeur?.nom }}
+              ({{ mouvement.demandeur?.email }})<br>
             </ng-container>
             <ng-container *ngIf="mouvement.passagers && mouvement.passagers.length > 0">
-              <strong>Passagers:</strong> {{ getPassagersNoms(mouvement) }}<br>
+              <strong>{{ 'CONSOLIDATION.WAITING_LIST.PASSENGERS' | translate }}:</strong> {{ getPassagersNoms(mouvement)
+              }}<br>
             </ng-container>
             <ng-container *ngIf="mouvement.vehicule">
-              <strong>Véhicule affecté:</strong> {{ mouvement.vehicule?.marque }} ({{
+              <strong>{{ 'CONSOLIDATION.WAITING_LIST.ASSIGNED_VEHICLE' | translate }}:</strong> {{
+              mouvement.vehicule?.marque }} ({{
               mouvement.vehicule?.immatriculation }})<br>
             </ng-container>
             <ng-container *ngIf="mouvement.chauffeur">
-              <strong>Chauffeur affecté:</strong> {{ mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}<br>
+              <strong>{{ 'CONSOLIDATION.WAITING_LIST.ASSIGNED_DRIVER' | translate }}:</strong> {{
+              mouvement.chauffeur?.prenom }} {{ mouvement.chauffeur?.nom }}<br>
             </ng-container>
             <!-- NOUVEAU: Indicateur Hors-Liste et Bouton Validation -->
             <div *ngIf="mouvement.isAdHoc"
               style="margin-top: 5px; margin-bottom: 5px; padding: 8px; background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
-              <span><strong>⚠️ Trajet Hors-Liste (Imprévu)</strong></span>
+              <span><strong>{{ 'CONSOLIDATION.HISTORY.ADHOC' | translate }}</strong></span>
               <button (click)="validerAdHoc(mouvement)"
                 style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
-                ✅ Valider
+                {{ 'CONSOLIDATION.HISTORY.VALIDATE_BTN' | translate }}
               </button>
             </div>
-            <strong>Statut:</strong> {{ mouvement.statut | titlecase }}<br>
+            <strong>{{ 'MY_TRIPS.STATUS' | translate }}:</strong> {{ mouvement.statut | titlecase }}<br>
           </div>
         </div>
 
@@ -269,22 +289,26 @@ font-size: 1em; font-weight: 500;">
           style="margin-top: 15px; padding: 15px; background-color: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 5px;">
           <h4 style="margin: 0 0 10px 0; color: #2e7d32; display: flex; align-items: center;">
             <mat-icon style="margin-right: 5px; font-size: 20px;">smartphone</mat-icon>
-            Données Réelles (e-Logbook)
+            {{ 'CONSOLIDATION.HISTORY.REAL_DATA_TITLE' | translate }}
           </h4>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div>
               <span style="font-weight: bold; color: #2e7d32;">⏱️ Horaires:</span><br>
               <div style="margin-left: 10px; font-size: 0.9em;">
-                Départ Réel: <strong>{{ mouvement.realDepartureTime | date:'short' }}</strong><br>
-                Arrivée Réelle: <strong>{{ mouvement.realArrivalTime ? (mouvement.realArrivalTime | date:'short') : 'En
-                  cours...' }}</strong>
+                {{ 'CONSOLIDATION.HISTORY.REAL_DEPARTURE' | translate }}: <strong>{{ mouvement.realDepartureTime |
+                  date:'short' }}</strong><br>
+                {{ 'CONSOLIDATION.HISTORY.REAL_ARRIVAL' | translate }}: <strong>{{ mouvement.realArrivalTime ?
+                  (mouvement.realArrivalTime | date:'short') : ('CONSOLIDATION.HISTORY.IN_PROGRESS' | translate)
+                  }}</strong>
               </div>
             </div>
             <div>
               <span style="font-weight: bold; color: #2e7d32;">🚗 Kilométrage:</span><br>
               <div style="margin-left: 10px; font-size: 0.9em;">
-                Départ: <strong>{{ mouvement.startMileage }} km</strong><br>
-                Arrivée: <strong>{{ mouvement.endMileage ? mouvement.endMileage + ' km' : '--' }}</strong>
+                {{ 'CONSOLIDATION.HISTORY.MILEAGE_START' | translate }}: <strong>{{ mouvement.startMileage }}
+                  km</strong><br>
+                {{ 'CONSOLIDATION.HISTORY.MILEAGE_END' | translate }}: <strong>{{ mouvement.endMileage ?
+                  mouvement.endMileage + ' km' : '--' }}</strong>
                 <span *ngIf="mouvement.endMileage && mouvement.startMileage" style="margin-left: 5px; color: #1976d2;">
                   (Distance: {{ mouvement.endMileage - mouvement.startMileage }} km)
                 </span>
@@ -294,7 +318,8 @@ font-size: 1em; font-weight: 500;">
 
           <div *ngIf="mouvement.deviations && mouvement.deviations.length > 0"
             style="margin-top: 10px; border-top: 1px dashed #a5d6a7; padding-top: 10px;">
-            <span style="font-weight: bold; color: #c62828;">⚠️ Écarts signalés:</span>
+            <span style="font-weight: bold; color: #c62828;">{{ 'CONSOLIDATION.HISTORY.DEVIATIONS' | translate
+              }}:</span>
             <ul style="margin: 5px 0 0 0; padding-left: 20px; color: #c62828;">
               <li *ngFor="let dev of mouvement.deviations">
                 {{ dev.type | titlecase }}: {{ dev.value }} ({{ dev.description }})
@@ -303,7 +328,8 @@ font-size: 1em; font-weight: 500;">
           </div>
 
           <div *ngIf="mouvement.driverObservations" style="margin-top: 10px;">
-            <span style="font-weight: bold; color: #555;">💬 Observations Chauffeur:</span>
+            <span style="font-weight: bold; color: #555;">{{ 'CONSOLIDATION.HISTORY.DRIVER_OBSERVATIONS' | translate
+              }}:</span>
             <p style="margin: 5px 0 0 10px; font-style: italic; color: #333;">"{{ mouvement.driverObservations }}"</p>
           </div>
         </div>

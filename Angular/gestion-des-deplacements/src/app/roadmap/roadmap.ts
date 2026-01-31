@@ -32,6 +32,27 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.12.0',
+            date: '31 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Innovation IA', description: 'Maintenance Prédictive : Algorithme d\'estimation des prochaines révisions basé sur l\'usage réel.' },
+                { category: 'Dashboard', description: 'Santé Flotte : Nouveaux indicateurs de performance (Score global, Alertes préventives).' },
+                { category: 'UX', description: 'Refonte Menu : Organisation par pôles (Pilotage, Opérations, Flotte...) pour plus de clarté.' }
+            ]
+        },
+        {
+            version: 'v2.11.0',
+            date: '31 Janvier 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Qualité', description: 'Tests Automatisés : Intégration de Jest et mise en place de Smoke Tests pour les APIs critiques.' },
+                { category: 'Documentation', description: 'Swagger UI : Documentation technique interactive disponible (Admin > Documentation API).' },
+                { category: 'Documentation', description: 'Handover : Rapport de transfert complet intégré à l\'application.' },
+                { category: 'Internationalisation', description: 'Généralisation de la traduction (FR/EN) sur les modules critiques et corrections UI.' }
+            ]
+        },
+        {
             version: 'v2.10.1',
             date: '30 Janvier 2026',
             type: 'minor',
@@ -227,7 +248,7 @@ export class RoadmapComponent {
             category: 'Internationalisation & Accessibilité',
             categoryIcon: 'language',
             targetApp: 'Les deux',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Haute'
         },
         {
@@ -417,7 +438,7 @@ export class RoadmapComponent {
             category: 'Planning & Scheduling',
             categoryIcon: 'edit_calendar',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Moyenne'
         },
         {
@@ -439,6 +460,76 @@ export class RoadmapComponent {
             targetApp: 'FleetTrack',
             status: 'Planifié',
             priority: 'Basse'
+        },
+        {
+            id: 23,
+            title: 'Tests Automatisés (Backend)',
+            description: 'Mise en place de tests unitaires et d\'intégration (Jest/Mocha) pour garantir la stabilité des APIs critiques (Mouvements, Validation) à chaque mise à jour.',
+            category: 'Qualité & Robustesse',
+            categoryIcon: 'bug_report',
+            targetApp: 'Les deux',
+            status: 'Terminé',
+            priority: 'Haute'
+        },
+        {
+            id: 24,
+            title: 'Performance & Lazy Loading',
+            description: 'Optimisation du chargement de l\'application : chaque module ne se charge que lorsque l\'utilisateur en a besoin, réduisant le temps de démarrage initial de 50%.',
+            category: 'Performance',
+            categoryIcon: 'speed',
+            targetApp: 'Les deux',
+            status: 'Planifié',
+            priority: 'Haute'
+        },
+        {
+            id: 25,
+            title: 'Monitoring Proactif (Sentry)',
+            description: 'Intégration d\'une sonde de surveillance qui alerte l\'équipe technique en temps réel dès qu\'une erreur survient chez un utilisateur, avant même qu\'il ne s\'en plaigne.',
+            category: 'Qualité & Robustesse',
+            categoryIcon: 'health_and_safety',
+            targetApp: 'Les deux',
+            status: 'Planifié',
+            priority: 'Moyenne'
+        },
+        {
+            id: 26,
+            title: 'Documentation API (Swagger)',
+            description: 'Génération automatique d\'une documentation technique interactive pour toutes les interfaces (API), facilitant l\'évolution future et l\'intégration mobile.',
+            category: 'Documentation',
+            categoryIcon: 'integration_instructions',
+            targetApp: 'Les deux',
+            status: 'Terminé',
+            priority: 'Basse'
+        },
+        {
+            id: 27,
+            title: 'I.A. Maintenance Prédictive',
+            description: 'Algorithme analysant l\'historique des pannes pour prédire les futures défaillances et suggérer une maintenance avant que le véhicule ne tombe en panne.',
+            category: 'Innovation & IA',
+            categoryIcon: 'psychology',
+            targetApp: 'FleetTrack',
+            status: 'Terminé',
+            priority: 'Haute'
+        },
+        {
+            id: 28,
+            title: 'Mode Temps Réel (Live)',
+            description: 'Mise à jour instantanée des tableaux de bord (Socket.io) : un superviseur voit les statuts changer (Départ, Arrivée) sans avoir besoin de rafraîchir la page.',
+            category: 'Innovation',
+            categoryIcon: 'sync',
+            targetApp: 'Les deux',
+            status: 'Planifié',
+            priority: 'Moyenne'
+        },
+        {
+            id: 29,
+            title: 'Assistant IA Conversationnel',
+            description: 'Assistant intelligent capable de répondre aux questions sur l\'utilisation de l\'app et d\'interroger les données en langage naturel.',
+            category: 'Innovation & IA',
+            categoryIcon: 'smart_toy',
+            targetApp: 'Les deux',
+            status: 'Planifié',
+            priority: 'Haute'
         }
     ];
 

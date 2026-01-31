@@ -91,6 +91,19 @@ mongoose.connect(MONGODB_URI)
     .catch(err => console.error('Erreur de connexion à MongoDB:', err));
 
 // Route de test du mouvement (temporairement ici, non protégée)
+/**
+ * @swagger
+ * /mouvements/test:
+ *   post:
+ *     summary: Créer un mouvement de test
+ *     tags: [Mouvements]
+ *     description: Crée un mouvement avec des données hardcodées pour vérifier le bon fonctionnement du backend.
+ *     responses:
+ *       201:
+ *         description: Mouvement créé avec succès
+ *       500:
+ *         description: Erreur serveur
+ */
 app.post('/api/mouvements/test', async (req, res) => {
     console.log('Requête reçue sur /api/mouvements/test (NON PROTÉGÉE, dans index.js)');
     try {
@@ -167,10 +180,23 @@ app.use('/api/waivers', waiversRoute);
 const auditRoute = require('./routes/audit');
 app.use('/api/audit', auditRoute);
 
+// NOUVEAU : Routes pour la Maintenance Prédictive
+const predictiveRoute = require('./routes/predictive');
+app.use('/api/predictive', predictiveRoute);
+
 // NOUVEAU : Démarrer les tâches CRON de maintenance
 const { startCronJobs } = require('./jobs/maintenance-cron');
 const startMaintenanceCron = require('./jobs/maintenanceCron'); // New daily email cron
 const { initializeTemplate } = require('./init-checklist-template');
+
+// NOUVEAU : Swagger API Documentation
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./swagger.config');
+
+// Route pour la documentation API
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
+console.log('📄 Documentation Swagger disponible sur /api-docs');
+
 
 // Initialiser le template de checklist au démarrage
 mongoose.connection.once('open', async () => {
@@ -215,6 +241,25 @@ app.get('*', (req, res) => {
 });
 
 // Démarrage du serveur
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Serveur démarré sur le port ${port} (accessible depuis le réseau)`);
-});
+const PORT = process.env.PORT || 3000;
+
+// Export app for testing
+module.exports = app;
+
+// Only start server if run directly (not via test)
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Serveur démarré sur le port ${PORT} (accessible depuis le réseau)`);
+
+        // Initialiser le template de checklist au démarrage
+        const { initializeTemplate } = require('./init-checklist-template');
+        mongoose.connection.once('open', async () => {
+            console.log('📋 Initialisation du template de checklist...');
+            await initializeTemplate();
+        });
+
+        // Démarrer les tâches CRON
+        startCronJobs();
+        startMaintenanceCron();
+    });
+}

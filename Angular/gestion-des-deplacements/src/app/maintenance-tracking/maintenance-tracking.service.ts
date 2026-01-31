@@ -111,4 +111,15 @@ export class MaintenanceTrackingService {
     getPredictivePlan(vehicleId: string): Observable<PredictivePlan> {
         return this.http.get<PredictivePlan>(`${this.apiUrl}/predictive/${vehicleId}`, { headers: this.getHeaders() });
     }
+
+    /**
+     * Récupère la santé globale de la flotte (Maintenance Prédictive)
+     */
+    getFleetHealth(): Observable<any> {
+        // Note: L'URL doit correspondre à celle définie dans backend/routes/predictive.js
+        // index.js définit app.use('/api/predictive', ...) et router.get('/fleet-health', ...)
+        // Donc URL = /api/predictive/fleet-health
+        const predictiveApi = this.apiUrl.replace('maintenance-tracking', 'predictive');
+        return this.http.get<any>(`${predictiveApi}/fleet-health`, { headers: this.getHeaders() });
+    }
 }

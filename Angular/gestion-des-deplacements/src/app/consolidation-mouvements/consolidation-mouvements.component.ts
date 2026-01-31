@@ -8,12 +8,13 @@ import { LieuService } from '../lieu.service';
 import { AuthService } from '../auth.service';
 import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { forkJoin, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-consolidation-mouvements',
   standalone: true,
-  imports: [CommonModule, FormsModule, MapMouvementsComponent, MatIconModule],
+  imports: [CommonModule, FormsModule, MapMouvementsComponent, MatIconModule, TranslateModule],
   templateUrl: './consolidation-mouvements.component.html',
   styleUrls: ['./consolidation-mouvements.component.css']
 })

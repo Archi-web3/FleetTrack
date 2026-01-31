@@ -14,10 +14,10 @@
                 <mat-label>{{ 'MAP.MODE_TRANSPORT' | translate }}</mat-label>
                 <mat-select [(ngModel)]="selectedMode" (selectionChange)="onFilterChange()">
                     <mat-option *ngFor="let mode of transportModes" [value]="mode">
-                        <mat-icon *ngIf="mode === 'Aérien'">flight</mat-icon>
-                        <mat-icon *ngIf="mode === 'Maritime'">directions_boat</mat-icon>
-                        <mat-icon *ngIf="mode === 'Route'">directions_car</mat-icon>
-                        {{mode}}
+                        <mat-icon *ngIf="mode === 'AERIEN'">flight</mat-icon>
+                        <mat-icon *ngIf="mode === 'MARITIME'">directions_boat</mat-icon>
+                        <mat-icon *ngIf="mode === 'ROUTIER'">directions_car</mat-icon>
+                        {{ 'TRANSPORT_MODES.' + mode | translate }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

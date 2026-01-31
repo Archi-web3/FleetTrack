@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jest --forceExit",
+    "test": "jest",
     "build-client": "cd ../gestion-des-deplacements && npm install --include=dev && npm run build",
     "postinstall": "npm run build-client"
   },
@@ -30,9 +30,5 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "web-push": "^3.6.7"
-  },
-  "devDependencies": {
-    "jest": "^30.2.0",
-    "supertest": "^7.2.2"
   }
 }

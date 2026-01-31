@@ -834,16 +834,176 @@
     "MAINTENANCE_TYPES": {
         "CHECK_HEBDO": "Weekly Check",
         "SERVICE": "Service",
-        "RÉPARATION": "Repair",
+        "REPARATION": "Repair",
         "AUTRE": "Other"
     },
     "TRANSPORT_MODES": {
         "ROUTIER": "Road",
-        "AÉRIEN": "Air",
-        "MARITIME": "Sea"
+        "AERIEN": "Air",
+        "MARITIME": "Sea",
+        "ALL": "All"
+    },
+    "CONSOLIDATION": {
+        "TITLE": "Consolidation & Movement Assignment",
+        "ASSIGNMENT": {
+            "TITLE": "Assign Vehicle & Driver to movement #{{id}}",
+            "SELECTED_MOVEMENT": "Selected Movement",
+            "VEHICLE": "Vehicle",
+            "SELECT_VEHICLE": "Select a vehicle",
+            "DRIVER": "Driver",
+            "SELECT_DRIVER": "Select a driver",
+            "ASSIGN_BTN": "Assign",
+            "CANCEL_BTN": "Cancel",
+            "SUGGESTIONS_TITLE": "Grouping Suggestions:",
+            "NO_SUGGESTIONS": "No suggestions found for this movement."
+        },
+        "EDIT_DIALOG": {
+            "TITLE": "🔄 Edit Consolidation",
+            "OBJECTIVE": "Objective",
+            "COUNT": "Number of movements",
+            "STEPS_TITLE": "Consolidated Movement Steps:",
+            "INSTRUCTION": "✏️ You can modify dates and times for each step before confirming",
+            "STEP": "Step",
+            "LOCATION": "📍 Location",
+            "ARRIVAL": "📍 Arrival Date/Time",
+            "DEPARTURE": "🚀 Departure Date/Time",
+            "MOVE_UP": "⬆️ Move Up",
+            "MOVE_DOWN": "⬇️ Move Down",
+            "DELETE": "🗑️ Delete",
+            "CANCEL": "❌ Cancel",
+            "CONFIRM": "✅ Confirm Consolidation"
+        },
+        "WAITING_LIST": {
+            "TITLE": "Validated Movements Awaiting Assignment",
+            "EMPTY": "No validated movement is waiting for vehicle/driver assignment.",
+            "GROUP_BTN": "Group {{count}} selected movements",
+            "SELECTED_COUNT": "Movements selected for grouping",
+            "SELECT_GROUP": "Select for grouping",
+            "SHOW_MAP": "Show on map",
+            "ITINERARY": "Itinerary",
+            "OBJECTIVE": "Objective",
+            "REQUESTER": "Requester",
+            "PASSENGERS": "Passengers",
+            "ASSIGNED_VEHICLE": "Assigned Vehicle",
+            "ASSIGNED_DRIVER": "Assigned Driver",
+            "ASSIGN_BTN": "Assign"
+        },
+        "MAP_TITLE": "Map of Movements to Consolidate",
+        "HISTORY": {
+            "TITLE": "Consolidated/Assigned Movements History",
+            "SHOW": "show",
+            "HIDE": "hide",
+            "CLEANUP_BTN": "🧹 Clean Ghosts",
+            "START_DATE": "Start Date",
+            "END_DATE": "End Date",
+            "EMPTY": "No movements have been consolidated yet.",
+            "ADHOC": "⚠️ Ad-Hoc Trip (Unplanned)",
+            "VALIDATE_BTN": "✅ Validate",
+            "REAL_DATA_TITLE": "Real Data (e-Logbook)",
+            "REAL_DEPARTURE": "Real Departure",
+            "REAL_ARRIVAL": "Real Arrival",
+            "IN_PROGRESS": "In progress...",
+            "MILEAGE_START": "Start",
+            "MILEAGE_END": "End",
+            "DEVIATIONS": "⚠️ Reported Deviations",
+            "DRIVER_OBSERVATIONS": "💬 Driver Observations"
+        }
+    },
+    "MENU": {
+        "MY_TRIPS": "My Movements",
+        "GLOBAL_PLANNING": "Global Planning",
+        "NEW_REQUEST": "New Request",
+        "INTERACTIVE_MAP": "Interactive Map",
+        "VALIDATION": "Validation",
+        "SECURITY_ALERTS": "Security Alerts",
+        "VALIDATE_TRIPS": "Validate Trips",
+        "CONSOLIDATION": "Consolidation",
+        "ADMINISTRATION": "Administration",
+        "USER_MANAGEMENT": "User Management",
+        "COUNTRIES_BASES": "Countries & Bases",
+        "PROJECT_MANAGEMENT": "Project Management",
+        "AUDIT_LOGS": "Audit Logs",
+        "WAIVERS": "Waivers",
+        "USER_GUIDE": "User Guide",
+        "VISION_SECURITY": "Security Vision",
+        "ENV_OBJECTIVES": "Env. Objectives",
+        "DRIVER_MANAGEMENT": "Driver Management",
+        "STATISTICS": "Statistics",
+        "LOCATION_MANAGEMENT": "Location Management",
+        "VEHICLE_MANAGEMENT": "Vehicle Management",
+        "FLEET_RECAP": "Fleet Recap",
+        "MAINTENANCE_TRACKING": "Maintenance Tracking",
+        "GENERAL_SETTINGS": "General Settings",
+        "MONTHLY_REPORTS": "Monthly Reports",
+        "LOGBOOK": "e-Logbook",
+        "DASHBOARD": {
+            "TITLE": "Dashboard"
+        }
     },
     "NEW_REQUEST_EXTRA": {
         "START": "Start",
         "END": "End"
+    },
+    "VEHICLES": {
+        "TITLE": "Vehicle Management",
+        "CREATE_TITLE": "Create New Vehicle",
+        "EDIT_TITLE": "Edit Vehicle",
+        "LIST": {
+            "TITLE": "Existing Vehicles",
+            "NO_DATA": "No vehicles found."
+        },
+        "ACTIONS": {
+            "CREATE": "Create",
+            "EDIT": "Edit",
+            "ARCHIVE": "Archive",
+            "UNARCHIVE": "Unarchive",
+            "DELETE": "Delete",
+            "SHOW_MY_BASE": "Show My Base",
+            "SHOW_ALL_COUNTRY": "Show All Country"
+        },
+        "FORM": {
+            "BRAND": "Brand",
+            "MODEL": "Model",
+            "PLATE": "Plate",
+            "ACF_CODE": "ACF Code",
+            "ACF_CODE_HINT": "Automatically generated",
+            "OWNERSHIP": "Ownership",
+            "RENTAL_NAME": "Lessor Name",
+            "RENTAL_START": "Rental Start",
+            "RENTAL_END": "Rental End",
+            "PURCHASE_DATE": "Purchase Date",
+            "TYPE": "Type",
+            "CAPACITY": "Capacity",
+            "INITIAL_KM": "Initial Mileage",
+            "GPS": "GPS Tracking",
+            "STATUS": "Status"
+        },
+        "ENV": {
+            "TITLE": "Environmental Data",
+            "CO2": "CO2 Emissions",
+            "SOURCE": "Source",
+            "CONSUMPTION": "Consumption",
+            "CONSTRUCTOR": "Constructor",
+            "MANUAL": "Manual",
+            "TEST_DATE": "Test Date"
+        },
+        "INSURANCE": {
+            "TITLE": "Insurance",
+            "INSURER": "Insurer",
+            "END_DATE": "End Date",
+            "CERTIFICATE": "Certificate"
+        },
+        "EQUIPMENT": {
+            "TITLE": "Equipment",
+            "NAME": "Name",
+            "PRESENT": "Present",
+            "LAST_CHECK": "Last Check"
+        },
+        "STATUS": {
+            "En Service": "In Service",
+            "Archivé": "Archived",
+            "Maintenance": "Maintenance",
+            "Panne": "Breakdown"
+        }
     }
 }

@@ -198,6 +198,14 @@
     },
     "MENU": {
         "MY_TRIPS": "Mes Mouvements",
+        "GROUPS": {
+            "DASHBOARD": "Pilotage",
+            "MY_SPACE": "Mon Espace",
+            "OPERATIONS": "Opérations",
+            "FLEET": "Flotte & Parc",
+            "SECURITY": "Sécurité & Risk",
+            "ADMIN": "Administration"
+        },
         "GLOBAL_PLANNING": "Planning Global",
         "NEW_REQUEST": "Nouvelle Demande",
         "INTERACTIVE_MAP": "Carte Interactive",
@@ -223,7 +231,7 @@
         "GENERAL_SETTINGS": "Paramètres Généraux",
         "MONTHLY_REPORTS": "Rapports Mensuels",
         "DASHBOARD": {
-            "TITLE": "Analyse des Mouvements",
+            "TITLE": "Tableau de Bord",
             "KPI": {
                 "TOTAL": "Total Mouvements",
                 "VALIDATED": "Validés (À venir)",
@@ -329,8 +337,9 @@
             "DELAY": "Retard"
         },
         "TABS": {
-            "TRACKING": "Suivi Kilométrique & Échéances",
-            "PLANNING": "Interventions Planifiées"
+            "TRACKING": "Suivi Kilométrique",
+            "PLANNING": "Maintenance Planifiée",
+            "PREDICTIVE": "Prédictions (IA)"
         },
         "FILTERS": {
             "BASE": "Base",
@@ -502,10 +511,20 @@
         "ACTIONS": {
             "CREATE": "Créer Véhicule",
             "UPDATE": "Mettre à jour",
+            "EDIT": "Modifier",
+            "DELETE": "Supprimer",
             "ARCHIVE": "Archiver",
             "UNARCHIVE": "Désarchiver",
             "SHOW_ALL_COUNTRY": "Afficher tout le pays",
             "SHOW_MY_BASE": "Afficher ma base uniquement"
+        },
+        "STATUS": {
+            "En Service": "En Service",
+            "Hors Service": "Hors Service",
+            "Vendu": "Vendu",
+            "Archivé": "Archivé",
+            "Restitué": "Restitué",
+            "Inactif": "Inactif"
         },
         "LIST": {
             "TITLE": "Véhicules existants",
@@ -834,16 +853,79 @@
     "MAINTENANCE_TYPES": {
         "CHECK_HEBDO": "Check Hebdo",
         "SERVICE": "Service",
-        "RÉPARATION": "Réparation",
+        "REPARATION": "Réparation",
         "AUTRE": "Autre"
     },
     "TRANSPORT_MODES": {
         "ROUTIER": "Routier",
-        "AÉRIEN": "Aérien",
-        "MARITIME": "Maritime"
+        "AERIEN": "Aérien",
+        "MARITIME": "Maritime",
+        "ALL": "Tout"
     },
-    "NEW_REQUEST_EXTRA": {
-        "START": "Début",
-        "END": "Fin"
+    "CONSOLIDATION": {
+        "TITLE": "Consolidation & Affectation des Mouvements",
+        "ASSIGNMENT": {
+            "TITLE": "Affecter Véhicule & Chauffeur au mouvement #{{id}}",
+            "SELECTED_MOVEMENT": "Mouvement sélectionné",
+            "VEHICLE": "Véhicule",
+            "SELECT_VEHICLE": "Sélectionnez un véhicule",
+            "DRIVER": "Chauffeur",
+            "SELECT_DRIVER": "Sélectionnez un chauffeur",
+            "ASSIGN_BTN": "Affecter",
+            "CANCEL_BTN": "Annuler",
+            "SUGGESTIONS_TITLE": "Suggestions de regroupement :",
+            "NO_SUGGESTIONS": "Aucune suggestion trouvée pour ce mouvement."
+        },
+        "EDIT_DIALOG": {
+            "TITLE": "🔄 Édition de la Consolidation",
+            "OBJECTIVE": "Objectif",
+            "COUNT": "Nombre de mouvements",
+            "STEPS_TITLE": "Étapes du mouvement consolidé :",
+            "INSTRUCTION": "✏️ Vous pouvez modifier les dates et heures de chaque étape avant de confirmer",
+            "STEP": "Étape",
+            "LOCATION": "📍 Lieu",
+            "ARRIVAL": "📍 Date/Heure d'arrivée",
+            "DEPARTURE": "🚀 Date/Heure de départ",
+            "MOVE_UP": "⬆️ Monter",
+            "MOVE_DOWN": "⬇️ Descendre",
+            "DELETE": "🗑️ Supprimer",
+            "CANCEL": "❌ Annuler",
+            "CONFIRM": "✅ Confirmer la consolidation"
+        },
+        "WAITING_LIST": {
+            "TITLE": "Mouvements validés en attente d'affectation",
+            "EMPTY": "Aucun mouvement validé n'attend d'affectation de véhicule/chauffeur.",
+            "GROUP_BTN": "Regrouper les {{count}} mouvements sélectionnés",
+            "SELECTED_COUNT": "Mouvements sélectionnés pour regroupement",
+            "SELECT_GROUP": "Sélectionner pour regroupement",
+            "SHOW_MAP": "Afficher sur la carte",
+            "ITINERARY": "Itinéraire",
+            "OBJECTIVE": "Objectif",
+            "REQUESTER": "Demandeur",
+            "PASSENGERS": "Passagers",
+            "ASSIGNED_VEHICLE": "Véhicule affecté",
+            "ASSIGNED_DRIVER": "Chauffeur affecté",
+            "ASSIGN_BTN": "Affecter"
+        },
+        "MAP_TITLE": "Carte des Mouvements à Consolider",
+        "HISTORY": {
+            "TITLE": "Historique des mouvements consolidés/affectés",
+            "SHOW": "afficher",
+            "HIDE": "masquer",
+            "CLEANUP_BTN": "🧹 Nettoyer Fantômes",
+            "START_DATE": "Date de début",
+            "END_DATE": "Date de fin",
+            "EMPTY": "Aucun mouvement n'a été consolidé pour le moment.",
+            "ADHOC": "⚠️ Trajet Hors-Liste (Imprévu)",
+            "VALIDATE_BTN": "✅ Valider",
+            "REAL_DATA_TITLE": "Données Réelles (e-Logbook)",
+            "REAL_DEPARTURE": "Départ Réel",
+            "REAL_ARRIVAL": "Arrivée Réelle",
+            "IN_PROGRESS": "En cours...",
+            "MILEAGE_START": "Départ",
+            "MILEAGE_END": "Arrivée",
+            "DEVIATIONS": "⚠️ Écarts signalés",
+            "DRIVER_OBSERVATIONS": "💬 Observations Chauffeur"
+        }
     }
 }

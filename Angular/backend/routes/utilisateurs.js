@@ -6,6 +6,33 @@ const countryFilter = require('../middleware/countryFilter'); // NOUVEAU: Middle
 const auditService = require('../services/audit.service');
 
 // GET all users (Accessible à tout utilisateur connecté pour peupler les listes déroulantes)
+/**
+ * @swagger
+ * /utilisateurs:
+ *   get:
+ *     summary: Récupérer tous les utilisateurs
+ *     tags: [Utilisateurs]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste des utilisateurs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   nom:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   profil:
+ *                     type: string
+ *       401:
+ *         description: Non autorisé
+ */
 router.get('/utilisateurs', auth(), countryFilter, async (req, res) => {
   try {
     const utilisateurs = await Utilisateur.find(req.countryFilter).select('-motDePasse');

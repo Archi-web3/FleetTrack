@@ -10,12 +10,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs'; // NOUVEAU
+import { MatTabsModule } from '@angular/material/tabs';
+import { TranslateModule } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 import { MaintenanceTrackingService } from './maintenance-tracking.service';
 import { AdminService } from '../admin.service';
-import { MouvementService } from '../mouvement.service'; // NOUVEAU
-import { Router } from '@angular/router'; // NOUVEAU
-import { TranslateModule } from '@ngx-translate/core';
+import { MouvementService } from '../mouvement.service';
+import { PredictiveDashboardComponent } from './predictive-dashboard/predictive-dashboard.component'; // NOUVEAU
 
 @Component({
     selector: 'app-maintenance-tracking',
@@ -32,8 +33,9 @@ import { TranslateModule } from '@ngx-translate/core';
         MatChipsModule,
         MatBadgeModule,
         MatDialogModule,
-        MatTabsModule, // NOUVEAU
-        TranslateModule
+        MatTabsModule,
+        TranslateModule,
+        PredictiveDashboardComponent // NOUVEAU
     ],
     templateUrl: './maintenance-tracking.component.html',
     styleUrls: ['./maintenance-tracking.component.css']
@@ -95,8 +97,8 @@ export class MaintenanceTrackingComponent implements OnInit {
         }
 
         this.adminService.getBases(countryId).subscribe(
-            data => this.bases = data,
-            error => console.error('Erreur chargement bases:', error)
+            (data: any) => this.bases = data,
+            (error: any) => console.error('Erreur chargement bases:', error)
         );
     }
 
@@ -108,11 +110,11 @@ export class MaintenanceTrackingComponent implements OnInit {
         if (this.selectedType) filters.typeVehicule = this.selectedType;
 
         this.trackingService.getOverview(filters).subscribe({
-            next: (data) => {
+            next: (data: any) => {
                 this.vehicules = data;
                 this.loading = false;
             },
-            error: (error) => {
+            error: (error: any) => {
                 console.error('Erreur chargement overview:', error);
                 this.loading = false;
             }
@@ -121,8 +123,8 @@ export class MaintenanceTrackingComponent implements OnInit {
 
     loadAlerts() {
         this.trackingService.getAlerts().subscribe({
-            next: (data) => this.alerts = data,
-            error: (error) => console.error('Erreur chargement alertes:', error)
+            next: (data: any) => this.alerts = data,
+            error: (error: any) => console.error('Erreur chargement alertes:', error)
         });
     }
 
@@ -189,14 +191,14 @@ export class MaintenanceTrackingComponent implements OnInit {
     loadMaintenanceSlots() {
         this.loadingSlots = true;
         this.mouvementService.getMouvements().subscribe({
-            next: (data) => {
+            next: (data: any) => {
                 // Filtrer uniquement les maintenances
                 this.maintenanceSlots = data.filter((m: any) => m.type === 'maintenance');
                 // Trier par date décroissante
-                this.maintenanceSlots.sort((a, b) => new Date(b.dateDepart).getTime() - new Date(a.dateDepart).getTime());
+                this.maintenanceSlots.sort((a: any, b: any) => new Date(b.dateDepart).getTime() - new Date(a.dateDepart).getTime());
                 this.loadingSlots = false;
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.error('Erreur chargement slots maintenance:', err);
                 this.loadingSlots = false;
             }
@@ -210,7 +212,7 @@ export class MaintenanceTrackingComponent implements OnInit {
                     alert('Maintenance supprimée.');
                     this.loadMaintenanceSlots(); // Recharger la liste
                 },
-                error: (err) => {
+                error: (err: any) => {
                     console.error('Erreur suppression maintenance:', err);
                     alert('Erreur lors de la suppression.');
                 }

@@ -490,7 +490,7 @@
         <span *ngIf="vehicule.statut"
           [ngStyle]="{'background-color': vehicule.statut === 'Archivé' ? '#9E9E9E' : (vehicule.statut === 'En Service' ? '#4CAF50' : '#FF9800')}"
           style="display: inline-block; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-right: 8px; margin-top: 5px;">
-          {{ vehicule.statut }}
+          {{ 'VEHICLES.STATUS.' + vehicule.statut | translate }}
         </span>
         <span *ngIf="vehicule.consommation?.valeur"
           style="display: inline-block; background-color: #E3F2FD; color: #1976D2; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-top: 5px;">
@@ -503,7 +503,8 @@
       </div>
       <div>
         <button (click)="selectVehicule(vehicule)"
-          style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">Modifier</button>
+          style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-right: 5px;">{{
+          'VEHICLES.ACTIONS.EDIT' | translate }}</button>
 
         <button *ngIf="vehicule.statut !== 'Archivé'" (click)="archiveVehicule(vehicule)"
           style="padding: 5px 10px; background-color: #607d8b; color: white; border: none; cursor: pointer; margin-right: 5px;">{{
@@ -514,7 +515,8 @@
           'VEHICLES.ACTIONS.UNARCHIVE' | translate }}</button>
 
         <button (click)="deleteVehicule(vehicule._id)"
-          style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">Supprimer</button>
+          style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">{{
+          'VEHICLES.ACTIONS.DELETE' | translate }}</button>
       </div>
     </li>
   </ul>

@@ -46,8 +46,8 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
   // NOUVEAU: Filtres
   showPlanned: boolean = true;
   showReal: boolean = true;
-  selectedMode: string = 'Tout'; // Nouveau filtre Mode
-  transportModes = ['Tout', 'Route', 'Aérien', 'Maritime'];
+  selectedMode: string = 'ALL'; // Nouveau filtre Mode
+  transportModes = ['ALL', 'ROUTIER', 'AERIEN', 'MARITIME'];
 
   private map!: L.Map;
   private markersMap: { [tripId: string]: L.Marker } = {}; // Map trip ID to Marker for fast access
@@ -114,19 +114,17 @@ export class MapMouvementsComponent implements OnInit, OnChanges, AfterViewInit 
     const allLatLngs: L.LatLng[] = [];
 
     const filteredMouvements = this.mouvements.filter(m => {
-      if (this.selectedMode === 'Tout') return true;
+      if (this.selectedMode === 'ALL') return true;
       // Logic based on movement title or vehicles or specific field if available
       // Assuming title contains keywords or we check a property.
       // If 'mode' property existed it would be better.
       // For now, let's infer from vehicle/title or add a mock check.
-      // But wait, the user asked to filter by mode transport.
-      // Let's assume title or vehicle code implies mode or simply passed data has it.
       // Inspecting interface: MapMouvement has title, vehiculeName...
       // Let's define heuristic:
       const lowerTitle = (m.title + ' ' + (m.vehiculeName || '')).toLowerCase();
-      if (this.selectedMode === 'Aérien') return lowerTitle.includes('avion') || lowerTitle.includes('vol') || lowerTitle.includes('air');
-      if (this.selectedMode === 'Maritime') return lowerTitle.includes('bateau') || lowerTitle.includes('mer') || lowerTitle.includes('navire');
-      if (this.selectedMode === 'Route') return !lowerTitle.includes('avion') && !lowerTitle.includes('vol') && !lowerTitle.includes('bateau');
+      if (this.selectedMode === 'AERIEN') return lowerTitle.includes('avion') || lowerTitle.includes('vol') || lowerTitle.includes('air');
+      if (this.selectedMode === 'MARITIME') return lowerTitle.includes('bateau') || lowerTitle.includes('mer') || lowerTitle.includes('navire');
+      if (this.selectedMode === 'ROUTIER') return !lowerTitle.includes('avion') && !lowerTitle.includes('vol') && !lowerTitle.includes('bateau');
       return true;
     });
 
