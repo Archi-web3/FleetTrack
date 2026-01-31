@@ -48,6 +48,10 @@
                 <div mat-card-avatar class="icon-avatar ai">
                     <mat-icon>psychology</mat-icon>
                 </div>
+                <button mat-icon-button (click)="openConfigDialog()" matTooltip="Configurer les coûts"
+                    style="position: absolute; right: 16px; top: 16px; color: #888;">
+                    <mat-icon>settings</mat-icon>
+                </button>
                 <mat-card-title>Prévision (IA)</mat-card-title>
                 <mat-card-subtitle>
                     <button mat-button [color]="forecastMonths === 1 ? 'primary' : ''"
