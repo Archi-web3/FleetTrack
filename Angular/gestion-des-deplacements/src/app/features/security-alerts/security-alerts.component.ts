@@ -13,6 +13,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { SecurityAlertService, Alert } from './security-alert.service';
 import { VehiculeService } from '../../vehicule.service';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-security-alerts',
@@ -30,7 +31,8 @@ import { TextFieldModule } from '@angular/cdk/text-field';
         MatTableModule,
         MatSnackBarModule,
         MatChipsModule,
-        TextFieldModule
+        TextFieldModule,
+        TranslateModule
     ],
     templateUrl: './security-alerts.component.html',
     styleUrls: ['./security-alerts.scss']

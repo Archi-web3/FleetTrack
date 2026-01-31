@@ -16,6 +16,7 @@ import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.comp
 import { ViewChild } from '@angular/core';
 
 import { startOfWeek, endOfWeek } from 'date-fns';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-map',
@@ -33,7 +34,8 @@ import { startOfWeek, endOfWeek } from 'date-fns';
     MatNativeDateModule,
     MatCheckboxModule,
     MapMouvementsComponent,
-    MatButtonModule // Added for button
+    MatButtonModule, // Added for button
+    TranslateModule
   ],
   templateUrl: './map.html',
   styleUrl: './map.css',
