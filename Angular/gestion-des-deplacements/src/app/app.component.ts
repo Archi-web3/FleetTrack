@@ -41,7 +41,16 @@ export class AppComponent implements OnInit {
     this.authService.userName$.subscribe(name => {
       this.userName = name;
     });
-    this.authService.userPays$.subscribe(pays => this.userPays = pays);
+    this.authService.userPays$.subscribe(pays => {
+      // Fix affichage trop long
+      if (pays === 'République Démocratique du Congo') {
+        this.userPays = 'RDC';
+      } else if (pays === 'République Centrafricaine') {
+        this.userPays = 'RCA';
+      } else {
+        this.userPays = pays;
+      }
+    });
     this.authService.userBase$.subscribe(base => this.userBase = base);
   }
 

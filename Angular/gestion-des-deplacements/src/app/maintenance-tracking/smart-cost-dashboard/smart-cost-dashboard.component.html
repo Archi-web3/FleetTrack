@@ -49,14 +49,30 @@
                     <mat-icon>psychology</mat-icon>
                 </div>
                 <mat-card-title>Prévision (IA)</mat-card-title>
-                <mat-card-subtitle>Mois prochain</mat-card-subtitle>
+                <mat-card-subtitle>
+                    <button mat-button [color]="forecastMonths === 1 ? 'primary' : ''"
+                        (click)="loadForecast(1)">1M</button>
+                    <button mat-button [color]="forecastMonths === 3 ? 'primary' : ''"
+                        (click)="loadForecast(3)">3M</button>
+                    <button mat-button [color]="forecastMonths === 6 ? 'primary' : ''"
+                        (click)="loadForecast(6)">6M</button>
+                    <button mat-button [color]="forecastMonths === 12 ? 'primary' : ''"
+                        (click)="loadForecast(12)">1A</button>
+                </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
                 <div class="kpi-value">{{ forecast?.predictedTotal | currency:'EUR':'symbol':'1.0-0' }}</div>
                 <div class="trend-indicator" [class.stable]="forecast?.trend === 'Stable'">
                     <mat-icon>trending_flat</mat-icon> {{ forecast?.trend }}
                 </div>
-                <p class="insight">Basé sur l'historique et les maintenances planifiées.</p>
+                <p class="insight" style="font-size: 0.85em; color: #666; margin-top: 8px;">
+                    <mat-icon
+                        style="font-size: 14px; height: 14px; width: 14px; vertical-align: middle;">info</mat-icon>
+                    Basé sur vos futurs services planifiés (Km) et coûts historiques (Services A/B/C).
+                </p>
+                <p *ngIf="forecastMonths > 3" class="insight" style="color: #ff9800; font-size: 0.8em;">
+                    ⚠️ Fiabilité optimale requiert > 6 mois d'historique.
+                </p>
             </mat-card-content>
         </mat-card>
 

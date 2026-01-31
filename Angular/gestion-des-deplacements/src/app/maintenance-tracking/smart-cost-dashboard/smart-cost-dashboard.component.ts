@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { CostAnalyticsService, TCOData, CostForecast, ReliabilityStat } from '../cost-analytics/cost-analytics.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+import { MatButtonModule } from '@angular/material/button';
+
 @Component({
     selector: 'app-smart-cost-dashboard',
     standalone: true,
@@ -12,7 +14,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         CommonModule,
         MatCardModule,
         MatIconModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatButtonModule
     ],
     templateUrl: './smart-cost-dashboard.component.html',
     styleUrls: ['./smart-cost-dashboard.component.scss']
@@ -24,6 +27,8 @@ export class SmartCostDashboardComponent implements OnInit {
 
     loading = true;
 
+    forecastMonths = 1; // Default 1 month
+
     constructor(private analyticsService: CostAnalyticsService) { }
 
     ngOnInit() {
@@ -31,7 +36,6 @@ export class SmartCostDashboardComponent implements OnInit {
     }
 
     loadData() {
-        // Parallel loading
         this.loading = true;
 
         // 1. TCO (Last 30 days)
@@ -44,15 +48,21 @@ export class SmartCostDashboardComponent implements OnInit {
             this.checkLoading();
         });
 
-        // 2. Forecast
-        this.analyticsService.getCostForecast().subscribe(data => {
-            this.forecast = data;
-            this.checkLoading();
-        });
+        // 2. Forecast (Dynamic Duration)
+        this.loadForecast(this.forecastMonths);
 
         // 3. Reliability
         this.analyticsService.getReliabilityRanking().subscribe(data => {
             this.reliabilityStats = data;
+            this.checkLoading();
+        });
+    }
+
+    loadForecast(months: number) {
+        this.forecastMonths = months;
+        // Don't set global loading true to avoid flickering everything
+        this.analyticsService.getCostForecast(months).subscribe(data => {
+            this.forecast = data;
             this.checkLoading();
         });
     }

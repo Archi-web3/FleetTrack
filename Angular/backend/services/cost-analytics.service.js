@@ -92,31 +92,87 @@ class CostAnalyticsService {
     }
 
     /**
-     * Prédiction des coûts pour le mois prochain
+     * Prédiction Intelligente des Coûts (Smart Forecast)
+     * Basée sur :
+     * 1. Projection Kilométrique (Combien de km vont être parcourus ?)
+     * 2. Services Planifiés (Quels services A/B/C vont tomber ?)
+     * 3. Coûts Historiques (Combien coûtent réellement ces services ?)
+     * 4. Marge d'Imprévu (Basée sur l'historique des pannes)
      */
-    async predictNextMonthCosts(country) {
-        // 1. Basé sur la moyenne des 3 derniers mois
-        const today = new Date();
-        const threeMonthsAgo = new Date();
-        threeMonthsAgo.setMonth(today.getMonth() - 3);
+    async predictCosts(country, months = 1) {
+        months = parseInt(months) || 1;
+        const userQuery = country && country !== 'All' ? { pays: country } : {};
 
-        const recentStats = await this.calculateTCO({
-            startDate: threeMonthsAgo,
-            endDate: today,
-            country
-        });
+        // 1. Calculer la "Vitesse de Croisière" (Avg Km / Mois) et récupérer les véhicules
+        const vehicles = await Vehicle.find(userQuery);
+        let fleetAvgKmPerMonth = 0;
+        let activeVehicles = 0;
 
-        // Moyenne mensuelle historique
-        const avgMonthlyCost = recentStats.totalCost / 3;
+        // Estimation simple du km mensuel (idéalement basé sur logs)
+        const estimatedMonthlyKm = 1500;
 
-        // 2. Ajustement avec les maintenances prévues (Maintenance > 90%)
-        // On peut récupérer les prochaines maintenances via le service prédictif existant ou le refaire ici
-        // Pour l'instant, facteur de risque simple : +10% de marge de sécu
+        // 2. Coût Moyen Historique des Services (A, B, C)
+        // On regarde en base combien coûtent VRAIMENT les services
+        // Si pas de données, on utilise ces valeurs par défaut (Fallback)
+        const defaultServiceCosts = {
+            'Service A': 150, // Vidange simple
+            'Service B': 350, // Intermédiaire
+            'Service C': 800, // Grand service
+            'Autre': 100
+        };
+
+        const serviceTypes = ['Service A', 'Service B', 'Service C'];
+        const realServiceCosts = {};
+
+        for (const type of serviceTypes) {
+            const history = await Maintenance.aggregate([
+                { $match: { type: type } }, // On pourrait filtrer par pays aussi
+                { $group: { _id: null, avgCost: { $avg: '$cost' } } }
+            ]);
+            realServiceCosts[type] = history[0]?.avgCost || defaultServiceCosts[type];
+        }
+
+        // 3. Simulation : Quels services vont tomber ?
+        let totalPredictedServiceCost = 0;
+        const serviceInterval = 5000; // km
+
+        for (const v of vehicles) {
+            activeVehicles++;
+            const currentKm = v.kilometrage || 0;
+            const projectedKm = currentKm + (estimatedMonthlyKm * months); // Projection
+
+            // Combien de "barres" de 5000km on franchit ?
+            // Ex: Actuel 48000. Projeté 52500 (3 mois). On franchit 50000.
+            let nextMilestone = Math.ceil((currentKm + 1) / serviceInterval) * serviceInterval;
+
+            while (nextMilestone <= projectedKm) {
+                // Quel type de service ? (Logique simple A-A-B-A-A-C)
+                // 5000=A, 10000=A, 15000=B, 20000=A, 25000=A, 30000=C
+                let type = 'Service A';
+                if (nextMilestone % 30000 === 0) type = 'Service C';
+                else if (nextMilestone % 15000 === 0) type = 'Service B';
+
+                totalPredictedServiceCost += realServiceCosts[type] || 150;
+                nextMilestone += serviceInterval;
+            }
+        }
+
+        // 4. Marge pour Imprévus (Pannes/Réparations)
+        // Basé sur historique incidents ou forfaitaire (10%)
+        const unscheduledMargin = totalPredictedServiceCost * 0.10;
+
+        const totalPrediction = Math.round(totalPredictedServiceCost + unscheduledMargin);
 
         return {
-            predictedTotal: Math.round(avgMonthlyCost * 1.1), // Marque de sécurité heuristique
-            confidence: 'Medium',
-            trend: 'Stable'
+            predictedTotal: totalPrediction,
+            confidence: activeVehicles > 0 ? 'Medium' : 'Low',
+            trend: months > 1 ? `Projection sur ${months} mois` : 'Projection mensuelle',
+            details: {
+                scheduledServices: Math.round(totalPredictedServiceCost),
+                unscheduledBuffer: Math.round(unscheduledMargin),
+                durationMonths: months,
+                vehicleCount: activeVehicles
+            }
         };
     }
 

@@ -110,9 +110,13 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                 const prochainKmTheorique = dernierService.kilometragePrevu + intervalle;
                 ecartKm = prochainKmTheorique - vehicule.kilometrage;
             }
-            // Si jamais eu de service (véhicule neuf ?), baser sur km initial ou 0
+            // Si jamais eu de service (véhicule neuf ou historique manquant), on calcule le prochain théorique
             else {
-                const prochainKmTheorique = (vehicule.kilometrageInitial || 0) + intervalle;
+                // BUG FIX: Au lieu de partir de 0 + 5000, on part du kilométrage actuel
+                // Ex: Si 148,000 km et intervalle 5,000 -> Prochain à 150,000 (30 * 5000)
+                const intervalleKm = intervalle || 5000;
+                // On arrondit au prochain multiple de 5000
+                const prochainKmTheorique = Math.ceil((vehicule.kilometrage + 1) / intervalleKm) * intervalleKm;
                 ecartKm = prochainKmTheorique - vehicule.kilometrage;
             }
 

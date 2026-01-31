@@ -45,8 +45,8 @@ export class CostAnalyticsService {
         return this.http.get<TCOData>(`${this.apiUrl}/costs/tco`, { params });
     }
 
-    getCostForecast(): Observable<CostForecast> {
-        return this.http.get<CostForecast>(`${this.apiUrl}/costs/forecast`);
+    getCostForecast(months: number = 1): Observable<CostForecast> {
+        return this.http.get<CostForecast>(`${this.apiUrl}/costs/forecast?months=${months}`);
     }
 
     getReliabilityRanking(): Observable<ReliabilityStat[]> {

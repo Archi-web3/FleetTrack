@@ -38,7 +38,8 @@ router.get('/costs/tco', auth(), async (req, res) => {
 router.get('/costs/forecast', auth(), async (req, res) => {
     try {
         const userCountry = req.utilisateur.pays || null;
-        const data = await costService.predictNextMonthCosts(userCountry);
+        const { months } = req.query; // Récupération du paramètre
+        const data = await costService.predictCosts(userCountry, months);
         res.json(data);
     } catch (err) {
         res.status(500).json({ error: err.message });
