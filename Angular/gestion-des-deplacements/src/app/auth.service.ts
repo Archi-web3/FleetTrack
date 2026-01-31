@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap, timeout } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://fleettrack-api.onrender.com/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
   private tokenKey = 'jwtToken';
 
   private _isAuthenticated = new BehaviorSubject<boolean>(this.hasToken());

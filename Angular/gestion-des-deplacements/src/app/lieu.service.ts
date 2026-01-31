@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LieuService {
-  private apiUrl = 'https://fleettrack-api.onrender.com/api/lieux';
+  private apiUrl = `${environment.apiUrl}/lieux`;
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 

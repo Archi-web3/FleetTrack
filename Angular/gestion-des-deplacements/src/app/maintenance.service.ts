@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 
 export interface WeeklyChecklist {
@@ -43,7 +44,7 @@ export interface MaintenanceConfig {
     providedIn: 'root'
 })
 export class MaintenanceService {
-    private apiUrl = 'https://fleettrack-api.onrender.com/api/maintenance';
+    private apiUrl = `${environment.apiUrl}/maintenance`;
     // private apiUrl = 'http://localhost:3000/api/maintenance';
 
     constructor(private http: HttpClient) { }

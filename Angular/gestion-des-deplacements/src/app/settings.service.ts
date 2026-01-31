@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
+import { environment } from '../environments/environment';
 
 export interface VehicleTypeSetting {
     vehicleTypes: string[];
@@ -11,7 +12,7 @@ export interface VehicleTypeSetting {
     providedIn: 'root'
 })
 export class SettingsService {
-    private apiUrl = 'https://fleettrack-api.onrender.com/api/settings';
+    private apiUrl = `${environment.apiUrl}/settings`;
 
     // Cache pour éviter de rammener la liste à chaque fois
     private vehicleTypesSubject = new BehaviorSubject<string[]>([]);

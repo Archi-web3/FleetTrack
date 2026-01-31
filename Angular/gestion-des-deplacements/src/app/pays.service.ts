@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 export interface Pays {
     _id: string;
@@ -13,7 +14,7 @@ export interface Pays {
     providedIn: 'root'
 })
 export class PaysService {
-    private apiUrl = 'https://fleettrack-api.onrender.com/api/pays';
+    private apiUrl = `${environment.apiUrl}/pays`;
     private readonly STORAGE_KEY = 'selectedCountry';
 
     constructor(private http: HttpClient) { }
