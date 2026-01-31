@@ -1,0 +1,91 @@
+<div class="dashboard-container">
+
+    <!-- HEADER -->
+    <div class="header-section">
+        <h2><mat-icon>analytics</mat-icon> Smart Cost & Analytics</h2>
+        <p class="subtitle">Analyse financière et prédictive de votre flotte (Derniers 30 Jours)</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+
+    <div *ngIf="!loading && tcoData" class="grid-layout">
+
+        <!-- 1. TCO CARD -->
+        <mat-card class="kpi-card tco-card">
+            <mat-card-header>
+                <div mat-card-avatar class="icon-avatar">
+                    <mat-icon>euro</mat-icon>
+                </div>
+                <mat-card-title>Coût Total</mat-card-title>
+                <mat-card-subtitle>30 derniers jours</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="kpi-value">{{ tcoData.totalCost | currency:'EUR':'symbol':'1.0-0' }}</div>
+                <div class="kpi-sub">
+                    <span class="cost-per-km">{{ getCostPerKm() | currency:'EUR':'symbol':'1.2-2' }} / km</span>
+                    <span class="label">(Est.)</span>
+                </div>
+
+                <div class="breakdown-bar">
+                    <div class="segment fuel" [style.flex]="tcoData.breakdown.fuel" matTooltip="Carburant"></div>
+                    <div class="segment maint" [style.flex]="tcoData.breakdown.maintenance" matTooltip="Maintenance">
+                    </div>
+                    <div class="segment fixed" [style.flex]="tcoData.breakdown.fixed" matTooltip="Coûts Fixes"></div>
+                </div>
+                <div class="legend">
+                    <span class="dot fuel"></span> Fuel
+                    <span class="dot maint"></span> Maint.
+                    <span class="dot fixed"></span> Fixe
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- 2. FORECAST CARD -->
+        <mat-card class="kpi-card forecast-card">
+            <mat-card-header>
+                <div mat-card-avatar class="icon-avatar ai">
+                    <mat-icon>psychology</mat-icon>
+                </div>
+                <mat-card-title>Prévision (IA)</mat-card-title>
+                <mat-card-subtitle>Mois prochain</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="kpi-value">{{ forecast?.predictedTotal | currency:'EUR':'symbol':'1.0-0' }}</div>
+                <div class="trend-indicator" [class.stable]="forecast?.trend === 'Stable'">
+                    <mat-icon>trending_flat</mat-icon> {{ forecast?.trend }}
+                </div>
+                <p class="insight">Basé sur l'historique et les maintenances planifiées.</p>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- 3. RELIABILITY RANKING -->
+        <mat-card class="kpi-card reliability-card">
+            <mat-card-header>
+                <mat-card-title>Fiabilité par Modèle</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="ranking-list">
+                    <div class="ranking-item" *ngFor="let stat of reliabilityStats.slice(0, 3)">
+                        <div class="model-info">
+                            <span class="model-name">{{ stat.model }}</span>
+                            <span class="incident-count" [class.bad]="stat.totalIncidents > 0">
+                                {{ stat.totalIncidents }} pannes
+                            </span>
+                        </div>
+                        <div class="score-bar-container">
+                            <div class="score-bar" [style.width.%]="stat.reliabilityScore"
+                                [class.high]="stat.reliabilityScore > 80"
+                                [class.med]="stat.reliabilityScore <= 80 && stat.reliabilityScore > 50"
+                                [class.low]="stat.reliabilityScore <= 50">
+                            </div>
+                        </div>
+                        <div class="cost-stat">{{ stat.costPerKm | currency:'EUR':'symbol':'1.3-3' }}/km</div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+</div>

@@ -185,6 +185,10 @@ app.use('/api/audit', auditRoute);
 const predictiveRoute = require('./routes/predictive');
 app.use('/api/predictive', predictiveRoute);
 
+// NOUVEAU : Routes Analytics & Coûts
+const analyticsRoute = require('./routes/analytics');
+app.use('/api/analytics', analyticsRoute);
+
 
 
 // NOUVEAU : Démarrer les tâches CRON de maintenance
