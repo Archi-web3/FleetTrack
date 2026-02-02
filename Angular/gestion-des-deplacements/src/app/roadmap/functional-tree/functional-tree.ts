@@ -136,7 +136,15 @@ export class FunctionalTreeComponent {
                         id: 'f4-4', name: 'Affectation véhicule/chauffeur', type: 'function', isImplemented: true, lot: 2,
                         description: "Se fait à l'étape de consolidation après validations (Log & Sécu)."
                     },
-                    { id: 'f4-5', name: 'Consultation planning', type: 'function', isImplemented: true, lot: 2, description: "Visuel des statuts sur planning semaine. Consultable aussi dans 'Mes mouvements'." }
+                    { id: 'f4-5', name: 'Consultation planning', type: 'function', isImplemented: true, lot: 2, description: "Visuel des statuts sur planning semaine. Consultable aussi dans 'Mes mouvements'." },
+                    {
+                        id: 'f4-6', name: '[NEW] Filtre "En Attente"', type: 'function', isImplemented: true, isExclusive: true, lot: 4,
+                        description: "Bouton Toggle sur le planning global pour afficher/masquer les demandes en attente et éviter de polluer la vue par défaut."
+                    },
+                    {
+                        id: 'f4-7', name: '[NEW] Indicateur Sécurité', type: 'function', isImplemented: true, isExclusive: true, lot: 4,
+                        description: "Statut spécifique 'En Attente Sécurité' visible sur le planning pour alerter les superviseurs des points de blocage."
+                    }
                 ]
             },
             {

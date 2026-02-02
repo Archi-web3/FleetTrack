@@ -32,6 +32,17 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.14.0',
+            date: '02 Février 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Workflow', description: 'Séquencage Strict : La validation Sécurité intervient désormais UNIQUEMENT après la validation Logistique et l\'assignation des ressources.' },
+                { category: 'Sécurité', description: 'Contrôle Habilitation : Blocage stricte des validations si le niveau de risque du trajet est supérieur au niveau de l\'utilisateur (Erreur 403).' },
+                { category: 'Planning', description: 'Filtres : Nouveau bouton "Afficher/Masquer En Attente" pour visualiser les demandes non traitées directement sur le planning.' },
+                { category: 'Planning', description: 'Statuts : Distinction visuelle claire (Rose/Rouge) pour les trajets en "Attente Validation Sécurité".' }
+            ]
+        },
+        {
             version: 'v2.13.0',
             date: '31 Janvier 2026',
             type: 'minor',
