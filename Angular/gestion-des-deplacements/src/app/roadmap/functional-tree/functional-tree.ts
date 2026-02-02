@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 export interface TreeNode {
     id: string;
@@ -295,5 +295,11 @@ export class FunctionalTreeComponent {
 
     toggleImplementation(node: TreeNode) {
         node.isImplemented = !node.isImplemented;
+    }
+
+    drop(event: CdkDragDrop<TreeNode[]>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        }
     }
 }

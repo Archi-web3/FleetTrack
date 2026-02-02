@@ -56,8 +56,9 @@
                         </div>
 
                         <!-- FUNCTIONS -->
-                        <div class="children-container level-2" *ngIf="cat.children && cat.children.length > 0">
-                            <div class="leaf" *ngFor="let func of cat.children; let j = index">
+                        <div class="children-container level-2" *ngIf="cat.children && cat.children.length > 0"
+                            cdkDropList [cdkDropListData]="cat.children" (cdkDropListDropped)="drop($event)">
+                            <div class="leaf" *ngFor="let func of cat.children; let j = index" cdkDrag>
                                 <div class="connector-straight"></div>
                                 <div class="node function-node" [class.selected]="selectedNode?.id === func.id"
                                     [class.implemented]="func.isImplemented"
