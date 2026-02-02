@@ -8,6 +8,20 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { RoadmapService } from '../roadmap.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClientModule } from '@angular/common/http';
+
+export interface TreeNode {
+    id: string;
+    name: string;
+    type: 'root' | 'category' | 'function';
+    children?: TreeNode[];
+    isImplemented?: boolean; // Pour le futur (statut)
+    isExclusive?: boolean; // Fonctionnalité "FleetTrack" mise en avant
+    color?: string; // Pour les lots
+    description?: string; // Nouvelle "bulle d'info"
+    lot?: number; // Phase de développement (1, 2, 3, 4)
+    dataSource?: string[]; // Origin of the data (Flux, Manuel)
+}
 
 @Component({
     selector: 'app-functional-tree',
