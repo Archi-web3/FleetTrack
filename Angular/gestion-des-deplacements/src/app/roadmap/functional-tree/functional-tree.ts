@@ -17,7 +17,7 @@ export interface TreeNode {
     color?: string; // Pour les lots
     description?: string; // Nouvelle "bulle d'info"
     lot?: number; // Phase de développement (1, 2, 3, 4)
-    dataSource?: 'Flux' | 'Manuel'; // Origin of the data
+    dataSource?: string[]; // Origin of the data (Flux, Manuel)
 }
 
 @Component({
@@ -28,6 +28,21 @@ export interface TreeNode {
     styleUrls: ['./functional-tree.css']
 })
 export class FunctionalTreeComponent {
+
+    // ... (existing code)
+
+    toggleDataSource(node: TreeNode, source: string) {
+        if (!node.dataSource) {
+            node.dataSource = [];
+        }
+        const index = node.dataSource.indexOf(source);
+        if (index > -1) {
+            node.dataSource.splice(index, 1);
+        } else {
+            node.dataSource.push(source);
+        }
+    }
+
 
     // Gestion de la sélection
     selectedNode: TreeNode | null = null;

@@ -79,11 +79,13 @@
                                     <span>{{ func.name }}</span>
 
                                     <!-- Data Source Badge -->
-                                    <span *ngIf="func.dataSource"
-                                        style="font-size: 10px; padding: 2px 5px; border-radius: 4px; margin-left: 5px; font-weight: bold;"
-                                        [style.background]="func.dataSource === 'Flux' ? '#e3f2fd' : '#e8f5e9'"
-                                        [style.color]="func.dataSource === 'Flux' ? '#1565c0' : '#2e7d32'">
-                                        {{ func.dataSource === 'Flux' ? '📡 API' : '✍️ Manuel' }}
+                                    <span *ngIf="func.dataSource?.includes('Flux')"
+                                        style="font-size: 10px; padding: 2px 5px; border-radius: 4px; margin-left: 5px; font-weight: bold; background: #e3f2fd; color: #1565c0;">
+                                        📡 API
+                                    </span>
+                                    <span *ngIf="func.dataSource?.includes('Manuel')"
+                                        style="font-size: 10px; padding: 2px 5px; border-radius: 4px; margin-left: 5px; font-weight: bold; background: #e8f5e9; color: #2e7d32;">
+                                        ✍️ Manuel
                                     </span>
 
                                     <!-- Indicator icon if description exists -->
@@ -133,20 +135,18 @@
 
             <div class="edit-area">
                 <!-- SOURCE DATA -->
-                <label>Source de Donnée :</label>
+                <label>Source de Donnée (Choix Multiple) :</label>
                 <div class="source-selector" style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <button class="source-btn" [class.activeSource]="selectedNode.dataSource === 'Flux'"
-                        (click)="selectedNode.dataSource = 'Flux'"
+                    <button class="source-btn" [class.activeSource]="selectedNode.dataSource?.includes('Flux')"
+                        (click)="toggleDataSource(selectedNode, 'Flux')"
                         style="border: 1px solid #2196f3; color: #2196f3; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
                         📡 Flux (API)
                     </button>
-                    <button class="source-btn" [class.activeSource]="selectedNode.dataSource === 'Manuel'"
-                        (click)="selectedNode.dataSource = 'Manuel'"
+                    <button class="source-btn" [class.activeSource]="selectedNode.dataSource?.includes('Manuel')"
+                        (click)="toggleDataSource(selectedNode, 'Manuel')"
                         style="border: 1px solid #4caf50; color: #4caf50; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
                         ✍️ Manuel (Saisie)
                     </button>
-                    <button class="source-btn" (click)="selectedNode.dataSource = undefined"
-                        style="border: 1px solid #999; color: #999; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Aucune</button>
                 </div>
 
                 <label>Modifier le Lot (Phase) :</label>
