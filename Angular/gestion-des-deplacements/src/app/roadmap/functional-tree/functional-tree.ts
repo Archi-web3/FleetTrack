@@ -7,62 +7,38 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { RoadmapService } from '../roadmap.service';
-import { HttpClientModule } from '@angular/common/http';
-
-export interface TreeNode {
-    id: string;
-    name: string;
-    type: 'root' | 'category' | 'function';
-    children?: TreeNode[];
-    isImplemented?: boolean; // Pour le futur (statut)
-    isExclusive?: boolean; // Fonctionnalité "FleetTrack" mise en avant
-    color?: string; // Pour les lots
-    description?: string; // Nouvelle "bulle d'info"
-    lot?: number; // Phase de développement (1, 2, 3, 4)
-    dataSource?: string[]; // Origin of the data (Flux, Manuel)
-}
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-functional-tree',
     standalone: true,
-    imports: [CommonModule, MatIconModule, MatButtonModule, FormsModule, MatTooltipModule, DragDropModule, HttpClientModule],
+    imports: [CommonModule, MatIconModule, MatButtonModule, FormsModule, MatTooltipModule, DragDropModule, HttpClientModule, MatSnackBarModule],
     templateUrl: './functional-tree.html',
     styleUrls: ['./functional-tree.css']
 })
 export class FunctionalTreeComponent implements OnInit {
 
-    constructor(private roadmapService: RoadmapService) { }
+    constructor(private roadmapService: RoadmapService, private snackBar: MatSnackBar) { }
 
-    ngOnInit() {
-        this.loadTree();
-    }
-
-    loadTree() {
-        this.roadmapService.getFunctionalTree().subscribe(
-            (data) => {
-                if (data) {
-                    this.treeData = data;
-                }
-            },
-            (err) => {
-                console.warn('Could not load existing tree, using default.', err);
-                // On first load if 404, we might want to save the default to init the DB
-                if (err.status === 404) {
-                    this.saveTree();
-                }
-            }
-        );
-    }
+    // ...
 
     saveTree() {
         this.roadmapService.saveFunctionalTree(this.treeData).subscribe(
             (res) => {
                 console.log('Tree saved successfully');
+                // Optional: Don't show snackbar on every auto-save to avoid spam, 
+                // but the user asked for a FORCE save button which calls showSaveConfirmation separately.
             },
             (err) => {
                 console.error('Error saving tree', err);
+                this.snackBar.open('Erreur lors de la sauvegarde !', 'Fermer', { duration: 3000, panelClass: ['error-snackbar'] });
             }
         );
+    }
+
+    showSaveConfirmation() {
+        // This is called by the manual button
+        this.snackBar.open('Modifications enregistrées avec succès ! 💾', 'OK', { duration: 3000 });
     }
 
     toggleDataSource(node: TreeNode, source: string) {

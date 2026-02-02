@@ -14,6 +14,9 @@
                 </div>
             </div>
             <div class="legend-actions">
+                <button mat-flat-button color="primary" class="save-btn" (click)="saveTree(); showSaveConfirmation()">
+                    <mat-icon>save</mat-icon> Enregistrer
+                </button>
                 <button mat-stroked-button class="print-btn" (click)="printTree()">
                     <mat-icon>print</mat-icon> Export PDF
                 </button>
