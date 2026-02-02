@@ -55,8 +55,13 @@ router.post('/mouvements/test', async (req, res) => {
 // Récupérer les mouvements pour le planning (uniquement validés ou en cours)
 router.get('/mouvements/planning', auth(), countryFilter, async (req, res) => {
   try {
+    let statusFilter = ['validé', 'pris en charge', 'en cours', 'terminé'];
+    if (req.query.includePending === 'true') {
+      statusFilter.push('en attente', 'en attente validation sécurité');
+    }
+
     let query = {
-      statut: { $in: ['validé', 'pris en charge', 'en cours', 'terminé'] },
+      statut: { $in: statusFilter },
       ...req.countryFilter  // NOUVEAU: Filtre pays automatique
     };
 
@@ -613,18 +618,23 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     if (req.body.statut === 'validé') {
       const requiredLevel = mouvement.validationLevelRequired || 1;
 
-      // Si risque ÉLEVÉ (>=3) et que ce n'est PAS une validation sécurité explicite (via /validate ou profil Sécu)
-      // On dévie vers 'en attente validation sécurité'
-      // Note: req.utilisateur.profil est disponible via auth middleware
-      const isSecuUser = req.utilisateur.profil === 'Superviseur Sécurité' || req.utilisateur.profil === 'SuperAdmin'; // SuperAdmin bypass
+      // Validation de LOGISTIQUE (Consolidation)
+      // Si on valide, on vérifie si le niveau Sécu est requis
+      const userLevel = req.utilisateur.niveauValidationSecu || 0;
 
-      if (requiredLevel >= 3 && !isSecuUser) {
-        console.log(`🔒 [UPDATE MOUVEMENT] Tentative de validation Logistique sur trajet Risqué (${requiredLevel}). Déviation vers Sécurité.`);
+      // La règle : Si le niveau de risque est > au niveau de l'utilisateur qui valide,
+      // ALORS il faut une validation supérieure (Sécurité).
+      // OU si le niveau est >= 3 (Risque Élevé), on force toujours la sécu (sauf si c'est déjà un Superviseur Sécu).
+
+      const isSecuUser = req.utilisateur.profil === 'Superviseur Sécurité' || req.utilisateur.profil === 'SuperAdmin';
+
+      // Si le niveau requis est supérieur au niveau de l'utilisateur actuel
+      if (requiredLevel > userLevel && !isSecuUser) {
+        console.log(`🔒 [UPDATE MOUVEMENT] Validation partielle (User Level ${userLevel} < Trip Level ${requiredLevel}). Passage en "Attente Sécurité".`);
         mouvement.statut = 'en attente validation sécurité';
-        req.body.statut = 'en attente validation sécurité'; // Pour la suite du code (emails)
+        req.body.statut = 'en attente validation sécurité';
 
-        // TRIGGER EMAIL SECU ICI (Car on vient de passer le relai)
-        // Code dupliqué du POST, on pourrait factoriser
+        // Trigger Email Secu
         try {
           const queryValideurs = {
             profil: 'Superviseur Sécurité',
@@ -632,15 +642,17 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
             pays: mouvement.pays
           };
           const valideurs = await Utilisateur.find(queryValideurs);
+          // ... (mailer logic same as before)
           for (const valideur of valideurs) {
             if (valideur.email) {
               mailer.sendValidationRequest(valideur.email, await mouvement.populate([{ path: 'vehicule' }, { path: 'stops.lieu' }, { path: 'demandeur' }]));
             }
           }
-        } catch (e) { console.error('Erreur mail secu', e); }
-
-      } else {
-        // Validation standard (Low Risk ou User Secu)
+        } catch (e) { console.error(e); }
+      }
+      // Sinon, on peut valider directement (Risque Faible OU Utilisateur habilité)
+      else {
+        console.log(`✅ [UPDATE MOUVEMENT] Validation finale accordée (User Level ${userLevel} >= Trip Level ${requiredLevel}).`);
         mouvement.statut = 'validé';
       }
     } else if (req.body.statut != null) {

@@ -23,10 +23,11 @@ export class MouvementService {
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
     return this.http.get<any>(`${this.apiUrl}/${id}`, { headers });
   }
-  getPlanningMouvements(): Observable<any[]> { // NOUVELLE MÉTHODE
+  getPlanningMouvements(includePending: boolean = false): Observable<any[]> { // MODIFIÉ
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
-    return this.http.get<any[]>(`${this.apiUrl}/planning`, { headers });
+    const url = includePending ? `${this.apiUrl}/planning?includePending=true` : `${this.apiUrl}/planning`;
+    return this.http.get<any[]>(url, { headers });
   }
 
   addMouvement(mouvementData: any, force: boolean = false): Observable<any> {

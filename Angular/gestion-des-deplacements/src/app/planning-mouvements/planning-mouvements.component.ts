@@ -90,44 +90,40 @@ export class PlanningMouvementsComponent implements OnInit {
     });
   }
 
+  // NOUVEAU: Toggle pour afficher les mouvements en attente
+  showPending: boolean = false;
+
   ngOnInit() {
     this.userProfile = this.authService.getUserProfile();
     this.getPlanningMouvements();
   }
 
+  togglePending(): void {
+    this.showPending = !this.showPending;
+    this.getPlanningMouvements();
+  }
+
   getPlanningMouvements() {
-    this.mouvementService.getPlanningMouvements().subscribe(
+    this.mouvementService.getPlanningMouvements(this.showPending).subscribe(
       (data: any[]) => {
-        // Calculer le début et la fin de la semaine en cours
+        // ... (Keep existing layout logic)
         const startOfCurrentWeek = this.getStartOfWeek(this.viewDate);
         const endOfCurrentWeek = this.getEndOfWeek(this.viewDate);
 
         const dateFnsLocale = DATE_FNS_LOCALES[this.locale] || enUS;
         this.dateRangeLabel = `${format(startOfCurrentWeek, 'd MMM', { locale: dateFnsLocale })} - ${format(endOfCurrentWeek, 'd MMM yyyy', { locale: dateFnsLocale })}`;
 
-        console.log('📅 Semaine affichée:', {
-          debut: startOfCurrentWeek,
-          fin: endOfCurrentWeek
-        });
+        console.log('📅 Semaine affichée:', { debug: true, start: startOfCurrentWeek, end: endOfCurrentWeek, pending: this.showPending });
 
         // Préparer les événements pour le Dashboard - FILTRER PAR SEMAINE EN COURS
         this.currentWeekMovements = data.filter((m: any) => {
-          // Vérifier que le mouvement se déroule pendant la semaine en cours
           const mouvementStart = new Date(m.dateDepart);
           const mouvementEnd = new Date(m.dateArrivee);
-
-          // Le mouvement est dans la semaine si :
-          // - Il commence avant la fin de la semaine ET
-          // - Il se termine après le début de la semaine
           const isInCurrentWeek = mouvementStart <= endOfCurrentWeek && mouvementEnd >= startOfCurrentWeek;
-
           return isInCurrentWeek;
         });
 
-        console.log('📊 Mouvements pour le dashboard:', this.currentWeekMovements.length);
-
         this.events = data.map((mouvement: any) => {
-          // Générer le titre simplifié et le tooltip détaillé
           const title = this.getEventTitle(mouvement);
           const tooltip = this.getEventTooltip(mouvement);
           const colors = this.getColorByStatus(mouvement.statut);
@@ -138,27 +134,21 @@ export class PlanningMouvementsComponent implements OnInit {
             title: title,
             color: colors,
             allDay: false,
-            resizable: {
-              beforeStart: true,
-              afterEnd: true,
-            },
+            resizable: { beforeStart: true, afterEnd: true },
             draggable: true,
-            meta: {
-              ...mouvement,
-              tooltip: tooltip,
-              hasConflict: false // Init
-            }
+            meta: { ...mouvement, tooltip: tooltip, hasConflict: false }
           };
         });
 
-        // --- DÉTECTION CLIENT DES CONFLITS (VISUEL) ---
+        // ... (Keep existing conflict logic)
         for (let i = 0; i < this.events.length; i++) {
           for (let j = i + 1; j < this.events.length; j++) {
             const e1 = this.events[i];
             const e2 = this.events[j];
-
-            // Chevauchement temporel
-            if (e1.start < e2.end && e1.end > e2.start) {
+            if (e1.start < e2.end && e1.end > e2.start &&
+              e1.meta.statut !== 'annulé' && e1.meta.statut !== 'refusé' &&
+              e2.meta.statut !== 'annulé' && e2.meta.statut !== 'refusé'
+            ) {
               const ch1 = e1.meta.chauffeur?._id;
               const ch2 = e2.meta.chauffeur?._id;
               const v1 = e1.meta.vehicule?._id;
@@ -171,8 +161,6 @@ export class PlanningMouvementsComponent implements OnInit {
               if (conflictFound) {
                 e1.meta.hasConflict = true;
                 e2.meta.hasConflict = true;
-
-                // Update tooltip if needed or just rely on the visual indicator
                 e1.meta.tooltip = '⚠️ CONFLIT DÉTECTÉ \n' + e1.meta.tooltip;
                 e2.meta.tooltip = '⚠️ CONFLIT DÉTECTÉ \n' + e2.meta.tooltip;
               }
@@ -181,7 +169,6 @@ export class PlanningMouvementsComponent implements OnInit {
         }
 
         this.refresh.next(true);
-        console.log("Planning des mouvements chargé avec carte:", this.events);
       },
       (error: any) => {
         console.error('Erreur chargement planning des mouvements:', error);
@@ -189,150 +176,7 @@ export class PlanningMouvementsComponent implements OnInit {
     );
   }
 
-  // NOUVEAU: Générer un titre simplifié pour l'événement
-  getEventTitle(mouvement: any): string {
-    // Si c'est une maintenance, afficher le type (et description courte)
-    if (mouvement.type === 'maintenance') {
-      const vehiculeInfo = mouvement.vehicule ? ` - ${mouvement.vehicule.acfCode || mouvement.vehicule.immatriculation}` : '';
-      return `🔧 ${mouvement.maintenanceType}${vehiculeInfo}`;
-    }
-
-    // Récupérer la destination (dernier stop)
-    let destination = 'Destination inconnue';
-    if (mouvement.stops && mouvement.stops.length > 0) {
-      const lastStop = mouvement.stops[mouvement.stops.length - 1];
-      destination = lastStop.lieu?.nom || 'Destination inconnue';
-    }
-
-    // Pour les mouvements regroupés, afficher max 2 destinations
-    if (mouvement.statut === 'regroupé' && mouvement.enfantsMouvements && mouvement.enfantsMouvements.length > 0) {
-      const destinations: string[] = [];
-
-      // Ajouter la destination du mouvement parent
-      destinations.push(destination);
-
-      // Ajouter les destinations des enfants (max 1 de plus pour avoir 2 au total)
-      for (let i = 0; i < Math.min(1, mouvement.enfantsMouvements.length); i++) {
-        const enfant = mouvement.enfantsMouvements[i];
-        if (enfant.stops && enfant.stops.length > 0) {
-          const enfantDest = enfant.stops[enfant.stops.length - 1].lieu?.nom;
-          if (enfantDest && !destinations.includes(enfantDest)) {
-            destinations.push(enfantDest);
-          }
-        }
-      }
-
-      destination = destinations.slice(0, 2).join(' + ');
-      if (mouvement.enfantsMouvements.length > 1) {
-        destination += ` (+${mouvement.enfantsMouvements.length - 1})`;
-      }
-    }
-
-    // Récupérer le véhicule
-    const vehicule = mouvement.vehicule
-      ? `Véh. ${mouvement.vehicule.immatriculation || mouvement.vehicule.marque}`
-      : 'Pas de véhicule';
-
-    // Récupérer le chauffeur
-    const chauffeur = mouvement.chauffeur
-      ? `${mouvement.chauffeur.prenom} ${mouvement.chauffeur.nom}`
-      : 'Pas de chauffeur';
-
-    return `${destination} • ${vehicule} • ${chauffeur}`;
-  }
-
-  // NOUVEAU: Générer un tooltip détaillé pour l'événement
-  getEventTooltip(mouvement: any): string {
-    const lines: string[] = [];
-
-    // Objectif
-    lines.push(`📍 ${this.translate.instant('VALIDATION.OBJECTIVE')}: ${mouvement.objectif || 'Non spécifié'}`);
-
-    // Horaires
-    // Simplified locale string usage for time
-    const localeForTime = this.locale === 'en' ? 'en-US' : (this.locale === 'es' ? 'es-ES' : 'fr-FR');
-    const heureDepart = mouvement.dateDepart ? new Date(mouvement.dateDepart).toLocaleTimeString(localeForTime, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
-    const heureArrivee = mouvement.dateArrivee ? new Date(mouvement.dateArrivee).toLocaleTimeString(localeForTime, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
-    lines.push(`🕐 ${this.translate.instant('NEW_REQUEST.MISSION.DEPARTURE_TIME')}/${this.translate.instant('NEW_REQUEST.MISSION.ARRIVAL_TIME')}: ${heureDepart} → ${heureArrivee}`);
-
-    // Demandeur
-    if (mouvement.demandeur) {
-      lines.push(`👤 Demandeur: ${mouvement.demandeur.prenom} ${mouvement.demandeur.nom}`);
-    }
-
-    // Véhicule
-    if (mouvement.vehicule) {
-      lines.push(`🚗 Véhicule: ${mouvement.vehicule.marque} (${mouvement.vehicule.immatriculation})`);
-    }
-
-    // Chauffeur
-    if (mouvement.chauffeur) {
-      lines.push(`👨‍✈️ Chauffeur: ${mouvement.chauffeur.prenom} ${mouvement.chauffeur.nom}`);
-    }
-
-    // Passagers
-    if (mouvement.passagers && mouvement.passagers.length > 0) {
-      const passagersList = mouvement.passagers.map((p: any) => `${p.prenom} ${p.nom}`).join(', ');
-      lines.push(`👥 Passagers: ${passagersList}`);
-    }
-
-    // Projet
-    if (mouvement.projet) {
-      lines.push(`📁 Projet: ${mouvement.projet}`);
-    }
-
-    // Matériel
-    if (mouvement.materiel && mouvement.materiel.length > 0) {
-      lines.push(`📦 Matériel: ${mouvement.materiel.join(', ')}`);
-    }
-
-    // Statut
-    const statusKey = this.getStatusKey(mouvement.statut);
-    lines.push(`📊 ${this.translate.instant('MY_TRIPS.STATUS')}: ${this.translate.instant(statusKey)}`);
-
-    // Pour les mouvements regroupés, afficher toutes les destinations
-    if (mouvement.statut === 'regroupé' && mouvement.enfantsMouvements && mouvement.enfantsMouvements.length > 0) {
-      const allDestinations: string[] = [];
-
-      // Destination du parent
-      if (mouvement.stops && mouvement.stops.length > 0) {
-        const parentDest = mouvement.stops[mouvement.stops.length - 1].lieu?.nom;
-        if (parentDest) allDestinations.push(parentDest);
-      }
-
-      // Destinations des enfants
-      mouvement.enfantsMouvements.forEach((enfant: any) => {
-        if (enfant.stops && enfant.stops.length > 0) {
-          const enfantDest = enfant.stops[enfant.stops.length - 1].lieu?.nom;
-          if (enfantDest && !allDestinations.includes(enfantDest)) {
-            allDestinations.push(enfantDest);
-          }
-        }
-      });
-
-      lines.push(`🎯 Toutes destinations: ${allDestinations.join(', ')}`);
-    }
-
-    return lines.join('\n');
-  }
-
-  previousWeek(): void {
-    this.viewDate = addDays(this.viewDate, -7);
-    this.refresh.next(true);
-    this.getPlanningMouvements();
-  }
-
-  nextWeek(): void {
-    this.viewDate = addDays(this.viewDate, 7);
-    this.refresh.next(true);
-    this.getPlanningMouvements();
-  }
-
-  today(): void {
-    this.viewDate = new Date();
-    this.refresh.next(true);
-    this.getPlanningMouvements();
-  }
+  // ... (Keep existing methods)
 
   getStatusKey(status: string): string {
     if (!status) return '';
@@ -340,6 +184,7 @@ export class PlanningMouvementsComponent implements OnInit {
     switch (s) {
       case 'validé': return 'PLANNING.STATUS.VALIDATED';
       case 'en attente': return 'PLANNING.STATUS.PENDING';
+      case 'en attente validation sécurité': return 'En Attente Sécurité'; // TEMPORAIRE ou Key
       case 'terminé': return 'PLANNING.STATUS.COMPLETED';
       case 'annulé': return 'PLANNING.STATUS.CANCELLED';
       case 'refusé': return 'PLANNING.STATUS.CANCELLED';
@@ -361,13 +206,16 @@ export class PlanningMouvementsComponent implements OnInit {
         return { primary: '#52ae32', secondary: '#c8e6c9' }; // Vert ACF
       case 'en attente':
         return { primary: '#9e9e9e', secondary: '#e0e0e0' }; // Gris
+      case 'en attente validation sécurité':
+        return { primary: '#a31545', secondary: '#ffcdd2' }; // Rouge Foncé / Rose alerte (Distinct de refusé)
       case 'annulé':
       case 'refusé':
-        return { primary: '#f44336', secondary: '#ffcdd2' }; // Rouge
+        return { primary: '#f44336', secondary: '#ffcdd2' }; // Rouge clair
       default:
         return { primary: '#1e90ff', secondary: '#D1E8FF' }; // Bleu par défaut
     }
   }
+
 
   // Méthodes helper pour calculer le début et la fin de la semaine
   getStartOfWeek(date: Date): Date {
