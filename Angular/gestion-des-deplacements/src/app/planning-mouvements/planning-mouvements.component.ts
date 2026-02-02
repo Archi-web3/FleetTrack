@@ -176,7 +176,150 @@ export class PlanningMouvementsComponent implements OnInit {
     );
   }
 
-  // ... (Keep existing methods)
+  previousWeek(): void {
+    this.viewDate = addDays(this.viewDate, -7);
+    this.refresh.next(true);
+    this.getPlanningMouvements();
+  }
+
+  nextWeek(): void {
+    this.viewDate = addDays(this.viewDate, 7);
+    this.refresh.next(true);
+    this.getPlanningMouvements();
+  }
+
+  today(): void {
+    this.viewDate = new Date();
+    this.refresh.next(true);
+    this.getPlanningMouvements();
+  }
+
+  // NOUVEAU: Générer un titre simplifié pour l'événement
+  getEventTitle(mouvement: any): string {
+    // Si c'est une maintenance, afficher le type (et description courte)
+    if (mouvement.type === 'maintenance') {
+      const vehiculeInfo = mouvement.vehicule ? ` - ${mouvement.vehicule.acfCode || mouvement.vehicule.immatriculation}` : '';
+      return `🔧 ${mouvement.maintenanceType}${vehiculeInfo}`;
+    }
+
+    // Récupérer la destination (dernier stop)
+    let destination = 'Destination inconnue';
+    if (mouvement.stops && mouvement.stops.length > 0) {
+      const lastStop = mouvement.stops[mouvement.stops.length - 1];
+      destination = lastStop.lieu?.nom || 'Destination inconnue';
+    }
+
+    // Pour les mouvements regroupés, afficher max 2 destinations
+    if (mouvement.statut === 'regroupé' && mouvement.enfantsMouvements && mouvement.enfantsMouvements.length > 0) {
+      const destinations: string[] = [];
+
+      // Ajouter la destination du mouvement parent
+      destinations.push(destination);
+
+      // Ajouter les destinations des enfants (max 1 de plus pour avoir 2 au total)
+      for (let i = 0; i < Math.min(1, mouvement.enfantsMouvements.length); i++) {
+        const enfant = mouvement.enfantsMouvements[i];
+        if (enfant.stops && enfant.stops.length > 0) {
+          const enfantDest = enfant.stops[enfant.stops.length - 1].lieu?.nom;
+          if (enfantDest && !destinations.includes(enfantDest)) {
+            destinations.push(enfantDest);
+          }
+        }
+      }
+
+      destination = destinations.slice(0, 2).join(' + ');
+      if (mouvement.enfantsMouvements.length > 1) {
+        destination += ` (+${mouvement.enfantsMouvements.length - 1})`;
+      }
+    }
+
+    // Récupérer le véhicule
+    const vehicule = mouvement.vehicule
+      ? `Véh. ${mouvement.vehicule.immatriculation || mouvement.vehicule.marque}`
+      : 'Pas de véhicule';
+
+    // Récupérer le chauffeur
+    const chauffeur = mouvement.chauffeur
+      ? `${mouvement.chauffeur.prenom} ${mouvement.chauffeur.nom}`
+      : 'Pas de chauffeur';
+
+    return `${destination} • ${vehicule} • ${chauffeur}`;
+  }
+
+  // NOUVEAU: Générer un tooltip détaillé pour l'événement
+  getEventTooltip(mouvement: any): string {
+    const lines: string[] = [];
+
+    // Objectif
+    lines.push(`📍 ${this.translate.instant('VALIDATION.OBJECTIVE')}: ${mouvement.objectif || 'Non spécifié'}`);
+
+    // Horaires
+    // Simplified locale string usage for time
+    const localeForTime = this.locale === 'en' ? 'en-US' : (this.locale === 'es' ? 'es-ES' : 'fr-FR');
+    const heureDepart = mouvement.dateDepart ? new Date(mouvement.dateDepart).toLocaleTimeString(localeForTime, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+    const heureArrivee = mouvement.dateArrivee ? new Date(mouvement.dateArrivee).toLocaleTimeString(localeForTime, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+    lines.push(`🕐 ${this.translate.instant('NEW_REQUEST.MISSION.DEPARTURE_TIME')}/${this.translate.instant('NEW_REQUEST.MISSION.ARRIVAL_TIME')}: ${heureDepart} → ${heureArrivee}`);
+
+    // Demandeur
+    if (mouvement.demandeur) {
+      lines.push(`👤 Demandeur: ${mouvement.demandeur.prenom} ${mouvement.demandeur.nom}`);
+    }
+
+    // Véhicule
+    if (mouvement.vehicule) {
+      lines.push(`🚗 Véhicule: ${mouvement.vehicule.marque} (${mouvement.vehicule.immatriculation})`);
+    }
+
+    // Chauffeur
+    if (mouvement.chauffeur) {
+      lines.push(`👨‍✈️ Chauffeur: ${mouvement.chauffeur.prenom} ${mouvement.chauffeur.nom}`);
+    }
+
+    // Passagers
+    if (mouvement.passagers && mouvement.passagers.length > 0) {
+      const passagersList = mouvement.passagers.map((p: any) => `${p.prenom} ${p.nom}`).join(', ');
+      lines.push(`👥 Passagers: ${passagersList}`);
+    }
+
+    // Projet
+    if (mouvement.projet) {
+      lines.push(`📁 Projet: ${mouvement.projet}`);
+    }
+
+    // Matériel
+    if (mouvement.materiel && mouvement.materiel.length > 0) {
+      lines.push(`📦 Matériel: ${mouvement.materiel.join(', ')}`);
+    }
+
+    // Statut
+    const statusKey = this.getStatusKey(mouvement.statut);
+    lines.push(`📊 ${this.translate.instant('MY_TRIPS.STATUS')}: ${this.translate.instant(statusKey)}`);
+
+    // Pour les mouvements regroupés, afficher toutes les destinations
+    if (mouvement.statut === 'regroupé' && mouvement.enfantsMouvements && mouvement.enfantsMouvements.length > 0) {
+      const allDestinations: string[] = [];
+
+      // Destination du parent
+      if (mouvement.stops && mouvement.stops.length > 0) {
+        const parentDest = mouvement.stops[mouvement.stops.length - 1].lieu?.nom;
+        if (parentDest) allDestinations.push(parentDest);
+      }
+
+      // Destinations des enfants
+      mouvement.enfantsMouvements.forEach((enfant: any) => {
+        if (enfant.stops && enfant.stops.length > 0) {
+          const enfantDest = enfant.stops[enfant.stops.length - 1].lieu?.nom;
+          if (enfantDest && !allDestinations.includes(enfantDest)) {
+            allDestinations.push(enfantDest);
+          }
+        }
+      });
+
+      lines.push(`🎯 Toutes destinations: ${allDestinations.join(', ')}`);
+    }
+
+    return lines.join('\n');
+  }
 
   getStatusKey(status: string): string {
     if (!status) return '';
