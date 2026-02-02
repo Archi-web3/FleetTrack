@@ -4,7 +4,7 @@ const FunctionalTree = require('../models/functional-tree.model');
 const auth = require('../middleware/authMiddleware');
 
 // GET: Retrieve the Functional Tree
-router.get('/', auth, async (req, res) => {
+router.get('/', auth(), async (req, res) => {
     try {
         let tree = await FunctionalTree.findOne({ treeId: 'MASTER' });
         if (!tree) {
@@ -19,7 +19,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // POST: Save/Update the Functional Tree
-router.post('/', auth, async (req, res) => {
+router.post('/', auth(), async (req, res) => {
     try {
         const { treeData } = req.body;
 
