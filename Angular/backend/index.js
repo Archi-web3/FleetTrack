@@ -183,6 +183,7 @@ app.use('/api/audit', auditRoute);
 
 // NOUVEAU : Routes pour la Maintenance Prédictive
 const predictiveRoute = require('./routes/predictive');
+app.use('/api/roadmap', require('./routes/roadmap'));
 app.use('/api/predictive', predictiveRoute);
 
 // NOUVEAU : Routes Analytics & Coûts

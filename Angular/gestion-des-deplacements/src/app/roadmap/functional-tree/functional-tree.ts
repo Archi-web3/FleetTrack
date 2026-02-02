@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { RoadmapService } from '../roadmap.service';
+import { HttpClientModule } from '@angular/common/http';
 
 export interface TreeNode {
     id: string;
@@ -23,13 +25,45 @@ export interface TreeNode {
 @Component({
     selector: 'app-functional-tree',
     standalone: true,
-    imports: [CommonModule, MatIconModule, MatButtonModule, FormsModule, MatTooltipModule, DragDropModule],
+    imports: [CommonModule, MatIconModule, MatButtonModule, FormsModule, MatTooltipModule, DragDropModule, HttpClientModule],
     templateUrl: './functional-tree.html',
     styleUrls: ['./functional-tree.css']
 })
-export class FunctionalTreeComponent {
+export class FunctionalTreeComponent implements OnInit {
 
-    // ... (existing code)
+    constructor(private roadmapService: RoadmapService) { }
+
+    ngOnInit() {
+        this.loadTree();
+    }
+
+    loadTree() {
+        this.roadmapService.getFunctionalTree().subscribe(
+            (data) => {
+                if (data) {
+                    this.treeData = data;
+                }
+            },
+            (err) => {
+                console.warn('Could not load existing tree, using default.', err);
+                // On first load if 404, we might want to save the default to init the DB
+                if (err.status === 404) {
+                    this.saveTree();
+                }
+            }
+        );
+    }
+
+    saveTree() {
+        this.roadmapService.saveFunctionalTree(this.treeData).subscribe(
+            (res) => {
+                console.log('Tree saved successfully');
+            },
+            (err) => {
+                console.error('Error saving tree', err);
+            }
+        );
+    }
 
     toggleDataSource(node: TreeNode, source: string) {
         if (!node.dataSource) {
@@ -41,11 +75,46 @@ export class FunctionalTreeComponent {
         } else {
             node.dataSource.push(source);
         }
+        this.saveTree();
     }
 
 
     // Gestion de la sélection
     selectedNode: TreeNode | null = null;
+
+    selectNode(node: TreeNode) {
+        this.selectedNode = node;
+        // Si c'est une catégorie vide ou root, on peut aussi l'éditer
+    }
+
+    deselectNode() {
+        this.selectedNode = null;
+    }
+
+    printTree() {
+        window.print();
+    }
+
+    // Données initiales enrichies (Default structure if D-Base empty)
+    treeData: TreeNode = {
+        id: 'root',
+        name: 'Mouvements Terrain & Parc de Véhicules',
+        type: 'root',
+        children: [
+            // ... (keep existing default data or assume it's there? I should PROBABLY not delete the default data variable but keep it as init)
+            // Wait, replace_file_content replaces the BLOCK. I need to be careful not to delete the default data if I replace lines.
+            // I will target specific blocks or replace the Class start.
+            // Given the file size, I'll try to keep the default data intact or regenerate it if needed.
+            // But the previous file content view shows the default data is huge.
+            // I should just insert the methods and imports, and modify the variable to be just initialized.
+            // OR I wrap the default data in an initializer.
+            // Actually, `treeData: TreeNode = { ... }` is fine. `loadTree` will overwrite it.
+            // So I just need to add the methods and changes to imports/constructor.
+        ]
+    }; // I will NOT replace the whole treeData in this call, strict targeting.
+
+    // ... I need to target the top part of the file.
+
 
     selectNode(node: TreeNode) {
         this.selectedNode = node;
@@ -300,21 +369,25 @@ export class FunctionalTreeComponent {
         if (!parentNode.children) parentNode.children = [];
         parentNode.children.push(newNode);
         this.editingNodeId = newNode.id; // Auto edit new node
+        this.saveTree();
     }
 
     deleteNode(parentNode: TreeNode, nodeIndex: number) {
         if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
             parentNode.children!.splice(nodeIndex, 1);
+            this.saveTree();
         }
     }
 
     toggleImplementation(node: TreeNode) {
         node.isImplemented = !node.isImplemented;
+        this.saveTree();
     }
 
     drop(event: CdkDragDrop<TreeNode[]>) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+            this.saveTree();
         }
     }
 }

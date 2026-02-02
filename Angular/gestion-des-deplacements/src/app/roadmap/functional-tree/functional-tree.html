@@ -108,7 +108,8 @@
         <div class="panel-header">
             <div class="header-top">
                 <!-- EDITABLE TITLE -->
-                <input class="panel-title-input" [(ngModel)]="selectedNode.name" placeholder="Nom de la fonctionnalité">
+                <input class="panel-title-input" [(ngModel)]="selectedNode.name" placeholder="Nom de la fonctionnalité"
+                    (blur)="saveTree()">
                 <button mat-icon-button (click)="deselectNode()">
                     <mat-icon>close</mat-icon>
                 </button>
@@ -151,21 +152,22 @@
 
                 <label>Modifier le Lot (Phase) :</label>
                 <div class="lot-selector">
-                    <button class="lot-btn" [class.active]="selectedNode.lot === 1" (click)="selectedNode.lot = 1"
-                        style="background-color: #795548;">Lot 1</button>
-                    <button class="lot-btn" [class.active]="selectedNode.lot === 2" (click)="selectedNode.lot = 2"
-                        style="background-color: #f57c00;">Lot 2</button>
-                    <button class="lot-btn" [class.active]="selectedNode.lot === 3" (click)="selectedNode.lot = 3"
-                        style="background-color: #e91e63;">Lot 3</button>
-                    <button class="lot-btn" [class.active]="selectedNode.lot === 4" (click)="selectedNode.lot = 4"
-                        style="background-color: #3f51b5;">Lot 4</button>
-                    <button class="lot-btn" (click)="selectedNode.lot = undefined"
+                    <button class="lot-btn" [class.active]="selectedNode.lot === 1"
+                        (click)="selectedNode.lot = 1; saveTree()" style="background-color: #795548;">Lot 1</button>
+                    <button class="lot-btn" [class.active]="selectedNode.lot === 2"
+                        (click)="selectedNode.lot = 2; saveTree()" style="background-color: #f57c00;">Lot 2</button>
+                    <button class="lot-btn" [class.active]="selectedNode.lot === 3"
+                        (click)="selectedNode.lot = 3; saveTree()" style="background-color: #e91e63;">Lot 3</button>
+                    <button class="lot-btn" [class.active]="selectedNode.lot === 4"
+                        (click)="selectedNode.lot = 4; saveTree()" style="background-color: #3f51b5;">Lot 4</button>
+                    <button class="lot-btn" (click)="selectedNode.lot = undefined; saveTree()"
                         style="background-color: #999;">Aucun</button>
                 </div>
 
                 <label style="margin-top: 15px;">Modifier / Ajouter une note :</label>
                 <textarea [(ngModel)]="selectedNode.description"
-                    placeholder="Décrivez comment cette fonctionnalité est gérée dans l'outil..."></textarea>
+                    placeholder="Décrivez comment cette fonctionnalité est gérée dans l'outil..."
+                    (blur)="saveTree()"></textarea>
                 <div style="font-size: 12px; color: #999;">Modification enregistrée automatiquement.</div>
             </div>
         </div>
