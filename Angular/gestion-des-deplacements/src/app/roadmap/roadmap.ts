@@ -478,7 +478,7 @@ export class RoadmapComponent {
             category: 'Analytics & Reporting',
             categoryIcon: 'euro',
             targetApp: 'FleetTrack',
-            status: 'Planifié',
+            status: 'Terminé',
             priority: 'Basse'
         },
         {
@@ -554,11 +554,11 @@ export class RoadmapComponent {
         {
             id: 30, // New ID
             title: 'I.A. Maintenance Phase 2 (Machine Learning)',
-            description: 'Évolution du module vers de l\'IA générative et prédictive avancée : analyse des modèles de pannes par marque/modèle et prédiction des coûts futurs.',
+            description: 'Évolution du module vers de l\'IA générative et prédictive avancée : analyse des modèles de pannes par marque/modèle et prédiction des coûts futurs (Smart Forecast).',
             category: 'Innovation & IA',
             categoryIcon: 'memory', // Icone "cerveau/puce"
             targetApp: 'FleetTrack',
-            status: 'Planifié', // Not yet started
+            status: 'Terminé', // Not yet started
             priority: 'Moyenne'
         }
     ];
