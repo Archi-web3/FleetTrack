@@ -335,21 +335,11 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
       console.log(`🔒 [CREATE MOUVEMENT] Niveau de sécurité MAX du trajet: ${maxSecurityLevel}`);
 
-      // Si niveau > 1 (Stable), ça nécessite une validation sécurité spécifique si configuré ainsi. 
-      // Pour l'instant, on garde la logique que tout ce qui est sensible (>1 ?) nécessite validation secu.
-      // Ou alors on stocke le niveau requis et le flow dépendra de ça.
-
-      // Si le niveau est élevé (> 1), on peut forcer un statut spécial ou juste stocker le niveau.
-      const validationLevelRequired = maxSecurityLevel;
-
-      // Logique simplifiée temporaire compatible avec l'existant :
-      // Si niveau >= 3 (Difficile/Sensible ancien), on met en attente validation sécu
-      if (validationLevelRequired >= 3) { // 3 correspond à "Difficile" ou ancien "Sensible"
-        statutInitial = 'en attente validation sécurité';
-        console.log('🔒 [CREATE MOUVEMENT] Risque élevé détecté -> Statut: "en attente validation sécurité"');
-      } else {
-        console.log('✅ [CREATE MOUVEMENT] Risque faible/moyen -> Statut: "en attente"');
-      }
+      // MODIFICATION WORKFLOW (Demande User):
+      // Le mouvement démarre TOUJOURS "en attente" (Validation Logistique + Consolidation d'abord).
+      // La validation Sécurité viendra en DERNIER, après l'affectation véhicule.
+      // On ne met PLUS "en attente validation sécurité" dès la création.
+      console.log('✅ [CREATE MOUVEMENT] Risque évalué, mais workflow séquentiel -> Statut initial: "en attente"');
       // --- FIN NOUVELLE LOGIQUE ---
     }
 
@@ -618,12 +608,44 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     if (req.body.passagers != null) mouvement.passagers = req.body.passagers;
     if (req.body.materiel != null) mouvement.materiel = req.body.materiel;
     if (req.body.objectif != null) mouvement.objectif = req.body.objectif;
-    if (req.body.statut != null) mouvement.statut = req.body.statut;
-    if (req.body.motifRefus != null) mouvement.motifRefus = req.body.motifRefus;
-    if (req.body.parentMouvement != null) mouvement.parentMouvement = req.body.parentMouvement;
-    if (req.body.enfantsMouvements != null) mouvement.enfantsMouvements = req.body.enfantsMouvements;
-    if (req.body.isRoundTrip != null) mouvement.isRoundTrip = req.body.isRoundTrip; // NOUVEAU
-    if (req.body.projetsVentilation != null) mouvement.projetsVentilation = req.body.projetsVentilation; // NOUVEAU : Correction manuelle ventilation
+    // --- INTERCEPTION WORKFLOW VALIDATION ---
+    // Si on essaie de passer en 'validé'
+    if (req.body.statut === 'validé') {
+      const requiredLevel = mouvement.validationLevelRequired || 1;
+
+      // Si risque ÉLEVÉ (>=3) et que ce n'est PAS une validation sécurité explicite (via /validate ou profil Sécu)
+      // On dévie vers 'en attente validation sécurité'
+      // Note: req.utilisateur.profil est disponible via auth middleware
+      const isSecuUser = req.utilisateur.profil === 'Superviseur Sécurité' || req.utilisateur.profil === 'SuperAdmin'; // SuperAdmin bypass
+
+      if (requiredLevel >= 3 && !isSecuUser) {
+        console.log(`🔒 [UPDATE MOUVEMENT] Tentative de validation Logistique sur trajet Risqué (${requiredLevel}). Déviation vers Sécurité.`);
+        mouvement.statut = 'en attente validation sécurité';
+        req.body.statut = 'en attente validation sécurité'; // Pour la suite du code (emails)
+
+        // TRIGGER EMAIL SECU ICI (Car on vient de passer le relai)
+        // Code dupliqué du POST, on pourrait factoriser
+        try {
+          const queryValideurs = {
+            profil: 'Superviseur Sécurité',
+            niveauValidationSecu: { $gte: requiredLevel },
+            pays: mouvement.pays
+          };
+          const valideurs = await Utilisateur.find(queryValideurs);
+          for (const valideur of valideurs) {
+            if (valideur.email) {
+              mailer.sendValidationRequest(valideur.email, await mouvement.populate([{ path: 'vehicule' }, { path: 'stops.lieu' }, { path: 'demandeur' }]));
+            }
+          }
+        } catch (e) { console.error('Erreur mail secu', e); }
+
+      } else {
+        // Validation standard (Low Risk ou User Secu)
+        mouvement.statut = 'validé';
+      }
+    } else if (req.body.statut != null) {
+      mouvement.statut = req.body.statut;
+    }
 
     const mouvementMisAJour = await mouvement.save();
     auditService.logAction(req, 'UPDATE_TRIP', 'TRIP', `Trip: ${mouvementMisAJour.objectif}`, { changes: req.body });
