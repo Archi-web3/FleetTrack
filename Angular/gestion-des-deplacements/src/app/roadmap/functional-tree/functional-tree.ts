@@ -34,7 +34,26 @@ export class FunctionalTreeComponent implements OnInit {
 
     constructor(private roadmapService: RoadmapService, private snackBar: MatSnackBar) { }
 
-    // ...
+    ngOnInit() {
+        this.loadTree();
+    }
+
+    loadTree() {
+        this.roadmapService.getFunctionalTree().subscribe(
+            (data) => {
+                if (data) {
+                    this.treeData = data;
+                }
+            },
+            (err) => {
+                console.warn('Could not load existing tree, using default.', err);
+                // On first load if 404, we might want to save the default to init the DB
+                if (err.status === 404) {
+                    this.saveTree();
+                }
+            }
+        );
+    }
 
     saveTree() {
         this.roadmapService.saveFunctionalTree(this.treeData).subscribe(
