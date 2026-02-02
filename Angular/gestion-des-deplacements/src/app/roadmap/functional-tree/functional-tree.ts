@@ -95,39 +95,7 @@ export class FunctionalTreeComponent implements OnInit {
         window.print();
     }
 
-    // Données initiales enrichies (Default structure if D-Base empty)
-    treeData: TreeNode = {
-        id: 'root',
-        name: 'Mouvements Terrain & Parc de Véhicules',
-        type: 'root',
-        children: [
-            // ... (keep existing default data or assume it's there? I should PROBABLY not delete the default data variable but keep it as init)
-            // Wait, replace_file_content replaces the BLOCK. I need to be careful not to delete the default data if I replace lines.
-            // I will target specific blocks or replace the Class start.
-            // Given the file size, I'll try to keep the default data intact or regenerate it if needed.
-            // But the previous file content view shows the default data is huge.
-            // I should just insert the methods and imports, and modify the variable to be just initialized.
-            // OR I wrap the default data in an initializer.
-            // Actually, `treeData: TreeNode = { ... }` is fine. `loadTree` will overwrite it.
-            // So I just need to add the methods and changes to imports/constructor.
-        ]
-    }; // I will NOT replace the whole treeData in this call, strict targeting.
 
-    // ... I need to target the top part of the file.
-
-
-    selectNode(node: TreeNode) {
-        this.selectedNode = node;
-        // Si c'est une catégorie vide ou root, on peut aussi l'éditer
-    }
-
-    deselectNode() {
-        this.selectedNode = null;
-    }
-
-    printTree() {
-        window.print();
-    }
 
     // Données initiales enrichies
     treeData: TreeNode = {
