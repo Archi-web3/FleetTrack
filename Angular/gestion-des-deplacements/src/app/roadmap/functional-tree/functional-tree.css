@@ -105,6 +105,35 @@
     margin-bottom: 10px;
 }
 
+.panel-title-input {
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    padding: 2px 0;
+    transition: border-color 0.2s;
+}
+
+.panel-title-input:hover {
+    border-bottom-color: #eee;
+}
+
+.panel-title-input:focus {
+    border-bottom-color: #2196f3;
+    outline: none;
+}
+
+.source-btn.activeSource {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+    transform: scale(1.05);
+    font-weight: bold;
+}
+
 .tree-legend {
     display: flex;
     gap: 20px;

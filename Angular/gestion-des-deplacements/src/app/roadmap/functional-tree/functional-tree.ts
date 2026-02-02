@@ -17,6 +17,7 @@ export interface TreeNode {
     color?: string; // Pour les lots
     description?: string; // Nouvelle "bulle d'info"
     lot?: number; // Phase de développement (1, 2, 3, 4)
+    dataSource?: 'Flux' | 'Manuel'; // Origin of the data
 }
 
 @Component({

@@ -77,6 +77,14 @@
 
                                     <span>{{ func.name }}</span>
 
+                                    <!-- Data Source Badge -->
+                                    <span *ngIf="func.dataSource"
+                                        style="font-size: 10px; padding: 2px 5px; border-radius: 4px; margin-left: 5px; font-weight: bold;"
+                                        [style.background]="func.dataSource === 'Flux' ? '#e3f2fd' : '#e8f5e9'"
+                                        [style.color]="func.dataSource === 'Flux' ? '#1565c0' : '#2e7d32'">
+                                        {{ func.dataSource === 'Flux' ? '📡 API' : '✍️ Manuel' }}
+                                    </span>
+
                                     <!-- Indicator icon if description exists -->
                                     <mat-icon *ngIf="func.description" class="info-icon"
                                         style="font-size: 16px; width: 16px; height: 16px;">info</mat-icon>
@@ -96,7 +104,8 @@
     <div class="detail-panel" *ngIf="selectedNode">
         <div class="panel-header">
             <div class="header-top">
-                <h3 class="panel-title">{{ selectedNode.name }}</h3>
+                <!-- EDITABLE TITLE -->
+                <input class="panel-title-input" [(ngModel)]="selectedNode.name" placeholder="Nom de la fonctionnalité">
                 <button mat-icon-button (click)="deselectNode()">
                     <mat-icon>close</mat-icon>
                 </button>
@@ -122,6 +131,23 @@
             </div>
 
             <div class="edit-area">
+                <!-- SOURCE DATA -->
+                <label>Source de Donnée :</label>
+                <div class="source-selector" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="source-btn" [class.activeSource]="selectedNode.dataSource === 'Flux'"
+                        (click)="selectedNode.dataSource = 'Flux'"
+                        style="border: 1px solid #2196f3; color: #2196f3; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                        📡 Flux (API)
+                    </button>
+                    <button class="source-btn" [class.activeSource]="selectedNode.dataSource === 'Manuel'"
+                        (click)="selectedNode.dataSource = 'Manuel'"
+                        style="border: 1px solid #4caf50; color: #4caf50; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                        ✍️ Manuel (Saisie)
+                    </button>
+                    <button class="source-btn" (click)="selectedNode.dataSource = undefined"
+                        style="border: 1px solid #999; color: #999; background: white; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Aucune</button>
+                </div>
+
                 <label>Modifier le Lot (Phase) :</label>
                 <div class="lot-selector">
                     <button class="lot-btn" [class.active]="selectedNode.lot === 1" (click)="selectedNode.lot = 1"
