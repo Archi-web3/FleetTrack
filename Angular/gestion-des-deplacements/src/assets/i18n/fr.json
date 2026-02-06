@@ -23,7 +23,8 @@
         "EDIT": "Modifier",
         "YES": "Oui",
         "NO": "Non",
-        "NONE": "Aucun"
+        "NONE": "Aucun",
+        "LEVEL": "Niveau"
     },
     "PROFILES": {
         "SuperAdmin": "Super Admin",

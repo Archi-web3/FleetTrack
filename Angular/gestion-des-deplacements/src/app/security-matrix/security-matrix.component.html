@@ -10,10 +10,22 @@
         <table class="matrix-table">
             <thead>
                 <tr>
-                    <th style="width: 80px;">Niveau</th>
-                    <th>Validateurs Requis</th>
-                    <th style="width: 150px;">Unanimité ?</th>
-                    <th style="width: 100px;">Quorum</th>
+                    <th style="width: 80px;" [matTooltip]="'SECURITY_MATRIX.TOOLTIP.LEVEL' | translate">
+                        {{ 'SECURITY_MATRIX.LEVEL' | translate }} <mat-icon
+                            style="font-size: 16px; vertical-align: middle;">info</mat-icon>
+                    </th>
+                    <th [matTooltip]="'SECURITY_MATRIX.TOOLTIP.REQUIRED_VALIDATORS' | translate">
+                        {{ 'SECURITY_MATRIX.REQUIRED_VALIDATORS' | translate }} <mat-icon
+                            style="font-size: 16px; vertical-align: middle;">info</mat-icon>
+                    </th>
+                    <th style="width: 150px;" [matTooltip]="'SECURITY_MATRIX.TOOLTIP.UNANIMITY' | translate">
+                        {{ 'SECURITY_MATRIX.UNANIMITY' | translate }} <mat-icon
+                            style="font-size: 16px; vertical-align: middle;">info</mat-icon>
+                    </th>
+                    <th style="width: 100px;" [matTooltip]="'SECURITY_MATRIX.TOOLTIP.QUORUM' | translate">
+                        {{ 'SECURITY_MATRIX.QUORUM' | translate }} <mat-icon
+                            style="font-size: 16px; vertical-align: middle;">info</mat-icon>
+                    </th>
                 </tr>
             </thead>
             <tbody>
