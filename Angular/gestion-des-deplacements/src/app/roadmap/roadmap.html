@@ -63,7 +63,8 @@
                                 <mat-icon>{{ item.categoryIcon }}</mat-icon>
                             </div>
 
-                            <div class="timeline-card">
+                            <div class="timeline-card" [class.clickable-card]="item.studyDetails"
+                                (click)="openStudy(item)">
                                 <div class="card-header">
                                     <div class="card-category">
                                         <mat-icon class="category-icon">{{ item.categoryIcon }}</mat-icon>
@@ -75,6 +76,12 @@
                                         </span>
                                         <span class="priority-badge" [ngClass]="getPriorityClass(item.priority)">
                                             {{ item.priority }}
+                                        </span>
+                                        <span *ngIf="item.studyDetails" class="status-badge"
+                                            style="background: #e1bee7; color: #4a148c; border: 1px solid #9c27b0;">
+                                            <mat-icon
+                                                style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">article</mat-icon>
+                                            Étude dispo
                                         </span>
                                     </div>
                                 </div>
@@ -292,6 +299,17 @@
                 <app-functional-tree></app-functional-tree>
             </mat-tab>
         </mat-tab-group>
+
+        <!-- MODAL STUDY -->
+        <div class="modal-backdrop" *ngIf="selectedItem" (click)="closeStudy()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2>{{selectedItem.title}}</h2>
+                    <button class="close-btn" (click)="closeStudy()"><mat-icon>close</mat-icon></button>
+                </div>
+                <div class="modal-body" [innerHTML]="selectedItem.studyDetails"></div>
+            </div>
+        </div>
 
         <!-- Call to Action -->
 

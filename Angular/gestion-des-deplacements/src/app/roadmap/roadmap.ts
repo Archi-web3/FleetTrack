@@ -13,6 +13,7 @@ interface RoadmapItem {
     targetApp: 'FleetTrack' | 'e-logbook' | 'Les deux';
     status: 'Planifié' | 'En cours' | 'Terminé';
     priority: 'Haute' | 'Moyenne' | 'Basse';
+    studyDetails?: string; // HTML content for feasibility studies
 }
 
 interface ChangelogItem {
@@ -272,6 +273,50 @@ export class RoadmapComponent {
     ];
 
     roadmapItems: RoadmapItem[] = [
+        {
+            id: 99, // ID Spécial Etude
+            title: 'Validation Sécurité par Axe/Route',
+            description: 'Étude de faisabilité pour valider la sécurité non plus seulement par lieux (points) mais par itinéraires (axes routiers), afin de gérer les traversées de zones rouges.',
+            category: 'Sécurité & Innovation',
+            categoryIcon: 'share_location',
+            targetApp: 'FleetTrack',
+            status: 'Planifié',
+            priority: 'Haute',
+            studyDetails: `
+            <div class="study-container">
+                <h3>Étude de Faisabilité : Validation Sécurité par Itinéraire</h3>
+                
+                <h4>Problématique</h4>
+                <p>La validation actuelle repose sur le Niveau de Sécurité des <strong>Localisations</strong> (Départ, Arrivée, Arrêts).</p>
+                <div class="alert-box"><strong>Manque :</strong> Un trajet entre deux zones "Sûres" (Vertes) peut traverser une "Zone à Risque" (Rouge). Le système actuel classerait ce trajet comme "Sûr" à tort.</div>
+
+                <h4>Approches Proposées</h4>
+
+                <div class="option-card">
+                    <h5>Option 1 : Axes Prédéfinis (Approche "Administrative")</h5>
+                    <p>Définir des "Routes" ou "Axes" spécifiques en base de données (ex: "Goma <-> Sake").</p>
+                    <ul>
+                        <li><strong>Fonctionnement :</strong> Les administrateurs créent des "Axes" avec un niveau de sécurité spécifique. Si un mouvement correspond, il hérite du niveau de sécurité.</li>
+                        <li><strong>Avantages :</strong> Simple, fiable, aligné avec les SOPs Log/Sécu.</li>
+                        <li><strong>Inconvénients :</strong> Binaire, ne gère pas les détours.</li>
+                    </ul>
+                </div>
+
+                <div class="option-card">
+                    <h5>Option 2 : Geofencing & Intersections (Approche "Géographique")</h5>
+                    <p>Définir des "Zones" (Polygones) sur la carte avec des niveaux de sécurité.</p>
+                    <ul>
+                        <li><strong>Fonctionnement :</strong> Le système calcule le tracé GPS et vérifie s'il coupe un polygone rouge.</li>
+                        <li><strong>Avantages :</strong> Automatisé, visuel, couvre tout.</li>
+                        <li><strong>Inconvénients :</strong> Complexe, dépendance API Routing, Faux Positifs possibles.</li>
+                    </ul>
+                </div>
+
+                <h4>Recommandation</h4>
+                <p><strong>L'Option 1 (Axes Prédéfinis)</strong> est le meilleur point de départ professionnel. Elle correspond à la validation classique "La Route vers X est fermée".</p>
+            </div>
+            `
+        },
         {
             id: 1,
             title: 'Traduction Multi-langues (i18n)',
@@ -599,5 +644,18 @@ export class RoadmapComponent {
             case 'Les deux': return 'app-both';
             default: return '';
         }
+    }
+
+    // Modal Handling
+    selectedItem: RoadmapItem | null = null;
+
+    openStudy(item: RoadmapItem): void {
+        if (item.studyDetails) {
+            this.selectedItem = item;
+        }
+    }
+
+    closeStudy(): void {
+        this.selectedItem = null;
     }
 }
