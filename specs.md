@@ -11,7 +11,7 @@ Ce système vise à créer une plateforme web sécurisée pour la gestion optimi
 *   **Gestion des Mouvements :**
     *   Configuration des accès utilisateurs avec divers profils (Admin, Superviseur Log, Technicien/Demandeur, Guest).
     *   Base de données préremplie (chauffeurs, véhicules, lieux).
-    *   Saisie des demandes de mouvement par les demandeurs.
+    *   **Maintenance Prédictive (Smart Forecast) :** Estimation des coûts futurs et planification intelligente des services A/B/C.
     *   Consolidation et affectation des véhicules/chauffeurs par les logisticiens.
     *   Processus de validation multi-niveaux (sécurité, logistique, chef chauffeur).
     *   Notifications automatiques aux demandeurs et chauffeurs.

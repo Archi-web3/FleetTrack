@@ -1,0 +1,54 @@
+<div class="matrix-container">
+    <h2>{{ 'SECURITY_MATRIX.TITLE' | translate }}</h2>
+    <p class="subtitle">{{ 'SECURITY_MATRIX.SUBTITLE' | translate }}</p>
+
+    <div *ngIf="isLoading" class="loading">
+        Chargement...
+    </div>
+
+    <div *ngIf="!isLoading" class="table-container">
+        <table class="matrix-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Niveau</th>
+                    <th>Validateurs Requis</th>
+                    <th style="width: 150px;">Unanimité ?</th>
+                    <th style="width: 100px;">Quorum</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let rule of config.rules">
+                    <td class="level-cell">
+                        <span class="badge-level level-{{rule.level}}">{{ rule.level }}</span>
+                    </td>
+                    <td>
+                        <div class="validators-list">
+                            <div *ngFor="let supervisor of supervisors" class="validator-item">
+                                <input type="checkbox" [id]="'val-' + rule.level + '-' + supervisor._id"
+                                    [checked]="isValidatorSelected(rule, supervisor._id)"
+                                    (change)="toggleValidator(rule, supervisor._id, $event)">
+                                <label [for]="'val-' + rule.level + '-' + supervisor._id">
+                                    {{ supervisor.nom }} {{ supervisor.prenom }}
+                                </label>
+                            </div>
+                            <div *ngIf="supervisors.length === 0" class="no-supervisors">
+                                Aucun superviseur sécurité trouvé.
+                            </div>
+                        </div>
+                    </td>
+                    <td class="center-cell">
+                        <input type="checkbox" [(ngModel)]="rule.requireUnanimity">
+                    </td>
+                    <td class="center-cell">
+                        <input type="number" [(ngModel)]="rule.quorum" [disabled]="rule.requireUnanimity" min="1"
+                            class="quorum-input">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <button class="btn-save" (click)="save()">Enregistrer la Configuration</button>
+        </div>
+    </div>
+</div>

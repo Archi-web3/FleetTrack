@@ -158,4 +158,18 @@ export class ValidationMouvementsComponent implements OnInit {
       }
     );
   }
+  // NOUVEAU: Vérifier si l'utilisateur connecté a déjà validé ce mouvement (dans la matrice)
+  hasUserValidated(mouvement: any): boolean {
+    if (!mouvement.securityApprovals || mouvement.securityApprovals.length === 0) return false;
+
+    // Updated to use the public accessor from AuthService
+    const userId = this.authService.getUserId();
+    if (!userId) return false;
+
+    const approval = mouvement.securityApprovals.find((a: any) =>
+      (a.validator._id || a.validator) === userId // Gérer si populated ou non
+    );
+
+    return approval && approval.status === 'approved';
+  }
 }

@@ -1,0 +1,48 @@
+/* CSS Ajouté pour la matrice */
+.validators-section {
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.validators-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.validator-badge {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    background: #f8f9fa;
+}
+
+.validator-badge.approved {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.validator-badge.pending {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+.status-icon {
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.disabled-btn {
+    background-color: #6c757d !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}

@@ -59,6 +59,16 @@ const mouvementSchema = new mongoose.Schema({
     status: { type: String } // 'validé' ou 'refusé'
   }],
 
+  // NOUVEAU (Module 2.1) : Validation Multi-Utilisateurs (Security Matrix)
+  securityApprovals: [{
+    validator: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' }, // L'utilisateur qui DOIT valider
+    status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    approvedAt: { type: Date },
+    comment: { type: String } // Commentaire optionnel lors de la validation
+  }],
+  // Champ calculé pour savoir si le consensus est atteint (facilite les requêtes frontend)
+  securityConsensusReached: { type: Boolean, default: false },
+
   // Gestion Financière (Module 2)
   projetsVentilation: [{
     projet: { type: String },

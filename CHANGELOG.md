@@ -1,5 +1,39 @@
 # Changelog
 
+## [2.13.0] - 2026-01-31
+
+### 🧠 I.A. & Prévisions Financières (Smart Cost)
+- **Prévision Avancée :** Nouveau module capable d'estimer les coûts futurs de la flotte sur **1, 3, 6 et 12 mois**.
+- **Algorithme Hybride :** Utilise à la fois l'historique réel (si disponible) et des projections basées sur le kilométrage théorique.
+- **Services A, B, C :** Détection automatique des gros services à venir (ex: Courroie à 100k km, Vidange tous les 5k) pour affiner le budget prévisionnel.
+- **Marge d'Imprévu :** Intégration d'un buffer de sécurité (10%) pour couvrir les pannes aléatoires.
+
+### ⚙️ Configuration & Flexibilité
+- **Coûts Personnalisables :** Nouvelle interface de réglages (Dialog) permettant aux administrateurs de définir le coût standard des Services A, B et C. Ces valeurs sont utilisées comme "fallback" si le véhicule n'a pas assez d'historique.
+- **Sélecteur de Durée :** Bascule instantanée entre les horizons temporels (1M, 3M, 6M, 1An) sur le dashboard.
+
+### 📊 Analyse de Fiabilité
+- **Score de Fiabilité (MTBF) :** Calcul automatique d'un score (0-100) pour chaque modèle de véhicule (Toyota Land Cruiser vs Hilux, etc.) basé sur la fréquence des pannes.
+- **Comparateur :** Classement des modèles les plus fiables et les plus coûteux au kilomètre.
+
+### 🐛 Corrections (Bug Fixes)
+- **Calcul "Prochain Service" :** Correction d'un bug majeur où les véhicules d'occasion (ex: 148 000 km) étaient marqués "En retard de 143 000 km" car le système basait son calcul sur 0 km. Le système prend maintenant en compte le kilométrage actuel.
+
+---
+
+## [2.12.1] - 2026-01-31
+
+### 🌍 Internationalisation & Traduction
+- **Traduction Complète :** Finalisation de la traduction (Français/Anglais) sur l'ensemble des modules critiques.
+    - **Gestion des Véhicules :** Traduction intégrale de la page (Titres, Formulaires, Boutons d'action, Badges de statut).
+    - **Consolidation :** Traduction complète du module de regroupement et d'affectation (Titres, Dialogues, Messages).
+    - **Menus :** Ajout des clés manquantes pour les menus de navigation (`MENU.CONSOLIDATION`).
+- **Correction Dropdowns :** Résolution des incohérences d'accents sur les modes de transport (`AERIEN` vs `AÉRIEN`) qui empêchaient l'affichage correct dans les listes déroulantes de filtre et de formulaire.
+
+### 🗺️ Carte Interactive
+- **Filtres Traduits :** Les filtres de la carte (Menu déroulant "Mode Transport") utilisent désormais les clés de traduction dynamiques.
+- **Logique de Filtrage :** Mise à jour du moteur de filtrage pour supporter les nouvelles clés de traduction universelles (`ALL`, `ROUTIER`, `AERIEN`, `MARITIME`).
+
 ## [2.9.1] - 2026-01-29
 
 ### ⚙️ Maintenance & Planning

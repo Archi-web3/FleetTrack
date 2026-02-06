@@ -190,6 +190,10 @@ app.use('/api/predictive', predictiveRoute);
 const analyticsRoute = require('./routes/analytics');
 app.use('/api/analytics', analyticsRoute);
 
+// NOUVEAU : Routes pour la Configuration de la Matrice de Sécurité
+const securityConfigRoute = require('./routes/security-config');
+app.use('/api', securityConfigRoute);
+
 
 
 // NOUVEAU : Démarrer les tâches CRON de maintenance

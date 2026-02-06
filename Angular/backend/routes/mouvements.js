@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const mailer = require('../utils/mailer');
 // Utilisateur declared at line 7
 const { checkDriverConflict, checkVehicleConflict } = require('../utils/conflict-detector');
+const SecurityConfig = require('../models/security-config.model'); // NOUVEAU: Import Config Matrice
 
 // Route pour créer un nouveau mouvement (pour test - NON PROTÉGÉE PAR AUTH car c'est un test simple)
 router.post('/mouvements/test', async (req, res) => {
@@ -632,23 +633,66 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
       if (requiredLevel > userLevel && !isSecuUser) {
         console.log(`🔒 [UPDATE MOUVEMENT] Validation partielle (User Level ${userLevel} < Trip Level ${requiredLevel}). Passage en "Attente Sécurité".`);
         mouvement.statut = 'en attente validation sécurité';
-        req.body.statut = 'en attente validation sécurité';
+        // req.body.statut déjà set, mais on s'assure
 
-        // Trigger Email Secu
+        // --- NOUVELLE LOGIQUE MATRICE ---
         try {
-          const queryValideurs = {
-            profil: 'Superviseur Sécurité',
-            niveauValidationSecu: { $gte: requiredLevel },
-            pays: mouvement.pays
-          };
-          const valideurs = await Utilisateur.find(queryValideurs);
-          // ... (mailer logic same as before)
-          for (const valideur of valideurs) {
+          // 1. Chercher la config
+          const config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base }) ||
+            await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
+
+          let validatorsToNotify = [];
+
+          if (config) {
+            const rule = config.rules.find(r => r.level === requiredLevel);
+            if (rule && rule.mandatoryValidators && rule.mandatoryValidators.length > 0) {
+              // On a des validateurs obligatoires
+              console.log(`🔒 [MATRIX] Utilisation des validateurs configurés pour niveau ${requiredLevel}: ${rule.mandatoryValidators.length} utilisateurs.`);
+
+              // Reset approvals if any
+              mouvement.securityApprovals = rule.mandatoryValidators.map(uid => ({
+                validator: uid,
+                status: 'pending'
+              }));
+              validatorsToNotify = await Utilisateur.find({ _id: { $in: rule.mandatoryValidators } });
+            } else {
+              console.log(`🔒 [MATRIX] Pas de validateurs spécifiques pour niveau ${requiredLevel}, fallback sur tous les superviseurs.`);
+              // Fallback: Tous les Superviseurs éligibles
+              validatorsToNotify = await Utilisateur.find({
+                profil: 'Superviseur Sécurité',
+                niveauValidationSecu: { $gte: requiredLevel },
+                pays: mouvement.pays
+              });
+              // On les ajoute tous commes "pending"
+              mouvement.securityApprovals = validatorsToNotify.map(u => ({
+                validator: u._id,
+                status: 'pending'
+              }));
+            }
+          } else {
+            console.log(`🔒 [MATRIX] Pas de config trouvée, fallback legacy.`);
+            // Fallback Legacy: Tous les Superviseurs éligibles
+            validatorsToNotify = await Utilisateur.find({
+              profil: 'Superviseur Sécurité',
+              niveauValidationSecu: { $gte: requiredLevel },
+              pays: mouvement.pays
+            });
+            mouvement.securityApprovals = validatorsToNotify.map(u => ({
+              validator: u._id,
+              status: 'pending'
+            }));
+          }
+
+          // Trigger Emails
+          for (const valideur of validatorsToNotify) {
             if (valideur.email) {
               mailer.sendValidationRequest(valideur.email, await mouvement.populate([{ path: 'vehicule' }, { path: 'stops.lieu' }, { path: 'demandeur' }]));
             }
           }
-        } catch (e) { console.error(e); }
+        } catch (e) {
+          console.error('❌ [MATRIX] Erreur lors de l\'initialisation des validateurs:', e);
+        }
+
       }
       // Sinon, on peut valider directement (Risque Faible OU Utilisateur habilité)
       else {
@@ -739,6 +783,7 @@ router.put('/mouvements/:id/start', auth(), countryFilter, async (req, res) => {
 });
 
 // VALIDATION SÉCURISÉE (MODULE 2)
+// VALIDATION SÉCURISÉE (MODULE 2 + SECURITY MATRIX)
 router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) => {
   try {
     console.log('🛡️ [VALIDATE MOUVEMENT] Tentative de validation:', req.params.id);
@@ -749,51 +794,122 @@ router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) =
       return res.status(404).json({ message: 'Mouvement non trouvé' });
     }
 
-    // 1. Vérifier si le mouvement nécessite une validation spéciale
-    const requiredLevel = mouvement.validationLevelRequired || 1; // Défaut à 1 (Stable)
-    console.log('🛡️ [VALIDATE MOUVEMENT] Niveau requis:', requiredLevel);
+    const requiredLevel = mouvement.validationLevelRequired || 1;
 
-    // 2. Vérifier si l'utilisateur a le droit de valider ce niveau
-    // Le niveau de l'utilisateur doit être >= au niveau de risque du trajet
-    if (req.utilisateur.niveauValidationSecu < requiredLevel) {
-      console.warn('⛔ [VALIDATE MOUVEMENT] Accès refusé: Niveau insuffisant.');
-      return res.status(403).json({
-        message: `Validation impossible. Ce trajet de niveau ${requiredLevel} nécessite une habilitation de sécurité supérieure à la vôtre (${req.utilisateur.niveauValidationSecu}).`
-      });
-    }
+    // --- NOUVELLE LOGIQUE MATRIX ---
+    // 1. Vérifier si on utilise la matrice (presence de securityApprovals)
+    if (mouvement.securityApprovals && mouvement.securityApprovals.length > 0) {
+      // Trouver la validation correspondant à l'utilisateur
+      const approvalIndex = mouvement.securityApprovals.findIndex(
+        a => a.validator.toString() === req.utilisateur.id
+      );
 
-    // 3. Procéder à la validation
-    mouvement.statut = 'validé';
+      if (approvalIndex === -1) {
+        console.warn('⛔ [VALIDATE MATRIX] Accès refusé: Utilisateur non listé dans les approbations requises.');
+        return res.status(403).json({
+          message: `Validation impossible. Vous ne faites pas partie de la liste des validateurs officiels pour ce mouvement (Matrice de Sécurité).`
+        });
+      }
 
-    // Historique de validation (Tracing)
-    mouvement.validationHistory.push({
-      validatedBy: req.utilisateur.id,
-      validatedAt: new Date(),
-      level: requiredLevel,
-      status: 'validé'
-    });
+      // Marquer comme approuvé
+      mouvement.securityApprovals[approvalIndex].status = 'approved';
+      mouvement.securityApprovals[approvalIndex].approvedAt = new Date();
+      mouvement.securityApprovals[approvalIndex].comment = req.body.comment || '';
 
-    const mouvementValide = await mouvement.save();
-    console.log('✅ [VALIDATE MOUVEMENT] Validé avec succès par:', req.utilisateur.nom);
+      console.log(`✅ [VALIDATE MATRIX] Validation partielle enregistrée pour ${req.utilisateur.nom}`);
 
-    auditService.logAction(req, 'VALIDATE_TRIP', 'SECURITY', `Trip: ${mouvementValide.objectif}`, { validatedBy: req.utilisateur.nom, level: requiredLevel });
+      // 2. Vérifier le Consensus
+      // Récupérer la config pour savoir si Unanimité ou Quorum
+      const config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base }) ||
+        await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
 
-    // --- NOTIFICATION EMAIL (MODULE 2) ---
-    try {
-      if (mouvement.demandeur) {
-        const demandeur = await Utilisateur.findById(mouvement.demandeur);
-        if (demandeur && demandeur.email) {
-          console.log(`📧 [VALIDATE MOUVEMENT] Envoi notification au demandeur (${demandeur.email})...`);
-          mailer.sendStatusUpdate(demandeur.email, await mouvementValide.populate([
-            { path: 'stops.lieu' },
-            { path: 'demandeur' }
-          ]), 'validé');
+      let isConsensusReached = false;
+      const totalApproved = mouvement.securityApprovals.filter(a => a.status === 'approved').length;
+      const totalRequired = mouvement.securityApprovals.length;
+
+      // Par défaut: Unanimité
+      let requireUnanimity = true;
+      let quorum = totalRequired;
+
+      if (config) {
+        const rule = config.rules.find(r => r.level === requiredLevel);
+        if (rule) {
+          // Si requireUnanimity est défini explicitement à false, on utilise le quorum
+          if (rule.requireUnanimity === false) {
+            requireUnanimity = false;
+            quorum = rule.quorum || 1;
+          }
         }
       }
-    } catch (emailErr) {
-      console.error('❌ [VALIDATE MOUVEMENT] Erreur notification email:', emailErr);
+
+      console.log(`🛡️ [VALIDATE MATRIX] Status: ${totalApproved}/${totalRequired} approved. Rule: ${requireUnanimity ? 'Unanimité' : 'Quorum (' + quorum + ')'}`);
+
+      if (requireUnanimity) {
+        isConsensusReached = (totalApproved === totalRequired);
+      } else {
+        isConsensusReached = (totalApproved >= quorum);
+      }
+
+      if (isConsensusReached) {
+        console.log('🎉 [VALIDATE MATRIX] Consensus Atteint ! Validation finale du mouvement.');
+        mouvement.statut = 'validé';
+        mouvement.securityConsensusReached = true;
+
+        // Historique Global (pour compatibilité)
+        mouvement.validationHistory.push({
+          validatedBy: req.utilisateur.id, // On met le dernier qui a validé
+          validatedAt: new Date(),
+          level: requiredLevel,
+          status: 'validé (Consensus)'
+        });
+
+        // Email Demandeur (Seulement au consensus final)
+        try {
+          if (mouvement.demandeur) {
+            const demandeur = await Utilisateur.findById(mouvement.demandeur);
+            if (demandeur && demandeur.email) {
+              mailer.sendStatusUpdate(demandeur.email, await mouvement.populate([{ path: 'stops.lieu' }, { path: 'demandeur' }]), 'validé');
+            }
+          }
+        } catch (e) { console.error(e); }
+
+      } else {
+        console.log('⏳ [VALIDATE MATRIX] Consensus non atteint. En attente des autres.');
+        // On reste en 'en attente validation sécurité'
+        // On ne déclenche PAS l'email de validation finale
+      }
+
+    } else {
+      // --- LOGIQUE LEGACY (Fallback) ---
+      console.log('⚠️ [VALIDATE] Mode Legacy (Pas de securityApprovals définis).');
+
+      if (req.utilisateur.niveauValidationSecu < requiredLevel) {
+        return res.status(403).json({
+          message: `Validation impossible (Legacy). Niveau requis ${requiredLevel}, votre niveau ${req.utilisateur.niveauValidationSecu}.`
+        });
+      }
+
+      mouvement.statut = 'validé';
+      mouvement.validationHistory.push({
+        validatedBy: req.utilisateur.id,
+        validatedAt: new Date(),
+        level: requiredLevel,
+        status: 'validé'
+      });
+
+      // Email (Legacy)
+      try {
+        if (mouvement.demandeur) {
+          const demandeur = await Utilisateur.findById(mouvement.demandeur);
+          if (demandeur && demandeur.email) {
+            mailer.sendStatusUpdate(demandeur.email, await mouvement.populate([{ path: 'stops.lieu' }, { path: 'demandeur' }]), 'validé');
+          }
+        }
+      } catch (e) { console.error(e); }
     }
-    // --- FIN NOTIFICATION EMAIL ---
+
+    const mouvementValide = await mouvement.save();
+    auditService.logAction(req, 'VALIDATE_TRIP', 'SECURITY', `Trip: ${mouvementValide.objectif}`, { validatedBy: req.utilisateur.nom, consensus: mouvementValide.securityConsensusReached });
 
     res.json(mouvementValide);
   } catch (err) {
