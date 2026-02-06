@@ -1,4 +1,18 @@
 {
+    "SECURITY_MATRIX": {
+        "TITLE": "Matrice de Sécurité",
+        "SUBTITLE": "Configuration des règles de validation par niveau de sécurité",
+        "LEVEL": "Niveau",
+        "REQUIRED_VALIDATORS": "Validateurs Requis",
+        "UNANIMITY": "Unanimité ?",
+        "QUORUM": "Quorum",
+        "TOOLTIP": {
+            "LEVEL": "Niveau de risque du mouvement (1-5)",
+            "REQUIRED_VALIDATORS": "Sélectionnez les superviseurs qui doivent valider les mouvements de ce risque.",
+            "UNANIMITY": "Si coché, TOUS les validateurs sélectionnés doivent approuver.",
+            "QUORUM": "Nombre minimum de validations requises (si unanimité décochée)."
+        }
+    },
     "COMMON": {
         "WELCOME": "Bienvenue",
         "LOGOUT": "Déconnexion",

@@ -1,4 +1,18 @@
 {
+    "SECURITY_MATRIX": {
+        "TITLE": "Security Matrix",
+        "SUBTITLE": "Configuration of validation rules by security level",
+        "LEVEL": "Level",
+        "REQUIRED_VALIDATORS": "Required Validators",
+        "UNANIMITY": "Unanimity?",
+        "QUORUM": "Quorum",
+        "TOOLTIP": {
+            "LEVEL": "Risk level of the movement (1-5)",
+            "REQUIRED_VALIDATORS": "Select supervisors who must validate movements of this risk.",
+            "UNANIMITY": "If checked, ALL selected validators must approve.",
+            "QUORUM": "Minimum number of approvals required (if unanimity unchecked)."
+        }
+    },
     "COMMON": {
         "WELCOME": "Welcome",
         "LOGOUT": "Logout",
