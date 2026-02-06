@@ -117,8 +117,30 @@ export class PlanningMouvementsComponent implements OnInit {
 
         // Préparer les événements pour le Dashboard - FILTRER PAR SEMAINE EN COURS
         this.currentWeekMovements = data.filter((m: any) => {
-          const mouvementStart = new Date(m.dateDepart);
-          const mouvementEnd = new Date(m.dateArrivee);
+          // Robust date extraction: try root dates first, then fallback to stops
+          let startStr = m.dateDepart;
+          let endStr = m.dateArrivee;
+
+          if (!startStr && m.stops && m.stops.length > 0) {
+            startStr = m.stops[0].dateDepart;
+          }
+          if (!endStr && m.stops && m.stops.length > 0) {
+            endStr = m.stops[m.stops.length - 1].dateArrivee;
+          }
+
+          if (!startStr || !endStr) {
+            console.warn('⚠️ Planning: Mouvement ignoré car sans date:', m);
+            return false;
+          }
+
+          const mouvementStart = new Date(startStr);
+          const mouvementEnd = new Date(endStr);
+
+          // Check for valid dates
+          if (isNaN(mouvementStart.getTime()) || isNaN(mouvementEnd.getTime())) {
+            return false;
+          }
+
           const isInCurrentWeek = mouvementStart <= endOfCurrentWeek && mouvementEnd >= startOfCurrentWeek;
           return isInCurrentWeek;
         });
