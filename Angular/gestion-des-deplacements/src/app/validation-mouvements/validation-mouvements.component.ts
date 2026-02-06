@@ -111,7 +111,7 @@ export class ValidationMouvementsComponent implements OnInit {
       console.log('🛡️ [VALIDATION] Tentative de validation sécurisée...');
       this.mouvementService.validateMouvement(mouvementId).subscribe(
         (response) => {
-          alert('Validation de sécurité effectuée avec succès ! Le mouvement est maintenant en attente logistique.');
+          alert('Validation de sécurité effectuée avec succès ! Le mouvement est maintenant validé.');
           this.loadMouvementsPourValidation();
         },
         (error) => {
