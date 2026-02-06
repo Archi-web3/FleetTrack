@@ -33,6 +33,17 @@ interface ChangelogItem {
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [
         {
+            version: 'v2.15.0',
+            date: '06 Février 2026',
+            type: 'minor',
+            changes: [
+                { category: 'Workflow', description: 'Correctif UI : Correction du message de validation post-sécurité. Confirmation claire que le mouvement est "Validé" (Fin de workflow).' },
+                { category: 'Expérience Utilisateur', description: 'Sélection Passagers : Remplacement de la liste native (Ctrl+Clic) par un sélecteur moderne (MatSelect) avec cases à cocher pour fiabiliser la saisie.' },
+                { category: 'Communication', description: 'Emails 2.0 : Refonte complète des notifications. Design professionnel, Bilingue (FR/EN), et contenu enrichi (Liste passagers, Objectif, Itinéraire, Code Couleur Risque).' },
+                { category: 'Sécurité', description: 'Matrice de Validation : Mise en production du workflow séquentiel final. Logistique -> Consolidation -> Validation Sécurité (si risque > niveau user).' }
+            ]
+        },
+        {
             version: 'v2.14.0',
             date: '02 Février 2026',
             type: 'minor',
