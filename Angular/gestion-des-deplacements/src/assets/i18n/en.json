@@ -195,7 +195,7 @@
             "ARRIVAL": "Arrival Location:",
             "SELECT_ARRIVAL": "Select arrival location",
             "ARRIVAL_DATE": "Arrival Date & Time:",
-            "PASSENGERS": "Passengers (Ctrl+click for multiple):",
+            "PASSENGERS": "Passengers:",
             "YOU": "(You)",
             "RISK_LEVEL": "Trip Risk Level:",
             "HIGH_RISK_WARNING": "⚠️ This trip requires enhanced security validation.",

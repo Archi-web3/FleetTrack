@@ -195,7 +195,7 @@
             "ARRIVAL": "Lieu d'Arrivée:",
             "SELECT_ARRIVAL": "Sélectionnez un lieu d'arrivée",
             "ARRIVAL_DATE": "Date et Heure d'Arrivée:",
-            "PASSENGERS": "Passagers (Ctrl+clic pour sélection multiple):",
+            "PASSENGERS": "Passagers :",
             "YOU": "(Vous)",
             "RISK_LEVEL": "Niveau de risque du trajet :",
             "HIGH_RISK_WARNING": "⚠️ Ce trajet nécessite une validation sécuritaire renforcée.",

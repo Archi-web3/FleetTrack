@@ -11,13 +11,16 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../auth.service'; // NOUVEAU : Importer AuthService
 import { OsrmService } from '../core/services/osrm.service'; // NOUVEAU
 
-import { MatIconModule } from '@angular/material/icon'; // Fix Build error
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-demande-mouvement',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, TranslateModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatSelectModule, MatFormFieldModule, MatOptionModule, TranslateModule],
   templateUrl: './demande-mouvement.component.html',
   styleUrls: ['./demande-mouvement.component.css']
 })

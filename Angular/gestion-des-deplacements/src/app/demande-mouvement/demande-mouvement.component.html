@@ -278,16 +278,18 @@
         </div>
       </div>
 
-      <!-- NOUVEAU : Sélection multiple des passagers -->
+      <!-- NOUVEAU : Sélection multiple des passagers (MatSelect) -->
       <div style="margin-bottom: 10px;">
-        <label for="passagers">{{ 'NEW_REQUEST.MISSION.PASSENGERS' | translate }}</label>
-        <select multiple id="passagers" name="passagers" [(ngModel)]="selectedPassagersIds"
-          style="width: 100%; padding: 8px; min-height: 100px;">
-          <option *ngFor="let user of utilisateurs" [value]="user._id">
-            {{ user.nom }} ({{ user.email }})
-            <ng-container *ngIf="user._id === authService.getUserId()"> (Vous)</ng-container>
-          </option>
-        </select>
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>{{ 'NEW_REQUEST.MISSION.PASSENGERS' | translate }}</mat-label>
+          <mat-select multiple id="passagers" name="passagers" [(ngModel)]="selectedPassagersIds">
+            <mat-option *ngFor="let user of utilisateurs" [value]="user._id">
+              {{ user.nom }} ({{ user.email }})
+              <ng-container *ngIf="user._id === authService.getUserId()"> ({{ 'NEW_REQUEST.MISSION.YOU' | translate
+                }})</ng-container>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
 
       <!-- Alerte Niveau de Risque Trajet -->
