@@ -79,7 +79,7 @@ export class MovementDashboardComponent implements OnChanges {
         this.kpi.total = tripsOnly.length;
         this.kpi.validated = tripsOnly.filter(m => m.statut === 'validé').length;
         this.kpi.inProgress = tripsOnly.filter(m => m.statut === 'en cours' || m.statut === 'pris en charge').length;
-        this.kpi.pending = tripsOnly.filter(m => m.statut === 'en attente').length;
+        this.kpi.pending = tripsOnly.filter(m => m.statut === 'en attente' || m.statut === 'en attente validation sécurité').length;
         this.kpi.completed = tripsOnly.filter(m => m.statut === 'terminé').length;
         this.kpi.cancelled = tripsOnly.filter(m => m.statut === 'annulé' || m.statut === 'refusé').length;
 
