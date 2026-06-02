@@ -1,0 +1,80 @@
+.profile-container {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 80px);
+}
+
+.profile-header {
+  margin-bottom: 24px;
+}
+
+.profile-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #00A3A8; /* Teal primary color */
+  margin-top: 4px;
+}
+
+.profile-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.profile-sidebar {
+  width: 280px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.profile-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-sidebar li {
+  padding: 16px 24px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  color: #555;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.profile-sidebar li:last-child {
+  border-bottom: none;
+}
+
+.profile-sidebar li:hover {
+  background-color: #f0f8f9;
+  color: #00A3A8;
+}
+
+.profile-sidebar li.active {
+  background-color: #00A3A8;
+  color: #fff;
+}
+
+.profile-sidebar li .arrow {
+  font-size: 18px;
+}
+
+.profile-content {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 24px;
+  min-height: 400px;
+}

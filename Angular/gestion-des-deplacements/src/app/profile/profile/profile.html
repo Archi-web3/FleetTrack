@@ -1,0 +1,34 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h2>Profile</h2>
+    <div class="breadcrumb">Dashboard > Profile</div>
+  </div>
+
+  <div class="profile-layout">
+    <aside class="profile-sidebar">
+      <ul>
+        <li [class.active]="activeTab === 'personal-info'" (click)="setTab('personal-info')">
+          Personal Info <span class="arrow">›</span>
+        </li>
+        <li [class.active]="activeTab === 'change-password'" (click)="setTab('change-password')">
+          Change Password <span class="arrow">›</span>
+        </li>
+        <li [class.active]="activeTab === 'notification-preferences'" (click)="setTab('notification-preferences')">
+          Notification Preferences <span class="arrow">›</span>
+        </li>
+        <li [class.active]="activeTab === 'active-devices'" (click)="setTab('active-devices')">
+          Active Devices <span class="arrow">›</span>
+        </li>
+      </ul>
+    </aside>
+
+    <main class="profile-content">
+      <ng-container [ngSwitch]="activeTab">
+        <app-personal-info *ngSwitchCase="'personal-info'"></app-personal-info>
+        <app-change-password *ngSwitchCase="'change-password'"></app-change-password>
+        <app-notification-preferences *ngSwitchCase="'notification-preferences'"></app-notification-preferences>
+        <app-active-devices *ngSwitchCase="'active-devices'"></app-active-devices>
+      </ng-container>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="personal-info-container">
+  <div class="header-section">
+    <div class="title-wrap">
+      <h3>Personal Information</h3>
+      <p>Details about your personal information</p>
+    </div>
+    <span class="badge">CENTRAL ADMIN</span>
+  </div>
+
+  <form [formGroup]="personalInfoForm" (ngSubmit)="onSubmit()" class="form-layout">
+    <div class="left-col">
+      <div class="avatar-wrapper">
+        <img src="assets/images/default-avatar.png" alt="Avatar" class="avatar-img" onerror="this.src='https://via.placeholder.com/150'">
+      </div>
+      <button type="button" class="btn-upload">Choose file here</button>
+      <p class="upload-note">Please upload a valid image file. Size of image should not be more than 2MB.</p>
+    </div>
+
+    <div class="right-col">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" formControlName="fullName">
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" formControlName="email">
+      </div>
+
+      <div class="form-group">
+        <label>Mobile No</label>
+        <input type="tel" formControlName="mobileNo" placeholder="Enter Your Mobile No">
+        <small class="error-text">Please add mobile number with country code. (ex. +91)</small>
+      </div>
+
+      <div class="form-group">
+        <label>Language</label>
+        <select formControlName="language">
+          <option value="English">English</option>
+          <option value="French">French</option>
+          <option value="Spanish">Spanish</option>
+        </select>
+      </div>
+
+      <div class="form-group row-group">
+        <label>Available</label>
+        <div class="radio-group">
+          <label><input type="radio" formControlName="available" value="yes"> Yes</label>
+          <label><input type="radio" formControlName="available" value="no"> No</label>
+        </div>
+        <small class="help-text">If set to No, trip requests and notifications will be redirected to your backup contact.</small>
+      </div>
+    </div>
+  </form>
+
+  <div class="readonly-grid">
+    <div class="form-group">
+      <label>Division</label>
+      <input type="text" formControlName="division" disabled>
+    </div>
+    <div class="form-group">
+      <label>Program</label>
+      <input type="text" formControlName="program" disabled>
+    </div>
+    <div class="form-group">
+      <label>Country</label>
+      <input type="text" formControlName="country" disabled>
+    </div>
+    <div class="form-group">
+      <label>Zone</label>
+      <input type="text" formControlName="zone" disabled>
+    </div>
+    <div class="form-group">
+      <label>Site</label>
+      <input type="text" formControlName="site" disabled>
+    </div>
+  </div>
+</div>

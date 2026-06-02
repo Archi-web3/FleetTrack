@@ -1,0 +1,44 @@
+<div class="devices-container">
+  <div class="header-section">
+    <h3>Active Devices</h3>
+    <p>Details about your account active devices</p>
+  </div>
+
+  <div class="table-responsive">
+    <table class="devices-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>BROWSER</th>
+          <th>DEVICE</th>
+          <th>IP ADDRESS</th>
+          <th>LAST ACTION</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let device of devices; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>
+            <div class="browser-info">
+              <span class="browser-icon" [ngClass]="{'current': device.current}">🌐</span>
+              {{ device.browser }} <span *ngIf="device.current" class="current-badge">(Current)</span>
+            </div>
+          </td>
+          <td>{{ device.device }}</td>
+          <td>{{ device.ip }}</td>
+          <td>{{ device.lastAction }}</td>
+          <td>
+            <button type="button" class="btn-logout" *ngIf="!device.current" (click)="logoutDevice(device.id)">
+              Log Out
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="action-row">
+    <button type="button" class="btn-logout-all" (click)="logoutAllOthers()">Logout From All Other Devices</button>
+  </div>
+</div>
