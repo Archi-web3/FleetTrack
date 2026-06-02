@@ -36,7 +36,7 @@ router.post('/chauffeurs', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (
     // Génération email/password par défaut car le formulaire simple ne les fournit pas
     const timestamp = Date.now();
     const defaultEmail = `driver.${timestamp}@acf.local`; // Email fictif unique
-    const defaultPassword = "AcfDriver123!"; // Mot de passe par défaut
+    const defaultPassword = process.env.DEFAULT_DRIVER_PASSWORD || "AcfDriver123!"; // Mot de passe par défaut configuré via env
 
     const chauffeur = new Utilisateur({
       nom: req.body.nom,

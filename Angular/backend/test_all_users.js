@@ -1,11 +1,12 @@
 const axios = require('axios');
 
 async function testAllUsers() {
+    const testPassword = process.env.TEST_PASSWORD || '123456';
     const users = [
-        { email: 'superadmin@acf.org', password: '123456', name: 'SuperAdmin' },
-        { email: 'admin@acf-rdc.org', password: '123456', name: 'Admin RDC' },
-        { email: 'charroi@acf-rdc.org', password: '123456', name: 'Superviseur' },
-        { email: 'muhindo@acf-rdc.org', password: '123456', name: 'Chauffeur' }
+        { email: 'superadmin@acf.org', password: testPassword, name: 'SuperAdmin' },
+        { email: 'admin@acf-rdc.org', password: testPassword, name: 'Admin RDC' },
+        { email: 'charroi@acf-rdc.org', password: testPassword, name: 'Superviseur' },
+        { email: 'muhindo@acf-rdc.org', password: testPassword, name: 'Chauffeur' }
     ];
 
     console.log('=== TEST DE TOUS LES UTILISATEURS ===\n');

@@ -30,8 +30,8 @@ async function testAuth() {
 
         // 2. Tester la comparaison de mot de passe
         console.log('\n2. Test de comparaison du mot de passe...');
-        const testPassword = '123456';
-        console.log('  Mot de passe testé:', testPassword);
+        const testPassword = process.env.TEST_PASSWORD || '123456';
+        console.log('  Mot de passe testé: [MASQUÉ]');
 
         const isMatch = await user.comparePassword(testPassword);
         console.log('  Résultat de comparePassword():', isMatch);
@@ -49,7 +49,7 @@ async function testAuth() {
             const newAdmin = new Utilisateur({
                 nom: 'Super Admin',
                 email: 'superadmin@acf.org',
-                motDePasse: '123456',
+                motDePasse: testPassword,
                 profil: 'SuperAdmin'
             });
             await newAdmin.save();
