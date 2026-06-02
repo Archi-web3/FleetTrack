@@ -30,14 +30,9 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'trip-management',
-    loadComponent: () => import('./trip-management/trip-management').then(m => m.TripManagementComponent),
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'mes-mouvements',
-    redirectTo: 'trip-management',
-    pathMatch: 'full'
+    component: ListeMouvementsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'security-alerts',
@@ -63,8 +58,8 @@ export const routes: Routes = [
   },
   {
     path: 'planning',
-    redirectTo: 'trip-management',
-    pathMatch: 'full'
+    component: PlanningMouvementsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'suivi-maintenance',

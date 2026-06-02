@@ -2,26 +2,28 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PersonalInfoComponent } from '../personal-info/personal-info';
 import { ChangePasswordComponent } from '../change-password/change-password';
-import { NotificationPreferencesComponent } from '../notification-preferences/notification-preferences';
-import { ActiveDevicesComponent } from '../active-devices/active-devices';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
-    CommonModule,
-    PersonalInfoComponent,
+    CommonModule, 
+    PersonalInfoComponent, 
     ChangePasswordComponent,
-    NotificationPreferencesComponent,
-    ActiveDevicesComponent
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule
   ],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css']
 })
 export class ProfileComponent {
-  activeTab: string = 'personal-info';
+  activeTab: 'personal' | 'password' = 'personal';
 
-  setTab(tab: string) {
+  setTab(tab: 'personal' | 'password') {
     this.activeTab = tab;
   }
 }

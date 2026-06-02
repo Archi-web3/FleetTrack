@@ -1,34 +1,30 @@
-<div class="profile-container">
-  <div class="profile-header">
-    <h2>Profile</h2>
-    <div class="breadcrumb">Dashboard > Profile</div>
-  </div>
+<div style="padding: 24px; max-width: 1000px; margin: 0 auto;">
+  <h2 style="margin-bottom: 24px; color: #333; font-weight: 500;">Profil Utilisateur</h2>
 
-  <div class="profile-layout">
-    <aside class="profile-sidebar">
-      <ul>
-        <li [class.active]="activeTab === 'personal-info'" (click)="setTab('personal-info')">
-          Personal Info <span class="arrow">›</span>
-        </li>
-        <li [class.active]="activeTab === 'change-password'" (click)="setTab('change-password')">
-          Change Password <span class="arrow">›</span>
-        </li>
-        <li [class.active]="activeTab === 'notification-preferences'" (click)="setTab('notification-preferences')">
-          Notification Preferences <span class="arrow">›</span>
-        </li>
-        <li [class.active]="activeTab === 'active-devices'" (click)="setTab('active-devices')">
-          Active Devices <span class="arrow">›</span>
-        </li>
-      </ul>
-    </aside>
+  <div style="display: flex; gap: 24px;">
+    <!-- Menu Latéral -->
+    <div style="width: 250px; flex-shrink: 0;">
+      <mat-card>
+        <div class="nav-menu">
+          <button class="nav-item" [class.active]="activeTab === 'personal'" (click)="setTab('personal')">
+            <mat-icon>person</mat-icon>
+            Informations Personnelles
+          </button>
+          
+          <button class="nav-item" [class.active]="activeTab === 'password'" (click)="setTab('password')">
+            <mat-icon>lock</mat-icon>
+            Mot de passe
+          </button>
+        </div>
+      </mat-card>
+    </div>
 
-    <main class="profile-content">
-      <ng-container [ngSwitch]="activeTab">
-        <app-personal-info *ngSwitchCase="'personal-info'"></app-personal-info>
-        <app-change-password *ngSwitchCase="'change-password'"></app-change-password>
-        <app-notification-preferences *ngSwitchCase="'notification-preferences'"></app-notification-preferences>
-        <app-active-devices *ngSwitchCase="'active-devices'"></app-active-devices>
-      </ng-container>
-    </main>
+    <!-- Contenu -->
+    <div style="flex: 1;">
+      <mat-card style="padding: 24px;">
+        <app-personal-info *ngIf="activeTab === 'personal'"></app-personal-info>
+        <app-change-password *ngIf="activeTab === 'password'"></app-change-password>
+      </mat-card>
+    </div>
   </div>
 </div>
