@@ -4,7 +4,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Utiliser l'URI Atlas sans spécifier de base de données
-const ATLAS_URI = 'mongodb+srv://dbGestiondeplacement:AiVdLDd0cXKhXR1j@cluster0.662bzca.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const ATLAS_URI = process.env.ATLAS_URI || process.env.MONGODB_URI;
+
+if (!ATLAS_URI) {
+    console.error("❌ ERREUR: La variable d'environnement ATLAS_URI ou MONGODB_URI n'est pas définie.");
+    process.exit(1);
+}
 
 async function listAllDatabases() {
     try {
