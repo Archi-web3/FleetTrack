@@ -1,0 +1,32 @@
+<div class="trip-management-container">
+  <div class="header-section">
+    <div class="title-wrap">
+      <h3>Manage Trip Request</h3>
+      <p>View and manage all fleet trip requests</p>
+    </div>
+
+    <!-- List/Calendar Toggle Button Group -->
+    <div class="view-toggle">
+      <button 
+        class="toggle-btn" 
+        [class.active]="currentView === 'list'" 
+        (click)="setView('list')">
+        <span class="icon">📋</span> List View
+      </button>
+      <button 
+        class="toggle-btn" 
+        [class.active]="currentView === 'calendar'" 
+        (click)="setView('calendar')">
+        <span class="icon">📅</span> Calendar View
+      </button>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <!-- Render List View -->
+    <app-liste-mouvements *ngIf="currentView === 'list'"></app-liste-mouvements>
+
+    <!-- Render Calendar View -->
+    <app-planning-mouvements *ngIf="currentView === 'calendar'"></app-planning-mouvements>
+  </div>
+</div>
