@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-personal-info',
@@ -11,27 +12,28 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 })
 export class PersonalInfoComponent implements OnInit {
   personalInfoForm!: FormGroup;
+  userProfileLabel: string = '';
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private authService: AuthService) {}
 
   ngOnInit() {
+    this.userProfileLabel = this.authService.getUserProfile() || 'Utilisateur';
+
     this.personalInfoForm = this.fb.group({
-      fullName: ['Central Admin', Validators.required],
-      email: ['superadmin@acf.org', [Validators.required, Validators.email]],
-      mobileNo: ['', Validators.required],
-      language: ['English', Validators.required],
+      fullName: [this.authService.getUserName() || '', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      mobileNo: [''],
+      language: ['Français', Validators.required],
       available: ['yes', Validators.required],
-      division: [{value: '', disabled: true}],
-      program: [{value: '', disabled: true}],
-      country: [{value: '', disabled: true}],
-      zone: [{value: '', disabled: true}],
-      site: [{value: '', disabled: true}],
+      bureauPays: [{value: this.authService.getUserPays() || '', disabled: true}],
+      base: [{value: this.authService.getUserBase() || '', disabled: true}],
     });
   }
 
   onSubmit() {
     if (this.personalInfoForm.valid) {
-      console.log('Saved Personal Info', this.personalInfoForm.value);
+      console.log('Saved Personal Info', this.personalInfoForm.getRawValue());
+      alert('Informations personnelles mises à jour (Simulation).');
     }
   }
 }

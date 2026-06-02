@@ -1,10 +1,10 @@
 <div class="personal-info-container">
   <div class="header-section">
     <div class="title-wrap">
-      <h3>Personal Information</h3>
-      <p>Details about your personal information</p>
+      <h3>Informations Personnelles</h3>
+      <p>Détails de votre profil utilisateur</p>
     </div>
-    <span class="badge">CENTRAL ADMIN</span>
+    <span class="badge">{{ userProfileLabel | uppercase }}</span>
   </div>
 
   <form [formGroup]="personalInfoForm" (ngSubmit)="onSubmit()" class="form-layout">
@@ -12,13 +12,13 @@
       <div class="avatar-wrapper">
         <img src="assets/images/default-avatar.png" alt="Avatar" class="avatar-img" onerror="this.src='https://via.placeholder.com/150'">
       </div>
-      <button type="button" class="btn-upload">Choose file here</button>
-      <p class="upload-note">Please upload a valid image file. Size of image should not be more than 2MB.</p>
+      <button type="button" class="btn-upload">Changer la photo</button>
+      <p class="upload-note">Taille max: 2MB.</p>
     </div>
 
     <div class="right-col">
       <div class="form-group">
-        <label>Full Name</label>
+        <label>Nom Complet</label>
         <input type="text" formControlName="fullName">
       </div>
 
@@ -28,51 +28,41 @@
       </div>
 
       <div class="form-group">
-        <label>Mobile No</label>
-        <input type="tel" formControlName="mobileNo" placeholder="Enter Your Mobile No">
-        <small class="error-text">Please add mobile number with country code. (ex. +91)</small>
+        <label>Numéro Mobile</label>
+        <input type="tel" formControlName="mobileNo" placeholder="Ex. +33612345678">
       </div>
 
       <div class="form-group">
-        <label>Language</label>
+        <label>Langue</label>
         <select formControlName="language">
+          <option value="Français">Français</option>
           <option value="English">English</option>
-          <option value="French">French</option>
-          <option value="Spanish">Spanish</option>
+          <option value="Español">Español</option>
         </select>
       </div>
 
       <div class="form-group row-group">
-        <label>Available</label>
+        <label>Disponible</label>
         <div class="radio-group">
-          <label><input type="radio" formControlName="available" value="yes"> Yes</label>
-          <label><input type="radio" formControlName="available" value="no"> No</label>
+          <label><input type="radio" formControlName="available" value="yes"> Oui</label>
+          <label><input type="radio" formControlName="available" value="no"> Non</label>
         </div>
-        <small class="help-text">If set to No, trip requests and notifications will be redirected to your backup contact.</small>
+      </div>
+
+      <div class="readonly-grid" style="margin-top: 20px;">
+        <div class="form-group">
+          <label>Bureau Pays</label>
+          <input type="text" formControlName="bureauPays">
+        </div>
+        <div class="form-group">
+          <label>Base</label>
+          <input type="text" formControlName="base">
+        </div>
+      </div>
+
+      <div style="margin-top: 30px; text-align: right;">
+        <button type="submit" class="btn-save" [disabled]="!personalInfoForm.valid">Enregistrer</button>
       </div>
     </div>
   </form>
-
-  <div class="readonly-grid">
-    <div class="form-group">
-      <label>Division</label>
-      <input type="text" formControlName="division">
-    </div>
-    <div class="form-group">
-      <label>Program</label>
-      <input type="text" formControlName="program">
-    </div>
-    <div class="form-group">
-      <label>Country</label>
-      <input type="text" formControlName="country">
-    </div>
-    <div class="form-group">
-      <label>Zone</label>
-      <input type="text" formControlName="zone">
-    </div>
-    <div class="form-group">
-      <label>Site</label>
-      <input type="text" formControlName="site">
-    </div>
-  </div>
 </div>
