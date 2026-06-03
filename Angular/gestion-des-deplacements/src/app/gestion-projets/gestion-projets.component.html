@@ -1,137 +1,126 @@
-<div style="padding: 20px;">
-    <h2>{{ 'PROJECTS.TITLE' | translate }}</h2>
-
-    <!-- Formulaire de création -->
-    <mat-card style="margin-bottom: 20px;">
-        <mat-card-header>
-            <mat-card-title>{{ 'PROJECTS.CREATE_TITLE' | translate }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form #newProjetForm="ngForm" (ngSubmit)="addProjet()">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'PROJECTS.FIELDS.CODE' | translate }} *</mat-label>
-                        <input matInput type="text" name="newProjetCode" [(ngModel)]="newProjet.code" required>
-                        <mat-hint>Ex: WASH-001, NUT-002</mat-hint>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'PROJECTS.FIELDS.NAME' | translate }} *</mat-label>
-                        <input matInput type="text" name="newProjetNom" [(ngModel)]="newProjet.nom" required>
-                    </mat-form-field>
-                </div>
-
-                <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 15px;">
-                    <mat-label>{{ 'PROJECTS.FIELDS.DESCRIPTION' | translate }}</mat-label>
-                    <textarea matInput name="newProjetDescription" [(ngModel)]="newProjet.description"
-                        rows="3"></textarea>
-                </mat-form-field>
-
-                <div style="margin-bottom: 15px;">
-                    <mat-checkbox name="newProjetActif" [(ngModel)]="newProjet.actif">{{ 'PROJECTS.FIELDS.ACTIVE' |
-                        translate }}</mat-checkbox>
-                </div>
-
-                <button mat-raised-button color="primary" type="submit" [disabled]="!newProjetForm.form.valid">
-                    <mat-icon>add</mat-icon> {{ 'PROJECTS.CREATE_BTN' | translate }}
-                </button>
-            </form>
-        </mat-card-content>
-    </mat-card>
-
-    <!-- Liste des projets -->
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>{{ 'PROJECTS.LIST_TITLE' | translate }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <table mat-table [dataSource]="projets" style="width: 100%;">
-                <!-- Colonne Nom -->
-                <ng-container matColumnDef="nom">
-                    <th mat-header-cell *matHeaderCellDef>{{ 'PROJECTS.TABLE.NAME' | translate }}</th>
-                    <td mat-cell *matCellDef="let projet">{{ projet.nom }}</td>
-                </ng-container>
-
-                <!-- Colonne Code -->
-                <ng-container matColumnDef="code">
-                    <th mat-header-cell *matHeaderCellDef>{{ 'PROJECTS.TABLE.CODE' | translate }}</th>
-                    <td mat-cell *matCellDef="let projet">{{ projet.code || '-' }}</td>
-                </ng-container>
-
-                <!-- Colonne Actif -->
-                <ng-container matColumnDef="actif">
-                    <th mat-header-cell *matHeaderCellDef>{{ 'PROJECTS.TABLE.STATUS' | translate }}</th>
-                    <td mat-cell *matCellDef="let projet">
-                        <span [style.color]="projet.actif ? '#52ae32' : '#999'">
-                            {{ projet.actif ? '✓ Actif' : '✗ Inactif' }}
-                        </span>
-                    </td>
-                </ng-container>
-
-                <!-- Colonne Actions -->
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>{{ 'PROJECTS.TABLE.ACTIONS' | translate }}</th>
-                    <td mat-cell *matCellDef="let projet">
-                        <button mat-icon-button color="primary" (click)="selectProjet(projet)" title="Modifier">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                        <button mat-icon-button color="warn" (click)="deleteProjet(projet._id, projet.nom)"
-                            *ngIf="userProfile === 'SuperAdmin'" title="Supprimer">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-
-            <p *ngIf="projets.length === 0" style="text-align: center; padding: 20px; color: #999;">
-                {{ 'PROJECTS.NO_DATA' | translate }}
-            </p>
-        </mat-card-content>
-    </mat-card>
-
-    <!-- Formulaire d'édition (modal) -->
-    <mat-card *ngIf="selectedProjet" style="margin-top: 20px; border: 2px solid #005fb6;">
-        <mat-card-header
-            style="background-color: #005fb6; color: white; padding: 15px; margin: -16px -16px 16px -16px;">
-            <mat-card-title>Modifier le Projet</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form #editProjetForm="ngForm" (ngSubmit)="updateProjet()">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'PROJECTS.FIELDS.CODE' | translate }} *</mat-label>
-                        <input matInput type="text" name="editProjetCode" [(ngModel)]="selectedProjet.code" required>
-                        <mat-hint>Ex: WASH-001, NUT-002</mat-hint>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'PROJECTS.FIELDS.NAME' | translate }} *</mat-label>
-                        <input matInput type="text" name="editProjetNom" [(ngModel)]="selectedProjet.nom" required>
-                    </mat-form-field>
-                </div>
-
-                <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 15px;">
-                    <mat-label>{{ 'PROJECTS.FIELDS.DESCRIPTION' | translate }}</mat-label>
-                    <textarea matInput name="editProjetDescription" [(ngModel)]="selectedProjet.description"
-                        rows="3"></textarea>
-                </mat-form-field>
-
-                <div style="margin-bottom: 15px;">
-                    <mat-checkbox name="editProjetActif" [(ngModel)]="selectedProjet.actif">{{ 'PROJECTS.FIELDS.ACTIVE'
-                        | translate }}</mat-checkbox>
-                </div>
-
-                <button mat-raised-button color="accent" type="submit" [disabled]="!editProjetForm.form.valid"
-                    style="margin-right: 10px;">
-                    <mat-icon>save</mat-icon> {{ 'COMMON.UPDATE' | translate }}
-                </button>
-                <button mat-button type="button" (click)="cancelEdit()">
-                    <mat-icon>cancel</mat-icon> {{ 'COMMON.CANCEL' | translate }}
-                </button>
-            </form>
-        </mat-card-content>
-    </mat-card>
+<div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px;">
+  <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+    <mat-icon style="color: var(--primary-color);">assignment</mat-icon>
+    Gestion des Projets
+  </h2>
+  <div style="display: flex; gap: 15px; align-items: center;">
+    <button mat-flat-button color="primary" (click)="openProjetModal()" *ngIf="userProfile === 'SuperAdmin'">
+      <mat-icon>add</mat-icon> NOUVEAU PROJET
+    </button>
+  </div>
 </div>
+
+<div class="table-container">
+  <div class="table-header-container">
+    <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px;">
+      <mat-label>Colonnes affichées</mat-label>
+      <mat-select multiple [(ngModel)]="displayedColumns">
+        <mat-option *ngFor="let col of allColumns" [value]="col.def">{{ col.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="custom-search-input">
+      <mat-icon>search</mat-icon>
+      <input type="text" (keyup)="applyFilter($event)" placeholder="Rechercher...">
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort style="width: 100%;">
+      
+      <ng-container matColumnDef="nom">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.nom}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+        <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <td mat-cell *matCellDef="let element"> {{element.description || '-'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actif">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
+        <td mat-cell *matCellDef="let element"> 
+          <mat-icon [style.color]="element.actif ? '#4caf50' : '#f44336'">
+            {{ element.actif ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action-buttons" *ngIf="userProfile === 'SuperAdmin'">
+            <button mat-icon-button color="primary" (click)="openProjetModal(element)" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteProjet(element._id)" matTooltip="Supprimer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+</div>
+
+<!-- MODAL NOUVEAU / MODIFIER PROJET -->
+<ng-template #projetFormDialog>
+  <div class="custom-modal-layout" style="width: 100%;">
+    <div class="custom-modal-header">
+      <h2>
+        <mat-icon>assignment</mat-icon>
+        {{ selectedProjet ? 'Modifier le projet' : 'Nouveau projet' }}
+      </h2>
+      <button class="custom-modal-close-btn" (click)="closeProjetModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="custom-modal-body">
+      <form (ngSubmit)="saveProjet()" #projetForm="ngForm" id="projetForm">
+        
+        <div class="modern-form-group">
+          <label>Nom du projet *</label>
+          <input class="modern-input" type="text" name="projetNom" [(ngModel)]="newProjet.nom" required>
+        </div>
+        
+        <div class="modern-form-group">
+          <label>Code du projet *</label>
+          <input class="modern-input" type="text" name="projetCode" [(ngModel)]="newProjet.code" required>
+        </div>
+
+        <div class="modern-form-group">
+          <label>Description</label>
+          <textarea class="modern-input" name="projetDesc" [(ngModel)]="newProjet.description" rows="3"></textarea>
+        </div>
+
+        <div style="margin-top: 15px;">
+          <label style="display: flex; align-items: center; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" name="projetActif" [(ngModel)]="newProjet.actif" style="width: auto; margin-right: 10px; transform: scale(1.5);">
+            Projet Actif
+          </label>
+        </div>
+
+      </form>
+    </div>
+    
+    <div class="custom-modal-footer">
+      <button class="custom-modal-btn-cancel" (click)="closeProjetModal()">
+        <mat-icon>close</mat-icon> Annuler
+      </button>
+      <button class="custom-modal-btn-submit" type="submit" form="projetForm" [disabled]="!projetForm.form.valid">
+        <mat-icon>check</mat-icon> {{ selectedProjet ? 'Mettre à jour' : 'Enregistrer' }}
+      </button>
+    </div>
+  </div>
+</ng-template>
