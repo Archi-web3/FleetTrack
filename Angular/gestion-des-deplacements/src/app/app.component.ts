@@ -14,6 +14,9 @@ import { CountrySelectorComponent } from './country-selector/country-selector.co
 import { LanguageSelectorComponent } from './language-selector/language-selector.component';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { MatDialog } from '@angular/material/dialog';
+import { DemandeMouvementComponent } from './demande-mouvement/demande-mouvement.component';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -29,7 +32,16 @@ export class AppComponent implements OnInit {
   userPays: string | null = null;
   userBase: string | null = null;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private dialog: MatDialog) { }
+
+  openNouvelleDemandeModal(): void {
+    this.dialog.open(DemandeMouvementComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-container'
+    });
+  }
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe(status => {

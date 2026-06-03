@@ -53,7 +53,7 @@
         <mat-icon>person</mat-icon> {{ 'MENU.GROUPS.MY_SPACE' | translate }} <mat-icon>expand_more</mat-icon>
       </button>
       <mat-menu #mySpaceMenu="matMenu">
-        <button mat-menu-item routerLink="/demande-mouvement"><mat-icon>add_circle_outline</mat-icon><span>{{ 'MENU.NEW_REQUEST' | translate }}</span></button>
+        <button mat-menu-item (click)="openNouvelleDemandeModal()"><mat-icon>add_circle_outline</mat-icon><span>{{ 'MENU.NEW_REQUEST' | translate }}</span></button>
         <button mat-menu-item routerLink="/mes-mouvements"><mat-icon>history</mat-icon><span>{{ 'MENU.MY_TRIPS' | translate }}</span></button>
       </mat-menu>
 

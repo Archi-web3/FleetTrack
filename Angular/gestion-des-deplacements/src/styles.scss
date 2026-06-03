@@ -260,6 +260,109 @@ body {
   background-color: white !important;
 }
 
+/* =========================================
+   CUSTOM MODERN INPUTS (Search & Filters)
+   ========================================= */
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.custom-search-input {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 12px;
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+  height: 40px;
+  box-sizing: border-box;
+  min-width: 250px;
+}
+
+.custom-search-input:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.custom-search-input mat-icon {
+  color: #9ca3af;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.custom-search-input input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 14px;
+  color: #374151;
+}
+
+.custom-search-input input::placeholder {
+  color: #9ca3af;
+}
+
+/* =========================================
+   DYNAMIC TABLE WRAPPER
+   ========================================= */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header-title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-header-title mat-icon {
+  color: var(--primary-color);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Overlay backdrop plus visible */
 .cdk-overlay-backdrop {
   background-color: rgba(0, 0, 0, 0.5) !important;

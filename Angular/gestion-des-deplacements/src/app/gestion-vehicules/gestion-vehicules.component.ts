@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VehiculeService } from '../vehicule.service';
@@ -7,14 +7,29 @@ import { AdminService } from '../admin.service';
 import { SettingsService } from '../settings.service';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 @Component({
   selector: 'app-gestion-vehicules',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [
+    CommonModule, FormsModule, TranslateModule,
+    MatTableModule, MatPaginatorModule, MatSortModule,
+    MatIconModule, MatButtonModule, MatSelectModule,
+    MatDialogModule, MatFormFieldModule, MatInputModule
+  ],
   templateUrl: './gestion-vehicules.component.html',
   styleUrls: ['./gestion-vehicules.component.css']
 })
-export class GestionVehiculesComponent implements OnInit {
+export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   vehicules: any[] = [];
   newVehicule: any = {
     marque: '',
@@ -43,6 +58,22 @@ export class GestionVehiculesComponent implements OnInit {
   userPaysId: string | null = null;
   userBaseId: string | null = null;
 
+  // Table Data
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('vehiculeFormDialog') vehiculeFormDialog!: TemplateRef<any>;
+
+  allColumns = [
+    { def: 'immatriculation', label: 'Immatriculation' },
+    { def: 'marque', label: 'Marque/Modèle' },
+    { def: 'acfCode', label: 'Code ACF' },
+    { def: 'typePropriete', label: 'Propriété' },
+    { def: 'statut', label: 'Statut' },
+    { def: 'actions', label: 'Actions' }
+  ];
+  displayedColumns: string[] = ['immatriculation', 'marque', 'acfCode', 'typePropriete', 'statut', 'actions'];
+
   // Pour SuperAdmin
   paysList: any[] = [];
   basesList: any[] = [];
@@ -54,7 +85,8 @@ export class GestionVehiculesComponent implements OnInit {
     private vehiculeService: VehiculeService,
     private authService: AuthService,
     private adminService: AdminService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -108,6 +140,57 @@ export class GestionVehiculesComponent implements OnInit {
     { code: 22, name: 'Eau' }
   ];
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    // Helper pour chercher correctement même dans les objets imbriqués
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const dataStr = Object.keys(data).reduce((currentTerm, key) => {
+        return currentTerm + (data as { [key: string]: any })[key] + '◬';
+      }, '').toLowerCase();
+      const transformedFilter = filter.trim().toLowerCase();
+      return dataStr.indexOf(transformedFilter) != -1;
+    };
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  openVehiculeModal(vehicule?: any) {
+    if (vehicule) {
+      this.selectVehicule(vehicule);
+    } else {
+      this.selectedVehicule = null;
+      // Reset form
+      this.newVehicule = {
+        marque: '', modele: '', immatriculation: '', acfCode: '', typePropriete: 'ACF',
+        locationDetails: { nomLoueur: '', dateDebut: null, dateFin: null },
+        achatDetails: { dateAchat: null, valeurAchat: null },
+        type: 'Voiture', capacitePassagers: 1, kilometrageInitial: 0,
+        enService: true, enableGpsTracking: false,
+        pays: this.userProfile === 'SuperAdmin' ? '' : this.userPaysId,
+        base: this.userProfile === 'SuperAdmin' ? '' : this.userBaseId,
+        emissionsCO2: { valeur: null, source: 'Constructeur' },
+        consommation: { valeur: null, source: 'Constructeur', dateTest: null },
+        assurance: { nomAssureur: '', dateFin: null, certificatUrl: '' },
+        statut: 'En Service'
+      };
+      this.newVehicule.equipementsDisplay = this.STANDARD_EQUIPMENTS.map(std => ({
+        ...std, isPresent: false, lastChecked: null
+      }));
+    }
+    this.dialog.open(this.vehiculeFormDialog, { width: '800px', panelClass: 'custom-dialog-container', maxWidth: '95vw', maxHeight: '90vh' });
+  }
+
+  closeVehiculeModal() {
+    this.dialog.closeAll();
+  }
+
   loadPays(): void {
     this.adminService.getPays().subscribe(
       (data) => this.paysList = data,
@@ -134,23 +217,16 @@ export class GestionVehiculesComponent implements OnInit {
   loadVehicules(): void {
     this.vehiculeService.getVehicules().subscribe(
       (data) => {
-        // Filtrage côté client
         if (this.userProfile === 'SuperAdmin') {
-          // SuperAdmin voit tout
           this.vehicules = data;
         } else if (!this.showAllBasesInPays && this.userBaseId) {
-          // Afficher uniquement les véhicules de ma base (exclure les véhicules sans base)
-          this.vehicules = data.filter((v: any) =>
-            v.base && v.base._id === this.userBaseId
-          );
+          this.vehicules = data.filter((v: any) => v.base && v.base._id === this.userBaseId);
         } else if (this.showAllBasesInPays && this.userPaysId) {
-          // Afficher tous les véhicules du même pays (exclure les véhicules sans pays)
-          this.vehicules = data.filter((v: any) =>
-            v.pays && v.pays._id === this.userPaysId
-          );
+          this.vehicules = data.filter((v: any) => v.pays && v.pays._id === this.userPaysId);
         } else {
           this.vehicules = data;
         }
+        this.dataSource.data = this.vehicules;
       },
       (error) => console.error('Erreur chargement véhicules:', error)
     );
@@ -195,6 +271,7 @@ export class GestionVehiculesComponent implements OnInit {
           ...std, isPresent: false, lastChecked: null
         }));
         this.loadVehicules();
+        this.closeVehiculeModal();
       },
       (error) => {
         console.error('Erreur création véhicule:', error);
@@ -259,6 +336,7 @@ export class GestionVehiculesComponent implements OnInit {
         alert('Véhicule mis à jour avec succès !');
         this.selectedVehicule = null;
         this.loadVehicules();
+        this.closeVehiculeModal();
       },
       (error) => {
         console.error('Erreur mise à jour véhicule:', error);
