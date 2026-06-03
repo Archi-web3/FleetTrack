@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MouvementService } from '../mouvement.service';
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../auth.service'; // NOUVEAU : Importer AuthService
 import { OsrmService } from '../core/services/osrm.service'; // NOUVEAU
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -94,6 +95,7 @@ export class DemandeMouvementComponent implements OnInit {
   // NOUVEAU : Estimation du trajet
   estimation: { distance: string, duration: string } | null = null;
   isCalculatingEstimation: boolean = false;
+  isModal: boolean = false; // Flag to check if component is opened in a modal
 
   constructor(
     private mouvementService: MouvementService,
@@ -103,8 +105,17 @@ export class DemandeMouvementComponent implements OnInit {
     private lieuService: LieuService,
     private router: Router,
     public authService: AuthService,
-    private osrmService: OsrmService // NOUVEAU
-  ) { }
+    private osrmService: OsrmService, // NOUVEAU
+    @Optional() private dialogRef: MatDialogRef<DemandeMouvementComponent>
+  ) {
+    this.isModal = !!this.dialogRef;
+  }
+
+  closeModal(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+  }
 
   ngOnInit(): void {
     this.userProfile = this.authService.getUserProfile();
@@ -410,7 +421,11 @@ export class DemandeMouvementComponent implements OnInit {
 
         if (countSuccess > 0) {
           alert(this.isRecurring ? `${countSuccess} créneaux de maintenance créés !` : 'Créneau de maintenance créé avec succès !');
-          this.router.navigate(['/']);
+          if (this.dialogRef) {
+            this.dialogRef.close(true);
+          } else {
+            this.router.navigate(['/']);
+          }
         }
         return;
       }
@@ -587,7 +602,11 @@ export class DemandeMouvementComponent implements OnInit {
 
       if (countSuccess > 0) {
         alert(this.isRecurring ? `${countSuccess} demandes de mouvement créées !` : 'Demande de mouvement soumise !');
-        this.router.navigate(['/']);
+        if (this.dialogRef) {
+          this.dialogRef.close(true);
+        } else {
+          this.router.navigate(['/']);
+        }
       }
 
     } catch (error: any) {

@@ -1,10 +1,15 @@
-<div style="padding: 20px;">
+<div style="padding: 20px;" [ngClass]="{'modal-container': isModal}">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
     <h2>{{ 'NEW_REQUEST.TITLE' | translate }}</h2>
-    <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" type="button" (click)="toggleShowAllLieuxInPays()"
-      style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
-      {{ showAllLieuxInPays ? ('NEW_REQUEST.SHOW_BASE_ONLY' | translate) : ('NEW_REQUEST.SHOW_COUNTRY' | translate) }}
-    </button>
+    <div style="display: flex; gap: 10px;">
+      <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" type="button" (click)="toggleShowAllLieuxInPays()"
+        style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
+        {{ showAllLieuxInPays ? ('NEW_REQUEST.SHOW_BASE_ONLY' | translate) : ('NEW_REQUEST.SHOW_COUNTRY' | translate) }}
+      </button>
+      <button *ngIf="isModal" type="button" (click)="closeModal()" style="background: none; border: none; cursor: pointer; color: #666;">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
   <!-- TOGGLE MODE (Visible uniquement pour SuperAdmin/Admin/Superviseur) -->
   <div *ngIf="userProfile !== 'Normal'"

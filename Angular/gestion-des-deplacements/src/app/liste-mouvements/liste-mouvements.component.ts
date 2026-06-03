@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MouvementDetailsDialogComponent } from './mouvement-details-dialog.component';
+import { DemandeMouvementComponent } from '../demande-mouvement/demande-mouvement.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -115,6 +116,21 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
       width: '800px',
       maxWidth: '95vw',
       data: { mouvement }
+    });
+  }
+
+  openNouvelleDemande(): void {
+    const dialogRef = this.dialog.open(DemandeMouvementComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-container'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getMouvements();
+      }
     });
   }
 
