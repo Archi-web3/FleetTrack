@@ -5,12 +5,12 @@
     <h2 style="margin: 0; font-size: 24px; color: #1e293b;">{{ 'USERS.TITLE' | translate }}</h2>
     
     <div style="display: flex; gap: 15px; align-items: flex-end;">
-      <!-- Toggle Views Placeholder -->
-      <button mat-icon-button title="Affichage Liste">
-        <mat-icon style="color: var(--primary-color);">view_list</mat-icon>
+      <!-- Toggle Views -->
+      <button mat-icon-button title="Affichage Liste" (click)="setViewMode('list')" [style.background-color]="viewMode === 'list' ? 'var(--bg-color)' : 'transparent'">
+        <mat-icon [style.color]="viewMode === 'list' ? 'var(--primary-color)' : '#94a3b8'">view_list</mat-icon>
       </button>
-      <button mat-icon-button title="Affichage Bulles">
-        <mat-icon style="color: #94a3b8;">apps</mat-icon>
+      <button mat-icon-button title="Affichage Bulles" (click)="setViewMode('bubble')" [style.background-color]="viewMode === 'bubble' ? 'var(--bg-color)' : 'transparent'">
+        <mat-icon [style.color]="viewMode === 'bubble' ? 'var(--primary-color)' : '#94a3b8'">apps</mat-icon>
       </button>
       
       <!-- Bouton Nouveau -->
@@ -309,7 +309,8 @@
     <h3 style="margin: 0; font-size: 20px;">{{ 'USERS.LIST.TITLE' | translate }}</h3>
   </div>
 
-  <div class="table-container" style="background: white; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow-x: auto;">
+  <!-- TABLE VIEW -->
+  <div *ngIf="viewMode === 'list'" class="table-container" style="background: white; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow-x: auto;">
     <table mat-table [dataSource]="dataSource" style="width: 100%;">
       
       <!-- Name Column -->
@@ -368,12 +369,69 @@
     </div>
   </div>
 
+  <!-- BUBBLE GRID VIEW -->
+  <div *ngIf="viewMode === 'bubble'">
+    <div *ngIf="dataSource.filteredData.length === 0" style="text-align: center; padding: 60px; color: #94a3b8;">
+      <mat-icon style="font-size: 48px; width: 48px; height: 48px; opacity: 0.5; margin-bottom: 15px;">group_off</mat-icon>
+      <p style="margin: 0; font-size: 16px;">{{ 'USERS.LIST.NO_DATA' | translate }}</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+      <mat-card *ngFor="let user of dataSource.filteredData" style="border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; position: relative;">
+        <!-- Card Header: Profile and Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 16px; padding-bottom: 0;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-color); color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 600;">
+              {{ (user.prenom ? user.prenom[0] : '') }}{{ user.nom ? user.nom[0] : '' }}
+            </div>
+            <div>
+              <div style="font-weight: 600; font-size: 16px; color: #1e293b; margin-bottom: 2px;">{{ user.prenom }} {{ user.nom }}</div>
+              <span class="status-badge draft" style="font-size: 11px; padding: 2px 8px;">{{ user.profil }}</span>
+            </div>
+          </div>
+          <button mat-icon-button [matMenuTriggerFor]="actionMenu" [matMenuTriggerData]="{user: user}" style="color: #94a3b8; margin-top: -8px; margin-right: -8px;">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+
+        <!-- Card Body: Details -->
+        <mat-card-content style="padding: 16px; padding-top: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #475569;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <mat-icon style="font-size: 18px; width: 18px; height: 18px; color: #94a3b8;">email</mat-icon>
+              <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">{{ user.email }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <mat-icon style="font-size: 18px; width: 18px; height: 18px; color: #94a3b8;">public</mat-icon>
+              <span>{{ user.pays?.nom || '-' }} / <strong style="color: #1e293b;">{{ user.base?.nom || 'Global' }}</strong></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <mat-icon style="font-size: 18px; width: 18px; height: 18px; color: #94a3b8;">security</mat-icon>
+              <span class="status-badge" [ngClass]="user.niveauValidationSecu >= 3 ? 'rejected' : 'validated'" style="font-size: 11px;">
+                Niveau {{ user.niveauValidationSecu || 1 }}
+              </span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
   <mat-menu #actionMenu="matMenu" xPosition="before">
     <ng-template matMenuContent let-user="user">
       <button mat-menu-item (click)="selectUser(user)" [disabled]="userProfile !== 'SuperAdmin' && userProfile !== 'Admin'">
         <mat-icon style="color: #0284c7;">edit</mat-icon>
         <span style="color: #0284c7;">{{ 'USERS.ACTIONS.UPDATE' | translate }}</span>
       </button>
+      <button mat-menu-item disabled>
+        <mat-icon>person</mat-icon>
+        <span>Login as User</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>history</mat-icon>
+        <span>Log History</span>
+      </button>
+      <hr style="margin: 8px 0; border: none; border-top: 1px solid #e2e8f0;">
       <button mat-menu-item disabled>
         <mat-icon>lock_reset</mat-icon>
         <span>Reset Password</span>

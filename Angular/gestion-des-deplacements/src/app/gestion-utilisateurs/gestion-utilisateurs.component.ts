@@ -82,8 +82,11 @@ export class GestionUtilisateursComponent implements OnInit {
   paysList: any[] = []; // Liste des pays (pour SuperAdmin)
   vehicules: any[] = []; // Liste des véhicules
   projets: any[] = []; // Liste des projets (chargée dynamiquement)
+
   selectedPays: string = ''; // Pays sélectionné par SuperAdmin
   selectedProfileFilter: string = ''; // Filtre par profil
+  
+  viewMode: 'list' | 'bubble' = 'list'; // Mode d'affichage: 'list' (tableau) ou 'bubble' (cartes)
 
   constructor(
     private utilisateurService: UtilisateurService,
@@ -131,6 +134,10 @@ export class GestionUtilisateursComponent implements OnInit {
   closeUserModal() {
     this.dialog.closeAll();
     this.selectedUser = null;
+  }
+
+  setViewMode(mode: 'list' | 'bubble') {
+    this.viewMode = mode;
   }
 
   loadPays() {
