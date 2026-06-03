@@ -15,6 +15,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -29,8 +33,11 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatButtonModule,
     MatRadioModule,
-    MatRadioModule,
     MatCheckboxModule,
+    MatTableModule,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule,
     TranslateModule
   ],
   templateUrl: './gestion-utilisateurs.component.html',
@@ -38,7 +45,8 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class GestionUtilisateursComponent implements OnInit {
   utilisateurs: any[] = [];
-  filteredUtilisateurs: any[] = []; // Liste filtrée
+  dataSource = new MatTableDataSource<any>([]);
+  displayedColumns: string[] = ['nom', 'profil', 'base', 'security', 'actions'];
   newUser: any = {
     nom: '',
     prenom: '',
@@ -155,19 +163,24 @@ export class GestionUtilisateursComponent implements OnInit {
 
   filterByProfile(): void {
     if (!this.selectedProfileFilter) {
-      this.filteredUtilisateurs = [...this.utilisateurs];
+      this.dataSource.data = [...this.utilisateurs];
     } else {
-      this.filteredUtilisateurs = this.utilisateurs.filter(
+      this.dataSource.data = this.utilisateurs.filter(
         u => u.profil === this.selectedProfileFilter
       );
     }
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   loadUtilisateurs(): void {
     this.utilisateurService.getUtilisateurs().subscribe(
       (data) => {
         this.utilisateurs = data;
-        this.filteredUtilisateurs = [...data]; // Initialiser la liste filtrée
+        this.dataSource.data = [...data];
       },
       (error) => console.error('Erreur chargement utilisateurs:', error)
     );
