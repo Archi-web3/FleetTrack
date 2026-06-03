@@ -1,5 +1,5 @@
 <form (ngSubmit)="onSubmit()" #demandeForm="ngForm" style="display: contents;">
-  <div [ngClass]="isModal ? 'custom-modal-layout' : ''" [style.max-width]="isModal ? '1000px' : 'none'" [style.width]="isModal ? '100vw' : 'auto'">
+  <div [ngClass]="isModal ? 'custom-modal-layout' : ''" [style.max-width]="isModal ? '1000px' : 'none'" [style.width]="isModal ? '100%' : 'auto'">
     <div [ngClass]="isModal ? 'custom-modal-header' : ''" [style.padding]="isModal ? '' : '20px 20px 0 20px'" [style.display]="isModal ? '' : 'flex'" [style.justify-content]="isModal ? '' : 'space-between'" [style.align-items]="isModal ? '' : 'center'" [style.margin-bottom]="isModal ? '' : '20px'">
       <h2 [style.margin]="isModal ? '0' : ''">
         <mat-icon *ngIf="isModal">flight_takeoff</mat-icon>

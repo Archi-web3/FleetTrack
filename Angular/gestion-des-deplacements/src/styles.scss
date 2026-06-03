@@ -110,6 +110,8 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   max-height: 90vh;
+  max-width: 95vw;
+  box-sizing: border-box;
 }
 
 .custom-modal-header {

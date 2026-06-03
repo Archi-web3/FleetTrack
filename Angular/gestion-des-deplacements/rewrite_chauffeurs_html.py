@@ -1,4 +1,5 @@
-<div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px;">
+with open('src/app/gestion-chauffeurs/gestion-chauffeurs.component.html', 'w') as f:
+    f.write("""<div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px;">
   <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
     <mat-icon style="color: var(--primary-color);">airline_seat_recline_normal</mat-icon>
     {{ 'DRIVERS.TITLE' | translate }}
@@ -198,3 +199,5 @@
     </div>
   </div>
 </ng-template>
+""")
+print("rewrote html")

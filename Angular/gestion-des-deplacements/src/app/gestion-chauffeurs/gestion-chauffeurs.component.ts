@@ -15,7 +15,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
+import { ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-gestion-chauffeurs',
@@ -30,12 +37,18 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatRadioModule,
     MatCheckboxModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatIconModule,
+    MatDialogModule,
+    MatTooltipModule,
     TranslateModule
   ],
   templateUrl: './gestion-chauffeurs.component.html',
   styleUrls: ['./gestion-chauffeurs.component.css']
 })
-export class GestionChauffeursComponent implements OnInit {
+export class GestionChauffeursComponent implements OnInit, AfterViewInit {
   chauffeurs: any[] = [];
   selectedChauffeur: any = null; // Pour la modification
   userProfile: string | null = null;
@@ -48,12 +61,29 @@ export class GestionChauffeursComponent implements OnInit {
   vehicules: any[] = [];
   projets: any[] = [];
 
+  // Table Data
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('chauffeurFormDialog') chauffeurFormDialog!: TemplateRef<any>;
+
+  allColumns = [
+    { def: 'nom', label: 'Nom' },
+    { def: 'email', label: 'Email' },
+    { def: 'pays', label: 'Pays' },
+    { def: 'base', label: 'Base' },
+    { def: 'vehiculeAttitre', label: 'Véhicule Attitré' },
+    { def: 'actions', label: 'Actions' }
+  ];
+  displayedColumns: string[] = ['nom', 'email', 'pays', 'base', 'vehiculeAttitre', 'actions'];
+
   constructor(
     private chauffeurService: ChauffeurService,
     private utilisateurService: UtilisateurService,
     private authService: AuthService,
     private adminService: AdminService,
-    private projetService: ProjetService
+    private projetService: ProjetService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -71,10 +101,48 @@ export class GestionChauffeursComponent implements OnInit {
     this.loadChauffeurs();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const dataStr = Object.keys(data).reduce((currentTerm, key) => {
+        return currentTerm + (data as { [key: string]: any })[key] + '◬';
+      }, '').toLowerCase();
+      const transformedFilter = filter.trim().toLowerCase();
+      return dataStr.indexOf(transformedFilter) != -1;
+    };
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  openChauffeurModal(chauffeur?: any) {
+    if (chauffeur) {
+      this.selectChauffeur(chauffeur);
+    } else {
+      // Pour l'ajout on utilise toujours Utilisateurs. Ici on n'implémente que l'édition car
+      // la page ne proposait pas d'ajout (l'ajout se fait via Admin Utilisateurs).
+      this.selectedChauffeur = null;
+    }
+    this.dialog.open(this.chauffeurFormDialog, { width: '800px', panelClass: 'custom-dialog-container', maxWidth: '95vw', maxHeight: '90vh' });
+  }
+
+  closeChauffeurModal() {
+    this.dialog.closeAll();
+  }
+
   loadChauffeurs(): void {
     // On continue d'utiliser le service chauffeur qui tape sur /api/chauffeurs (qui renvoie les Utilisateurs 'Chauffeur')
     this.chauffeurService.getChauffeurs().subscribe(
-      (data) => this.chauffeurs = data,
+      (data) => {
+        this.chauffeurs = data;
+        this.dataSource.data = this.chauffeurs;
+      },
       (error) => console.error('Erreur chargement chauffeurs:', error)
     );
   }
@@ -156,6 +224,7 @@ export class GestionChauffeursComponent implements OnInit {
         alert('Chauffeur mis à jour avec succès !');
         this.selectedChauffeur = null;
         this.loadChauffeurs();
+        this.closeChauffeurModal();
       },
       (error) => {
         console.error('Erreur mise à jour chauffeur:', error);
