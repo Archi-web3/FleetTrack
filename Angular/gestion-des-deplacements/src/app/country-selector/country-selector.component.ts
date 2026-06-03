@@ -3,17 +3,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { PaysService, Pays } from '../pays.service';
 import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-country-selector',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatSelectModule, MatFormFieldModule],
+  imports: [CommonModule, FormsModule, MatSelectModule, MatFormFieldModule, MatIconModule],
   template: `
-    <div *ngIf="isSuperAdmin" style="display: flex; align-items: center; margin-right: 20px;">
-      <mat-form-field appearance="outline" style="width: 200px;">
-        <mat-label>Pays</mat-label>
+    <div *ngIf="isSuperAdmin" class="country-dropdown-wrapper">
+      <mat-icon class="building-icon">domain</mat-icon>
+      <mat-form-field appearance="outline" class="country-select-field">
         <mat-select [(ngModel)]="selectedCountryId" (selectionChange)="onCountryChange()">
           <mat-option value="none">Aucun</mat-option>
           <mat-option value="all">Tous</mat-option>
@@ -24,42 +25,64 @@ import { AuthService } from '../auth.service';
       </mat-form-field>
     </div>
     
-    <div *ngIf="!isSuperAdmin && userCountry" style="display: flex; align-items: center; margin-right: 20px;">
-      <span style="background-color: #005fb6; color: white; padding: 8px 16px; border-radius: 4px; font-size: 14px;">
-        📍 {{userCountry.nom}}
-      </span>
+    <div *ngIf="!isSuperAdmin && userCountry" class="country-dropdown-wrapper">
+      <mat-icon class="building-icon">domain</mat-icon>
+      <span class="country-text">{{userCountry.nom}}</span>
     </div>
   `,
   styles: [`
-    mat-form-field {
-      margin-left: 15px;
+    .country-dropdown-wrapper {
+      display: flex;
+      align-items: center;
+      background-color: #334155;
+      padding: 0 12px;
+      border-radius: 6px;
+      height: 36px;
+    }
+    .building-icon {
+      color: #94a3b8;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+    .country-text {
+      color: white;
       font-size: 14px;
-    }
-    ::ng-deep .mat-mdc-text-field-wrapper {
-      background-color: transparent !important; /* Transparent background */
-      border: 1px solid rgba(255, 255, 255, 0.7); /* Light white border */
-      border-radius: 4px;
-      height: 36px; /* Slightly smaller */
-      padding: 0 10px;
-    }
-    ::ng-deep .mat-mdc-select-value {
-      color: white !important; /* White text */
       font-weight: 500;
     }
-    ::ng-deep .mat-mdc-select-arrow {
-      color: white !important; /* White arrow */
+    
+    .country-select-field {
+      width: 180px;
     }
-    ::ng-deep .mat-mdc-form-field-flex {
-      height: 36px;
+    
+    /* Remove outline/background from form field to let wrapper show */
+    ::ng-deep .country-select-field .mat-mdc-text-field-wrapper {
+      background-color: transparent !important;
+      padding: 0 !important;
+    }
+    ::ng-deep .country-select-field .mdc-notched-outline {
+      display: none !important; /* Hide border */
+    }
+    ::ng-deep .country-select-field .mat-mdc-form-field-flex {
+      height: 36px !important;
+      align-items: center;
+      padding: 0 !important;
+    }
+    ::ng-deep .country-select-field .mat-mdc-form-field-infix {
+      padding: 0 !important;
+      min-height: auto !important;
+      width: auto !important;
+      display: flex;
       align-items: center;
     }
-    ::ng-deep .mat-mdc-form-field-infix {
-      padding-top: 6px !important;
-      padding-bottom: 0 !important;
-      min-height: 36px !important;
+    ::ng-deep .country-select-field .mat-mdc-select-value {
+      color: white !important;
+      font-weight: 500;
+      font-size: 14px;
     }
-    ::ng-deep .mat-mdc-floating-label {
-      display: none; /* Hide label to save space/clean look since we have placeholder/value */
+    ::ng-deep .country-select-field .mat-mdc-select-arrow {
+      color: #94a3b8 !important;
     }
   `]
 })

@@ -140,3 +140,33 @@ select {
 .mat-mdc-text-field-wrapper {
   background-color: white !important;
 }
+
+/* --- SUBMENU & ICONS STYLING --- */
+.mat-mdc-menu-panel {
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid var(--border-color);
+  padding: 8px 0 !important;
+}
+
+.mat-mdc-menu-item {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--text-main) !important;
+  min-height: 40px !important;
+  padding: 0 16px !important;
+}
+
+.mat-mdc-menu-item:hover {
+  background-color: var(--secondary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Purple icons inside the submenu */
+.mat-mdc-menu-item mat-icon {
+  color: var(--primary-color) !important;
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 12px !important;
+}
