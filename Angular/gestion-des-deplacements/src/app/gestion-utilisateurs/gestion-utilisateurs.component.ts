@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -19,6 +19,7 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -38,12 +39,15 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     MatMenuModule,
     MatTooltipModule,
+    MatDialogModule,
     TranslateModule
   ],
   templateUrl: './gestion-utilisateurs.component.html',
   styleUrls: ['./gestion-utilisateurs.component.css']
 })
 export class GestionUtilisateursComponent implements OnInit {
+  @ViewChild('userFormDialog') userFormDialog!: TemplateRef<any>;
+  
   utilisateurs: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = ['nom', 'profil', 'base', 'security', 'actions'];
@@ -85,7 +89,8 @@ export class GestionUtilisateursComponent implements OnInit {
     private utilisateurService: UtilisateurService,
     public authService: AuthService,
     private adminService: AdminService,
-    private projetService: ProjetService
+    private projetService: ProjetService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -109,6 +114,23 @@ export class GestionUtilisateursComponent implements OnInit {
     this.loadVehicules();
     this.loadProjets(); // Charger les projets dynamiquement
     this.loadUtilisateurs();
+  }
+
+  openUserModal(user?: any) {
+    if (user) {
+      this.selectUser(user);
+    } else {
+      this.selectedUser = null;
+    }
+    this.dialog.open(this.userFormDialog, {
+      width: '600px',
+      disableClose: true
+    });
+  }
+
+  closeUserModal() {
+    this.dialog.closeAll();
+    this.selectedUser = null;
   }
 
   loadPays() {
@@ -225,6 +247,7 @@ export class GestionUtilisateursComponent implements OnInit {
           this.loadBases(this.userPaysId!);
         }
         this.loadUtilisateurs();
+        this.closeUserModal();
       },
       (error) => {
         console.error('Erreur création utilisateur:', error);
@@ -286,6 +309,7 @@ export class GestionUtilisateursComponent implements OnInit {
         alert('Utilisateur mis à jour avec succès !');
         this.selectedUser = null;
         this.loadUtilisateurs();
+        this.closeUserModal();
       },
       (error) => {
         console.error('Erreur mise à jour utilisateur:', error);
