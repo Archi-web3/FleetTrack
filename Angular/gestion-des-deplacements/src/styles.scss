@@ -3,6 +3,20 @@
 /* Importe le thème personnalisé ACF */
 @use 'custom-theme';
 
+:root {
+  --primary-color: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --secondary-color: #f3f4f6;
+  --bg-color: #f9fafb;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --top-bar-bg: #1e293b;
+  --top-bar-text: #f8fafc;
+  --sec-bar-bg: #ffffff;
+  --sec-bar-text: #475569;
+  --border-color: #e5e7eb;
+}
+
 /* Les styles angular-calendar sont chargés via angular.json, on ne les importe pas ici pour éviter l'erreur d'export */
 
 @import "leaflet/dist/leaflet.css";

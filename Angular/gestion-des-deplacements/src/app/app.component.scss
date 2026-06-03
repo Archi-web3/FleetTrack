@@ -1,12 +1,112 @@
-mat-toolbar {
-    background: linear-gradient(135deg, #005fb6 0%, #003e6b 100%) !important;
-    color: white !important;
+.top-bar {
+  background-color: var(--top-bar-bg);
+  color: var(--top-bar-text);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  position: relative;
+  z-index: 10;
 }
 
-mat-toolbar button {
-    color: white !important;
+.top-bar .logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-bar .logo-container img {
+  height: 32px;
+}
+
+.top-bar .logo-container h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .toolbar-spacer {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.user-role {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.sec-bar {
+  background-color: var(--sec-bar-bg);
+  color: var(--sec-bar-text);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: relative;
+  z-index: 9;
+}
+
+.sec-bar-nav {
+  display: flex;
+  gap: 24px;
+  height: 100%;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  color: var(--sec-bar-text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  height: 100%;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.nav-item mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
+/* Fix material buttons inside our bars */
+.top-bar button {
+  color: var(--top-bar-text) !important;
+}
+
+.main-content {
+  padding: 24px;
+  background-color: var(--bg-color);
+  min-height: calc(100vh - 104px);
 }

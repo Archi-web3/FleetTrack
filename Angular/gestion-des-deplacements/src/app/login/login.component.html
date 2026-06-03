@@ -1,16 +1,20 @@
-<div style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 64px);">
-  <mat-card style="width: 400px; padding: 20px;">
-    <!-- NOUVEAU: Language Selector -->
-    <div style="display: flex; justify-content: flex-end;">
+<div class="login-page-wrapper" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(217, 70, 239, 0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 100%), var(--secondary-color); backdrop-filter: blur(40px);">
+  <mat-card class="login-card" style="width: 420px; padding: 40px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); background: white;">
+    <!-- Language Selector -->
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
       <app-language-selector></app-language-selector>
     </div>
-    <!-- NOUVEAU: Logo et titre réorganisés -->
-    <div style="text-align: center; margin-bottom: 30px;">
-      <img src="assets/logo_acf.png" alt="Logo ACF" style="max-width: 150px; height: auto; margin-bottom: 15px;">
-      <h2 class="app-title">FleetTrack <span class="version">(v2.15.0)</span></h2>
+    
+    <div class="login-logo-container" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 24px;">
+      <img src="assets/logo_acf.png" alt="Logo" style="max-width: 60px; height: auto;">
+      <h2 class="app-title" style="margin: 0; color: var(--text-main); font-size: 28px; font-weight: 600;">FleetTrack</h2>
     </div>
 
-    <mat-card-title style="text-align: center; margin-bottom: 20px;">{{ 'LOGIN.TITLE' | translate }}</mat-card-title>
+    <div class="login-title-text" style="text-align: center; margin-bottom: 30px;">
+      <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main); font-weight: 500;">Welcome to FleetTrack !</h3>
+      <p style="margin: 0; font-size: 14px; color: var(--text-muted);">Please log in to access the platform.</p>
+    </div>
+
     <mat-card-content>
       <form (ngSubmit)="onLogin()" #loginForm="ngForm">
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 15px;">
@@ -45,8 +49,8 @@
           <small style="color: #666; font-style: italic;">{{ 'LOGIN.LOADING' | translate }}</small>
         </div>
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.form.valid || isLoading"
-          style="width: 100%;">
+        <button mat-raised-button type="submit" [disabled]="!loginForm.form.valid || isLoading"
+          style="width: 100%; background-color: var(--primary-color); color: white; border-radius: 8px; padding: 8px 0;">
           {{ isLoading ? ('LOGIN.BUTTON' | translate) + '...' : ('LOGIN.BUTTON' | translate) }}
         </button>
       </form>

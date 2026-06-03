@@ -1,214 +1,125 @@
-<mat-toolbar color="primary">
-  <div style="display: flex; align-items: center;">
-    <img src="assets/logo_bandeau.png" alt="Logo" style="height: 40px; margin-right: 10px;">
-    <span *ngIf="isAuthenticated">
-      {{ 'COMMON.WELCOME' | translate }}: <span style="font-weight: bold;">{{ userName }}</span> ({{ userProfile }}<span
-        *ngIf="userPays"> - {{
-        userPays }}</span><span *ngIf="userBase"> / {{ userBase }}</span>)
-    </span>
+<ng-container *ngIf="isAuthenticated">
+  <!-- TOP BAR (Dark) -->
+  <div class="top-bar">
+    <div class="logo-container">
+      <img src="assets/logo_acf.png" alt="Logo" style="filter: brightness(0) invert(1);">
+      <h1>FleetTrack</h1>
+    </div>
+
+    <!-- Country Selector -->
+    <div style="margin-left: 32px;">
+      <app-country-selector></app-country-selector>
+    </div>
+
+    <span class="toolbar-spacer"></span>
+
+    <div class="top-bar-actions">
+      <app-language-selector></app-language-selector>
+
+      <div class="user-info">
+        <mat-icon>account_circle</mat-icon>
+        <div style="display: flex; flex-direction: column;">
+          <span class="user-name">{{ userName }}</span>
+          <span class="user-role">{{ userProfile }}</span>
+        </div>
+      </div>
+
+      <button mat-icon-button routerLink="/profile" matTooltip="Mon Profil">
+        <mat-icon>settings</mat-icon>
+      </button>
+
+      <button mat-icon-button color="warn" (click)="logout()" matTooltip="{{ 'COMMON.LOGOUT' | translate }}">
+        <mat-icon>power_settings_new</mat-icon>
+      </button>
+    </div>
   </div>
 
-  <!-- Country Selector -->
-  <app-country-selector *ngIf="isAuthenticated"></app-country-selector>
-  <app-language-selector *ngIf="isAuthenticated"></app-language-selector>
+  <!-- SECONDARY BAR (Light / Tabs) -->
+  <div class="sec-bar">
+    <div class="sec-bar-nav">
+      <!-- DASHBOARD -->
+      <button class="nav-item" [matMenuTriggerFor]="dashboardMenu">
+        <mat-icon>home</mat-icon> {{ 'MENU.GROUPS.DASHBOARD' | translate }} <mat-icon>expand_more</mat-icon>
+      </button>
+      <mat-menu #dashboardMenu="matMenu">
+        <button mat-menu-item routerLink="/planning"><mat-icon>calendar_today</mat-icon><span>{{ 'MENU.GLOBAL_PLANNING' | translate }}</span></button>
+        <button mat-menu-item routerLink="/tableau-bord" *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin'"><mat-icon>analytics</mat-icon><span>{{ 'MENU.DASHBOARD.TITLE' | translate }}</span></button>
+        <button mat-menu-item routerLink="/logbook"><mat-icon>menu_book</mat-icon><span>{{ 'MENU.LOGBOOK' | translate }}</span></button>
+        <button mat-menu-item routerLink="/map"><mat-icon>map</mat-icon><span>{{ 'MENU.INTERACTIVE_MAP' | translate }}</span></button>
+      </mat-menu>
 
-  <span class="toolbar-spacer"></span>
+      <!-- MY SPACE -->
+      <button class="nav-item" [matMenuTriggerFor]="mySpaceMenu">
+        <mat-icon>person</mat-icon> {{ 'MENU.GROUPS.MY_SPACE' | translate }} <mat-icon>expand_more</mat-icon>
+      </button>
+      <mat-menu #mySpaceMenu="matMenu">
+        <button mat-menu-item routerLink="/demande-mouvement"><mat-icon>add_circle_outline</mat-icon><span>{{ 'MENU.NEW_REQUEST' | translate }}</span></button>
+        <button mat-menu-item routerLink="/mes-mouvements"><mat-icon>history</mat-icon><span>{{ 'MENU.MY_TRIPS' | translate }}</span></button>
+      </mat-menu>
 
-  <!-- ============================== -->
-  <!-- 1. PILOTAGE (DASHBOARD)        -->
-  <!-- ============================== -->
-  <ng-container *ngIf="isAuthenticated">
-    <button mat-button [matMenuTriggerFor]="dashboardMenu">
-      <mat-icon>dashboard</mat-icon> {{ 'MENU.GROUPS.DASHBOARD' | translate }} <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #dashboardMenu="matMenu">
-      <button mat-menu-item routerLink="/planning">
-        <mat-icon>calendar_today</mat-icon>
-        <span>{{ 'MENU.GLOBAL_PLANNING' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/tableau-bord"
-        *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin'">
-        <mat-icon>analytics</mat-icon>
-        <span>{{ 'MENU.DASHBOARD.TITLE' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/logbook">
-        <mat-icon>menu_book</mat-icon>
-        <span>{{ 'MENU.LOGBOOK' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/map">
-        <mat-icon>map</mat-icon>
-        <span>{{ 'MENU.INTERACTIVE_MAP' | translate }}</span>
-      </button>
-    </mat-menu>
-  </ng-container>
+      <!-- OPERATIONS -->
+      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin'">
+        <button class="nav-item" [matMenuTriggerFor]="opsMenu">
+          <mat-icon>flash_on</mat-icon> {{ 'MENU.GROUPS.OPERATIONS' | translate }} <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #opsMenu="matMenu">
+          <button mat-menu-item routerLink="/valider-mouvements"><mat-icon>check_circle</mat-icon><span>{{ 'MENU.VALIDATE_TRIPS' | translate }}</span></button>
+          <button mat-menu-item routerLink="/consolidation"><mat-icon>merge_type</mat-icon><span>{{ 'MENU.CONSOLIDATION' | translate }}</span></button>
+        </mat-menu>
+      </ng-container>
 
-  <!-- ============================== -->
-  <!-- 2. MON ESPACE (MY SPACE)       -->
-  <!-- ============================== -->
-  <ng-container *ngIf="isAuthenticated">
-    <button mat-button [matMenuTriggerFor]="mySpaceMenu">
-      <mat-icon>person</mat-icon> {{ 'MENU.GROUPS.MY_SPACE' | translate }} <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #mySpaceMenu="matMenu">
-      <button mat-menu-item routerLink="/demande-mouvement">
-        <mat-icon>add_circle_outline</mat-icon>
-        <span>{{ 'MENU.NEW_REQUEST' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/mes-mouvements">
-        <mat-icon>history</mat-icon>
-        <span>{{ 'MENU.MY_TRIPS' | translate }}</span>
-      </button>
-    </mat-menu>
-  </ng-container>
+      <!-- FLEET -->
+      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin'">
+        <button class="nav-item" [matMenuTriggerFor]="fleetMenu">
+          <mat-icon>directions_car</mat-icon> {{ 'MENU.GROUPS.FLEET' | translate }} <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #fleetMenu="matMenu">
+          <button mat-menu-item routerLink="/gestion-vehicules"><mat-icon>directions_car</mat-icon><span>{{ 'MENU.VEHICLE_MANAGEMENT' | translate }}</span></button>
+          <button mat-menu-item routerLink="/gestion-chauffeurs"><mat-icon>people_alt</mat-icon><span>{{ 'MENU.DRIVER_MANAGEMENT' | translate }}</span></button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/gestion-maintenance"><mat-icon>build</mat-icon><span>{{ 'MENU.MAINTENANCE_TRACKING' | translate }}</span></button>
+          <button mat-menu-item routerLink="/recap-flotte"><mat-icon>assessment</mat-icon><span>{{ 'MENU.FLEET_RECAP' | translate }}</span></button>
+          <button mat-menu-item routerLink="/rapports-mensuels"><mat-icon>bar_chart</mat-icon><span>{{ 'MENU.MONTHLY_REPORTS' | translate }}</span></button>
+        </mat-menu>
+      </ng-container>
 
-  <!-- ============================== -->
-  <!-- 3. OPÉRATIONS (OPERATIONS)    -->
-  <!-- ============================== -->
-  <ng-container
-    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin')">
-    <button mat-button [matMenuTriggerFor]="opsMenu">
-      <mat-icon>flash_on</mat-icon> {{ 'MENU.GROUPS.OPERATIONS' | translate }} <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #opsMenu="matMenu">
-      <button mat-menu-item routerLink="/valider-mouvements">
-        <mat-icon>check_circle</mat-icon>
-        <span>{{ 'MENU.VALIDATE_TRIPS' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/consolidation">
-        <mat-icon>merge_type</mat-icon>
-        <span>{{ 'MENU.CONSOLIDATION' | translate }}</span>
-      </button>
-    </mat-menu>
-  </ng-container>
+      <!-- SECURITY -->
+      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin'">
+        <button class="nav-item" [matMenuTriggerFor]="securityMenu">
+          <mat-icon>security</mat-icon> {{ 'MENU.GROUPS.SECURITY' | translate }} <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #securityMenu="matMenu">
+          <button mat-menu-item routerLink="/security-alerts"><mat-icon style="color: #f44336;">notification_important</mat-icon><span>{{ 'MENU.SECURITY_ALERTS' | translate }}</span></button>
+          <button mat-menu-item routerLink="/roadmap"><mat-icon>rocket_launch</mat-icon><span>{{ 'MENU.VISION_SECURITY' | translate }}</span></button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/admin/waivers"><mat-icon>folder_shared</mat-icon><span>{{ 'MENU.WAIVERS' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/audit-logs"><mat-icon>history_edu</mat-icon><span>{{ 'MENU.AUDIT_LOGS' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/security-matrix"><mat-icon style="color: #4caf50;">shield</mat-icon><span>{{ 'MENU.SECURITY_MATRIX' | translate }}</span></button>
+        </mat-menu>
+      </ng-container>
 
-  <!-- ============================== -->
-  <!-- 4. FLOTTE (FLEET)             -->
-  <!-- ============================== -->
-  <ng-container
-    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin')">
-    <button mat-button [matMenuTriggerFor]="fleetMenu">
-      <mat-icon>directions_car</mat-icon> {{ 'MENU.GROUPS.FLEET' | translate }} <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #fleetMenu="matMenu">
-      <button mat-menu-item routerLink="/gestion-vehicules">
-        <mat-icon>directions_car</mat-icon>
-        <span>{{ 'MENU.VEHICLE_MANAGEMENT' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/gestion-chauffeurs">
-        <mat-icon>people_alt</mat-icon>
-        <span>{{ 'MENU.DRIVER_MANAGEMENT' | translate }}</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item routerLink="/gestion-maintenance">
-        <mat-icon>build</mat-icon>
-        <span>{{ 'MENU.MAINTENANCE_TRACKING' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/recap-flotte">
-        <mat-icon>assessment</mat-icon>
-        <span>{{ 'MENU.FLEET_RECAP' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/rapports-mensuels">
-        <mat-icon>bar_chart</mat-icon>
-        <span>{{ 'MENU.MONTHLY_REPORTS' | translate }}</span>
-      </button>
-    </mat-menu>
-  </ng-container>
+      <!-- ADMIN -->
+      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
+        <button class="nav-item" [matMenuTriggerFor]="adminMenu">
+          <mat-icon>settings</mat-icon> {{ 'MENU.GROUPS.ADMIN' | translate }} <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #adminMenu="matMenu">
+          <button mat-menu-item routerLink="/gestion-utilisateurs"><mat-icon>people</mat-icon><span>{{ 'MENU.USER_MANAGEMENT' | translate }}</span></button>
+          <button mat-menu-item routerLink="/gestion-projets"><mat-icon>folder</mat-icon><span>{{ 'MENU.PROJECT_MANAGEMENT' | translate }}</span></button>
+          <button mat-menu-item routerLink="/gestion-lieux"><mat-icon>place</mat-icon><span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="userProfile === 'SuperAdmin'"><mat-icon>public</mat-icon><span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span></button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/admin/settings"><mat-icon>settings_applications</mat-icon><span>{{ 'MENU.GENERAL_SETTINGS' | translate }}</span></button>
+          <button mat-menu-item routerLink="/environment-roadmap"><mat-icon>eco</mat-icon><span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span></button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/guide-utilisateur"><mat-icon>help</mat-icon><span>{{ 'MENU.USER_GUIDE' | translate }}</span></button>
+        </mat-menu>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>
 
-  <!-- ============================== -->
-  <!-- 5. SÉCURITÉ (SECURITY)        -->
-  <!-- ============================== -->
-  <ng-container
-    *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin')">
-    <button mat-button [matMenuTriggerFor]="securityMenu">
-      <mat-icon>security</mat-icon> {{ 'MENU.GROUPS.SECURITY' | translate }} <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #securityMenu="matMenu">
-      <button mat-menu-item routerLink="/security-alerts">
-        <mat-icon style="color: #f44336;">notification_important</mat-icon>
-        <span>{{ 'MENU.SECURITY_ALERTS' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/roadmap">
-        <mat-icon>rocket_launch</mat-icon>
-        <span>{{ 'MENU.VISION_SECURITY' | translate }}</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item routerLink="/admin/waivers">
-        <mat-icon>folder_shared</mat-icon>
-        <span>{{ 'MENU.WAIVERS' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/admin/audit-logs">
-        <mat-icon>history_edu</mat-icon>
-        <span>{{ 'MENU.AUDIT_LOGS' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/admin/security-matrix">
-        <mat-icon style="color: #4caf50;">shield</mat-icon>
-        <span>{{ 'MENU.SECURITY_MATRIX' | translate }}</span>
-      </button>
-    </mat-menu>
-  </ng-container>
-
-  <!-- ============================== -->
-  <!-- 6. ADMIN (ADMINISTRATION)      -->
-  <!-- ============================== -->
-  <ng-container *ngIf="isAuthenticated && (userProfile === 'Admin' || userProfile === 'SuperAdmin')">
-    <button mat-button [matMenuTriggerFor]="adminMenu">
-      <mat-icon>settings</mat-icon> {{ 'MENU.GROUPS.ADMIN' | translate }} <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #adminMenu="matMenu">
-      <button mat-menu-item routerLink="/gestion-utilisateurs">
-        <mat-icon>people</mat-icon>
-        <span>{{ 'MENU.USER_MANAGEMENT' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/gestion-projets">
-        <mat-icon>folder</mat-icon>
-        <span>{{ 'MENU.PROJECT_MANAGEMENT' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/gestion-lieux">
-        <mat-icon>place</mat-icon>
-        <span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="userProfile === 'SuperAdmin'">
-        <mat-icon>public</mat-icon>
-        <span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item routerLink="/admin/settings">
-        <mat-icon>settings_applications</mat-icon>
-        <span>{{ 'MENU.GENERAL_SETTINGS' | translate }}</span>
-      </button>
-      <button mat-menu-item routerLink="/environment-roadmap">
-        <mat-icon>eco</mat-icon>
-        <span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item routerLink="/guide-utilisateur">
-        <mat-icon>help</mat-icon>
-        <span>{{ 'MENU.USER_GUIDE' | translate }}</span>
-      </button>
-      <a mat-menu-item href="http://localhost:3000/api-docs" target="_blank" *ngIf="userProfile === 'SuperAdmin'">
-        <mat-icon>code</mat-icon>
-        <span>Documentation API (Dev)</span>
-      </a>
-      <a mat-menu-item href="/assets/HANDOVER.md" target="_blank" *ngIf="userProfile === 'SuperAdmin'">
-        <mat-icon>description</mat-icon>
-        <span>Documentation Handover</span>
-      </a>
-    </mat-menu>
-  </ng-container>
-
-  <span class="toolbar-spacer"></span>
-
-  <!-- Bouton Profile -->
-  <button mat-icon-button *ngIf="isAuthenticated" routerLink="/profile" matTooltip="Mon Profil">
-    <mat-icon>account_circle</mat-icon>
-  </button>
-
-  <!-- Bouton Déconnexion -->
-  <button mat-raised-button color="warn" *ngIf="isAuthenticated" (click)="logout()">
-    <mat-icon>exit_to_app</mat-icon> {{ 'COMMON.LOGOUT' | translate }}
-  </button>
-</mat-toolbar>
-
-<div style="padding: 20px;">
+<!-- MAIN CONTENT -->
+<div [ngClass]="{'main-content': isAuthenticated}">
   <router-outlet></router-outlet>
 </div>
