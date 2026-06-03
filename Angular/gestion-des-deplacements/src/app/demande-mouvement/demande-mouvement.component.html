@@ -141,6 +141,7 @@
         </select>
       </div>
 
+      <div class="modal-grid-2">
       <!-- Section Lieu de Départ -->
       <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
         <label>{{ 'NEW_REQUEST.MISSION.DEPARTURE' | translate }}</label><br>
@@ -208,43 +209,6 @@
         </div>
       </div>
 
-      <!-- Section Étapes Intermédiaires -->
-      <div
-        style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
-        <h3 style="margin-top: 0;">{{ 'NEW_REQUEST.MISSION.STOPS' | translate }}</h3>
-        <div *ngFor="let etape of etapes; let i = index"
-          style="margin-bottom: 10px; display: flex; align-items: center;">
-          <span style="margin-right: 10px; font-weight: bold;">{{ 'NEW_REQUEST.MISSION.STEP' | translate }} {{ i + 1
-            }}:</span>
-          <select [(ngModel)]="etape.lieu" name="etapeLieu_{{i}}" required (change)="onLieuChange()"
-            style="flex-grow: 1; padding: 8px; margin-right: 10px;">
-            <option value="">{{ 'NEW_REQUEST.MISSION.SELECT_STEP' | translate }}</option>
-            <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
-          </select>
-
-          <!-- NOUVEAU: Dates pour l'étape -->
-          <div style="display: flex; flex-direction: column; margin-right: 10px;">
-            <input type="datetime-local" [(ngModel)]="etape.dateArrivee" name="etapeArrivee_{{i}}" placeholder="Arrivée"
-              style="padding: 5px; margin-bottom: 2px;">
-            <input type="datetime-local" [(ngModel)]="etape.dateDepart" name="etapeDepart_{{i}}" placeholder="Départ"
-              style="padding: 5px;">
-          </div>
-
-          <button type="button" (click)="removeEtape(i)"
-            style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Supprimer</button>
-        </div>
-        <button type="button" (click)="addEtape()"
-          style="background-color: #007bff; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 3px;">+
-          {{ 'NEW_REQUEST.MISSION.ADD_STEP' | translate }}</button>
-      </div>
-
-      <!-- Checkbox Lieu Retour Identique -->
-      <div style="margin-bottom: 10px;">
-        <input type="checkbox" id="retourIdentique" [(ngModel)]="isRetourIdentique" (change)="onRetourIdentiqueChange()"
-          name="retourIdentique">
-        <label for="retourIdentique">{{ 'NEW_REQUEST.MISSION.RETURN_SAME' | translate }}</label>
-      </div>
-
       <!-- Section Lieu d'Arrivée (SIMILAIRE AU DÉPART) -->
       <div style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
         <label>{{ 'NEW_REQUEST.MISSION.ARRIVAL' | translate }}</label><br>
@@ -287,6 +251,44 @@
           <input type="datetime-local" id="dateArrivee" name="dateArrivee" [(ngModel)]="mouvement.dateArrivee" required
             style="width: 100%; padding: 8px;">
         </div>
+      </div>
+
+      </div>
+      <!-- Checkbox Lieu Retour Identique -->
+      <div style="margin-bottom: 10px;">
+        <input type="checkbox" id="retourIdentique" [(ngModel)]="isRetourIdentique" (change)="onRetourIdentiqueChange()"
+          name="retourIdentique">
+        <label for="retourIdentique">{{ 'NEW_REQUEST.MISSION.RETURN_SAME' | translate }}</label>
+      </div>
+
+      <!-- Section Étapes Intermédiaires -->
+      <div
+        style="margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px; background-color: #f9f9f9;">
+        <h3 style="margin-top: 0;">{{ 'NEW_REQUEST.MISSION.STOPS' | translate }}</h3>
+        <div *ngFor="let etape of etapes; let i = index"
+          style="margin-bottom: 10px; display: flex; align-items: center;">
+          <span style="margin-right: 10px; font-weight: bold;">{{ 'NEW_REQUEST.MISSION.STEP' | translate }} {{ i + 1
+            }}:</span>
+          <select [(ngModel)]="etape.lieu" name="etapeLieu_{{i}}" required (change)="onLieuChange()"
+            style="flex-grow: 1; padding: 8px; margin-right: 10px;">
+            <option value="">{{ 'NEW_REQUEST.MISSION.SELECT_STEP' | translate }}</option>
+            <option *ngFor="let lieu of lieux" [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+          </select>
+
+          <!-- NOUVEAU: Dates pour l'étape -->
+          <div style="display: flex; flex-direction: column; margin-right: 10px;">
+            <input type="datetime-local" [(ngModel)]="etape.dateArrivee" name="etapeArrivee_{{i}}" placeholder="Arrivée"
+              style="padding: 5px; margin-bottom: 2px;">
+            <input type="datetime-local" [(ngModel)]="etape.dateDepart" name="etapeDepart_{{i}}" placeholder="Départ"
+              style="padding: 5px;">
+          </div>
+
+          <button type="button" (click)="removeEtape(i)"
+            style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">Supprimer</button>
+        </div>
+        <button type="button" (click)="addEtape()"
+          style="background-color: #007bff; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 3px;">+
+          {{ 'NEW_REQUEST.MISSION.ADD_STEP' | translate }}</button>
       </div>
 
       <!-- NOUVEAU : Sélection multiple des passagers (MatSelect) -->

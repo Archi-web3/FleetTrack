@@ -96,6 +96,7 @@
       <!-- Create Form -->
       <form *ngIf="!selectedVehicule" (ngSubmit)="addVehicule()" #vehiculeForm="ngForm" id="createForm">
 
+      <div class="modal-grid-2">
       <div style="margin-bottom: 10px;">
         <label for="newVehiculeMarque">{{ 'VEHICLES.FORM.BRAND' | translate }}:</label>
         <input type="text" id="newVehiculeMarque" name="newVehiculeMarque" [(ngModel)]="newVehicule.marque" required
@@ -106,6 +107,8 @@
         <input type="text" id="newVehiculeModele" name="newVehiculeModele" [(ngModel)]="newVehicule.modele" required
           style="width: 100%; padding: 8px;">
       </div>
+      </div>
+      <div class="modal-grid-2">
       <div style="margin-bottom: 10px;">
         <label for="newVehiculeImmatriculation">{{ 'VEHICLES.FORM.PLATE' | translate }}:</label>
         <input type="text" id="newVehiculeImmatriculation" name="newVehiculeImmatriculation"
@@ -116,6 +119,7 @@
         <input type="text" id="newVehiculeAcfCode" name="newVehiculeAcfCode" [(ngModel)]="newVehicule.acfCode"
           style="width: 100%; padding: 8px; background-color: #e9ecef;"
           [placeholder]="'VEHICLES.FORM.ACF_CODE_HINT' | translate" readonly disabled>
+      </div>
       </div>
 
       <!-- Propriété -->
