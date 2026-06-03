@@ -40,12 +40,21 @@
   </div>
 
   <ng-template #userFormDialog>
-    <h2 mat-dialog-title style="margin: 0; padding: 16px 24px; background: var(--bg-color); color: var(--top-bar-bg);">
-      {{ selectedUser ? ('USERS.EDIT_TITLE' | translate) + ': ' + selectedUser.nom : ('USERS.CREATE_TITLE' | translate) }}
-    </h2>
-    
-    <mat-dialog-content style="padding: 24px;">
-      <!-- Formulaire de création d'utilisateur -->
+    <div class="custom-modal-layout" style="max-width: 600px; width: 100vw;">
+      <!-- HEADER -->
+      <div class="custom-modal-header">
+        <h2>
+          <mat-icon>edit</mat-icon>
+          {{ selectedUser ? ('USERS.EDIT_TITLE' | translate) + ': ' + selectedUser.nom : ('USERS.CREATE_TITLE' | translate) }}
+        </h2>
+        <button class="custom-modal-close-btn" (click)="closeUserModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <!-- BODY -->
+      <div class="custom-modal-body">
+        <!-- Formulaire de création d'utilisateur -->
       <form [hidden]="!!selectedUser" (ngSubmit)="addUser()" #userForm="ngForm">
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>{{ 'USERS.FORM.NAME' | translate }}</mat-label>
@@ -295,13 +304,20 @@
           </mat-form-field>
         </div>
       </form>
-    </mat-dialog-content>
-    
-    <mat-dialog-actions align="end" style="padding: 16px 24px; border-top: 1px solid var(--border-color);">
-      <button mat-button (click)="closeUserModal()">{{ 'USERS.ACTIONS.CANCEL' | translate }}</button>
-      <button *ngIf="!selectedUser" mat-flat-button color="primary" (click)="addUser()" [disabled]="!userForm?.form?.valid">{{ 'USERS.ACTIONS.CREATE' | translate }}</button>
-      <button *ngIf="selectedUser" mat-flat-button color="primary" (click)="updateUser()" [disabled]="!editUserForm?.form?.valid">{{ 'USERS.ACTIONS.UPDATE' | translate }}</button>
-    </mat-dialog-actions>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="custom-modal-footer">
+        <button class="custom-modal-btn-cancel" (click)="closeUserModal()">
+          <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <!-- The submit button clicks the hidden submit on whichever form is active, but to keep it simple, we use the component method -->
+        <button class="custom-modal-btn-submit" (click)="selectedUser ? updateUser() : addUser()"
+          [disabled]="selectedUser ? !editUserForm?.form?.valid : !userForm?.form?.valid">
+          <mat-icon>check</mat-icon> {{ selectedUser ? ('COMMON.SAVE' | translate) : ('COMMON.ADD' | translate) }}
+        </button>
+      </div>
+    </div>
   </ng-template>
 
   <!-- Liste des utilisateurs existants -->

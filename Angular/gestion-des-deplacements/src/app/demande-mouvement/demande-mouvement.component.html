@@ -1,16 +1,22 @@
-<div style="padding: 20px;" [ngClass]="{'modal-container': isModal}">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2>{{ 'NEW_REQUEST.TITLE' | translate }}</h2>
-    <div style="display: flex; gap: 10px;">
-      <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" type="button" (click)="toggleShowAllLieuxInPays()"
-        style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 3px;">
-        {{ showAllLieuxInPays ? ('NEW_REQUEST.SHOW_BASE_ONLY' | translate) : ('NEW_REQUEST.SHOW_COUNTRY' | translate) }}
-      </button>
-      <button *ngIf="isModal" type="button" (click)="closeModal()" style="background: none; border: none; cursor: pointer; color: #666;">
-        <mat-icon>close</mat-icon>
-      </button>
+<form (ngSubmit)="onSubmit()" #demandeForm="ngForm" style="display: contents;">
+  <div [ngClass]="isModal ? 'custom-modal-layout' : ''" [style.max-width]="isModal ? '1000px' : 'none'" [style.width]="isModal ? '100vw' : 'auto'">
+    <div [ngClass]="isModal ? 'custom-modal-header' : ''" [style.padding]="isModal ? '' : '20px 20px 0 20px'" [style.display]="isModal ? '' : 'flex'" [style.justify-content]="isModal ? '' : 'space-between'" [style.align-items]="isModal ? '' : 'center'" [style.margin-bottom]="isModal ? '' : '20px'">
+      <h2 [style.margin]="isModal ? '0' : ''">
+        <mat-icon *ngIf="isModal">flight_takeoff</mat-icon>
+        {{ 'NEW_REQUEST.TITLE' | translate }}
+      </h2>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button *ngIf="userProfile !== 'SuperAdmin' && userPaysId" type="button" (click)="toggleShowAllLieuxInPays()"
+          style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; cursor: pointer; border-radius: 6px;">
+          {{ showAllLieuxInPays ? ('NEW_REQUEST.SHOW_BASE_ONLY' | translate) : ('NEW_REQUEST.SHOW_COUNTRY' | translate) }}
+        </button>
+        <button *ngIf="isModal" class="custom-modal-close-btn" type="button" (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
     </div>
-  </div>
+    
+    <div [ngClass]="isModal ? 'custom-modal-body' : ''" [style.padding]="isModal ? '' : '0 20px 20px 20px'">
   <!-- TOGGLE MODE (Visible uniquement pour SuperAdmin/Admin/Superviseur) -->
   <div *ngIf="userProfile !== 'Normal'"
     style="display: flex; gap: 10px; margin-bottom: 20px; background: #f5f5f5; padding: 10px; border-radius: 8px;">
@@ -30,7 +36,7 @@
     </button>
   </div>
 
-  <form (ngSubmit)="onSubmit()" #demandeForm="ngForm">
+    <!-- TOGGLE MODE (Visible uniquement pour SuperAdmin/Admin/Superviseur) -->
 
     <!-- FORMULAIRE MAINTENANCE -->
     <div *ngIf="requestType === 'maintenance'">
@@ -332,10 +338,17 @@
       </div>
     </div>
 
-    <button type="submit" [disabled]="!demandeForm.form.valid"
-      style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; margin-top: 20px; width: 100%; font-size: 1.1em;">
-      {{ requestType === 'maintenance' ? ('NEW_REQUEST.SUBMIT.MAINTENANCE' | translate) : ('NEW_REQUEST.SUBMIT.MISSION'
-      | translate) }}
-    </button>
-  </form>
-</div>
+    </div> <!-- End Body -->
+
+    <div [ngClass]="isModal ? 'custom-modal-footer' : ''" [style.margin-top]="isModal ? '' : '20px'">
+      <button *ngIf="isModal" type="button" class="custom-modal-btn-cancel" (click)="closeModal()">
+        <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
+      </button>
+      <button type="submit" [ngClass]="isModal ? 'custom-modal-btn-submit' : ''" [disabled]="!demandeForm.form.valid"
+        [style]="isModal ? '' : 'padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; width: 100%; font-size: 1.1em; border-radius: 6px;'">
+        <mat-icon *ngIf="isModal">check</mat-icon>
+        {{ requestType === 'maintenance' ? ('NEW_REQUEST.SUBMIT.MAINTENANCE' | translate) : ('NEW_REQUEST.SUBMIT.MISSION' | translate) }}
+      </button>
+    </div>
+  </div>
+</form>
