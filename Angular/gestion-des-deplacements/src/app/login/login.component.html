@@ -28,7 +28,7 @@
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
           <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
-          <input matInput type="password" id="motDePasse" name="motDePasse" [(ngModel)]="credentials.motDePasse"
+          <input matInput type="password" id="motDePasse" name="motDePasse" autocomplete="current-password" [(ngModel)]="credentials.motDePasse"
             required [disabled]="isLoading">
           <mat-error *ngIf="loginForm.controls['motDePasse']?.invalid && loginForm.controls['motDePasse']?.touched">
             {{ 'LOGIN.PASSWORD_REQUIRED' | translate }}
