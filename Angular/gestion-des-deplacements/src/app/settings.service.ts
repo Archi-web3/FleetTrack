@@ -82,6 +82,23 @@ export class SettingsService {
     }
 
     // Récupérer les facteurs CO2
+    
+    // Brand Settings
+    getBrandSettings(): Observable<any> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/brandSettings`).pipe(
+            map(setting => setting ? setting.value : null),
+            catchError(err => {
+                console.error('Erreur chargement Brand Settings', err);
+                return of(null);
+            })
+        );
+    }
+
+    saveBrandSettings(settings: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/brandSettings`, { value: settings });
+    }
+
+    // Récupérer les facteurs CO2
     getCO2Factors(): Observable<any> {
         return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/co2Factors`).pipe(
             map(setting => setting ? setting.value : null),

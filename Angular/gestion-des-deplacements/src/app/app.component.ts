@@ -3,6 +3,7 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { AuthService } from './auth.service';
+import { SettingsService } from './settings.service';
 // Imports pour Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +33,7 @@ export class AppComponent implements OnInit {
   userPays: string | null = null;
   userBase: string | null = null;
 
-  constructor(private authService: AuthService, private dialog: MatDialog) { }
+  constructor(private authService: AuthService, private dialog: MatDialog, private settingsService: SettingsService) { }
 
   openNouvelleDemandeModal(): void {
     this.dialog.open(DemandeMouvementComponent, {
@@ -44,6 +45,13 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
+    this.settingsService.getBrandSettings().subscribe(settings => {
+      if (settings && settings.primaryColor) {
+        document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+      }
+    });
+
     this.authService.isAuthenticated$.subscribe(status => {
       this.isAuthenticated = status;
     });

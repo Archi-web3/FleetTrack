@@ -1,31 +1,233 @@
 .settings-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+  display: flex;
+  height: calc(100vh - 64px); /* Hauteur de la fenetre moins la navbar */
+  background-color: var(--bg-color, #f8fafc);
+  margin: -20px; /* Compense le padding du router-outlet */
+}
+
+.settings-sidebar {
+  width: 280px;
+  background-color: white;
+  border-right: 1px solid #e2e8f0;
+  padding: 20px 0;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+
+  .sidebar-title {
+    padding: 0 20px;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  mat-nav-list {
+    a[mat-list-item] {
+      margin: 4px 12px;
+      border-radius: 8px;
+      color: #64748b;
+      
+      mat-icon {
+        color: #94a3b8;
+      }
+
+      &:hover {
+        background-color: #f1f5f9;
+      }
+
+      &.active {
+        background-color: rgba(var(--primary-color-rgb, 139, 92, 246), 0.1);
+        color: var(--primary-color);
+        font-weight: 600;
+
+        mat-icon {
+          color: var(--primary-color);
+        }
+      }
+    }
+  }
+}
+
+.settings-content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
 }
 
 .settings-section {
-    margin-top: 20px;
-}
+  max-width: 1000px;
 
-.description {
-    color: #666;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-}
-
-.add-row {
+  h2 {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin: 0 0 5px 0;
+    color: #1e293b;
+    font-size: 1.5rem;
+
+    mat-icon {
+      color: var(--primary-color);
+    }
+  }
+
+  .section-desc {
+    color: #64748b;
+    margin-bottom: 30px;
+  }
+}
+
+.setting-card {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 12px !important;
+  border: 1px solid #e2e8f0;
+
+  mat-card-header {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 10px;
+    mat-card-title {
+      font-size: 1.1rem;
+      color: #334155;
+    }
+  }
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* Color Picker Styles */
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.preset-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &.selected {
+      border-color: #1e293b;
+      transform: scale(1.1);
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #1e293b;
+    }
+  }
+}
+
+.custom-color-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  label {
+    font-weight: 500;
+    color: #475569;
+  }
+
+  input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    &::-webkit-color-swatch {
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  }
+
+  span {
+    font-family: monospace;
+    background: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #64748b;
+  }
+}
+
+/* Form Styles */
+.modern-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+  }
+
+  .modern-input {
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1e293b;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 139, 92, 246), 0.1);
+      background-color: white;
+    }
+  }
+}
+
+.actions-footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+  button {
+    padding: 6px 24px;
+    font-size: 1rem;
+  }
+}
+
+.add-type-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  input { flex: 1; }
+}
+
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 0;
+  text-align: center;
+  color: #64748b;
+  
+  h2 {
+    color: #475569;
     margin-bottom: 10px;
-}
-
-.full-width {
-    width: 100%;
-}
-
-.empty-list {
-    font-style: italic;
-    color: #999;
+  }
 }

@@ -1,81 +1,150 @@
 <div class="settings-container">
-    <mat-card>
+  <!-- Sidebar -->
+  <div class="settings-sidebar">
+    <h2 class="sidebar-title">Paramètres</h2>
+    <mat-nav-list>
+      <a mat-list-item [class.active]="activeTab === 'brand'" (click)="setTab('brand')">
+        <mat-icon matListItemIcon>palette</mat-icon>
+        <span matListItemTitle>Brand & Theme</span>
+      </a>
+      <a mat-list-item [class.active]="activeTab === 'system'" (click)="setTab('system')">
+        <mat-icon matListItemIcon>settings</mat-icon>
+        <span matListItemTitle>System Preferences</span>
+      </a>
+      <a mat-list-item [class.active]="activeTab === 'fleet'" (click)="setTab('fleet')">
+        <mat-icon matListItemIcon>directions_car</mat-icon>
+        <span matListItemTitle>Fleet & Rules</span>
+      </a>
+      <a mat-list-item [class.active]="activeTab === 'currencies'" (click)="setTab('currencies')">
+        <mat-icon matListItemIcon>monetization_on</mat-icon>
+        <span matListItemTitle>Currencies</span>
+      </a>
+      <a mat-list-item [class.active]="activeTab === 'maintenance'" (click)="setTab('maintenance')">
+        <mat-icon matListItemIcon>build</mat-icon>
+        <span matListItemTitle>Maintenance & Alerts</span>
+      </a>
+      <a mat-list-item [class.active]="activeTab === 'emails'" (click)="setTab('emails')">
+        <mat-icon matListItemIcon>email</mat-icon>
+        <span matListItemTitle>Email Settings</span>
+      </a>
+    </mat-nav-list>
+  </div>
+
+  <!-- Content -->
+  <div class="settings-content">
+    
+    <!-- 1. BRAND & THEME -->
+    <div *ngIf="activeTab === 'brand'" class="settings-section">
+      <h2><mat-icon>palette</mat-icon> Brand & Theme Settings</h2>
+      <p class="section-desc">Personnalisez l'identité visuelle de l'application FleetTrack.</p>
+
+      <mat-card class="setting-card">
         <mat-card-header>
-            <mat-card-title>
-                <mat-icon>settings</mat-icon>
-                {{ 'SETTINGS.TITLE' | translate }}
-            </mat-card-title>
-            <mat-card-subtitle>{{ 'SETTINGS.SUBTITLE' | translate }}</mat-card-subtitle>
+          <mat-card-title>Couleur Principale (Theme Customizer)</mat-card-title>
         </mat-card-header>
-
         <mat-card-content>
-            <div class="settings-section">
-                <h3>{{ 'SETTINGS.VEHICLE_TYPES.TITLE' | translate }}</h3>
-                <p class="description">{{ 'SETTINGS.VEHICLE_TYPES.DESC' | translate }}</p>
-
-                <div class="add-row">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>{{ 'SETTINGS.VEHICLE_TYPES.NEW_LABEL' | translate }}</mat-label>
-                        <input matInput [(ngModel)]="newType" (keyup.enter)="addType()"
-                            [placeholder]="'SETTINGS.VEHICLE_TYPES.NEW_PLACEHOLDER' | translate">
-                        <button mat-icon-button matSuffix (click)="addType()" [disabled]="!newType" color="primary">
-                            <mat-icon>add_circle</mat-icon>
-                        </button>
-                    </mat-form-field>
-                </div>
-
-                <mat-list role="list">
-                    <mat-list-item *ngFor="let type of vehicleTypes" role="listitem">
-                        <mat-icon matListItemIcon>directions_car</mat-icon>
-                        <div matListItemTitle>{{ type }}</div>
-                        <button mat-icon-button matListItemMeta (click)="removeType(type)" color="warn">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </mat-list-item>
-                    <mat-list-item *ngIf="vehicleTypes.length === 0">
-                        <div matListItemTitle class="empty-list">{{ 'SETTINGS.VEHICLE_TYPES.EMPTY' | translate }}</div>
-                    </mat-list-item>
-                </mat-list>
+          <div class="color-picker-container">
+            <div class="preset-colors">
+              <div *ngFor="let color of presetColors" 
+                   class="color-swatch" 
+                   [style.background]="color"
+                   [class.selected]="brandSettings.primaryColor === color"
+                   (click)="setPrimaryColor(color)">
+              </div>
             </div>
-
-            <div class="settings-section" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-                <h3>{{ 'SETTINGS.CO2.TITLE' | translate }}</h3>
-                <p class="description">{{ 'SETTINGS.CO2.DESC' | translate }}</p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'SETTINGS.CO2.SHORT' | translate }}</mat-label>
-                        <input matInput type="number" [(ngModel)]="co2Factors.short" placeholder="230">
-                        <span matSuffix>gCO2e/pkm</span>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'SETTINGS.CO2.MEDIUM' | translate }}</mat-label>
-                        <input matInput type="number" [(ngModel)]="co2Factors.medium" placeholder="178">
-                        <span matSuffix>gCO2e/pkm</span>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'SETTINGS.CO2.LONG' | translate }}</mat-label>
-                        <input matInput type="number" [(ngModel)]="co2Factors.long" placeholder="152">
-                        <span matSuffix>gCO2e/pkm</span>
-                    </mat-form-field>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'SETTINGS.CO2.SOURCE' | translate }}</mat-label>
-                        <input matInput [(ngModel)]="co2Factors.source" placeholder="Ex: ADEME">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ 'SETTINGS.CO2.LINK' | translate }}</mat-label>
-                        <input matInput [(ngModel)]="co2Factors.url" placeholder="https://...">
-                    </mat-form-field>
-                </div>
-
-                <button mat-raised-button color="primary" (click)="saveCO2()">
-                    <mat-icon>save</mat-icon> {{ 'SETTINGS.CO2.SAVE_BTN' | translate }}
-                </button>
+            <div class="custom-color-input">
+              <label>Couleur personnalisée :</label>
+              <input type="color" [(ngModel)]="brandSettings.primaryColor" (change)="setPrimaryColor(brandSettings.primaryColor)">
+              <span>{{ brandSettings.primaryColor }}</span>
             </div>
+          </div>
         </mat-card-content>
-    </mat-card>
+      </mat-card>
+
+      <mat-card class="setting-card">
+        <mat-card-header>
+          <mat-card-title>Textes et Informations</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="grid-2">
+            <div class="modern-form-group">
+              <label>Titre de l'application</label>
+              <input type="text" class="modern-input" [(ngModel)]="brandSettings.appName">
+            </div>
+            <div class="modern-form-group">
+              <label>Texte du pied de page (Footer)</label>
+              <input type="text" class="modern-input" [(ngModel)]="brandSettings.footerText">
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="actions-footer">
+        <button mat-flat-button color="primary" (click)="saveBrandSettings()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- 3. FLEET & RULES -->
+    <div *ngIf="activeTab === 'fleet'" class="settings-section">
+      <h2><mat-icon>directions_car</mat-icon> Fleet & Rules</h2>
+      <p class="section-desc">Gérez les types de véhicules et les paramètres d'émission CO2.</p>
+
+      <div class="grid-2">
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>Types de Véhicules</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="add-type-form">
+              <input type="text" class="modern-input" [(ngModel)]="newType" placeholder="Nouveau type...">
+              <button mat-flat-button color="primary" (click)="addType()">Ajouter</button>
+            </div>
+            <mat-list>
+              <mat-list-item *ngFor="let type of vehicleTypes">
+                <span matListItemTitle>{{ type }}</span>
+                <button mat-icon-button color="warn" matListItemMeta (click)="removeType(type)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>Facteurs CO2 (g/km)</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="modern-form-group">
+              <label>Trajet court</label>
+              <input type="number" class="modern-input" [(ngModel)]="co2Factors.short">
+            </div>
+            <div class="modern-form-group">
+              <label>Trajet moyen</label>
+              <input type="number" class="modern-input" [(ngModel)]="co2Factors.medium">
+            </div>
+            <div class="modern-form-group">
+              <label>Trajet long</label>
+              <input type="number" class="modern-input" [(ngModel)]="co2Factors.long">
+            </div>
+            <div class="modern-form-group">
+              <label>Source</label>
+              <input type="text" class="modern-input" [(ngModel)]="co2Factors.source">
+            </div>
+            <button mat-flat-button color="primary" style="margin-top: 15px;" (click)="saveCO2()">Save CO2</button>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDERS FOR OTHERS -->
+    <div *ngIf="activeTab === 'system' || activeTab === 'currencies' || activeTab === 'maintenance' || activeTab === 'emails'" class="settings-section">
+      <div class="placeholder-content">
+        <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 20px;">construction</mat-icon>
+        <h2>Module en construction</h2>
+        <p>Ce module ({{ activeTab }}) sera implémenté dans les prochaines étapes du développement.</p>
+      </div>
+    </div>
+
+  </div>
 </div>
