@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../auth.service'; // Note: auth.service.ts
 import { Router } from '@angular/router';
+import { SettingsService } from '../settings.service';
 
 // Imports Angular Material
 import { MatCardModule } from '@angular/material/card'; // Pour la carte du formulaire
@@ -23,7 +24,7 @@ import { LanguageSelectorComponent } from '../language-selector/language-selecto
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   credentials = {
     email: '',
     motDePasse: ''
@@ -32,7 +33,29 @@ export class LoginComponent {
   isLoading = false;
   errorMessage: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  
+  brandSettings: any = {
+    appName: 'FleetTrack',
+    footerText: '',
+    loginBackgroundUrl: ''
+  };
+
+  ngOnInit() {
+    this.settingsService.getBrandSettings().subscribe(data => {
+      if (data) {
+        this.brandSettings = data;
+        if (this.brandSettings.loginBackgroundUrl) {
+          document.documentElement.style.setProperty('--login-bg', `url(${this.brandSettings.loginBackgroundUrl})`);
+        } else {
+          document.documentElement.style.setProperty('--login-bg', 'radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(217, 70, 239, 0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 100%), #1e1b4b'); // Dark purple fallback
+        }
+      } else {
+        document.documentElement.style.setProperty('--login-bg', 'radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(217, 70, 239, 0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 100%), #1e1b4b');
+      }
+    });
+  }
+
+  constructor(private authService: AuthService, private router: Router, private settingsService: SettingsService) { }
 
   onLogin(): void {
     this.isLoading = true;

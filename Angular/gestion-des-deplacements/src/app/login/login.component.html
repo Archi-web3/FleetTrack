@@ -1,4 +1,4 @@
-<div class="login-page-wrapper" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(217, 70, 239, 0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 100%), var(--secondary-color); backdrop-filter: blur(40px);">
+<div class="login-page-wrapper" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: var(--login-bg, radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(217, 70, 239, 0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 100%), #1e1b4b); background-size: cover; background-position: center; backdrop-filter: blur(40px); flex-direction: column;">
   <mat-card class="login-card" style="width: 420px; padding: 40px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); background: white;">
     <!-- Language Selector -->
     <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
@@ -7,11 +7,11 @@
     
     <div class="login-logo-container" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 24px;">
       <img src="assets/logo_acf.png" alt="Logo" style="max-width: 60px; height: auto;">
-      <h2 class="app-title" style="margin: 0; color: var(--text-main); font-size: 28px; font-weight: 600;">FleetTrack</h2>
+      <h2 class="app-title" style="margin: 0; color: var(--text-main); font-size: 28px; font-weight: 600;">{{ brandSettings.appName || 'FleetTrack' }}</h2>
     </div>
 
     <div class="login-title-text" style="text-align: center; margin-bottom: 30px;">
-      <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main); font-weight: 500;">Welcome to FleetTrack !</h3>
+      <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main); font-weight: 500;">Welcome to {{ brandSettings.appName || 'FleetTrack' }} !</h3>
       <p style="margin: 0; font-size: 14px; color: var(--text-muted);">Please log in to access the platform.</p>
     </div>
 
@@ -56,4 +56,9 @@
       </form>
     </mat-card-content>
   </mat-card>
+
+  <!-- Footer -->
+  <div *ngIf="brandSettings.footerText" style="margin-top: 40px; text-align: center; color: rgba(255,255,255,0.7); font-size: 13px; max-width: 600px;">
+    {{ brandSettings.footerText }}
+  </div>
 </div>

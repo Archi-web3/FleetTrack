@@ -38,7 +38,8 @@ export class GeneralSettingsComponent implements OnInit {
   brandSettings: any = {
     primaryColor: '#8b5cf6',
     appName: 'FleetTrack ACF',
-    footerText: 'Copyright © 2026, Action Contre la Faim'
+    footerText: 'Copyright © 2026, Action Contre la Faim',
+    loginBackgroundUrl: ''
   };
   presetColors: string[] = ['#8b5cf6', '#2196F3', '#4CAF50', '#f44336', '#E91E63', '#009688', '#FF9800', '#607D8B'];
 
