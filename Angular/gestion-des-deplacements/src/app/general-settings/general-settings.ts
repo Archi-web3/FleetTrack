@@ -88,13 +88,52 @@ export class GeneralSettingsComponent implements OnInit {
     this.loadBrandSettings();
     this.loadTypes();
     this.loadCO2Factors();
+    this.loadCurrencies();
   }
 
   setTab(tab: string) {
     this.activeTab = tab;
   }
 
-  // --- BRAND SETTINGS ---
+  // --- CURRENCIES ---
+  currencies: any[] = [];
+  newCurrency: any = { code: '', symbol: '', rate: 1, isDefault: false };
+
+  loadCurrencies() {
+    this.settingsService.getCurrencies().subscribe(data => {
+      if (data && data.length > 0) {
+        this.currencies = data;
+      }
+    });
+  }
+
+  addCurrency() {
+    if (this.newCurrency.code && this.newCurrency.symbol) {
+      if (this.newCurrency.isDefault) {
+        this.currencies.forEach(c => c.isDefault = false);
+      }
+      this.currencies.push({ ...this.newCurrency });
+      this.newCurrency = { code: '', symbol: '', rate: 1, isDefault: false };
+      this.saveCurrencies();
+    }
+  }
+
+  removeCurrency(curr: any) {
+    this.currencies = this.currencies.filter(c => c !== curr);
+    this.saveCurrencies();
+  }
+
+  setDefaultCurrency(curr: any) {
+    this.currencies.forEach(c => c.isDefault = false);
+    curr.isDefault = true;
+    this.saveCurrencies();
+  }
+
+  saveCurrencies() {
+    this.settingsService.saveCurrencies(this.currencies).subscribe(() => {
+      // Afficher un petit message de succès si nécessaire
+    });
+  }
   loadBrandSettings() {
     this.settingsService.getBrandSettings().subscribe(data => {
       if (data) {

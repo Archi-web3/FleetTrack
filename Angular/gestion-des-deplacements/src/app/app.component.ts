@@ -18,6 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DemandeMouvementComponent } from './demande-mouvement/demande-mouvement.component';
 
+import { TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -34,7 +36,15 @@ export class AppComponent implements OnInit {
   userPays: string | null = null;
   userBase: string | null = null;
 
-  constructor(private authService: AuthService, private dialog: MatDialog, private settingsService: SettingsService) { }
+  constructor(
+    private authService: AuthService, 
+    private dialog: MatDialog, 
+    private settingsService: SettingsService,
+    private translate: TranslateService
+  ) {
+    this.translate.setDefaultLang('fr');
+    this.translate.use('fr');
+  }
 
   openNouvelleDemandeModal(): void {
     this.dialog.open(DemandeMouvementComponent, {

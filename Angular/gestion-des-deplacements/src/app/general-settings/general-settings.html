@@ -233,8 +233,77 @@
       </div>
     </div>
 
+    <!-- 4. CURRENCIES -->
+    <div *ngIf="activeTab === 'currencies'" class="settings-section">
+      <h2><mat-icon>monetization_on</mat-icon> Configuration des Devises</h2>
+      <p class="section-desc">Gérez les devises supportées par l'application et leurs taux de change par défaut.</p>
+
+      <mat-card class="setting-card">
+        <mat-card-header>
+          <mat-card-title>Devises Actives</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          
+          <div class="add-type-form" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 20px;">
+            <div class="modern-form-group" style="flex: 1; min-width: 100px;">
+              <label>Code (ex: USD)</label>
+              <input type="text" class="modern-input" [(ngModel)]="newCurrency.code" placeholder="USD">
+            </div>
+            <div class="modern-form-group" style="flex: 1; min-width: 100px;">
+              <label>Symbole (ex: $)</label>
+              <input type="text" class="modern-input" [(ngModel)]="newCurrency.symbol" placeholder="$">
+            </div>
+            <div class="modern-form-group" style="flex: 1; min-width: 100px;">
+              <label>Taux vs EUR</label>
+              <input type="number" class="modern-input" [(ngModel)]="newCurrency.rate" placeholder="1.08">
+            </div>
+            <div style="padding-bottom: 8px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                <input type="checkbox" [(ngModel)]="newCurrency.isDefault"> Devise par défaut
+              </label>
+            </div>
+            <button mat-flat-button color="primary" style="margin-bottom: 8px;" (click)="addCurrency()" [disabled]="!newCurrency.code || !newCurrency.symbol">Ajouter</button>
+          </div>
+
+          <table class="mat-elevation-z2" style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden;">
+            <thead style="background: #f1f5f9; color: #475569; font-size: 14px; text-align: left;">
+              <tr>
+                <th style="padding: 12px 16px;">Devise</th>
+                <th style="padding: 12px 16px;">Symbole</th>
+                <th style="padding: 12px 16px;">Taux de change (vs EUR)</th>
+                <th style="padding: 12px 16px;">Par défaut</th>
+                <th style="padding: 12px 16px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let curr of currencies" style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 12px 16px; font-weight: 500;">{{ curr.code }}</td>
+                <td style="padding: 12px 16px;">{{ curr.symbol }}</td>
+                <td style="padding: 12px 16px;">
+                  <input type="number" class="modern-input" style="width: 100px; padding: 4px 8px;" [(ngModel)]="curr.rate" (change)="saveCurrencies()">
+                </td>
+                <td style="padding: 12px 16px;">
+                  <mat-icon *ngIf="curr.isDefault" color="primary">star</mat-icon>
+                  <button mat-button *ngIf="!curr.isDefault" (click)="setDefaultCurrency(curr)">Définir par défaut</button>
+                </td>
+                <td style="padding: 12px 16px;">
+                  <button mat-icon-button color="warn" (click)="removeCurrency(curr)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="currencies.length === 0">
+                <td colspan="5" style="padding: 20px; text-align: center; color: #64748b;">Aucune devise configurée.</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
     <!-- PLACEHOLDERS FOR OTHERS -->
-    <div *ngIf="activeTab === 'system' || activeTab === 'currencies' || activeTab === 'maintenance' || activeTab === 'emails'" class="settings-section">
+    <div *ngIf="activeTab === 'system' || activeTab === 'maintenance' || activeTab === 'emails'" class="settings-section">
       <div class="placeholder-content">
         <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 20px;">construction</mat-icon>
         <h2>Module en construction</h2>

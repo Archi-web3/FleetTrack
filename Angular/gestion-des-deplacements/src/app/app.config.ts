@@ -46,9 +46,7 @@ export const appConfig: ApplicationConfig = {
     provideCharts(withDefaultRegisterables()), // NOUVEAU: Provider Charts
     // NOUVEAU : Configuration i18n
     importProvidersFrom(
-      TranslateModule.forRoot({
-        defaultLanguage: 'fr'
-      })
+      TranslateModule.forRoot()
     ),
     provideTranslateHttpLoader({
       prefix: '/assets/i18n/',

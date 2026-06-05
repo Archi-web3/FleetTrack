@@ -128,4 +128,23 @@ export class SettingsService {
     saveServiceCosts(costs: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/serviceCosts`, { value: costs });
     }
+
+    // Currencies Settings
+    getCurrencies(): Observable<any[]> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/currencies`).pipe(
+            map(setting => setting && setting.value ? setting.value : []),
+            catchError(err => {
+                console.error('Erreur chargement Currencies', err);
+                return of([
+                    { code: 'EUR', symbol: '€', rate: 1, isDefault: true },
+                    { code: 'USD', symbol: '$', rate: 1.08, isDefault: false },
+                    { code: 'XOF', symbol: 'CFA', rate: 655.957, isDefault: false }
+                ]);
+            })
+        );
+    }
+
+    saveCurrencies(currencies: any[]): Observable<any> {
+        return this.http.post(`${this.apiUrl}/currencies`, { value: currencies });
+    }
 }

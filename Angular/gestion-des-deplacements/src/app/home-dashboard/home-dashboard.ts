@@ -5,25 +5,88 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SettingsService } from '../settings.service';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-home-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, MatCardModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './home-dashboard.html',
   styleUrls: ['./home-dashboard.css']
 })
 export class HomeDashboardComponent implements OnInit {
   newsBanner: string | null = null;
   userName: string = '';
+  
+  weather: { temp: number, description: string, icon: string, location: string } | null = null;
+  weatherLoading = true;
+  weatherError = false;
 
-  constructor(private settingsService: SettingsService) {}
+  constructor(private settingsService: SettingsService, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName') || 'Utilisateur';
     this.settingsService.getBrandSettings().subscribe(settings => {
       if (settings && settings.newsBanner) {
         this.newsBanner = settings.newsBanner;
+      }
+    });
+    
+    this.initWeather();
+  }
+
+  initWeather() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.fetchWeather(position.coords.latitude, position.coords.longitude, 'Position actuelle');
+        },
+        (error) => {
+          console.warn('Geolocation refusée ou erreur, utilisation de Paris par défaut', error);
+          this.fetchWeather(48.8566, 2.3522, 'Paris, France (Défaut)');
+        }
+      );
+    } else {
+      this.fetchWeather(48.8566, 2.3522, 'Paris, France (Défaut)');
+    }
+  }
+
+  fetchWeather(lat: number, lon: number, locationName: string) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+    
+    this.http.get<any>(url).pipe(
+      catchError(err => {
+        this.weatherError = true;
+        this.weatherLoading = false;
+        return of(null);
+      })
+    ).subscribe(data => {
+      if (data && data.current_weather) {
+        const temp = Math.round(data.current_weather.temperature);
+        const code = data.current_weather.weathercode;
+        
+        let desc = 'Clair';
+        let icon = 'wb_sunny';
+        
+        if (code === 0) { desc = 'Ciel dégagé'; icon = 'wb_sunny'; }
+        else if (code === 1 || code === 2 || code === 3) { desc = 'Partiellement nuageux'; icon = 'cloud_queue'; }
+        else if (code === 45 || code === 48) { desc = 'Brouillard'; icon = 'foggy'; }
+        else if (code >= 51 && code <= 55) { desc = 'Bruine'; icon = 'grain'; }
+        else if (code >= 61 && code <= 65) { desc = 'Pluie'; icon = 'water_drop'; }
+        else if (code >= 71 && code <= 77) { desc = 'Neige'; icon = 'ac_unit'; }
+        else if (code >= 80 && code <= 82) { desc = 'Averses'; icon = 'water_drop'; }
+        else if (code >= 95) { desc = 'Orage'; icon = 'thunderstorm'; }
+
+        this.weather = {
+          temp,
+          description: desc,
+          icon,
+          location: locationName
+        };
+        this.weatherLoading = false;
       }
     });
   }
