@@ -76,7 +76,8 @@ app.use(cors({
     optionsSuccessStatus: 200 // Legacy browser support
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // NOUVEAU : Middleware de log générique global (pour voir si ça passe avant le auth)
 app.use((req, res, next) => {
