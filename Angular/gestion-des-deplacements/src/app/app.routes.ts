@@ -17,11 +17,13 @@ import { MaintenanceTrackingComponent } from './maintenance-tracking/maintenance
 import { AuthGuard } from './auth-guard';
 
 import { MapComponent } from './features/map/map';
+import { HomeDashboardComponent } from './home-dashboard/home-dashboard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'planning',
+    component: HomeDashboardComponent,
+    canActivate: [AuthGuard],
     pathMatch: 'full'
   },
   {

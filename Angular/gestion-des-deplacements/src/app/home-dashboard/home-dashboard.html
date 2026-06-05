@@ -1,0 +1,47 @@
+<div class="home-container">
+  
+  <!-- News Banner -->
+  <div class="news-banner" *ngIf="newsBanner">
+    <mat-icon>campaign</mat-icon>
+    <span>{{ newsBanner }}</span>
+  </div>
+
+  <div class="welcome-header">
+    <h1>Bonjour, {{ userName }} ! 👋</h1>
+    <p>Bienvenue sur votre espace FleetTrack.</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Quick Actions -->
+    <mat-card class="widget-card actions-widget">
+      <mat-card-header>
+        <mat-card-title>Actions Rapides</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="actions-grid">
+        <button mat-flat-button color="primary" routerLink="/demande-mouvement">
+          <mat-icon>add_circle</mat-icon> Nouveau Mouvement
+        </button>
+        <button mat-stroked-button color="primary" routerLink="/planning">
+          <mat-icon>calendar_month</mat-icon> Mon Planning
+        </button>
+        <button mat-stroked-button color="primary" routerLink="/map">
+          <mat-icon>map</mat-icon> Carte Interactive
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Weather Widget Placeholder -->
+    <mat-card class="widget-card weather-widget">
+      <mat-card-content class="weather-content">
+        <div class="weather-info">
+          <h2>Paris, France</h2>
+          <div class="temp">22°C</div>
+          <p>Ensoleillé avec quelques nuages</p>
+        </div>
+        <div class="weather-icon">
+          <mat-icon>wb_sunny</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

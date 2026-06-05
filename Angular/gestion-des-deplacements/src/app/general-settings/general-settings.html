@@ -71,6 +71,12 @@
               <label>Titre de l'application</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.appName">
             </div>
+            
+            <div class="modern-form-group" style="grid-column: 1 / -1;">
+              <label>Bandeau d'actualités (Accueil)</label>
+              <textarea class="modern-input" [(ngModel)]="brandSettings.newsBanner" placeholder="Message important pour tous les utilisateurs..."></textarea>
+            </div>
+
             <div class="modern-form-group">
               <label>Texte du pied de page (Footer)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.footerText">
