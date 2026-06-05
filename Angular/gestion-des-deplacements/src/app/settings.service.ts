@@ -95,7 +95,7 @@ export class SettingsService {
     }
 
     saveBrandSettings(settings: any): Observable<any> {
-        return this.http.post(`${this.apiUrl}/public/brandSettings`, { value: settings });
+        return this.http.post(`${this.apiUrl}/brandSettings`, { value: settings });
     }
 
     // Récupérer les facteurs CO2
