@@ -92,46 +92,68 @@
           <mat-card-title>Images et Logos</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <div class="grid-2">
             <!-- Fond Login -->
             <div class="modern-form-group">
               <label>Fond d'écran Login</label>
-              <div class="image-upload-box" *ngIf="!brandSettings.loginBackgroundUrl">
-                <input type="file" (change)="onFileSelected($event, 'loginBackgroundUrl')" accept="image/*">
-                <mat-icon>cloud_upload</mat-icon>
-                <span>Choisir une image (Max 2MB)</span>
-              </div>
-              <div class="image-preview" *ngIf="brandSettings.loginBackgroundUrl">
-                <img [src]="brandSettings.loginBackgroundUrl" alt="Login BG" style="height: 60px; border-radius: 8px;">
-                <button mat-icon-button color="warn" (click)="removeImage('loginBackgroundUrl')"><mat-icon>delete</mat-icon></button>
+              
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox" [(ngModel)]="useDefaultBackground" (change)="toggleDefaultBackground()"> Utiliser le fond violet par défaut
+                </label>
+                
+                <div *ngIf="useDefaultBackground" style="height: 60px; border-radius: 8px; background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.4), transparent 50%), radial-gradient(circle at 70% 80%, rgba(217, 70, 239, 0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 100%), #1e1b4b; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">Fond Violet Par Défaut</div>
+
+                <div class="image-upload-box" *ngIf="!useDefaultBackground && !brandSettings.loginBackgroundUrl">
+                  <input type="file" (change)="onFileSelected($event, 'loginBackgroundUrl')" accept="image/*">
+                  <mat-icon>cloud_upload</mat-icon>
+                  <span>Choisir une image (Max 2MB)</span>
+                </div>
+                <div class="image-preview" *ngIf="!useDefaultBackground && brandSettings.loginBackgroundUrl">
+                  <img [src]="brandSettings.loginBackgroundUrl" alt="Login BG" style="height: 60px; border-radius: 8px;">
+                  <button mat-icon-button color="warn" (click)="removeImage('loginBackgroundUrl')"><mat-icon>delete</mat-icon></button>
+                </div>
               </div>
             </div>
 
             <!-- Logo Dark -->
             <div class="modern-form-group">
               <label>Logo Principal (Mode Clair)</label>
-              <div class="image-upload-box" *ngIf="!brandSettings.logoDark">
-                <input type="file" (change)="onFileSelected($event, 'logoDark')" accept="image/*">
-                <mat-icon>cloud_upload</mat-icon>
-                <span>Choisir une image (Max 2MB)</span>
-              </div>
-              <div class="image-preview" *ngIf="brandSettings.logoDark">
-                <img [src]="brandSettings.logoDark" alt="Logo Dark" style="height: 40px; background: #f8fafc; padding: 5px;">
-                <button mat-icon-button color="warn" (click)="removeImage('logoDark')"><mat-icon>delete</mat-icon></button>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox" [(ngModel)]="useDefaultLogoDark" (change)="toggleDefaultLogoDark()"> Utiliser le logo par défaut
+                </label>
+                <div *ngIf="useDefaultLogoDark" style="height: 40px; background: #f8fafc; padding: 5px; display: flex; align-items: center;"><img src="assets/logo_acf.png" style="height: 30px;"></div>
+
+                <div class="image-upload-box" *ngIf="!useDefaultLogoDark && !brandSettings.logoDark">
+                  <input type="file" (change)="onFileSelected($event, 'logoDark')" accept="image/*">
+                  <mat-icon>cloud_upload</mat-icon>
+                  <span>Choisir une image (Max 2MB)</span>
+                </div>
+                <div class="image-preview" *ngIf="!useDefaultLogoDark && brandSettings.logoDark">
+                  <img [src]="brandSettings.logoDark" alt="Logo Dark" style="height: 40px; background: #f8fafc; padding: 5px;">
+                  <button mat-icon-button color="warn" (click)="removeImage('logoDark')"><mat-icon>delete</mat-icon></button>
+                </div>
               </div>
             </div>
 
             <!-- Logo Light -->
             <div class="modern-form-group">
               <label>Logo Secondaire (Mode Sombre / Sidebar)</label>
-              <div class="image-upload-box" *ngIf="!brandSettings.logoLight">
-                <input type="file" (change)="onFileSelected($event, 'logoLight')" accept="image/*">
-                <mat-icon>cloud_upload</mat-icon>
-                <span>Choisir une image (Max 2MB)</span>
-              </div>
-              <div class="image-preview" *ngIf="brandSettings.logoLight">
-                <img [src]="brandSettings.logoLight" alt="Logo Light" style="height: 40px; background: #1e293b; padding: 5px;">
-                <button mat-icon-button color="warn" (click)="removeImage('logoLight')"><mat-icon>delete</mat-icon></button>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox" [(ngModel)]="useDefaultLogoLight" (change)="toggleDefaultLogoLight()"> Utiliser le logo par défaut
+                </label>
+                <div *ngIf="useDefaultLogoLight" style="height: 40px; background: #1e293b; padding: 5px; display: flex; align-items: center;"><img src="assets/logo_acf.png" style="height: 30px; filter: brightness(0) invert(1);"></div>
+
+                <div class="image-upload-box" *ngIf="!useDefaultLogoLight && !brandSettings.logoLight">
+                  <input type="file" (change)="onFileSelected($event, 'logoLight')" accept="image/*">
+                  <mat-icon>cloud_upload</mat-icon>
+                  <span>Choisir une image (Max 2MB)</span>
+                </div>
+                <div class="image-preview" *ngIf="!useDefaultLogoLight && brandSettings.logoLight">
+                  <img [src]="brandSettings.logoLight" alt="Logo Light" style="height: 40px; background: #1e293b; padding: 5px;">
+                  <button mat-icon-button color="warn" (click)="removeImage('logoLight')"><mat-icon>delete</mat-icon></button>
+                </div>
               </div>
             </div>
             
