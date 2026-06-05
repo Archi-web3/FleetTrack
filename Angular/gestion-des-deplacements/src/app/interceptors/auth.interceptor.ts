@@ -4,8 +4,8 @@ import { AuthService } from '../auth.service';
 import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    // Skip external APIs (OSRM, etc.)
-    if (req.url.includes('router.project-osrm.org')) {
+    // Skip external APIs (OSRM, Open-Meteo, etc.)
+    if (req.url.includes('router.project-osrm.org') || req.url.includes('api.open-meteo.com')) {
         return next(req);
     }
 
