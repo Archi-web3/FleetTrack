@@ -265,15 +265,15 @@ body {
   cursor: not-allowed;
 }
 
-/* Global inputs inside Modals */
-.custom-modal-body input[type="text"],
-.custom-modal-body input[type="number"],
-.custom-modal-body input[type="date"],
-.custom-modal-body input[type="datetime-local"],
-.custom-modal-body input[type="email"],
-.custom-modal-body input[type="password"],
-.custom-modal-body select,
-.custom-modal-body textarea {
+/* Global inputs inside Modals (excluding Angular Material inputs) */
+.custom-modal-body input[type="text"]:not([matInput]):not(.mat-mdc-input-element),
+.custom-modal-body input[type="number"]:not([matInput]):not(.mat-mdc-input-element),
+.custom-modal-body input[type="date"]:not([matInput]):not(.mat-mdc-input-element),
+.custom-modal-body input[type="datetime-local"]:not([matInput]):not(.mat-mdc-input-element),
+.custom-modal-body input[type="email"]:not([matInput]):not(.mat-mdc-input-element),
+.custom-modal-body input[type="password"]:not([matInput]):not(.mat-mdc-input-element),
+.custom-modal-body select:not(.mat-mdc-select),
+.custom-modal-body textarea:not([matInput]):not(.mat-mdc-input-element) {
   width: 100%;
   padding: 10px 12px !important;
   border: 1px solid #d1d5db !important;
@@ -286,9 +286,9 @@ body {
   margin-top: 5px;
 }
 
-.custom-modal-body input:focus,
-.custom-modal-body select:focus,
-.custom-modal-body textarea:focus {
+.custom-modal-body input:not([matInput]):not(.mat-mdc-input-element):focus,
+.custom-modal-body select:not(.mat-mdc-select):focus,
+.custom-modal-body textarea:not([matInput]):not(.mat-mdc-input-element):focus {
   outline: none !important;
   border-color: var(--primary-color, #8b5cf6) !important;
   background-color: #ffffff !important;
