@@ -6,6 +6,22 @@ const auth = require('../middleware/authMiddleware');
 // @route   GET /api/settings/vehicleTypes
 // @desc    Get list of vehicle types
 // @access  Private
+// @route   GET /api/settings/public/brandSettings
+// @desc    Get brand settings without authentication
+// @access  Public
+router.get('/public/brandSettings', async (req, res) => {
+    try {
+        const setting = await Setting.findOne({ key: 'brandSettings' });
+        if (!setting) {
+            return res.json({ msg: 'Setting not found' }); // Return 200 with empty to not crash login
+        }
+        res.json(setting);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 router.get('/vehicleTypes', auth(), async (req, res) => {
     try {
         // Try to get from settings first

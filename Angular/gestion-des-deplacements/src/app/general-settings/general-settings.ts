@@ -10,6 +10,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SettingsService } from '../settings.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
 @Component({
@@ -57,10 +58,17 @@ export class GeneralSettingsComponent implements OnInit {
 
   constructor(
     private settingsService: SettingsService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    
+    this.route.queryParams.subscribe(params => {
+      if (params['tab']) {
+        this.activeTab = params['tab'];
+      }
+    });
     this.loadBrandSettings();
     this.loadTypes();
     this.loadCO2Factors();
@@ -82,6 +90,27 @@ export class GeneralSettingsComponent implements OnInit {
   setPrimaryColor(color: string) {
     this.brandSettings.primaryColor = color;
     document.documentElement.style.setProperty('--primary-color', color);
+  }
+
+  
+  // --- UPLOAD IMAGES ---
+  onFileSelected(event: any, field: string) {
+    const file: File = event.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB max
+        this.snackBar.open('Fichier trop lourd (Max 2MB)', 'Fermer');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.brandSettings[field] = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(field: string) {
+    this.brandSettings[field] = '';
   }
 
   saveBrandSettings() {

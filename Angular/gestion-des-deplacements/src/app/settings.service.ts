@@ -85,7 +85,7 @@ export class SettingsService {
     
     // Brand Settings
     getBrandSettings(): Observable<any> {
-        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/brandSettings`).pipe(
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/public/brandSettings`).pipe(
             map(setting => setting ? setting.value : null),
             catchError(err => {
                 console.error('Erreur chargement Brand Settings', err);
@@ -95,7 +95,7 @@ export class SettingsService {
     }
 
     saveBrandSettings(settings: any): Observable<any> {
-        return this.http.post(`${this.apiUrl}/brandSettings`, { value: settings });
+        return this.http.post(`${this.apiUrl}/public/brandSettings`, { value: settings });
     }
 
     // Récupérer les facteurs CO2

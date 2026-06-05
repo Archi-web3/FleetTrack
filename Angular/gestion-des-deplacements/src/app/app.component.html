@@ -2,8 +2,8 @@
   <!-- TOP BAR (Dark) -->
   <div class="top-bar">
     <div class="logo-container">
-      <img src="assets/logo_acf.png" alt="Logo" style="filter: brightness(0) invert(1);">
-      <h1>FleetTrack</h1>
+      <img [src]="brandSettings?.logoLight || 'assets/logo_acf.png'" alt="Logo" style="max-height: 40px; width: auto; object-fit: contain;">
+      <h1>{{ brandSettings?.appName || 'FleetTrack' }}</h1>
     </div>
 
     <!-- Country Selector -->
@@ -109,7 +109,8 @@
           <button mat-menu-item routerLink="/gestion-lieux"><mat-icon>place</mat-icon><span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span></button>
           <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="userProfile === 'SuperAdmin'"><mat-icon>public</mat-icon><span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span></button>
           <mat-divider></mat-divider>
-          <button mat-menu-item routerLink="/admin/settings"><mat-icon>settings_applications</mat-icon><span>{{ 'MENU.GENERAL_SETTINGS' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/settings" [queryParams]="{tab: 'fleet'}"><mat-icon>directions_car</mat-icon><span>Paramétrages Fleet</span></button>
+          <button mat-menu-item routerLink="/admin/settings" [queryParams]="{tab: 'brand'}"><mat-icon>settings_applications</mat-icon><span>Paramétrages Système</span></button>
           <button mat-menu-item routerLink="/environment-roadmap"><mat-icon>eco</mat-icon><span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span></button>
           <mat-divider></mat-divider>
           <button mat-menu-item routerLink="/guide-utilisateur"><mat-icon>help</mat-icon><span>{{ 'MENU.USER_GUIDE' | translate }}</span></button>

@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   isAuthenticated: boolean = false;
   userProfile: string | null = null;
   userName: string | null = null;
+  brandSettings: any = {};
   userPays: string | null = null;
   userBase: string | null = null;
 
@@ -46,11 +47,16 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     
+
     this.settingsService.getBrandSettings().subscribe(settings => {
-      if (settings && settings.primaryColor) {
-        document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+      if (settings) {
+        this.brandSettings = settings;
+        if (settings.primaryColor) {
+          document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
+        }
       }
     });
+
 
     this.authService.isAuthenticated$.subscribe(status => {
       this.isAuthenticated = status;

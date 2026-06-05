@@ -75,9 +75,72 @@
               <label>Texte du pied de page (Footer)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.footerText">
             </div>
+            
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      
+      <mat-card class="setting-card">
+        <mat-card-header>
+          <mat-card-title>Images et Logos</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="grid-2">
+            <!-- Fond Login -->
             <div class="modern-form-group">
-              <label>URL Image de fond (Login)</label>
-              <input type="text" class="modern-input" [(ngModel)]="brandSettings.loginBackgroundUrl" placeholder="https://...">
+              <label>Fond d'écran Login</label>
+              <div class="image-upload-box" *ngIf="!brandSettings.loginBackgroundUrl">
+                <input type="file" (change)="onFileSelected($event, 'loginBackgroundUrl')" accept="image/*">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Choisir une image (Max 2MB)</span>
+              </div>
+              <div class="image-preview" *ngIf="brandSettings.loginBackgroundUrl">
+                <img [src]="brandSettings.loginBackgroundUrl" alt="Login BG" style="height: 60px; border-radius: 8px;">
+                <button mat-icon-button color="warn" (click)="removeImage('loginBackgroundUrl')"><mat-icon>delete</mat-icon></button>
+              </div>
+            </div>
+
+            <!-- Logo Dark -->
+            <div class="modern-form-group">
+              <label>Logo Principal (Mode Clair)</label>
+              <div class="image-upload-box" *ngIf="!brandSettings.logoDark">
+                <input type="file" (change)="onFileSelected($event, 'logoDark')" accept="image/*">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Choisir une image (Max 2MB)</span>
+              </div>
+              <div class="image-preview" *ngIf="brandSettings.logoDark">
+                <img [src]="brandSettings.logoDark" alt="Logo Dark" style="height: 40px; background: #f8fafc; padding: 5px;">
+                <button mat-icon-button color="warn" (click)="removeImage('logoDark')"><mat-icon>delete</mat-icon></button>
+              </div>
+            </div>
+
+            <!-- Logo Light -->
+            <div class="modern-form-group">
+              <label>Logo Secondaire (Mode Sombre / Sidebar)</label>
+              <div class="image-upload-box" *ngIf="!brandSettings.logoLight">
+                <input type="file" (change)="onFileSelected($event, 'logoLight')" accept="image/*">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Choisir une image (Max 2MB)</span>
+              </div>
+              <div class="image-preview" *ngIf="brandSettings.logoLight">
+                <img [src]="brandSettings.logoLight" alt="Logo Light" style="height: 40px; background: #1e293b; padding: 5px;">
+                <button mat-icon-button color="warn" (click)="removeImage('logoLight')"><mat-icon>delete</mat-icon></button>
+              </div>
+            </div>
+            
+            <!-- Favicon -->
+            <div class="modern-form-group">
+              <label>Favicon</label>
+              <div class="image-upload-box" *ngIf="!brandSettings.favicon">
+                <input type="file" (change)="onFileSelected($event, 'favicon')" accept="image/*">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Choisir une image (Max 2MB)</span>
+              </div>
+              <div class="image-preview" *ngIf="brandSettings.favicon">
+                <img [src]="brandSettings.favicon" alt="Favicon" style="height: 32px; width: 32px;">
+                <button mat-icon-button color="warn" (click)="removeImage('favicon')"><mat-icon>delete</mat-icon></button>
+              </div>
             </div>
           </div>
         </mat-card-content>
