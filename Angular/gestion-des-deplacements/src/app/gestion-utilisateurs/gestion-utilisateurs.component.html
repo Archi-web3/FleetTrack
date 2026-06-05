@@ -435,7 +435,7 @@
 
   <mat-menu #actionMenu="matMenu" xPosition="before">
     <ng-template matMenuContent let-user="user">
-      <button mat-menu-item (click)="selectUser(user)" [disabled]="userProfile !== 'SuperAdmin' && userProfile !== 'Admin'">
+      <button mat-menu-item (click)="openUserModal(user)" [disabled]="userProfile !== 'SuperAdmin' && userProfile !== 'Admin'">
         <mat-icon style="color: #0284c7;">edit</mat-icon>
         <span style="color: #0284c7;">{{ 'USERS.ACTIONS.UPDATE' | translate }}</span>
       </button>
