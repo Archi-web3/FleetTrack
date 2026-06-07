@@ -11,7 +11,7 @@ const vehiculeSchema = new mongoose.Schema({
   pays: { type: mongoose.Schema.Types.ObjectId, ref: 'Pays' }, // Pays du véhicule
 
   // Classification
-  typePropriete: { type: String, enum: ['ACF', 'Location'], default: 'ACF' },
+  typePropriete: { type: String, enum: ['ACF', 'HI', 'Location'], default: 'HI' },
   locationDetails: {
     nomLoueur: { type: String },
     dateDebut: { type: Date },
@@ -22,7 +22,19 @@ const vehiculeSchema = new mongoose.Schema({
     valeurAchat: { type: Number }
   },
   category: { type: String, enum: ['Voiture', 'Camion', 'Moto'], default: 'Voiture' },
-  type: { type: String }, // Ex: City car, Minibus, 4x4 léger, 4x4 pickup, 4x4 lourd, 100cc, 125cc...
+  type: { type: String }, // Ex: Electric, Diesel, City car, Minibus, 4x4 léger...
+  
+  // Nouveaux champs Phase 4
+  distanceUnit: { type: String, enum: ['Kilometers', 'Miles'], default: 'Kilometers' },
+  resourcesCode: { type: String },
+  emcCode: { type: String },
+  nickname: { type: String },
+  permanentlyAssigned: { type: Boolean, default: false },
+  usageType: { type: String, enum: ['Support only', 'Activity only', 'Mixed'] },
+  poNumber: { type: String },
+  spoNumber: { type: String },
+  technicalInspectionDueDate: { type: Date },
+  unloggedKilometers: { type: Number, default: 0 },
 
   // Details
   year: { type: Number }, // Année de fabrication
@@ -77,6 +89,8 @@ const vehiculeSchema = new mongoose.Schema({
 
   // Insurance
   assurance: {
+    isAvailable: { type: Boolean, default: true },
+    contractNumber: { type: String },
     nomAssureur: { type: String },
     dateFin: { type: Date },
     certificatUrl: { type: String } // Lien vers le fichier uploadé

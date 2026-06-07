@@ -6,6 +6,7 @@ import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
 import { SettingsService } from '../settings.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
 
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
@@ -24,7 +25,7 @@ import { MatInputModule } from '@angular/material/input';
     CommonModule, FormsModule, TranslateModule,
     MatTableModule, MatPaginatorModule, MatSortModule,
     MatIconModule, MatButtonModule, MatSelectModule,
-    MatDialogModule, MatFormFieldModule, MatInputModule
+    MatDialogModule, MatFormFieldModule, MatInputModule, RouterModule
   ],
   templateUrl: './gestion-vehicules.component.html',
   styleUrls: ['./gestion-vehicules.component.css']
@@ -40,10 +41,20 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
     locationDetails: { nomLoueur: '', dateDebut: null, dateFin: null },
     achatDetails: { dateAchat: null, valeurAchat: null },
     type: 'Voiture',
+    distanceUnit: 'Kilometers',
+    resourcesCode: '',
+    emcCode: '',
+    nickname: '',
+    permanentlyAssigned: false,
+    usageType: 'Mixed',
+    poNumber: '',
+    spoNumber: '',
+    technicalInspectionDueDate: null,
+    unloggedKilometers: 0,
     capacitePassagers: 1,
     kilometrageInitial: 0,
     enService: true,
-    enableGpsTracking: false, // NOUVEAU
+    enableGpsTracking: false,
     pays: '',
     base: '',
     emissionsCO2: { valeur: null, source: 'Constructeur' },
@@ -52,7 +63,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   };
   selectedVehicule: any = null;
   vehicleTypes: string[] = [];
-  ownershipTypes: string[] = ['ACF', 'Location'];
+  ownershipTypes: string[] = ['ACF', 'HI', 'Location'];
   statuses: string[] = ['En Service', 'Hors Service', 'Vendu', 'Archivé', 'Restitué'];
   userProfile: string | null = null;
   userPaysId: string | null = null;

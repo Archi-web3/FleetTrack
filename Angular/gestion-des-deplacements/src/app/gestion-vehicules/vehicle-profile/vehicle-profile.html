@@ -1,0 +1,200 @@
+<div class="profile-container" *ngIf="loading">
+  <div class="loading-state">
+    <mat-icon class="spin">autorenew</mat-icon>
+    <p>Loading vehicle profile...</p>
+  </div>
+</div>
+
+<div class="profile-container" *ngIf="!loading && vehicle">
+  <!-- Header Section -->
+  <div class="profile-header">
+    <div class="header-content">
+      <button mat-icon-button routerLink="/gestion-vehicules" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      
+      <div class="vehicle-title-container">
+        <div class="title-row">
+          <h1>{{ vehicle.marque }} {{ vehicle.modele }}</h1>
+          <span class="status-badge" [ngClass]="{'active': vehicle.statut === 'En Service'}">
+            {{ vehicle.statut }}
+          </span>
+        </div>
+        <p class="subtitle">
+          <mat-icon>pin</mat-icon> {{ vehicle.immatriculation }}
+          <mat-divider vertical></mat-divider>
+          <mat-icon>qr_code_2</mat-icon> {{ vehicle.acfCode || 'N/A' }}
+          <mat-divider vertical></mat-divider>
+          <mat-icon>business</mat-icon> {{ vehicle.typePropriete }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs Section -->
+  <mat-tab-group class="profile-tabs" animationDuration="200ms" dynamicHeight>
+    
+    <!-- 1. ID -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">badge</mat-icon> ID
+      </ng-template>
+      
+      <div class="tab-content">
+        <div class="card-grid">
+          <!-- Identité Visuelle / Base -->
+          <mat-card class="info-card primary-card">
+            <mat-card-header>
+              <div mat-card-avatar class="card-icon"><mat-icon>directions_car</mat-icon></div>
+              <mat-card-title>Vehicle Identity</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="info-list">
+                <div class="info-item"><span class="label">Brand</span><span class="value">{{ vehicle.marque }}</span></div>
+                <div class="info-item"><span class="label">Model</span><span class="value">{{ vehicle.modele }}</span></div>
+                <div class="info-item"><span class="label">Car Nickname</span><span class="value">{{ vehicle.nickname || '-' }}</span></div>
+                <div class="info-item"><span class="label">Plate number</span><span class="value font-mono">{{ vehicle.immatriculation }}</span></div>
+                <div class="info-item"><span class="label">Code Number in EMC</span><span class="value font-mono">{{ vehicle.emcCode || '-' }}</span></div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Operationnel -->
+          <mat-card class="info-card">
+            <mat-card-header>
+              <div mat-card-avatar class="card-icon"><mat-icon>assignment</mat-icon></div>
+              <mat-card-title>Operational Details</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="info-list">
+                <div class="info-item"><span class="label">Resources code</span><span class="value">{{ vehicle.resourcesCode || '-' }}</span></div>
+                <div class="info-item"><span class="label">Vehicle Ownership</span><span class="value">{{ vehicle.typePropriete }}</span></div>
+                <div class="info-item"><span class="label">Is it permanently assigned?</span><span class="value">{{ vehicle.permanentlyAssigned ? 'Yes' : 'No' }}</span></div>
+                <div class="info-item"><span class="label">Support or Activity Car</span><span class="value">{{ vehicle.usageType || '-' }}</span></div>
+                <div class="info-item"><span class="label">Distance Unit</span><span class="value">{{ vehicle.distanceUnit || 'Kilometers' }}</span></div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Technique & Achat -->
+          <mat-card class="info-card">
+            <mat-card-header>
+              <div mat-card-avatar class="card-icon"><mat-icon>build</mat-icon></div>
+              <mat-card-title>Technical & Purchase</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="info-list">
+                <div class="info-item"><span class="label">Fuel Type</span><span class="value">{{ vehicle.fuelType || '-' }}</span></div>
+                <div class="info-item"><span class="label">Purchase Date</span><span class="value">{{ (vehicle.achatDetails?.dateAchat | date:'mediumDate') || '-' }}</span></div>
+                <div class="info-item"><span class="label">PO Number</span><span class="value">{{ vehicle.poNumber || '-' }}</span></div>
+                <div class="info-item"><span class="label">SPO Number</span><span class="value">{{ vehicle.spoNumber || '-' }}</span></div>
+                <div class="info-item"><span class="label">Tech. Inspection Due</span><span class="value text-warn">{{ (vehicle.technicalInspectionDueDate | date:'mediumDate') || '-' }}</span></div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Assurance -->
+          <mat-card class="info-card">
+            <mat-card-header>
+              <div mat-card-avatar class="card-icon"><mat-icon>shield</mat-icon></div>
+              <mat-card-title>Insurance</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="info-list">
+                <div class="info-item"><span class="label">Insurance Available</span><span class="value">{{ vehicle.assurance?.isAvailable ? 'Yes' : 'No' }}</span></div>
+                <div class="info-item" *ngIf="vehicle.assurance?.isAvailable"><span class="label">Contract Number</span><span class="value">{{ vehicle.assurance?.contractNumber || '-' }}</span></div>
+                <div class="info-item" *ngIf="vehicle.assurance?.isAvailable"><span class="label">Insurer</span><span class="value">{{ vehicle.assurance?.nomAssureur || '-' }}</span></div>
+                <div class="info-item" *ngIf="vehicle.assurance?.isAvailable"><span class="label">End Date</span><span class="value">{{ (vehicle.assurance?.dateFin | date:'mediumDate') || '-' }}</span></div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- 2. Routine & Checks -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">fact_check</mat-icon> Routine & Checks
+      </ng-template>
+      <div class="tab-content empty-state">
+        <mat-icon>engineering</mat-icon>
+        <h3>Under Construction</h3>
+        <p>Routine checks history will be displayed here.</p>
+      </div>
+    </mat-tab>
+
+    <!-- 3. Maintenance & Repair -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">handyman</mat-icon> Maintenance & Repair
+      </ng-template>
+      <div class="tab-content empty-state">
+        <mat-icon>build_circle</mat-icon>
+        <h3>Under Construction</h3>
+        <p>Service history and work orders will be displayed here.</p>
+      </div>
+    </mat-tab>
+
+    <!-- 4. Logbook -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">menu_book</mat-icon> Logbook
+      </ng-template>
+      <div class="tab-content empty-state">
+        <mat-icon>library_books</mat-icon>
+        <h3>Under Construction</h3>
+        <p>Vehicle logbook entries will be displayed here.</p>
+      </div>
+    </mat-tab>
+
+    <!-- 5. Trip Requests -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">route</mat-icon> Trip Requests
+      </ng-template>
+      <div class="tab-content empty-state">
+        <mat-icon>map</mat-icon>
+        <h3>Under Construction</h3>
+        <p>Associated trip requests will be displayed here.</p>
+      </div>
+    </mat-tab>
+
+    <!-- 6. Fuel History -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">local_gas_station</mat-icon> Fuel History
+      </ng-template>
+      <div class="tab-content empty-state">
+        <mat-icon>ev_station</mat-icon>
+        <h3>Under Construction</h3>
+        <p>Fuel consumption and refueling logs will be displayed here.</p>
+      </div>
+    </mat-tab>
+
+    <!-- 7. Attachment -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">attach_file</mat-icon> Attachment
+      </ng-template>
+      <div class="tab-content empty-state">
+        <mat-icon>folder_open</mat-icon>
+        <h3>Under Construction</h3>
+        <p>Vehicle documents and photos will be displayed here.</p>
+      </div>
+    </mat-tab>
+
+    <!-- 8. Problem -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">report_problem</mat-icon> Problem
+      </ng-template>
+      <div class="tab-content empty-state">
+        <mat-icon>warning</mat-icon>
+        <h3>Under Construction</h3>
+        <p>Reported issues and defects will be displayed here.</p>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

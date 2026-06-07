@@ -177,6 +177,12 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin'] }
   },
   {
+    path: 'vehicle-profile/:id',
+    loadComponent: () => import('./gestion-vehicules/vehicle-profile/vehicle-profile').then(m => m.VehicleProfileComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+  },
+  {
     path: 'gestion-maintenance',
     loadComponent: () => import('./gestion-maintenance/maintenance-dashboard/maintenance-dashboard').then(m => m.MaintenanceDashboardComponent),
     canActivate: [AuthGuard],
