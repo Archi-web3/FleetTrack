@@ -11,7 +11,7 @@ const vehiculeSchema = new mongoose.Schema({
   pays: { type: mongoose.Schema.Types.ObjectId, ref: 'Pays' }, // Pays du véhicule
 
   // Classification
-  typePropriete: { type: String, enum: ['ACF', 'HI', 'Location'], default: 'HI' },
+  typePropriete: { type: String, enum: ['ACF', 'Location'], default: 'ACF' },
   locationDetails: {
     nomLoueur: { type: String },
     dateDebut: { type: Date },
@@ -27,12 +27,11 @@ const vehiculeSchema = new mongoose.Schema({
   // Nouveaux champs Phase 4
   distanceUnit: { type: String, enum: ['Kilometers', 'Miles'], default: 'Kilometers' },
   resourcesCode: { type: String },
-  emcCode: { type: String },
   nickname: { type: String },
   permanentlyAssigned: { type: Boolean, default: false },
+  assignedDriverId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chauffeur' },
   usageType: { type: String, enum: ['Support only', 'Activity only', 'Mixed'] },
-  poNumber: { type: String },
-  spoNumber: { type: String },
+  bcfSpoNumber: { type: String },
   technicalInspectionDueDate: { type: Date },
   unloggedKilometers: { type: Number, default: 0 },
 

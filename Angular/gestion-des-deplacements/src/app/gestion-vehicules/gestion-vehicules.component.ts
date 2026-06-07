@@ -5,6 +5,7 @@ import { VehiculeService } from '../vehicule.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
 import { SettingsService } from '../settings.service';
+import { ChauffeurService } from '../chauffeur.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 
@@ -43,14 +44,12 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
     type: 'Voiture',
     distanceUnit: 'Kilometers',
     resourcesCode: '',
-    emcCode: '',
     nickname: '',
     permanentlyAssigned: false,
+    assignedDriverId: null,
     usageType: 'Mixed',
-    poNumber: '',
-    spoNumber: '',
+    bcfSpoNumber: '',
     technicalInspectionDueDate: null,
-    unloggedKilometers: 0,
     capacitePassagers: 1,
     kilometrageInitial: 0,
     enService: true,
@@ -63,7 +62,8 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   };
   selectedVehicule: any = null;
   vehicleTypes: string[] = [];
-  ownershipTypes: string[] = ['ACF', 'HI', 'Location'];
+  ownershipTypes: string[] = ['ACF', 'Location'];
+  chauffeurs: any[] = [];
   statuses: string[] = ['En Service', 'Hors Service', 'Vendu', 'Archivé', 'Restitué'];
   userProfile: string | null = null;
   userPaysId: string | null = null;
@@ -97,6 +97,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private adminService: AdminService,
     private settingsService: SettingsService,
+    private chauffeurService: ChauffeurService,
     private dialog: MatDialog
   ) { }
 
@@ -106,6 +107,11 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
     this.userBaseId = this.authService.getUserBaseId();
 
     this.settingsService.getVehicleTypes().subscribe(types => this.vehicleTypes = types || []);
+    
+    this.chauffeurService.getChauffeurs().subscribe({
+      next: (data) => this.chauffeurs = data,
+      error: (err) => console.error('Error fetching chauffeurs', err)
+    });
 
     if (this.userProfile === 'SuperAdmin') {
       this.loadPays();

@@ -54,7 +54,6 @@
                 <div class="info-item"><span class="label">Model</span><span class="value">{{ vehicle.modele }}</span></div>
                 <div class="info-item"><span class="label">Car Nickname</span><span class="value">{{ vehicle.nickname || '-' }}</span></div>
                 <div class="info-item"><span class="label">Plate number</span><span class="value font-mono">{{ vehicle.immatriculation }}</span></div>
-                <div class="info-item"><span class="label">Code Number in EMC</span><span class="value font-mono">{{ vehicle.emcCode || '-' }}</span></div>
               </div>
             </mat-card-content>
           </mat-card>
@@ -70,6 +69,7 @@
                 <div class="info-item"><span class="label">Resources code</span><span class="value">{{ vehicle.resourcesCode || '-' }}</span></div>
                 <div class="info-item"><span class="label">Vehicle Ownership</span><span class="value">{{ vehicle.typePropriete }}</span></div>
                 <div class="info-item"><span class="label">Is it permanently assigned?</span><span class="value">{{ vehicle.permanentlyAssigned ? 'Yes' : 'No' }}</span></div>
+                <div class="info-item" *ngIf="vehicle.permanentlyAssigned"><span class="label">Assigned Driver</span><span class="value">{{ vehicle.assignedDriverId?.nom || '-' }} {{ vehicle.assignedDriverId?.prenom || '' }}</span></div>
                 <div class="info-item"><span class="label">Support or Activity Car</span><span class="value">{{ vehicle.usageType || '-' }}</span></div>
                 <div class="info-item"><span class="label">Distance Unit</span><span class="value">{{ vehicle.distanceUnit || 'Kilometers' }}</span></div>
               </div>
@@ -86,8 +86,8 @@
               <div class="info-list">
                 <div class="info-item"><span class="label">Fuel Type</span><span class="value">{{ vehicle.fuelType || '-' }}</span></div>
                 <div class="info-item"><span class="label">Purchase Date</span><span class="value">{{ (vehicle.achatDetails?.dateAchat | date:'mediumDate') || '-' }}</span></div>
-                <div class="info-item"><span class="label">PO Number</span><span class="value">{{ vehicle.poNumber || '-' }}</span></div>
-                <div class="info-item"><span class="label">SPO Number</span><span class="value">{{ vehicle.spoNumber || '-' }}</span></div>
+                <div class="info-item"><span class="label">BCF/SPO Number</span><span class="value">{{ vehicle.bcfSpoNumber || '-' }}</span></div>
+                <div class="info-item"><span class="label">Total Kilometers</span><span class="value">{{ vehicle.kilometrage || vehicle.kilometrageInitial || 0 }} km</span></div>
                 <div class="info-item"><span class="label">Tech. Inspection Due</span><span class="value text-warn">{{ (vehicle.technicalInspectionDueDate | date:'mediumDate') || '-' }}</span></div>
               </div>
             </mat-card-content>

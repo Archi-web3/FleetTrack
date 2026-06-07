@@ -1,14 +1,22 @@
 <div class="config-container">
-    <h2>{{ 'MAINTENANCE.CONFIG.TITLE' | translate }}</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">{{ 'MAINTENANCE.CONFIG.TITLE' | translate }}</h2>
+        <button mat-raised-button color="primary" (click)="openConfigModal()">
+            <mat-icon>add</mat-icon> Ajout interval
+        </button>
+    </div>
 
-    <div class="content-grid">
-        <!-- Formulaire -->
-        <mat-card class="form-card">
-            <mat-card-header>
-                <mat-card-title>{{ selectedConfig ? ('MAINTENANCE.CONFIG.EDIT_TITLE' | translate) :
-                    ('MAINTENANCE.CONFIG.NEW_TITLE' | translate) }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
+    <!-- Modal Formulaire -->
+    <ng-template #configFormDialog>
+        <div class="custom-modal-layout" style="width: 100vw; max-width: 600px;">
+            <div class="modal-header">
+                <h2>{{ selectedConfig ? ('MAINTENANCE.CONFIG.EDIT_TITLE' | translate) :
+                    ('MAINTENANCE.CONFIG.NEW_TITLE' | translate) }}</h2>
+                <button mat-icon-button (click)="closeConfigModal()" class="close-btn">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <div class="modal-body">
                 <form [formGroup]="configForm" (ngSubmit)="saveConfig()">
 
                     <mat-form-field appearance="outline">
@@ -59,11 +67,12 @@
                         </button>
                     </div>
                 </form>
-            </mat-card-content>
-        </mat-card>
+            </div>
+        </div>
+    </ng-template>
 
-        <!-- Liste -->
-        <mat-card class="list-card">
+    <!-- Liste -->
+    <mat-card class="list-card">
             <mat-card-header>
                 <mat-card-title>{{ 'MAINTENANCE.CONFIG.LIST_TITLE' | translate }}</mat-card-title>
             </mat-card-header>
@@ -105,5 +114,4 @@
                 </table>
             </mat-card-content>
         </mat-card>
-    </div>
 </div>

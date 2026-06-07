@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaintenanceService, MaintenanceConfig } from '../../maintenance.service';
 import { SettingsService } from '../../settings.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,7 +32,9 @@ import { TranslateModule } from '@ngx-translate/core';
         MatIconModule,
         MatSnackBarModule,
         MatSnackBarModule,
+        MatSnackBarModule,
         MatTableModule,
+        MatDialogModule,
         TranslateModule
     ],
     templateUrl: './service-config.html',
@@ -43,12 +46,14 @@ export class ServiceConfigComponent implements OnInit {
     selectedConfig: MaintenanceConfig | null = null;
     displayedColumns: string[] = ['typeVehicule', 'conditions', 'intervalle', 'actions'];
     vehicleTypes: string[] = [];
+    @ViewChild('configFormDialog') configFormDialog!: TemplateRef<any>;
 
     constructor(
         private maintenanceService: MaintenanceService,
         private settingsService: SettingsService,
         private fb: FormBuilder,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private dialog: MatDialog
     ) {
         this.configForm = this.fb.group({
             typeVehicule: ['', Validators.required],
@@ -82,10 +87,23 @@ export class ServiceConfigComponent implements OnInit {
             typeVehicule: config.typeVehicule,
             conditionsRoute: config.conditionsRoute,
             intervalleService: config.intervalleService,
-            // Vidange fields removed
             qualiteCarburant: config.qualiteCarburant,
             actif: config.actif
         });
+        this.openConfigModal();
+    }
+
+    openConfigModal() {
+        this.dialog.open(this.configFormDialog, {
+            width: '600px',
+            disableClose: true,
+            panelClass: 'custom-dialog-container'
+        });
+    }
+
+    closeConfigModal() {
+        this.dialog.closeAll();
+        this.resetForm();
     }
 
     resetForm() {
@@ -118,18 +136,18 @@ export class ServiceConfigComponent implements OnInit {
                 next: () => {
                     this.snackBar.open('Configuration mise à jour', 'OK', { duration: 3000 });
                     this.loadConfigs();
-                    this.resetForm();
+                    this.closeConfigModal();
                 },
                 error: (err) => console.error('Erreur MAJ config:', err)
             });
         } else {
             this.maintenanceService.createConfig(configData).subscribe({
                 next: () => {
-                    this.snackBar.open('Configuration créée', 'OK', { duration: 3000 });
+                    this.snackBar.open('Configuration sauvegardée', 'Fermer', { duration: 3000 });
                     this.loadConfigs();
-                    this.resetForm();
+                    this.closeConfigModal();
                 },
-                error: (err) => console.error('Erreur création config:', err)
+                error: (err) => this.snackBar.open('Erreur', 'Fermer', { duration: 3000 })
             });
         }
     }

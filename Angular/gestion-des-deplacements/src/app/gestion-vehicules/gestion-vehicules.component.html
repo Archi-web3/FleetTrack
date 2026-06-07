@@ -134,11 +134,6 @@
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label>Code Number in EMC:</label>
-        <input type="text" name="newVehiculeEmcCode" [(ngModel)]="newVehicule.emcCode"
-          style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
         <label>Distance Unit:</label>
         <select name="newVehiculeDistanceUnit" [(ngModel)]="newVehicule.distanceUnit" style="width: 100%; padding: 8px;">
           <option value="Kilometers">Kilometers</option>
@@ -186,21 +181,15 @@
         </div>
       </div>
 
-      <div *ngIf="newVehicule.typePropriete === 'ACF' || newVehicule.typePropriete === 'HI'"
+      <div *ngIf="newVehicule.typePropriete === 'ACF'"
         style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
         <label>{{ 'VEHICLES.FORM.PURCHASE_DATE' | translate }}:</label>
         <input type="date" name="newDateAchat" [(ngModel)]="newVehicule.achatDetails.dateAchat" class="form-control"
           style="width: 100%; padding: 8px;">
         
         <div style="margin-top: 10px;">
-          <label>PO Number:</label>
-          <input type="text" name="newVehiculePoNumber" [(ngModel)]="newVehicule.poNumber"
-            style="width: 100%; padding: 8px;">
-        </div>
-        
-        <div style="margin-top: 10px;">
-          <label>SPO Number(s):</label>
-          <input type="text" name="newVehiculeSpoNumber" [(ngModel)]="newVehicule.spoNumber"
+          <label>BCF/SPO Number:</label>
+          <input type="text" name="newVehiculeBcfSpoNumber" [(ngModel)]="newVehicule.bcfSpoNumber"
             style="width: 100%; padding: 8px;">
         </div>
       </div>
@@ -227,11 +216,18 @@
         </select>
       </div>
       <div style="margin-bottom: 10px;">
-        <label>Permanently Assigned Driver:</label>
+        <label>Chauffeur assigné en permanence:</label>
         <div style="display: flex; align-items: center; padding-top: 5px;">
           <input type="checkbox" name="newVehiculeAssigned" [(ngModel)]="newVehicule.permanentlyAssigned" style="transform: scale(1.2); margin-right: 10px;">
-          <span>Yes</span>
+          <span>Oui</span>
         </div>
+      </div>
+      <div *ngIf="newVehicule.permanentlyAssigned" style="margin-bottom: 10px; border-left: 3px solid #17a2b8; padding-left: 10px;">
+        <label>Sélectionner le Chauffeur:</label>
+        <select name="newVehiculeAssignedDriver" [(ngModel)]="newVehicule.assignedDriverId" style="width: 100%; padding: 8px;">
+          <option [ngValue]="null">-- Choisir --</option>
+          <option *ngFor="let chauffeur of chauffeurs" [value]="chauffeur._id">{{ chauffeur.nom }} {{ chauffeur.prenom }}</option>
+        </select>
       </div>
       <div style="margin-bottom: 10px;">
         <label for="newVehiculeCapacite">{{ 'VEHICLES.FORM.CAPACITY' | translate }}:</label>
@@ -245,9 +241,10 @@
           placeholder="Ex: 120000">
       </div>
       <div style="margin-bottom: 10px;">
-        <label>Total Unlogged Kilometers:</label>
-        <input type="number" name="newVehiculeUnloggedKm" [(ngModel)]="newVehicule.unloggedKilometers"
-          min="0" style="width: 100%; padding: 8px;">
+        <label>Total kilomètres parcourus jusqu'à présent:</label>
+        <input type="number" name="newVehiculeTotalKm" [ngModel]="newVehicule.kilometrageInitial"
+          style="width: 100%; padding: 8px; background-color: #e9ecef;" readonly disabled>
+        <small style="color: #6c757d;">(Calcul auto : Kilométrage initial + Logbooks)</small>
       </div>
       <!-- Sélecteurs Pays et Base pour SuperAdmin -->
       <div *ngIf="userProfile === 'SuperAdmin'" style="margin-bottom: 10px;">
@@ -446,11 +443,6 @@
           style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label>Code Number in EMC:</label>
-        <input type="text" name="editVehiculeEmcCode" [(ngModel)]="selectedVehicule.emcCode"
-          style="width: 100%; padding: 8px;">
-      </div>
-      <div style="margin-bottom: 10px;">
         <label>Distance Unit:</label>
         <select name="editVehiculeDistanceUnit" [(ngModel)]="selectedVehicule.distanceUnit" style="width: 100%; padding: 8px;">
           <option value="Kilometers">Kilometers</option>
@@ -501,7 +493,7 @@
         </div>
       </div>
 
-      <div *ngIf="selectedVehicule.typePropriete === 'ACF' || selectedVehicule.typePropriete === 'HI'"
+      <div *ngIf="selectedVehicule.typePropriete === 'ACF'"
         style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
         <label>Date d'achat:</label>
         <input type="date" name="editDateAchat" [ngModel]="selectedVehicule.achatDetails.dateAchat | date:'yyyy-MM-dd'"
@@ -509,14 +501,8 @@
           style="width: 100%; padding: 8px;">
           
         <div style="margin-top: 10px;">
-          <label>PO Number:</label>
-          <input type="text" name="editVehiculePoNumber" [(ngModel)]="selectedVehicule.poNumber"
-            style="width: 100%; padding: 8px;">
-        </div>
-        
-        <div style="margin-top: 10px;">
-          <label>SPO Number(s):</label>
-          <input type="text" name="editVehiculeSpoNumber" [(ngModel)]="selectedVehicule.spoNumber"
+          <label>BCF/SPO Number:</label>
+          <input type="text" name="editVehiculeBcfSpoNumber" [(ngModel)]="selectedVehicule.bcfSpoNumber"
             style="width: 100%; padding: 8px;">
         </div>
       </div>
@@ -543,11 +529,18 @@
         </select>
       </div>
       <div style="margin-bottom: 10px;">
-        <label>Permanently Assigned Driver:</label>
+        <label>Chauffeur assigné en permanence:</label>
         <div style="display: flex; align-items: center; padding-top: 5px;">
           <input type="checkbox" name="editVehiculeAssigned" [(ngModel)]="selectedVehicule.permanentlyAssigned" style="transform: scale(1.2); margin-right: 10px;">
-          <span>Yes</span>
+          <span>Oui</span>
         </div>
+      </div>
+      <div *ngIf="selectedVehicule.permanentlyAssigned" style="margin-bottom: 10px; border-left: 3px solid #17a2b8; padding-left: 10px;">
+        <label>Sélectionner le Chauffeur:</label>
+        <select name="editVehiculeAssignedDriver" [(ngModel)]="selectedVehicule.assignedDriverId" style="width: 100%; padding: 8px;">
+          <option [ngValue]="null">-- Choisir --</option>
+          <option *ngFor="let chauffeur of chauffeurs" [value]="chauffeur._id">{{ chauffeur.nom }} {{ chauffeur.prenom }}</option>
+        </select>
       </div>
       <div style="margin-bottom: 10px;">
         <label for="editVehiculeCapacite">Capacité Passagers:</label>
@@ -560,9 +553,10 @@
           [(ngModel)]="selectedVehicule.kilometrageInitial" min="0" style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label>Total Unlogged Kilometers:</label>
-        <input type="number" name="editVehiculeUnloggedKm" [(ngModel)]="selectedVehicule.unloggedKilometers"
-          min="0" style="width: 100%; padding: 8px;">
+        <label>Total kilomètres parcourus jusqu'à présent:</label>
+        <input type="number" name="editVehiculeTotalKm" [ngModel]="selectedVehicule.kilometrage"
+          style="width: 100%; padding: 8px; background-color: #e9ecef;" readonly disabled>
+        <small style="color: #6c757d;">(Calcul auto : Kilométrage initial + Logbooks)</small>
       </div>
 
       <!-- Données Environnementales (Edit) -->

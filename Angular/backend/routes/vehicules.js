@@ -15,7 +15,7 @@ router.get('/vehicules', auth(), countryFilter, async (req, res) => {
     if (req.utilisateur.base) {
       query.base = req.utilisateur.base;
     }
-    const vehicules = await Vehicule.find(query).populate('base', 'nom code').populate('pays', 'nom code');
+    const vehicules = await Vehicule.find(query).populate('base', 'nom code').populate('pays', 'nom code').populate('assignedDriverId', 'nom prenom');
     res.json(vehicules);
   } catch (err) {
     console.error("Erreur GET /vehicules:", err);
@@ -26,7 +26,7 @@ router.get('/vehicules', auth(), countryFilter, async (req, res) => {
 // GET one vehicle (PROTÉGÉE - Accessible à tout utilisateur connecté)
 router.get('/vehicules/:id', auth(), async (req, res) => { // <<< AJOUTÉ auth()
   try {
-    const vehicule = await Vehicule.findById(req.params.id);
+    const vehicule = await Vehicule.findById(req.params.id).populate('assignedDriverId', 'nom prenom');
     if (vehicule == null) {
       return res.status(404).json({ message: 'Cannot find vehicle' });
     }
