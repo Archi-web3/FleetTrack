@@ -75,6 +75,7 @@ export class TemplateManagerComponent implements OnInit {
         this.templateForm = this.fb.group({
             nom: ['', Validators.required],
             type: ['Hebdomadaire', Validators.required],
+            coutParDefaut: [0, [Validators.min(0)]],
             actif: [true],
             taches: this.fb.array([])
         });
@@ -116,6 +117,7 @@ export class TemplateManagerComponent implements OnInit {
         this.templateForm.patchValue({
             nom: template.nom,
             type: template.type,
+            coutParDefaut: template.coutParDefaut || 0,
             actif: template.actif
         });
     }
@@ -125,6 +127,7 @@ export class TemplateManagerComponent implements OnInit {
         this.templateForm.reset({
             nom: 'Nouvelle Checklist',
             type: 'Hebdomadaire',
+            coutParDefaut: 0,
             actif: true
         });
         while (this.taches.length) {

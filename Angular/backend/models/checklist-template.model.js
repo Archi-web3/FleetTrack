@@ -14,6 +14,11 @@ const checklistTemplateSchema = new mongoose.Schema({
         type: String,
         default: 'Tous'
     },
+    coutParDefaut: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
     taches: [
         {
             numero: String,

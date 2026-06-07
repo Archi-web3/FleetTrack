@@ -110,6 +110,13 @@
           <button mat-menu-item routerLink="/gestion-lieux"><mat-icon>place</mat-icon><span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span></button>
           <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="userProfile === 'SuperAdmin'"><mat-icon>public</mat-icon><span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span></button>
           <button mat-menu-item routerLink="/environment-roadmap"><mat-icon>eco</mat-icon><span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span></button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item [matMenuTriggerFor]="maintSettings"><mat-icon>build_circle</mat-icon><span>Gestion des Maintenances</span></button>
+        </mat-menu>
+        
+        <mat-menu #maintSettings="matMenu">
+          <button mat-menu-item routerLink="/gestion-maintenance/config"><mat-icon>schedule</mat-icon><span>Configuration Intervalles</span></button>
+          <button mat-menu-item routerLink="/gestion-maintenance/templates"><mat-icon>receipt_long</mat-icon><span>Modèles & Coûts</span></button>
         </mat-menu>
       </ng-container>
 

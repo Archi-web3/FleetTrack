@@ -51,6 +51,12 @@
                             </mat-select>
                         </mat-form-field>
 
+                        <mat-form-field appearance="outline" style="width: 150px; margin-left: 16px;">
+                            <mat-label>Coût estimé</mat-label>
+                            <input matInput type="number" formControlName="coutParDefaut">
+                            <span matTextSuffix>€</span>
+                        </mat-form-field>
+
                         <div class="checkbox-wrapper">
                             <mat-checkbox formControlName="actif">{{ 'MAINTENANCE.TEMPLATES.FIELDS.ACTIVE' | translate
                                 }}</mat-checkbox>
