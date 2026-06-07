@@ -246,23 +246,7 @@
           style="width: 100%; padding: 8px; background-color: #e9ecef;" readonly disabled>
         <small style="color: #6c757d;">(Calcul auto : Kilométrage initial + Logbooks)</small>
       </div>
-      <!-- Sélecteurs Pays et Base pour SuperAdmin -->
-      <div *ngIf="userProfile === 'SuperAdmin'" style="margin-bottom: 10px;">
-        <label for="newVehiculePays">{{ 'USERS.FORM.COUNTRY' | translate }}:</label>
-        <select id="newVehiculePays" name="newVehiculePays" [(ngModel)]="newVehicule.pays" (change)="onPaysChange()"
-          required style="width: 100%; padding: 8px;">
-          <option value="">{{ 'COMMON.SELECT_COUNTRY' | translate }}</option>
-          <option *ngFor="let pays of paysList" [value]="pays._id">{{pays.nom}}</option>
-        </select>
-      </div>
-      <div *ngIf="userProfile === 'SuperAdmin' && basesList.length > 0" style="margin-bottom: 10px;">
-        <label for="newVehiculeBase">{{ 'USERS.FORM.BASE' | translate }} (optionnel):</label>
-        <select id="newVehiculeBase" name="newVehiculeBase" [(ngModel)]="newVehicule.base"
-          style="width: 100%; padding: 8px;">
-          <option value="">{{ 'COMMON.NONE' | translate }}</option>
-          <option *ngFor="let base of basesList" [value]="base._id">{{base.nom}}</option>
-        </select>
-      </div>
+      <!-- Sélecteurs Pays et Base pour SuperAdmin ont été retirés à la demande de l'utilisateur -->
 
       <!-- Données Environnementales -->
       <div
