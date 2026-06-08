@@ -1,13 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { VehiculeService } from '../../vehicule.service';
+import { LogbookService } from '../../logbook.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
@@ -16,7 +22,8 @@ import { forkJoin } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule, RouterModule, MatTabsModule, MatCardModule, 
-    MatIconModule, MatButtonModule, MatDividerModule, MatTableModule, TranslateModule
+    MatIconModule, MatButtonModule, MatDividerModule, MatTableModule, 
+    MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslateModule
   ],
   templateUrl: './vehicle-profile.html',
   styleUrls: ['./vehicle-profile.scss']
@@ -24,6 +31,16 @@ import { forkJoin } from 'rxjs';
 export class VehicleProfileComponent implements OnInit {
   vehicle: any = null;
   loading: boolean = true;
+  @ViewChild('maintenanceModal') maintenanceModal!: TemplateRef<any>;
+
+  newMaintenance: any = {
+    date: new Date().toISOString().split('T')[0],
+    type: 'Preventive',
+    mileage: null,
+    garage: '',
+    cost: null,
+    comments: ''
+  };
   
   // Tab Data Arrays
   routineChecks: any[] = [];
@@ -43,7 +60,9 @@ export class VehicleProfileComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private vehiculeService: VehiculeService
+    private vehiculeService: VehiculeService,
+    private logbookService: LogbookService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -88,6 +107,29 @@ export class VehicleProfileComponent implements OnInit {
       error: (err) => {
         console.error('Error loading vehicle additional data:', err);
       }
+    });
+  }
+
+  openAddMaintenanceModal(): void {
+    this.newMaintenance = {
+      vehicule: this.vehicle._id,
+      date: new Date().toISOString().split('T')[0],
+      type: 'Preventive',
+      mileage: this.vehicle.kilometrage || null,
+      garage: '',
+      cost: null,
+      comments: ''
+    };
+    this.dialog.open(this.maintenanceModal, { width: '500px' });
+  }
+
+  saveMaintenance(): void {
+    this.logbookService.addMaintenance(this.newMaintenance).subscribe({
+      next: (res) => {
+        this.maintenances = [res, ...this.maintenances]; // Add to table
+        this.dialog.closeAll();
+      },
+      error: (err) => console.error('Error adding maintenance', err)
     });
   }
 }

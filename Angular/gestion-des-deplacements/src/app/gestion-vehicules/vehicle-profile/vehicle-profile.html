@@ -153,7 +153,7 @@
       </ng-template>
       <div class="tab-content">
         <div class="action-bar mt-3">
-            <button mat-raised-button color="primary">
+            <button mat-raised-button color="primary" (click)="openAddMaintenanceModal()">
                 <mat-icon>add</mat-icon> Ajouter Maintenance / Réparation
             </button>
         </div>
@@ -353,3 +353,45 @@
 
   </mat-tab-group>
 </div>
+
+<!-- Add Maintenance Modal -->
+<ng-template #maintenanceModal>
+    <h2 mat-dialog-title>Ajouter Maintenance / Réparation</h2>
+    <mat-dialog-content>
+        <form style="display: flex; flex-direction: column; gap: 16px; padding-top: 10px;">
+            <mat-form-field appearance="fill">
+                <mat-label>Date</mat-label>
+                <input matInput type="date" [(ngModel)]="newMaintenance.date" name="date">
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Type</mat-label>
+                <mat-select [(ngModel)]="newMaintenance.type" name="type">
+                    <mat-option value="Preventive">Préventive</mat-option>
+                    <mat-option value="Curative">Curative</mat-option>
+                    <mat-option value="Contrôle Technique">Contrôle Technique</mat-option>
+                    <mat-option value="Autre">Autre</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Kilométrage</mat-label>
+                <input matInput type="number" [(ngModel)]="newMaintenance.mileage" name="mileage">
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Garage</mat-label>
+                <input matInput type="text" [(ngModel)]="newMaintenance.garage" name="garage">
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Coût</mat-label>
+                <input matInput type="number" [(ngModel)]="newMaintenance.cost" name="cost">
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Commentaires</mat-label>
+                <textarea matInput [(ngModel)]="newMaintenance.comments" name="comments" rows="3"></textarea>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Annuler</button>
+        <button mat-raised-button color="primary" (click)="saveMaintenance()" [disabled]="!newMaintenance.date || !newMaintenance.type || !newMaintenance.mileage">Enregistrer</button>
+    </mat-dialog-actions>
+</ng-template>

@@ -30,6 +30,11 @@ export class LogbookService {
         return this.http.get<any[]>(`${this.apiUrl}/incidents/${vehicleId}`, { headers: this.getHeaders() });
     }
 
+    // --- CREATE Methods ---
+    addMaintenance(data: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/maintenances`, data, { headers: this.getHeaders() });
+    }
+
     // --- DELETE Methods ---
     deleteFuel(id: string): Observable<any> {
         return this.http.delete(`${this.apiUrl}/fuels/${id}`, { headers: this.getHeaders() });

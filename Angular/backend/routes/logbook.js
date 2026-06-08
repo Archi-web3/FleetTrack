@@ -201,6 +201,17 @@ router.get('/maintenances/:vehicleId', async (req, res) => {
     }
 });
 
+// --- POST /maintenances ---
+router.post('/maintenances', async (req, res) => {
+    try {
+        const newMaintenance = new Maintenance(req.body);
+        const savedMaintenance = await newMaintenance.save();
+        res.status(201).json(savedMaintenance);
+    } catch (err) {
+        console.error('Error creating maintenance:', err);
+        res.status(500).json({ message: err.message });
+    }
+});
 // --- GET /incidents/:vehicleId ---
 router.get('/incidents/:vehicleId', async (req, res) => {
     try {
