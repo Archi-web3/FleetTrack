@@ -9,14 +9,17 @@
     <!-- Modal Formulaire -->
     <ng-template #configFormDialog>
         <div class="custom-modal-layout" style="width: 100%; max-width: 600px;">
-            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 20px;">
-                <h2 style="margin: 0; padding: 0;">{{ selectedConfig ? ('MAINTENANCE.CONFIG.EDIT_TITLE' | translate) :
-                    ('MAINTENANCE.CONFIG.NEW_TITLE' | translate) }}</h2>
-                <button mat-icon-button (click)="closeConfigModal()" class="close-btn">
+            <div class="custom-modal-header">
+                <h2>
+                    <mat-icon>settings</mat-icon>
+                    {{ selectedConfig ? ('MAINTENANCE.CONFIG.EDIT_TITLE' | translate) :
+                    ('MAINTENANCE.CONFIG.NEW_TITLE' | translate) }}
+                </h2>
+                <button class="custom-modal-close-btn" (click)="closeConfigModal()">
                     <mat-icon>close</mat-icon>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="custom-modal-body">
                 <form [formGroup]="configForm" (ngSubmit)="saveConfig()" style="display: flex; flex-direction: column; gap: 15px;">
 
                     <mat-form-field appearance="outline">

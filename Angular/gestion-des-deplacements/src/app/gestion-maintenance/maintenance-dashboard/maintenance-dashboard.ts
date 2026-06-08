@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MaintenanceTrackingComponent } from '../../maintenance-tracking/maintenance-tracking.component';
-import { ServiceConfigComponent } from '../service-config/service-config';
-import { TemplateManagerComponent } from '../template-manager/template-manager';
 import { WeeklyChecklistTracker } from '../weekly-checklist-tracker/weekly-checklist-tracker';
 
 @Component({
@@ -15,8 +13,6 @@ import { WeeklyChecklistTracker } from '../weekly-checklist-tracker/weekly-check
         MatTabsModule,
         MatIconModule,
         MaintenanceTrackingComponent,
-        ServiceConfigComponent,
-        TemplateManagerComponent,
         WeeklyChecklistTracker
     ],
     templateUrl: './maintenance-dashboard.html',
