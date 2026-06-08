@@ -359,14 +359,22 @@
     <h2 mat-dialog-title>Ajouter Maintenance / Réparation</h2>
     <mat-dialog-content>
         <form style="display: flex; flex-direction: column; gap: 16px; padding-top: 10px;">
+            <div *ngIf="scheduledService" style="background-color: #e0f2fe; padding: 12px; border-radius: 4px; color: #0369a1; display: flex; align-items: center; gap: 8px;">
+                <mat-icon>info</mat-icon>
+                <span>Prochain service planifié : <strong>Service {{ scheduledService.typeService }}</strong> (prévu à {{ scheduledService.kilometragePrevu }} km)</span>
+            </div>
+
             <mat-form-field appearance="fill">
                 <mat-label>Date</mat-label>
                 <input matInput type="date" [(ngModel)]="newMaintenance.date" name="date">
             </mat-form-field>
             <mat-form-field appearance="fill">
-                <mat-label>Type</mat-label>
+                <mat-label>Type (Dérogation)</mat-label>
                 <mat-select [(ngModel)]="newMaintenance.type" name="type">
-                    <mat-option value="Preventive">Préventive</mat-option>
+                    <mat-option *ngIf="scheduledService" [value]="'Service ' + scheduledService.typeService">
+                        Valider : Service {{ scheduledService.typeService }}
+                    </mat-option>
+                    <mat-option value="Preventive">Préventive (Autre)</mat-option>
                     <mat-option value="Curative">Curative</mat-option>
                     <mat-option value="Contrôle Technique">Contrôle Technique</mat-option>
                     <mat-option value="Autre">Autre</mat-option>

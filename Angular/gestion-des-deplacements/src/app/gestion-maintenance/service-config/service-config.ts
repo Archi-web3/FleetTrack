@@ -59,10 +59,30 @@ export class ServiceConfigComponent implements OnInit {
             typeVehicule: ['', Validators.required],
             conditionsRoute: ['Route mixte/urbaine', Validators.required],
             intervalleService: [5000, [Validators.required, Validators.min(1000)]],
+            sequenceMode: ['Predefined', Validators.required],
+            customSequence: [['A', 'B', 'A', 'C']],
             // Vidange fields removed
             qualiteCarburant: ['Bonne', Validators.required],
             actif: [true]
         });
+    }
+
+    // Gestion de la séquence
+    get customSequenceControls() {
+        return this.configForm.get('customSequence')?.value || [];
+    }
+
+    addSequenceStep(step: string) {
+        if (!step) return;
+        const current = [...this.customSequenceControls];
+        current.push(step);
+        this.configForm.patchValue({ customSequence: current });
+    }
+
+    removeSequenceStep(index: number) {
+        const current = [...this.customSequenceControls];
+        current.splice(index, 1);
+        this.configForm.patchValue({ customSequence: current });
     }
 
     ngOnInit() {
@@ -87,6 +107,8 @@ export class ServiceConfigComponent implements OnInit {
             typeVehicule: config.typeVehicule,
             conditionsRoute: config.conditionsRoute,
             intervalleService: config.intervalleService,
+            sequenceMode: config.sequenceMode || 'Predefined',
+            customSequence: config.customSequence || ['A', 'B', 'A', 'C'],
             qualiteCarburant: config.qualiteCarburant,
             actif: config.actif
         });

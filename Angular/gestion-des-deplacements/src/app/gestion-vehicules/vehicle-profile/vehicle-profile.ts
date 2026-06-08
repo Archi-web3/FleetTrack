@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { VehiculeService } from '../../vehicule.service';
 import { LogbookService } from '../../logbook.service';
+import { MaintenanceService, ServiceSchedule } from '../../maintenance.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -62,6 +63,7 @@ export class VehicleProfileComponent implements OnInit {
     private route: ActivatedRoute,
     private vehiculeService: VehiculeService,
     private logbookService: LogbookService,
+    private maintenanceService: MaintenanceService,
     private dialog: MatDialog
   ) {}
 
@@ -110,6 +112,9 @@ export class VehicleProfileComponent implements OnInit {
     });
   }
 
+  scheduledService: ServiceSchedule | null = null;
+  isLoadingNextService: boolean = false;
+
   openAddMaintenanceModal(): void {
     this.newMaintenance = {
       vehicule: this.vehicle._id,
@@ -120,14 +125,48 @@ export class VehicleProfileComponent implements OnInit {
       cost: null,
       comments: ''
     };
-    this.dialog.open(this.maintenanceModal, { width: '500px' });
+    this.scheduledService = null;
+    this.isLoadingNextService = true;
+
+    // Fetch next scheduled service
+    this.maintenanceService.getNextService(this.vehicle._id).subscribe({
+      next: (service) => {
+        if (service && service.typeService) {
+          this.scheduledService = service;
+          this.newMaintenance.type = `Service ${service.typeService}`;
+          this.newMaintenance.mileage = service.kilometragePrevu;
+        }
+        this.isLoadingNextService = false;
+        this.dialog.open(this.maintenanceModal, { width: '500px' });
+      },
+      error: (err) => {
+        console.error('Erreur chargement prochain service', err);
+        this.isLoadingNextService = false;
+        this.dialog.open(this.maintenanceModal, { width: '500px' });
+      }
+    });
   }
 
   saveMaintenance(): void {
+    // 1. Ajouter la maintenance dans le carnet de bord
     this.logbookService.addMaintenance(this.newMaintenance).subscribe({
       next: (res) => {
         this.maintenances = [res, ...this.maintenances]; // Add to table
-        this.dialog.closeAll();
+        
+        // 2. Si on a validé le service planifié, on le marque comme complété
+        if (this.scheduledService && this.newMaintenance.type === `Service ${this.scheduledService.typeService}`) {
+          this.maintenanceService.completeService(this.scheduledService._id, 'Validation Automatique (Dérogation Profil)').subscribe({
+            next: () => {
+              this.dialog.closeAll();
+            },
+            error: (err) => {
+              console.error('Erreur validation du service planifié', err);
+              this.dialog.closeAll();
+            }
+          });
+        } else {
+          this.dialog.closeAll();
+        }
       },
       error: (err) => console.error('Error adding maintenance', err)
     });

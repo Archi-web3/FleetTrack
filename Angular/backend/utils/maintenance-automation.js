@@ -54,7 +54,7 @@ async function generateServiceSchedules(vehiculeId, currentKm) {
         }).sort({ kilometragePrevu: 1 });
 
         // 4. Calculer quels services devraient exister
-        const requiredServices = calculateServiceIntervals(initialKm, currentKm, serviceInterval);
+        const requiredServices = calculateServiceIntervals(initialKm, currentKm, serviceInterval, config);
 
         // 5. Créer les services manquants
         const createdServices = [];
@@ -122,9 +122,10 @@ async function generateServiceSchedules(vehiculeId, currentKm) {
  * @param {Number} initialKm - Kilométrage initial
  * @param {Number} currentKm - Kilométrage actuel
  * @param {Number} interval - Intervalle entre services (en km)
+ * @param {Object} config - Configuration de maintenance
  * @returns {Array} - Liste des services requis [{type, km}]
  */
-function calculateServiceIntervals(initialKm, currentKm, interval) {
+function calculateServiceIntervals(initialKm, currentKm, interval, config) {
     const services = [];
     const milestones = [50000, 100000]; // Services spéciaux
 
@@ -142,8 +143,8 @@ function calculateServiceIntervals(initialKm, currentKm, interval) {
             const milestoneType = nextServiceKm === 50000 ? '50K' : '100K';
             services.push({ type: milestoneType, km: nextServiceKm });
         } else {
-            // Service régulier (cycle A/B/C)
-            const serviceType = getNextServiceType(serviceCounter, interval);
+            // Service régulier (cycle configuré)
+            const serviceType = getNextServiceType(serviceCounter, interval, config);
             services.push({ type: serviceType, km: nextServiceKm });
         }
 
@@ -160,9 +161,14 @@ function calculateServiceIntervals(initialKm, currentKm, interval) {
  * 
  * @param {Number} counter - Compteur de services
  * @param {Number} interval - Intervalle entre services
+ * @param {Object} config - Configuration de maintenance
  * @returns {String} - Type de service (A, B ou C)
  */
-function getNextServiceType(counter, interval) {
+function getNextServiceType(counter, interval, config) {
+    // Si mode personnalisé, utiliser la séquence
+    if (config && config.sequenceMode === 'Custom' && config.customSequence && config.customSequence.length > 0) {
+        return config.customSequence[counter % config.customSequence.length];
+    }
     // Pattern basé sur l'intervalle configuré
     // Si intervalle = 5000 km :
     //   - Service A : 5K, 10K, 20K, 25K, 35K, 40K... (tous sauf divisibles par 20K et 40K)

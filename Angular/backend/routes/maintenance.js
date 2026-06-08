@@ -321,29 +321,39 @@ router.post('/service/complete', auth(), async (req, res) => {
         const intervalleService = config ? config.intervalleService : 5000;
 
         let prochainType;
-        switch (service.typeService) {
-            case 'A':
-                // Après A, vérifier si c'est le moment de C
-                const lastC = await ServiceSchedule.findOne({
-                    vehicule: service.vehicule._id,
-                    typeService: 'C',
-                    statut: 'Complété'
-                }).sort({ dateCompletion: -1 });
+        if (config && config.sequenceMode === 'Custom' && config.customSequence && config.customSequence.length > 0) {
+            // Utiliser le mode personnalisé
+            const totalCompleted = await ServiceSchedule.countDocuments({
+                vehicule: service.vehicule._id,
+                statut: 'Complété'
+            });
+            // totalCompleted inclut le service qu'on vient de compléter, donc c'est l'index du PROCHAIN
+            prochainType = config.customSequence[totalCompleted % config.customSequence.length];
+        } else {
+            // Mode Prédéfini (A-B-A-C)
+            switch (service.typeService) {
+                case 'A':
+                    const lastC = await ServiceSchedule.findOne({
+                        vehicule: service.vehicule._id,
+                        typeService: 'C',
+                        statut: 'Complété'
+                    }).sort({ dateCompletion: -1 });
 
-                const servicesDepuisC = await ServiceSchedule.countDocuments({
-                    vehicule: service.vehicule._id,
-                    statut: 'Complété',
-                    dateCompletion: { $gt: lastC ? lastC.dateCompletion : new Date(0) }
-                });
+                    const servicesDepuisC = await ServiceSchedule.countDocuments({
+                        vehicule: service.vehicule._id,
+                        statut: 'Complété',
+                        dateCompletion: { $gt: lastC ? lastC.dateCompletion : new Date(0) }
+                    });
 
-                prochainType = (servicesDepuisC >= 3) ? 'C' : 'B';
-                break;
-            case 'B':
-                prochainType = 'A';
-                break;
-            case 'C':
-                prochainType = 'A';
-                break;
+                    prochainType = (servicesDepuisC >= 3) ? 'C' : 'B';
+                    break;
+                case 'B':
+                case 'C':
+                    prochainType = 'A';
+                    break;
+                default:
+                    prochainType = 'A';
+            }
         }
 
         await service.save();

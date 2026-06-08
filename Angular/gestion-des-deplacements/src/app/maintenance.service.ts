@@ -38,6 +38,8 @@ export interface MaintenanceConfig {
     // intervalleVidange removed
     qualiteCarburant: 'Bonne' | 'Mauvaise' | 'Inconnue';
     actif: boolean;
+    sequenceMode?: 'Predefined' | 'Custom';
+    customSequence?: string[];
 }
 
 @Injectable({
@@ -77,6 +79,14 @@ export class MaintenanceService {
 
     getAllServiceAlerts(): Observable<ServiceSchedule[]> {
         return this.http.get<ServiceSchedule[]>(`${this.apiUrl}/service/alerts`, this.getHeaders());
+    }
+
+    getNextService(vehiculeId: string): Observable<ServiceSchedule> {
+        return this.http.get<ServiceSchedule>(`${this.apiUrl}/service/next?vehicule=${vehiculeId}`, this.getHeaders());
+    }
+
+    completeService(serviceId: string, signature: string = 'N/A'): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/service/complete`, { serviceId, signature }, this.getHeaders());
     }
 
     getWeeklyChecklistHistory(vehiculeId: string, limit: number = 50): Observable<WeeklyChecklist[]> {

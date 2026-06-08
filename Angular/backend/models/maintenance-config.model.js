@@ -19,6 +19,15 @@ const maintenanceConfigSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    sequenceMode: {
+        type: String,
+        enum: ['Predefined', 'Custom'],
+        default: 'Predefined'
+    },
+    customSequence: {
+        type: [String],
+        default: ['A', 'B', 'A', 'C']
+    },
     remarques: String
 }, { timestamps: true });
 
