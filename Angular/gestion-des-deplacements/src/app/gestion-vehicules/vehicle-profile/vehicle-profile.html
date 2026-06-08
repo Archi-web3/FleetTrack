@@ -374,10 +374,12 @@
                     <mat-option *ngIf="scheduledService" [value]="'Service ' + scheduledService.typeService">
                         Valider : Service {{ scheduledService.typeService }}
                     </mat-option>
-                    <mat-option value="Preventive">Préventive (Autre)</mat-option>
-                    <mat-option value="Curative">Curative</mat-option>
-                    <mat-option value="Contrôle Technique">Contrôle Technique</mat-option>
-                    <mat-option value="Autre">Autre</mat-option>
+                    <mat-optgroup label="Services configurés">
+                        <mat-option *ngFor="let tmpl of availableTemplates" [value]="tmpl.nom">
+                            {{ tmpl.nom }} ({{ tmpl.type }})
+                        </mat-option>
+                    </mat-optgroup>
+                    <mat-option value="Autre">Autre (Non configuré)</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="fill">

@@ -406,13 +406,13 @@
             "LIST_TITLE": "Configurations Existantes"
         },
         "TEMPLATES": {
-            "TITLE": "Gestion des Templates de Checklist",
-            "NEW_BTN": "Nouveau Template",
-            "LIST_TITLE": "Templates Disponibles",
-            "EDIT_TITLE": "Modifier Template",
-            "NEW_TITLE": "Nouveau Template",
+            "TITLE": "Types de Services & Templates",
+            "NEW_BTN": "Nouveau Type de Service",
+            "LIST_TITLE": "Services créés",
+            "EDIT_TITLE": "Modifier",
+            "NEW_TITLE": "Nouveau",
             "FIELDS": {
-                "NAME": "Nom du Template",
+                "NAME": "Nom du Service (ex: Service A)",
                 "TYPE": "Type",
                 "ACTIVE": "Actif"
             },

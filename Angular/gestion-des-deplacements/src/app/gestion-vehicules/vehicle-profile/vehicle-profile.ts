@@ -114,12 +114,13 @@ export class VehicleProfileComponent implements OnInit {
 
   scheduledService: ServiceSchedule | null = null;
   isLoadingNextService: boolean = false;
+  availableTemplates: any[] = [];
 
   openAddMaintenanceModal(): void {
     this.newMaintenance = {
       vehicule: this.vehicle._id,
       date: new Date().toISOString().split('T')[0],
-      type: 'Preventive',
+      type: '',
       mileage: this.vehicle.kilometrage || null,
       garage: '',
       cost: null,
@@ -128,19 +129,33 @@ export class VehicleProfileComponent implements OnInit {
     this.scheduledService = null;
     this.isLoadingNextService = true;
 
-    // Fetch next scheduled service
-    this.maintenanceService.getNextService(this.vehicle._id).subscribe({
-      next: (service) => {
-        if (service && service.typeService) {
-          this.scheduledService = service;
-          this.newMaintenance.type = `Service ${service.typeService}`;
-          this.newMaintenance.mileage = service.kilometragePrevu;
-        }
-        this.isLoadingNextService = false;
-        this.dialog.open(this.maintenanceModal, { width: '500px' });
+    // Fetch templates first
+    this.maintenanceService.getTemplates().subscribe({
+      next: (templates) => {
+        this.availableTemplates = templates || [];
+        
+        // Fetch next scheduled service
+        this.maintenanceService.getNextService(this.vehicle._id).subscribe({
+          next: (service) => {
+            if (service && service.typeService) {
+              this.scheduledService = service;
+              this.newMaintenance.type = `Service ${service.typeService}`;
+              this.newMaintenance.mileage = service.kilometragePrevu;
+            } else if (this.availableTemplates.length > 0) {
+              this.newMaintenance.type = this.availableTemplates[0].nom;
+            }
+            this.isLoadingNextService = false;
+            this.dialog.open(this.maintenanceModal, { width: '500px' });
+          },
+          error: (err) => {
+            console.error('Erreur chargement prochain service', err);
+            this.isLoadingNextService = false;
+            this.dialog.open(this.maintenanceModal, { width: '500px' });
+          }
+        });
       },
       error: (err) => {
-        console.error('Erreur chargement prochain service', err);
+        console.error('Erreur chargement templates', err);
         this.isLoadingNextService = false;
         this.dialog.open(this.maintenanceModal, { width: '500px' });
       }

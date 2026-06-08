@@ -16,11 +16,21 @@
                 <div class="template-list">
                     <div *ngFor="let tmpl of templates" class="template-item"
                         [class.active]="selectedTemplate?._id === tmpl._id" (click)="selectTemplate(tmpl)">
+                        <div class="tmpl-icon">
+                            <mat-icon *ngIf="tmpl.type === 'Préventive'">build</mat-icon>
+                            <mat-icon *ngIf="tmpl.type === 'Curative'">handyman</mat-icon>
+                            <mat-icon *ngIf="tmpl.type === 'Hebdomadaire'">checklist</mat-icon>
+                            <mat-icon *ngIf="!['Préventive', 'Curative', 'Hebdomadaire'].includes(tmpl.type)">settings</mat-icon>
+                        </div>
                         <div class="tmpl-info">
                             <span class="tmpl-name">{{ tmpl.nom }}</span>
-                            <span class="tmpl-type">{{ tmpl.taches.length }} tâches • {{ tmpl.type }}</span>
+                            <div class="tmpl-details">
+                                <span class="tmpl-badge">{{ tmpl.type }}</span>
+                                <span class="tmpl-badge cost-badge" *ngIf="tmpl.coutParDefaut">{{ tmpl.coutParDefaut }} €</span>
+                                <span class="tmpl-badge task-badge">{{ tmpl.taches.length }} tâches</span>
+                            </div>
                         </div>
-                        <button mat-icon-button color="warn" (click)="$event.stopPropagation(); deleteTemplate(tmpl)">
+                        <button mat-icon-button color="warn" (click)="$event.stopPropagation(); deleteTemplate(tmpl)" class="delete-btn">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </div>
