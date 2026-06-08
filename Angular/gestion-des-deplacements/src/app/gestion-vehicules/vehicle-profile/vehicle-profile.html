@@ -118,6 +118,11 @@
         <mat-icon class="tab-icon">fact_check</mat-icon> Inspections Routines
       </ng-template>
       <div class="tab-content">
+        <div class="action-bar mt-3" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <a mat-stroked-button color="primary" routerLink="/gestion-maintenance">
+                <mat-icon>launch</mat-icon> Gérer les Checklists Hebdo
+            </a>
+        </div>
         <table mat-table [dataSource]="routineChecks" class="mat-elevation-z1 w-100 mt-3" *ngIf="routineChecks.length > 0">
           <ng-container matColumnDef="semaine">
             <th mat-header-cell *matHeaderCellDef> Semaine / Année </th>
@@ -152,10 +157,13 @@
         <mat-icon class="tab-icon">handyman</mat-icon> Maintenance & Réparations
       </ng-template>
       <div class="tab-content">
-        <div class="action-bar mt-3">
+        <div class="action-bar mt-3" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
             <button mat-raised-button color="primary" (click)="openAddMaintenanceModal()">
                 <mat-icon>add</mat-icon> Ajouter Maintenance / Réparation
             </button>
+            <a mat-stroked-button color="primary" routerLink="/suivi-maintenance">
+                <mat-icon>launch</mat-icon> Aller au Suivi de Maintenance
+            </a>
         </div>
         <table mat-table [dataSource]="maintenances" class="mat-elevation-z1 w-100" *ngIf="maintenances.length > 0">
           <ng-container matColumnDef="date">
@@ -195,6 +203,11 @@
         <mat-icon class="tab-icon">menu_book</mat-icon> Carnet de bord
       </ng-template>
       <div class="tab-content">
+        <div class="action-bar mt-3" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <a mat-stroked-button color="primary" routerLink="/logbook">
+                <mat-icon>launch</mat-icon> Aller au Logbook
+            </a>
+        </div>
         <table mat-table [dataSource]="logbookTrips" class="mat-elevation-z1 w-100 mt-3" *ngIf="logbookTrips.length > 0">
           <ng-container matColumnDef="dateDepart">
             <th mat-header-cell *matHeaderCellDef> Date Départ </th>
@@ -233,6 +246,11 @@
         <mat-icon class="tab-icon">route</mat-icon> Demandes de Trajet
       </ng-template>
       <div class="tab-content">
+        <div class="action-bar mt-3" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <a mat-stroked-button color="primary" routerLink="/valider-mouvements">
+                <mat-icon>launch</mat-icon> Aller aux Demandes de Mouvement
+            </a>
+        </div>
         <table mat-table [dataSource]="tripRequests" class="mat-elevation-z1 w-100 mt-3" *ngIf="tripRequests.length > 0">
           <ng-container matColumnDef="dateDepart">
             <th mat-header-cell *matHeaderCellDef> Date Prévue </th>
