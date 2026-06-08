@@ -125,9 +125,46 @@
     }
 }
 
-.editor-card {
-    h3 {
-        margin: 24px 0 16px 0;
+/* Modal Styles */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #e2e8f0;
+
+    h2 {
+        color: #1e293b;
+        font-weight: 600;
+        font-size: 20px;
+    }
+}
+
+.custom-scrollbar {
+    padding: 24px !important;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+}
+
+.modern-form {
+    display: flex;
+    flex-direction: column;
+
+    .form-section {
+        background: #ffffff;
+    }
+
+    .section-title {
         font-size: 15px;
         font-weight: 600;
         color: #475569;
@@ -135,81 +172,107 @@
         letter-spacing: 0.5px;
         border-bottom: 2px solid #f1f5f9;
         padding-bottom: 8px;
+        margin-bottom: 16px;
+        
+        .badge {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+    }
+
+    .section-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+
+        .section-title {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
     }
 
     .form-row {
         display: flex;
         gap: 16px;
         align-items: flex-start;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
 
-        .full-width {
-            flex: 1;
-            min-width: 250px;
+        &.flex-wrap {
+            flex-wrap: wrap;
         }
 
-        .checkbox-wrapper {
-            padding-top: 16px;
-            margin-left: 8px;
-        }
+        .flex-1 { flex: 1; }
+        .flex-2 { flex: 2; }
     }
 
-    .tasks-container {
-        margin: 16px 0;
-        max-height: calc(100vh - 400px);
-        overflow-y: auto;
-        padding-right: 8px;
-        
-        /* Custom scrollbar */
-        &::-webkit-scrollbar {
-            width: 6px;
-        }
-        &::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 4px;
-        }
-    }
-
-    .task-form {
-        display: flex;
-        gap: 16px;
-        align-items: flex-start;
+    .checkbox-container {
         padding-top: 16px;
-        flex-wrap: wrap;
-
-        mat-form-field {
-            &.description-field {
-                flex: 2;
-                min-width: 250px;
-            }
-
-            &.manual-field {
-                width: 120px;
-            }
-        }
-        
-        button {
-            margin-top: 8px;
-        }
     }
 
-    .form-actions {
+    /* Tasks list */
+    .tasks-list {
         display: flex;
-        padding-top: 24px;
-        margin-top: 16px;
-        border-top: 1px solid #f1f5f9;
-        align-items: center;
+        flex-direction: column;
+        gap: 12px;
 
-        .spacer {
-            flex: 1;
-        }
-        
-        button {
+        .task-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 16px;
             border-radius: 8px;
-            padding: 0 24px;
-            font-weight: 500;
-            height: 40px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+
+            &:hover {
+                border-color: #cbd5e1;
+                background: #f1f5f9;
+            }
+
+            .task-number {
+                font-weight: 600;
+                color: #64748b;
+                width: 28px;
+                text-align: center;
+                background: #e2e8f0;
+                border-radius: 50%;
+                height: 28px;
+                line-height: 28px;
+                font-size: 13px;
+                flex-shrink: 0;
+            }
+
+            .dense-field {
+                margin-bottom: -1.25em;
+            }
+
+            .task-cat { width: 180px; flex-shrink: 0; }
+            .task-desc { flex: 1; }
+            .task-page { width: 100px; flex-shrink: 0; }
+            .task-delete { margin-bottom: -1.25em; }
+        }
+
+        .empty-tasks {
+            padding: 24px;
+            text-align: center;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #cbd5e1;
         }
     }
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    gap: 12px;
 }

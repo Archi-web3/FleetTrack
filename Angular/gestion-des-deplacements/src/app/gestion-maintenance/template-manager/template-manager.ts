@@ -129,7 +129,9 @@ export class TemplateManagerComponent implements OnInit {
         });
 
         this.dialog.open(this.templateFormDialog, {
-            width: '800px',
+            width: '1000px',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
             disableClose: true
         });
     }
@@ -147,7 +149,9 @@ export class TemplateManagerComponent implements OnInit {
         }
 
         this.dialog.open(this.templateFormDialog, {
-            width: '800px',
+            width: '1000px',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
             disableClose: true
         });
     }
