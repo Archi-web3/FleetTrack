@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -10,6 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 import { MaintenanceService } from '../../maintenance.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -28,17 +30,21 @@ import { TranslateModule } from '@ngx-translate/core';
         MatSelectModule,
         MatExpansionModule,
         MatCheckboxModule,
-        MatCheckboxModule,
         MatSnackBarModule,
+        MatDialogModule,
+        MatTableModule,
         TranslateModule
     ],
     templateUrl: './template-manager.html',
     styleUrls: ['./template-manager.scss']
 })
 export class TemplateManagerComponent implements OnInit {
+    @ViewChild('templateFormDialog') templateFormDialog!: TemplateRef<any>;
+
     templates: any[] = [];
     selectedTemplate: any | null = null;
     templateForm: FormGroup;
+    displayedColumns: string[] = ['icon', 'nom', 'type', 'coutParDefaut', 'taches', 'actions'];
 
     categories = [
         'Détection',
@@ -70,7 +76,8 @@ export class TemplateManagerComponent implements OnInit {
     constructor(
         private maintenanceService: MaintenanceService,
         private fb: FormBuilder,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private dialog: MatDialog
     ) {
         this.templateForm = this.fb.group({
             nom: ['', Validators.required],
@@ -120,6 +127,11 @@ export class TemplateManagerComponent implements OnInit {
             coutParDefaut: template.coutParDefaut || 0,
             actif: template.actif
         });
+
+        this.dialog.open(this.templateFormDialog, {
+            width: '800px',
+            disableClose: true
+        });
     }
 
     createTemplate() {
@@ -133,6 +145,15 @@ export class TemplateManagerComponent implements OnInit {
         while (this.taches.length) {
             this.taches.removeAt(0);
         }
+
+        this.dialog.open(this.templateFormDialog, {
+            width: '800px',
+            disableClose: true
+        });
+    }
+
+    closeDialog() {
+        this.dialog.closeAll();
     }
 
     addTask() {
@@ -158,6 +179,7 @@ export class TemplateManagerComponent implements OnInit {
                 next: () => {
                     this.snackBar.open('Template mis à jour', 'OK', { duration: 3000 });
                     this.loadTemplates();
+                    this.closeDialog();
                 },
                 error: (err) => console.error('Erreur MAJ:', err)
             });
@@ -166,7 +188,7 @@ export class TemplateManagerComponent implements OnInit {
                 next: () => {
                     this.snackBar.open('Template créé', 'OK', { duration: 3000 });
                     this.loadTemplates();
-                    this.createTemplate(); // Reset form
+                    this.closeDialog();
                 },
                 error: (err) => console.error('Erreur création:', err)
             });

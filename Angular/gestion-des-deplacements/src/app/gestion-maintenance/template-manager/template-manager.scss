@@ -34,142 +34,94 @@
     }
 }
 
-.content-grid {
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 32px;
-
-    @media (max-width: 960px) {
-        grid-template-columns: 1fr;
-    }
-}
-
-.list-card, .editor-card {
+.list-card {
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
     background: #ffffff;
     border: 1px solid #e5e7eb;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 32px;
 
-    &:hover {
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-    }
-}
-
-mat-card-header {
-    background: linear-gradient(to right, #f8fafc, #f1f5f9);
-    padding: 20px 24px !important;
-    border-bottom: 1px solid #e2e8f0;
-    
-    mat-card-title {
-        color: #334155;
-        font-weight: 600;
-        font-size: 18px;
-        margin: 0 !important;
-    }
-}
-
-mat-card-content {
-    padding: 0 !important; /* Lists need edge-to-edge padding */
-}
-
-.editor-card mat-card-content {
-    padding: 24px !important;
-}
-
-.list-card {
-    height: fit-content;
-    max-height: calc(100vh - 180px);
-    overflow-y: auto;
-
-    .template-list {
-        display: flex;
-        flex-direction: column;
+    mat-card-header {
+        background: linear-gradient(to right, #f8fafc, #f1f5f9);
+        padding: 20px 24px !important;
+        border-bottom: 1px solid #e2e8f0;
+        
+        mat-card-title {
+            color: #334155;
+            font-weight: 600;
+            font-size: 18px;
+            margin: 0 !important;
+        }
     }
 
-    .template-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 24px;
-        border-bottom: 1px solid #f1f5f9;
-        cursor: pointer;
-        transition: all 0.2s;
+    mat-card-content {
+        padding: 0 !important;
 
-        &:hover {
-            background: #f8fafc;
-        }
+        table {
+            width: 100%;
+            box-shadow: none;
 
-        &.active {
-            background: #eef2ff;
-            border-left: 4px solid var(--primary-color, #4f46e5);
-        }
-
-        .tmpl-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: #eef2ff;
-            color: var(--primary-color, #4f46e5);
-            margin-right: 16px;
-
-            mat-icon {
-                font-size: 20px;
-                width: 20px;
-                height: 20px;
-            }
-        }
-
-        .tmpl-info {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-
-            .tmpl-name {
+            th.mat-header-cell {
+                background: #f8fafc;
+                color: #64748b;
                 font-weight: 600;
-                color: #334155;
-                font-size: 15px;
-                margin-bottom: 6px;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
 
-            .tmpl-details {
-                display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
+            td.mat-cell {
+                padding: 12px 16px;
+                border-bottom: 1px solid #f1f5f9;
+            }
 
-                .tmpl-badge {
-                    font-size: 11px;
-                    font-weight: 500;
-                    padding: 2px 8px;
-                    border-radius: 12px;
-                    background: #f1f5f9;
-                    color: #475569;
-                    
-                    &.cost-badge {
-                        background: #ecfdf5;
-                        color: #059669;
-                    }
-
-                    &.task-badge {
-                        background: #f0fdfa;
-                        color: #0d9488;
-                    }
-                }
+            tr.mat-row:hover {
+                background: #f8fafc;
             }
         }
+    }
+}
+.tmpl-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #eef2ff;
+    color: var(--primary-color, #4f46e5);
 
-        .delete-btn {
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
+    mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+    }
+}
 
-        &:hover .delete-btn {
-            opacity: 1;
-        }
+.tmpl-name {
+    font-weight: 600;
+    color: #334155;
+    font-size: 14px;
+}
+
+.tmpl-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: #475569;
+    display: inline-block;
+    
+    &.cost-badge {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    &.task-badge {
+        background: #f0fdfa;
+        color: #0d9488;
     }
 }
 
