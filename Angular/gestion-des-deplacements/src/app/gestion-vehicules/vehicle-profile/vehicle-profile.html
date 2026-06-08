@@ -37,7 +37,7 @@
     <!-- 1. ID -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">badge</mat-icon> ID
+        <mat-icon class="tab-icon">badge</mat-icon> Identité
       </ng-template>
       
       <div class="tab-content">
@@ -115,84 +115,239 @@
     <!-- 2. Routine & Checks -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">fact_check</mat-icon> Routine & Checks
+        <mat-icon class="tab-icon">fact_check</mat-icon> Inspections Routines
       </ng-template>
-      <div class="tab-content empty-state">
-        <mat-icon>engineering</mat-icon>
-        <h3>Under Construction</h3>
-        <p>Routine checks history will be displayed here.</p>
+      <div class="tab-content">
+        <table mat-table [dataSource]="routineChecks" class="mat-elevation-z1 w-100 mt-3" *ngIf="routineChecks.length > 0">
+          <ng-container matColumnDef="semaine">
+            <th mat-header-cell *matHeaderCellDef> Semaine / Année </th>
+            <td mat-cell *matCellDef="let row"> Semaine {{row.semaine}} - {{row.annee}} </td>
+          </ng-container>
+          <ng-container matColumnDef="chauffeur">
+            <th mat-header-cell *matHeaderCellDef> Chauffeur </th>
+            <td mat-cell *matCellDef="let row"> {{row.chauffeur?.nom || '-'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="tauxCompletion">
+            <th mat-header-cell *matHeaderCellDef> Taux de complétion </th>
+            <td mat-cell *matCellDef="let row"> {{row.tauxCompletion}}% </td>
+          </ng-container>
+          <ng-container matColumnDef="dateCompletion">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let row"> {{(row.dateCompletion | date:'mediumDate') || '-'}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="routineColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: routineColumns;"></tr>
+        </table>
+        <div class="empty-state" *ngIf="routineChecks.length === 0">
+          <mat-icon>engineering</mat-icon>
+          <h3>Aucune inspection</h3>
+          <p>L'historique des inspections s'affichera ici.</p>
+        </div>
       </div>
     </mat-tab>
 
     <!-- 3. Maintenance & Repair -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">handyman</mat-icon> Maintenance & Repair
+        <mat-icon class="tab-icon">handyman</mat-icon> Maintenance & Réparations
       </ng-template>
-      <div class="tab-content empty-state">
-        <mat-icon>build_circle</mat-icon>
-        <h3>Under Construction</h3>
-        <p>Service history and work orders will be displayed here.</p>
+      <div class="tab-content">
+        <div class="action-bar mt-3">
+            <button mat-raised-button color="primary">
+                <mat-icon>add</mat-icon> Ajouter Maintenance / Réparation
+            </button>
+        </div>
+        <table mat-table [dataSource]="maintenances" class="mat-elevation-z1 w-100" *ngIf="maintenances.length > 0">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let row"> {{row.date | date:'mediumDate'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+          </ng-container>
+          <ng-container matColumnDef="mileage">
+            <th mat-header-cell *matHeaderCellDef> Kilométrage </th>
+            <td mat-cell *matCellDef="let row"> {{row.mileage}} km </td>
+          </ng-container>
+          <ng-container matColumnDef="garage">
+            <th mat-header-cell *matHeaderCellDef> Garage </th>
+            <td mat-cell *matCellDef="let row"> {{row.garage}} </td>
+          </ng-container>
+          <ng-container matColumnDef="cost">
+            <th mat-header-cell *matHeaderCellDef> Coût </th>
+            <td mat-cell *matCellDef="let row"> {{row.cost}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="maintenanceColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: maintenanceColumns;"></tr>
+        </table>
+        <div class="empty-state" *ngIf="maintenances.length === 0">
+          <mat-icon>build_circle</mat-icon>
+          <h3>Aucune maintenance</h3>
+          <p>L'historique des services s'affichera ici.</p>
+        </div>
       </div>
     </mat-tab>
 
     <!-- 4. Logbook -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">menu_book</mat-icon> Logbook
+        <mat-icon class="tab-icon">menu_book</mat-icon> Carnet de bord
       </ng-template>
-      <div class="tab-content empty-state">
-        <mat-icon>library_books</mat-icon>
-        <h3>Under Construction</h3>
-        <p>Vehicle logbook entries will be displayed here.</p>
+      <div class="tab-content">
+        <table mat-table [dataSource]="logbookTrips" class="mat-elevation-z1 w-100 mt-3" *ngIf="logbookTrips.length > 0">
+          <ng-container matColumnDef="dateDepart">
+            <th mat-header-cell *matHeaderCellDef> Date Départ </th>
+            <td mat-cell *matCellDef="let row"> {{(row.realDepartureTime || row.dateDepart) | date:'mediumDate'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="chauffeur">
+            <th mat-header-cell *matHeaderCellDef> Chauffeur </th>
+            <td mat-cell *matCellDef="let row"> {{row.chauffeur?.nom || '-'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="objectif">
+            <th mat-header-cell *matHeaderCellDef> Objectif </th>
+            <td mat-cell *matCellDef="let row"> {{row.objectif || '-'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="startMileage">
+            <th mat-header-cell *matHeaderCellDef> Km Départ </th>
+            <td mat-cell *matCellDef="let row"> {{row.startMileage || '-'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="endMileage">
+            <th mat-header-cell *matHeaderCellDef> Km Arrivée </th>
+            <td mat-cell *matCellDef="let row"> {{row.endMileage || '-'}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="logbookColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: logbookColumns;"></tr>
+        </table>
+        <div class="empty-state" *ngIf="logbookTrips.length === 0">
+          <mat-icon>library_books</mat-icon>
+          <h3>Aucun trajet</h3>
+          <p>Les trajets terminés s'afficheront ici.</p>
+        </div>
       </div>
     </mat-tab>
 
     <!-- 5. Trip Requests -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">route</mat-icon> Trip Requests
+        <mat-icon class="tab-icon">route</mat-icon> Demandes de Trajet
       </ng-template>
-      <div class="tab-content empty-state">
-        <mat-icon>map</mat-icon>
-        <h3>Under Construction</h3>
-        <p>Associated trip requests will be displayed here.</p>
+      <div class="tab-content">
+        <table mat-table [dataSource]="tripRequests" class="mat-elevation-z1 w-100 mt-3" *ngIf="tripRequests.length > 0">
+          <ng-container matColumnDef="dateDepart">
+            <th mat-header-cell *matHeaderCellDef> Date Prévue </th>
+            <td mat-cell *matCellDef="let row"> {{(row.dateDepart || row.stops?.[0]?.dateDepart) | date:'medium'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="chauffeur">
+            <th mat-header-cell *matHeaderCellDef> Chauffeur </th>
+            <td mat-cell *matCellDef="let row"> {{row.chauffeur?.nom || '-'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="objectif">
+            <th mat-header-cell *matHeaderCellDef> Objectif </th>
+            <td mat-cell *matCellDef="let row"> {{row.objectif || '-'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef> Statut </th>
+            <td mat-cell *matCellDef="let row">
+                <span class="status-badge">{{row.statut}}</span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="tripRequestsColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: tripRequestsColumns;"></tr>
+        </table>
+        <div class="empty-state" *ngIf="tripRequests.length === 0">
+          <mat-icon>map</mat-icon>
+          <h3>Aucune demande</h3>
+          <p>Les demandes de trajet en attente ou prévues s'afficheront ici.</p>
+        </div>
       </div>
     </mat-tab>
 
     <!-- 6. Fuel History -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">local_gas_station</mat-icon> Fuel History
+        <mat-icon class="tab-icon">local_gas_station</mat-icon> Historique Carburant
       </ng-template>
-      <div class="tab-content empty-state">
-        <mat-icon>ev_station</mat-icon>
-        <h3>Under Construction</h3>
-        <p>Fuel consumption and refueling logs will be displayed here.</p>
+      <div class="tab-content">
+        <table mat-table [dataSource]="fuels" class="mat-elevation-z1 w-100 mt-3" *ngIf="fuels.length > 0">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let row"> {{row.date | date:'mediumDate'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef> Quantité (L) </th>
+            <td mat-cell *matCellDef="let row"> {{row.quantity}} </td>
+          </ng-container>
+          <ng-container matColumnDef="mileage">
+            <th mat-header-cell *matHeaderCellDef> Kilométrage </th>
+            <td mat-cell *matCellDef="let row"> {{row.mileage}} km </td>
+          </ng-container>
+          <ng-container matColumnDef="cost">
+            <th mat-header-cell *matHeaderCellDef> Coût </th>
+            <td mat-cell *matCellDef="let row"> {{row.price || '-'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="consumption">
+            <th mat-header-cell *matHeaderCellDef> Conso Calc. </th>
+            <td mat-cell *matCellDef="let row">
+                <span [class.text-warn]="row.isOverConsumption">
+                    {{row.calculatedConsumption ? row.calculatedConsumption + ' L/100km' : '-'}}
+                </span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="fuelColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: fuelColumns;"></tr>
+        </table>
+        <div class="empty-state" *ngIf="fuels.length === 0">
+          <mat-icon>ev_station</mat-icon>
+          <h3>Aucun historique</h3>
+          <p>L'historique de carburant s'affichera ici.</p>
+        </div>
       </div>
     </mat-tab>
 
     <!-- 7. Attachment -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">attach_file</mat-icon> Attachment
+        <mat-icon class="tab-icon">attach_file</mat-icon> Pièces Jointes
       </ng-template>
       <div class="tab-content empty-state">
         <mat-icon>folder_open</mat-icon>
-        <h3>Under Construction</h3>
-        <p>Vehicle documents and photos will be displayed here.</p>
+        <h3>En construction</h3>
+        <p>Les documents du véhicule seront affichés ici.</p>
       </div>
     </mat-tab>
 
     <!-- 8. Problem -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="tab-icon">report_problem</mat-icon> Problem
+        <mat-icon class="tab-icon">report_problem</mat-icon> Problèmes
       </ng-template>
-      <div class="tab-content empty-state">
-        <mat-icon>warning</mat-icon>
-        <h3>Under Construction</h3>
-        <p>Reported issues and defects will be displayed here.</p>
+      <div class="tab-content">
+        <table mat-table [dataSource]="incidents" class="mat-elevation-z1 w-100 mt-3" *ngIf="incidents.length > 0">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let row"> {{row.date | date:'mediumDate'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+          </ng-container>
+          <ng-container matColumnDef="severity">
+            <th mat-header-cell *matHeaderCellDef> Sévérité </th>
+            <td mat-cell *matCellDef="let row"> {{row.severity}} </td>
+          </ng-container>
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef> Description </th>
+            <td mat-cell *matCellDef="let row"> {{row.description || '-'}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="incidentColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: incidentColumns;"></tr>
+        </table>
+        <div class="empty-state" *ngIf="incidents.length === 0">
+          <mat-icon>warning</mat-icon>
+          <h3>Aucun problème</h3>
+          <p>Les problèmes signalés s'afficheront ici.</p>
+        </div>
       </div>
     </mat-tab>
 

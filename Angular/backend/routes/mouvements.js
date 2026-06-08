@@ -176,6 +176,11 @@ router.get('/mouvements', auth(), countryFilter, async (req, res) => {
     let query = {
       ...req.countryFilter  // NOUVEAU: Filtre pays automatique
     };
+    
+    if (req.query.vehicule && mongoose.Types.ObjectId.isValid(req.query.vehicule)) {
+      query.vehicule = req.query.vehicule;
+    }
+    
     let demandeurQuery = {}; // Pour stocker la condition demandeur séparément
 
     if (req.utilisateur.profil === 'Technicien' || req.utilisateur.profil === 'Guest') {

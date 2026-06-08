@@ -41,5 +41,37 @@ export class VehiculeService {
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
     return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers });
   }
+
+  // --- VEHICLE 360 PROFILE METHODS ---
+  
+  getVehicleMaintenances(vehicleId: string): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.get<any[]>(`${environment.apiUrl}/logbook/maintenances/${vehicleId}`, { headers });
+  }
+
+  getVehicleFuels(vehicleId: string): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.get<any[]>(`${environment.apiUrl}/logbook/fuels/${vehicleId}`, { headers });
+  }
+
+  getVehicleIncidents(vehicleId: string): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.get<any[]>(`${environment.apiUrl}/logbook/incidents/${vehicleId}`, { headers });
+  }
+
+  getVehicleTrips(vehicleId: string): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.get<any[]>(`${environment.apiUrl}/mouvements?vehicule=${vehicleId}`, { headers });
+  }
+
+  getVehicleWeeklyChecklists(vehicleId: string): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.get<any[]>(`${environment.apiUrl}/maintenance/weekly/history?vehicule=${vehicleId}`, { headers });
+  }
 }
 
