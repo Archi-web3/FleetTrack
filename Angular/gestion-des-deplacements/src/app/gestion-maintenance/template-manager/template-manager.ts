@@ -12,6 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MaintenanceService } from '../../maintenance.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -33,6 +34,7 @@ import { TranslateModule } from '@ngx-translate/core';
         MatSnackBarModule,
         MatDialogModule,
         MatTableModule,
+        MatAutocompleteModule,
         TranslateModule
     ],
     templateUrl: './template-manager.html',
@@ -70,8 +72,15 @@ export class TemplateManagerComponent implements OnInit {
         'Hebdomadaire',
         'Service A',
         'Service B',
-        'Service C'
+        'Service C',
+        'Curative',
+        'Préventive'
     ];
+
+    get allTemplateTypes(): string[] {
+        const customTypes = this.templates.map(t => t.type).filter(t => !!t);
+        return Array.from(new Set([...this.templateTypes, ...customTypes])).sort();
+    }
 
     constructor(
         private maintenanceService: MaintenanceService,
