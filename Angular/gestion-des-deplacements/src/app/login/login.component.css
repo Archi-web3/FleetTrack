@@ -9,3 +9,50 @@
     font-size: 0.6em;
     color: #005FB6;
 }
+
+/* Animation de chargement des véhicules */
+.loading-road {
+  position: relative;
+  height: 40px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  overflow: hidden;
+  border-bottom: 4px solid #6b7280; /* La route */
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 5px;
+}
+
+.vehicles-animation {
+  display: flex;
+  gap: 15px;
+  position: absolute;
+  bottom: 0px;
+  left: -250px;
+  font-size: 24px;
+  animation: drive 3.5s linear infinite;
+  white-space: nowrap;
+}
+
+/* Ajouter un léger effet de rebond pour simuler le roulement */
+.vehicle {
+  display: inline-block;
+  animation: bounce 0.4s alternate infinite;
+}
+.vehicle:nth-child(even) {
+  animation-delay: 0.2s;
+}
+
+@keyframes drive {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(650px);
+  }
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
