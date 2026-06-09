@@ -30,28 +30,5 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- Weather Widget -->
-    <mat-card class="widget-card weather-widget">
-      <mat-card-content class="weather-content" *ngIf="weatherLoading">
-        <mat-spinner diameter="30"></mat-spinner>
-        <span style="margin-left: 10px;">Chargement de la météo...</span>
-      </mat-card-content>
-      
-      <mat-card-content class="weather-content" *ngIf="weatherError">
-        <mat-icon color="warn">error_outline</mat-icon>
-        <span style="margin-left: 10px;">Météo indisponible</span>
-      </mat-card-content>
-
-      <mat-card-content class="weather-content" *ngIf="!weatherLoading && !weatherError && weather">
-        <div class="weather-info">
-          <h2>{{ weather.location }}</h2>
-          <div class="temp">{{ weather.temp }}°C</div>
-          <p>{{ weather.description }}</p>
-        </div>
-        <div class="weather-icon">
-          <mat-icon>{{ weather.icon }}</mat-icon>
-        </div>
-      </mat-card-content>
-    </mat-card>
   </div>
 </div>
