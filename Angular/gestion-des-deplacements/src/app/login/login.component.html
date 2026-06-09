@@ -43,16 +43,90 @@
           {{ errorMessage }}
         </div>
 
-        <!-- Indicateur de chargement amusant -->
+        <!-- Indicateur de chargement vélo dynamique -->
         <div *ngIf="isLoading" style="text-align: center; margin-bottom: 15px;">
           <div class="loading-road">
-            <div class="vehicles-animation">
-              <span class="vehicle">🚙</span>
-              <span class="vehicle">🛵</span>
-              <span class="vehicle">🚚</span>
-              <span class="vehicle">🚗</span>
-              <span class="vehicle">🚲</span>
-              <span class="vehicle">🚆</span>
+            <div class="loading-bike-wrapper">
+              <svg viewBox="0 0 250 150" class="bike-svg">
+                <!-- Speed lines -->
+                <g class="speed-lines" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" opacity="0.4">
+                  <line x1="250" y1="30" x2="200" y2="30" class="line1" />
+                  <line x1="220" y1="60" x2="180" y2="60" class="line2" />
+                  <line x1="240" y1="90" x2="160" y2="90" class="line3" />
+                  <line x1="210" y1="120" x2="190" y2="120" class="line4" />
+                </g>
+                
+                <g class="bike-body">
+                  <!-- Back Wheel -->
+                  <g class="wheel" transform="translate(50, 100)">
+                    <circle r="30" fill="none" stroke="var(--primary-color)" stroke-width="5"/>
+                    <circle r="6" fill="var(--primary-color)"/>
+                    <g stroke="var(--primary-color)" stroke-width="2" class="spokes">
+                      <line y1="-30" y2="30" />
+                      <line x1="-30" x2="30" />
+                      <line x1="-21.2" y1="-21.2" x2="21.2" y2="21.2" />
+                      <line x1="21.2" y1="-21.2" x2="-21.2" y2="21.2" />
+                    </g>
+                  </g>
+                  
+                  <!-- Front Wheel -->
+                  <g class="wheel" transform="translate(150, 100)">
+                    <circle r="30" fill="none" stroke="var(--primary-color)" stroke-width="5"/>
+                    <circle r="6" fill="var(--primary-color)"/>
+                    <g stroke="var(--primary-color)" stroke-width="2" class="spokes">
+                      <line y1="-30" y2="30" />
+                      <line x1="-30" x2="30" />
+                      <line x1="-21.2" y1="-21.2" x2="21.2" y2="21.2" />
+                      <line x1="21.2" y1="-21.2" x2="-21.2" y2="21.2" />
+                    </g>
+                  </g>
+
+                  <!-- Frame -->
+                  <g fill="none" stroke="var(--primary-color)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="50" y1="100" x2="100" y2="100" />
+                    <line x1="50" y1="100" x2="80" y2="40" />
+                    <line x1="80" y1="40" x2="100" y2="100" />
+                    <line x1="80" y1="40" x2="130" y2="40" />
+                    <line x1="130" y1="40" x2="100" y2="100" />
+                    <line x1="130" y1="40" x2="150" y2="100" />
+                    <line x1="80" y1="40" x2="75" y2="25" />
+                    <line x1="130" y1="40" x2="135" y2="20" />
+                  </g>
+
+                  <!-- Seat -->
+                  <path d="M60,25 h25" stroke="var(--primary-color)" stroke-width="8" stroke-linecap="round"/>
+                  <!-- Handlebars -->
+                  <path d="M125,20 h20" stroke="var(--primary-color)" stroke-width="8" stroke-linecap="round"/>
+
+                  <!-- Chain -->
+                  <path d="M50,95 L100,90 M50,105 L100,110" stroke="var(--primary-color)" stroke-width="2" stroke-dasharray="4 2"/>
+
+                  <!-- Rider -->
+                  <g fill="none" stroke="var(--primary-color)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Head -->
+                    <circle cx="85" cy="5" r="10" fill="var(--primary-color)" stroke="none" />
+                    <!-- Body -->
+                    <path d="M82,20 Q105,25 125,20" />
+                    <!-- Arm -->
+                    <line x1="125" y1="20" x2="135" y2="20" />
+                    <!-- Left Leg (Back) -->
+                    <path d="M82,20 L95,60 L100,118" class="leg-left" opacity="0.4" stroke-width="6" />
+                    <!-- Right Leg (Front) -->
+                    <path d="M82,20 L105,50 L100,82" class="leg-right" />
+                  </g>
+
+                  <!-- Pedals / Crank -->
+                  <g transform="translate(100, 100)">
+                    <circle r="12" fill="none" stroke="var(--primary-color)" stroke-width="4"/>
+                    <g class="crank">
+                      <line y1="-18" y2="18" stroke="var(--primary-color)" stroke-width="5" stroke-linecap="round"/>
+                      <line x1="-8" y1="-18" x2="8" y2="-18" stroke="var(--primary-color)" stroke-width="5" stroke-linecap="round"/>
+                      <line x1="-8" y1="18" x2="8" y2="18" stroke="var(--primary-color)" stroke-width="5" stroke-linecap="round"/>
+                    </g>
+                  </g>
+                  
+                </g>
+              </svg>
             </div>
           </div>
           <small style="color: #666; font-style: italic;">{{ 'LOGIN.LOADING' | translate }}</small>
