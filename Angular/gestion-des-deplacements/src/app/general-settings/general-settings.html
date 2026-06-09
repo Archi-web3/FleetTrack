@@ -315,7 +315,6 @@
           <p>Les notifications fonctionnent selon une règle de cascade géographique stricte :</p>
           <ul>
             <li>Si le destinataire est un <strong>Logisticien</strong>, l'email est envoyé <em>uniquement</em> aux logisticiens rattachés à la <strong>Base</strong> concernée par le mouvement.</li>
-            <li>Si aucun logisticien n'est configuré sur cette base, l'alerte remonte automatiquement aux logisticiens du niveau <strong>Pays</strong>.</li>
             <li>Ce mécanisme garantit que seules les personnes directement impliquées géographiquement sont notifiées. Le paramétrage fin des droits par profil se fera via la future <em>Matrice des Rôles</em>.</li>
           </ul>
         </div>
@@ -363,6 +362,11 @@
                     <div style="display: flex; flex-direction: column; gap: 15px;">
                       <h3 style="margin: 0; color: #1e293b; font-size: 16px;"><mat-icon style="vertical-align: bottom; font-size: 20px;">draw</mat-icon> Édition du Template : {{ email.name }}</h3>
                       
+                      <div class="modern-form-group">
+                        <label>Profils Destinataires (séparés par des virgules)</label>
+                        <input type="text" class="modern-input" [(ngModel)]="email.recipients" style="width: 100%; max-width: 600px;">
+                      </div>
+
                       <div class="modern-form-group">
                         <label>Sujet de l'email</label>
                         <input type="text" class="modern-input" [(ngModel)]="email.subject" style="width: 100%; max-width: 600px;">
