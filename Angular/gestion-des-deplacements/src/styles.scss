@@ -641,7 +641,19 @@ select {
   --mdc-outlined-text-field-focus-label-text-color: var(--primary-color, #8b5cf6);
   
   --mdc-outlined-text-field-caret-color: var(--primary-color, #8b5cf6);
-  --mdc-outlined-text-field-input-text-color: #1f2937;
+  --mdc-outlined-text-field-input-text-color: #6b7280; /* Gris au lieu de noir */
+}
+
+/* Police plus petite et grise à l'intérieur des champs */
+.mat-mdc-input-element,
+.mat-mdc-select-value-text,
+.mdc-text-field .mdc-floating-label {
+  font-size: 13px !important;
+  color: #6b7280 !important; /* Gris */
+}
+
+.mdc-text-field--outlined.mdc-text-field--focused .mdc-floating-label--float-above {
+  font-size: 11px !important; /* Label encore plus petit quand il flotte */
 }
 
 /* Fallback override if the CSS variables are not sufficient (forces the softer border) */
