@@ -120,6 +120,13 @@
         </mat-menu>
       </ng-container>
 
+      <!-- WORKFLOW (SUPER ADMIN) -->
+      <ng-container *ngIf="userProfile === 'SuperAdmin'">
+        <button class="nav-item" routerLink="/admin/workflow">
+          <mat-icon style="color: #4facfe;">account_tree</mat-icon> Workflow Visualisation
+        </button>
+      </ng-container>
+
       <!-- PARAMETRAGES SYSTEME -->
       <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
         <button class="nav-item" routerLink="/admin/settings" [queryParams]="{tab: 'brand'}">

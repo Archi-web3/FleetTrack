@@ -302,8 +302,58 @@
       </mat-card>
     </div>
 
+    <!-- 5. EMAILS SETTINGS -->
+    <div *ngIf="activeTab === 'emails'" class="settings-section">
+      <h2><mat-icon>email</mat-icon> Configuration des Emails & Notifications</h2>
+      <p class="section-desc">Gérez les notifications automatiques envoyées par le système. Activez ou désactivez les envois selon les étapes du processus.</p>
+
+      <mat-card class="setting-card">
+        <mat-card-header>
+          <mat-card-title>Liste des Notifications</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          
+          <table class="mat-elevation-z2" style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; margin-bottom: 20px;">
+            <thead style="background: #f1f5f9; color: #475569; font-size: 14px; text-align: left;">
+              <tr>
+                <th style="padding: 12px 16px; width: 50px;">Statut</th>
+                <th style="padding: 12px 16px;">Notification / Étape</th>
+                <th style="padding: 12px 16px;">Description</th>
+                <th style="padding: 12px 16px;">Destinataires</th>
+                <th style="padding: 12px 16px; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let email of emailNotifications" style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 12px 16px;">
+                  <mat-slide-toggle color="primary" [(ngModel)]="email.enabled"></mat-slide-toggle>
+                </td>
+                <td style="padding: 12px 16px; font-weight: 500;">{{ email.name }}</td>
+                <td style="padding: 12px 16px; color: #64748b; font-size: 13px;">{{ email.desc }}</td>
+                <td style="padding: 12px 16px;">
+                  <span style="background: #e2e8f0; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                    {{ email.recipients }}
+                  </span>
+                </td>
+                <td style="padding: 12px 16px; text-align: center;">
+                  <button mat-icon-button color="primary" matTooltip="Modifier le template">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="actions-footer">
+            <button mat-flat-button color="primary" (click)="saveEmailSettings()">Sauvegarder les préférences email</button>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
     <!-- PLACEHOLDERS FOR OTHERS -->
-    <div *ngIf="activeTab === 'system' || activeTab === 'maintenance' || activeTab === 'emails'" class="settings-section">
+    <div *ngIf="activeTab === 'system' || activeTab === 'maintenance'" class="settings-section">
       <div class="placeholder-content">
         <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 20px;">construction</mat-icon>
         <h2>Module en construction</h2>

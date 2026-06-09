@@ -189,6 +189,12 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
   {
+    path: 'admin/workflow',
+    loadComponent: () => import('./workflow-dashboard/workflow-dashboard').then(m => m.WorkflowDashboardComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin'] }
+  },
+  {
     path: 'admin/settings',
     loadComponent: () => import('./general-settings/general-settings').then(m => m.GeneralSettingsComponent),
     canActivate: [AuthGuard],

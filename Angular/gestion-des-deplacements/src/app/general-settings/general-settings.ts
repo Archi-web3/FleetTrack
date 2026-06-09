@@ -12,6 +12,7 @@ import { SettingsService } from '../settings.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-general-settings',
@@ -27,7 +28,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatListModule,
     MatSnackBarModule,
     TranslateModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatSlideToggleModule
   ],
   templateUrl: './general-settings.html',
   styleUrls: ['./general-settings.scss']
@@ -242,6 +244,21 @@ export class GeneralSettingsComponent implements OnInit {
         this.snackBar.open('Erreur sauvegarde CO2', 'Fermer');
       }
     });
+  }
+
+  // --- EMAIL SETTINGS ---
+  emailNotifications = [
+    { id: 'req_created', name: 'Nouvelle demande de mouvement', desc: 'Envoyé aux logisticiens lors d\'une nouvelle requête', enabled: true, recipients: 'Logisticiens, SuperAdmin' },
+    { id: 'log_validated', name: 'Validation Logistique', desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise', enabled: true, recipients: 'Admin Sécurité, Demandeur' },
+    { id: 'sec_validated', name: 'Validation Sécurité', desc: 'Envoyé au pôle logistique pour confirmation finale', enabled: true, recipients: 'Logisticiens' },
+    { id: 'assigned', name: 'Chauffeur Assigné / Mouvement Confirmé', desc: 'Envoyé au demandeur et au chauffeur', enabled: true, recipients: 'Demandeur, Chauffeur' },
+    { id: 'cancelled', name: 'Mouvement Annulé', desc: 'Envoyé aux parties prenantes en cas d\'annulation', enabled: true, recipients: 'Demandeur, Chauffeur, Logisticiens' },
+    { id: 'maintenance_alert', name: 'Alerte Maintenance', desc: 'Envoyé quand un véhicule approche de son échéance de maintenance', enabled: false, recipients: 'Logisticiens' }
+  ];
+
+  saveEmailSettings() {
+    // In a real app, send this to backend
+    this.snackBar.open('Paramètres d\'emails sauvegardés', 'OK', { duration: 2000 });
   }
 }
 // Triggering Vercel build to fix cache
