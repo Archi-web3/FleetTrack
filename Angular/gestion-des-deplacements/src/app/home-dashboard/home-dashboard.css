@@ -1,8 +1,8 @@
-
-.home-container {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 64px); /* assuming toolbar is ~64px */
+  background-color: #f8fafc; /* light gray background */
 }
 
 .news-banner {
@@ -13,87 +13,143 @@
   color: #856404;
   padding: 12px 20px;
   border-radius: 8px;
-  margin-bottom: 24px;
+  margin: 16px auto;
+  max-width: 1200px;
   font-weight: 500;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   border-left: 4px solid #ffc107;
+  width: 90%;
 }
 
-.welcome-header {
-  margin-bottom: 32px;
+/* Hero Banner */
+.hero-banner-container {
+  width: 100%;
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #f1f5f9 100%);
+  /* If they have a background image, we can use it here, but a gradient is clean */
+  padding: 60px 0;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.welcome-header h1 {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--text-main, #1e293b);
-  margin: 0 0 8px 0;
+.hero-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 24px;
+  gap: 40px;
 }
 
-.welcome-header p {
-  color: var(--text-muted, #64748b);
-  font-size: 16px;
+.hero-logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo-img {
+  max-height: 80px;
+  object-fit: contain;
+}
+
+.hero-app-name {
+  font-size: 36px;
+  font-weight: 700;
+  color: #334155;
   margin: 0;
 }
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-}
-
-.widget-card {
+.hero-welcome-card {
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  flex-grow: 1;
 }
 
-.actions-grid {
+.hero-welcome-card h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+}
+
+.hero-welcome-card p {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.hero-welcome-card strong {
+  color: #334155;
+}
+
+/* Dashboard Content */
+.dashboard-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.section-header {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.actions-grid button {
-  justify-content: flex-start;
-  padding: 8px 16px;
-  border-radius: 8px;
-}
-
-/* Weather Widget styling */
-.weather-widget {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
-}
-
-.weather-content {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  height: 100%;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--primary-color, #005FB6);
+  color: var(--primary-color, #005FB6);
+  background-color: transparent;
+}
+
+.icon-circle mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  color: #334155;
+}
+
+/* Full Width Card for Actions */
+.full-width-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+  background: white;
   padding: 10px;
 }
 
-.weather-info h2 {
-  margin: 0 0 10px 0;
-  font-size: 18px;
+.actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 8px 24px;
+  border-radius: 8px;
   font-weight: 500;
+  font-size: 15px;
 }
 
-.weather-info .temp {
-  font-size: 48px;
-  font-weight: 700;
-  margin-bottom: 5px;
-}
-
-.weather-info p {
-  margin: 0;
-  opacity: 0.9;
-}
-
-.weather-icon mat-icon {
-  font-size: 80px;
-  width: 80px;
-  height: 80px;
-  opacity: 0.9;
+.action-btn mat-icon {
+  margin-right: 8px;
 }

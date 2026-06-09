@@ -20,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class HomeDashboardComponent implements OnInit {
   newsBanner: string | null = null;
   userName: string = '';
+  brandSettings: any = {};
   
   weather: { temp: number, description: string, icon: string, location: string } | null = null;
   weatherLoading = true;
@@ -30,6 +31,7 @@ export class HomeDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName') || 'Utilisateur';
     this.settingsService.getBrandSettings().subscribe(settings => {
+      this.brandSettings = settings || {};
       if (settings && settings.newsBanner) {
         this.newsBanner = settings.newsBanner;
       }
