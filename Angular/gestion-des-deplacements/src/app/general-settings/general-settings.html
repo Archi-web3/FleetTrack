@@ -307,6 +307,20 @@
       <h2><mat-icon>email</mat-icon> Configuration des Emails & Notifications</h2>
       <p class="section-desc">Gérez les notifications automatiques envoyées par le système. Activez ou désactivez les envois selon les étapes du processus.</p>
 
+      <!-- AIDE CONTEXTUELLE SUPER ADMIN -->
+      <div class="admin-help-box" *ngIf="userProfile === 'SuperAdmin'">
+        <div class="help-icon"><mat-icon>lightbulb</mat-icon></div>
+        <div class="help-content">
+          <strong>Aide SuperAdmin : Portée (Scope) des Notifications</strong>
+          <p>Les notifications fonctionnent selon une règle de cascade géographique stricte :</p>
+          <ul>
+            <li>Si le destinataire est un <strong>Logisticien</strong>, l'email est envoyé <em>uniquement</em> aux logisticiens rattachés à la <strong>Base</strong> concernée par le mouvement.</li>
+            <li>Si aucun logisticien n'est configuré sur cette base, l'alerte remonte automatiquement aux logisticiens du niveau <strong>Pays</strong>.</li>
+            <li>Ce mécanisme garantit que seules les personnes directement impliquées géographiquement sont notifiées. Le paramétrage fin des droits par profil se fera via la future <em>Matrice des Rôles</em>.</li>
+          </ul>
+        </div>
+      </div>
+
       <mat-card class="setting-card">
         <mat-card-header>
           <mat-card-title>Liste des Notifications</mat-card-title>

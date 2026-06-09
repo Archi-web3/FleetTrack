@@ -21,6 +21,20 @@
       <p>{{ selectedWorkflow.description }}</p>
     </div>
 
+    <!-- AIDE CONTEXTUELLE SUPER ADMIN -->
+    <div class="admin-help-box" *ngIf="userProfile === 'SuperAdmin'">
+      <div class="help-icon"><mat-icon>school</mat-icon></div>
+      <div class="help-content">
+        <strong>Aide SuperAdmin : Comprendre et Gérer le Workflow</strong>
+        <p>Ce module vous permet de visualiser de bout en bout le processus métier :</p>
+        <ul>
+          <li><strong>Lecture :</strong> Chaque encart représente une action requise. L'icône <mat-icon style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle;">person</mat-icon> indique qui est responsable de cette étape.</li>
+          <li><strong>Notifications :</strong> Les badges bleus (avec l'icône <mat-icon style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle;">notifications</mat-icon>) vous montrent instantanément qui est alerté au cours de cette phase.</li>
+          <li><strong>Paramétrage :</strong> Les interrupteurs (Toggles) permettent de désactiver certaines étapes optionnelles (ex: Validation Sécurité) afin d'adapter le flux aux réalités du terrain de chaque Base/Pays. Le paramétrage fin des droits d'action se fera dans la future <em>Matrice des Rôles</em>.</li>
+        </ul>
+      </div>
+    </div>
+
     <!-- Visual Graph -->
     <div class="wf-graph">
       <ng-container *ngFor="let step of selectedWorkflow.steps; let i = index">

@@ -34,6 +34,8 @@ interface WorkflowDef {
 })
 export class WorkflowDashboardComponent implements OnInit {
 
+  userProfile: string = '';
+
   workflows: WorkflowDef[] = [
     {
       id: 'mouvement',
@@ -61,6 +63,7 @@ export class WorkflowDashboardComponent implements OnInit {
   selectedWorkflow: WorkflowDef | null = null;
 
   ngOnInit() {
+    this.userProfile = localStorage.getItem('userProfile') || 'SuperAdmin';
     this.selectedWorkflow = this.workflows[0];
   }
 

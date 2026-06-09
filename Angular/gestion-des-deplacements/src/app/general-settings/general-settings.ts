@@ -36,6 +36,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 })
 export class GeneralSettingsComponent implements OnInit {
   activeTab: string = 'brand'; // 'brand', 'system', 'fleet', 'currencies', 'maintenance', 'emails'
+  userProfile: string = '';
+  
   
   // Brand Settings
   brandSettings: any = {
@@ -81,7 +83,7 @@ export class GeneralSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    
+    this.userProfile = localStorage.getItem('userProfile') || 'SuperAdmin';
     this.route.queryParams.subscribe(params => {
       if (params['tab']) {
         this.activeTab = params['tab'];
