@@ -249,18 +249,26 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   // --- EMAIL SETTINGS ---
-  emailNotifications = [
-    { id: 'req_created', name: 'Nouvelle demande de mouvement', desc: 'Envoyé aux logisticiens lors d\'une nouvelle requête', enabled: true, recipients: 'Logisticiens, SuperAdmin' },
-    { id: 'log_validated', name: 'Validation Logistique', desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise', enabled: true, recipients: 'Admin Sécurité, Demandeur' },
-    { id: 'sec_validated', name: 'Validation Sécurité', desc: 'Envoyé au pôle logistique pour confirmation finale', enabled: true, recipients: 'Logisticiens' },
-    { id: 'assigned', name: 'Chauffeur Assigné / Mouvement Confirmé', desc: 'Envoyé au demandeur et au chauffeur', enabled: true, recipients: 'Demandeur, Chauffeur' },
-    { id: 'cancelled', name: 'Mouvement Annulé', desc: 'Envoyé aux parties prenantes en cas d\'annulation', enabled: true, recipients: 'Demandeur, Chauffeur, Logisticiens' },
-    { id: 'maintenance_alert', name: 'Alerte Maintenance', desc: 'Envoyé quand un véhicule approche de son échéance de maintenance', enabled: false, recipients: 'Logisticiens' }
+  emailNotifications: any[] = [
+    { id: 'req_created', name: 'Nouvelle demande de mouvement', desc: 'Envoyé aux logisticiens lors d\'une nouvelle requête', enabled: true, recipients: 'Logisticiens, SuperAdmin', subject: '[FleetTrack] Nouvelle demande de mouvement : {{movementId}}', body: 'Bonjour,\n\nUne nouvelle demande de mouvement a été soumise par {{user}}.\n\nMerci de vous connecter pour la traiter.\n\nLien : {{link}}' },
+    { id: 'log_validated', name: 'Validation Logistique', desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise', enabled: true, recipients: 'Admin Sécurité, Demandeur', subject: '[FleetTrack] Validation Logistique : {{movementId}}', body: 'Bonjour,\n\nLa demande de mouvement {{movementId}} a été validée par le pôle logistique.\nSi une validation sécurité est requise, merci de procéder à l\'examen.' },
+    { id: 'sec_validated', name: 'Validation Sécurité', desc: 'Envoyé au pôle logistique pour confirmation finale', enabled: true, recipients: 'Logisticiens', subject: '[FleetTrack] Validation Sécurité Accordée', body: 'Bonjour,\n\nLe département sécurité a validé la demande {{movementId}}.\nVous pouvez procéder à l\'assignation finale.' },
+    { id: 'assigned', name: 'Chauffeur Assigné / Mouvement Confirmé', desc: 'Envoyé au demandeur et au chauffeur', enabled: true, recipients: 'Demandeur, Chauffeur', subject: '[FleetTrack] Mouvement Confirmé', body: 'Bonjour,\n\nVotre mouvement est confirmé.\nVéhicule : {{vehicleName}}\nChauffeur : {{driverName}}\n\nBonne route !' },
+    { id: 'cancelled', name: 'Mouvement Annulé', desc: 'Envoyé aux parties prenantes en cas d\'annulation', enabled: true, recipients: 'Demandeur, Chauffeur, Logisticiens', subject: '[FleetTrack] Mouvement Annulé', body: 'Bonjour,\n\nLe mouvement {{movementId}} a été annulé.\n\nRaison : {{cancelReason}}' },
+    { id: 'maintenance_alert', name: 'Alerte Maintenance', desc: 'Envoyé quand un véhicule approche de son échéance de maintenance', enabled: false, recipients: 'Logisticiens', subject: '[FleetTrack] Alerte Maintenance : {{vehiclePlate}}', body: 'Bonjour,\n\nLe véhicule {{vehiclePlate}} nécessitera une maintenance sous peu.\n\nMerci de planifier son passage au garage.' }
   ];
+
+  editingEmail: any = null;
+
+  editEmailTemplate(email: any) {
+    // Si on clique sur le même, on le referme. Sinon on l'ouvre.
+    this.editingEmail = this.editingEmail === email ? null : email;
+  }
 
   saveEmailSettings() {
     // In a real app, send this to backend
-    this.snackBar.open('Paramètres d\'emails sauvegardés', 'OK', { duration: 2000 });
+    this.editingEmail = null;
+    this.snackBar.open('Paramètres d\'emails et templates sauvegardés', 'OK', { duration: 2000 });
   }
 }
 // Triggering Vercel build to fix cache

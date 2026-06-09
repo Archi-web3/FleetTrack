@@ -338,23 +338,49 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let email of emailNotifications" style="border-bottom: 1px solid #e2e8f0;">
-                <td style="padding: 12px 16px;">
-                  <mat-slide-toggle color="primary" [(ngModel)]="email.enabled"></mat-slide-toggle>
-                </td>
-                <td style="padding: 12px 16px; font-weight: 500;">{{ email.name }}</td>
-                <td style="padding: 12px 16px; color: #64748b; font-size: 13px;">{{ email.desc }}</td>
-                <td style="padding: 12px 16px;">
-                  <span style="background: #e2e8f0; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
-                    {{ email.recipients }}
-                  </span>
-                </td>
-                <td style="padding: 12px 16px; text-align: center;">
-                  <button mat-icon-button color="primary" matTooltip="Modifier le template">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                </td>
-              </tr>
+              <ng-container *ngFor="let email of emailNotifications">
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                  <td style="padding: 12px 16px;">
+                    <mat-slide-toggle color="primary" [(ngModel)]="email.enabled"></mat-slide-toggle>
+                  </td>
+                  <td style="padding: 12px 16px; font-weight: 500;">{{ email.name }}</td>
+                  <td style="padding: 12px 16px; color: #64748b; font-size: 13px;">{{ email.desc }}</td>
+                  <td style="padding: 12px 16px;">
+                    <span style="background: #e2e8f0; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                      {{ email.recipients }}
+                    </span>
+                  </td>
+                  <td style="padding: 12px 16px; text-align: center;">
+                    <button mat-icon-button color="primary" matTooltip="Modifier le template" (click)="editEmailTemplate(email)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+                
+                <!-- INLINE EDITOR -->
+                <tr *ngIf="editingEmail === email" style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">
+                  <td colspan="5" style="padding: 20px;">
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                      <h3 style="margin: 0; color: #1e293b; font-size: 16px;"><mat-icon style="vertical-align: bottom; font-size: 20px;">draw</mat-icon> Édition du Template : {{ email.name }}</h3>
+                      
+                      <div class="modern-form-group">
+                        <label>Sujet de l'email</label>
+                        <input type="text" class="modern-input" [(ngModel)]="email.subject" style="width: 100%; max-width: 600px;">
+                      </div>
+                      
+                      <div class="modern-form-group">
+                        <label>Corps du message</label>
+                        <textarea class="modern-input" [(ngModel)]="email.body" rows="6" style="width: 100%; font-family: monospace;"></textarea>
+                        <small style="color: #64748b; margin-top: 5px;">Utilisez les variables entre accolades (ex: {{ '{' }}{{ '{' }}movementId{{ '}' }}{{ '}' }}) pour insérer des données dynamiques.</small>
+                      </div>
+                      
+                      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button mat-stroked-button (click)="editEmailTemplate(email)">Fermer</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
 
