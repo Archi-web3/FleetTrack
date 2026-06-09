@@ -59,14 +59,62 @@
             <!-- Wrapper for the convoy -->
             <div class="convoy-wrapper">
               
+              <!-- Train SVG -->
+              <svg viewBox="0 0 250 150" class="train-svg vehicle-item">
+                <g class="bike-body">
+                  <!-- Wheels -->
+                  <g class="wheel" transform="translate(40, 100)">
+                    <circle r="15" fill="none" stroke="#005FB6" stroke-width="5"/>
+                    <circle r="5" fill="#005FB6"/>
+                    <g stroke="#005FB6" stroke-width="2" class="spokes">
+                      <line y1="-15" y2="15" />
+                      <line x1="-15" x2="15" />
+                      <line x1="-10.6" y1="-10.6" x2="10.6" y2="10.6" />
+                      <line x1="10.6" y1="-10.6" x2="-10.6" y2="10.6" />
+                    </g>
+                  </g>
+                  <g class="wheel" transform="translate(100, 100)">
+                    <circle r="15" fill="none" stroke="#005FB6" stroke-width="5"/>
+                    <circle r="5" fill="#005FB6"/>
+                    <g stroke="#005FB6" stroke-width="2" class="spokes">
+                      <line y1="-15" y2="15" />
+                      <line x1="-15" x2="15" />
+                      <line x1="-10.6" y1="-10.6" x2="10.6" y2="10.6" />
+                      <line x1="10.6" y1="-10.6" x2="-10.6" y2="10.6" />
+                    </g>
+                  </g>
+                  <g class="wheel" transform="translate(160, 100)">
+                    <circle r="15" fill="none" stroke="#005FB6" stroke-width="5"/>
+                    <circle r="5" fill="#005FB6"/>
+                    <g stroke="#005FB6" stroke-width="2" class="spokes">
+                      <line y1="-15" y2="15" />
+                      <line x1="-15" x2="15" />
+                      <line x1="-10.6" y1="-10.6" x2="10.6" y2="10.6" />
+                      <line x1="10.6" y1="-10.6" x2="-10.6" y2="10.6" />
+                    </g>
+                  </g>
+                  <!-- Locomotive Base -->
+                  <path d="M15,100 L210,100" stroke="#005FB6" stroke-width="8" stroke-linecap="round"/>
+                  <!-- Cabin -->
+                  <rect x="20" y="30" width="60" height="70" fill="none" stroke="#005FB6" stroke-width="6"/>
+                  <rect x="35" y="45" width="30" height="30" fill="none" stroke="#005FB6" stroke-width="4"/>
+                  <!-- Boiler -->
+                  <path d="M80,60 L180,60 L180,100 L80,100 Z" fill="none" stroke="#005FB6" stroke-width="6"/>
+                  <!-- Chimney -->
+                  <path d="M150,60 L150,30 L140,20 L170,20 L160,30 L160,60 Z" fill="none" stroke="#005FB6" stroke-width="5" stroke-linejoin="round"/>
+                  <!-- Pilot -->
+                  <polygon points="210,100 210,80 190,100" fill="#005FB6"/>
+                </g>
+              </svg>
+
               <!-- Car SVG -->
               <svg viewBox="0 0 250 150" class="car-svg vehicle-item">
                 <g class="bike-body">
                   <!-- Back Wheel -->
                   <g class="wheel" transform="translate(60, 100)">
-                    <circle r="22" fill="none" stroke="var(--primary-color)" stroke-width="6"/>
-                    <circle r="6" fill="var(--primary-color)"/>
-                    <g stroke="var(--primary-color)" stroke-width="3" class="spokes">
+                    <circle r="22" fill="none" stroke="#005FB6" stroke-width="6"/>
+                    <circle r="6" fill="#005FB6"/>
+                    <g stroke="#005FB6" stroke-width="3" class="spokes">
                       <line y1="-22" y2="22" />
                       <line x1="-22" x2="22" />
                       <line x1="-15.5" y1="-15.5" x2="15.5" y2="15.5" />
@@ -76,9 +124,9 @@
                   
                   <!-- Front Wheel -->
                   <g class="wheel" transform="translate(190, 100)">
-                    <circle r="22" fill="none" stroke="var(--primary-color)" stroke-width="6"/>
-                    <circle r="6" fill="var(--primary-color)"/>
-                    <g stroke="var(--primary-color)" stroke-width="3" class="spokes">
+                    <circle r="22" fill="none" stroke="#005FB6" stroke-width="6"/>
+                    <circle r="6" fill="#005FB6"/>
+                    <g stroke="#005FB6" stroke-width="3" class="spokes">
                       <line y1="-22" y2="22" />
                       <line x1="-22" x2="22" />
                       <line x1="-15.5" y1="-15.5" x2="15.5" y2="15.5" />
@@ -87,21 +135,21 @@
                   </g>
 
                   <!-- Car Frame -->
-                  <path d="M38,100 L20,100 Q10,100 10,90 L10,70 Q10,60 20,60 L50,60 L80,30 Q90,20 100,20 L160,20 Q170,20 180,30 L210,60 L230,60 Q240,60 240,70 L240,90 Q240,100 212,100 M82,100 L168,100" fill="none" stroke="var(--primary-color)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M38,100 L20,100 Q10,100 10,90 L10,70 Q10,60 20,60 L50,60 L80,30 Q90,20 100,20 L160,20 Q170,20 180,30 L210,60 L230,60 Q240,60 240,70 L240,90 Q240,100 212,100 M82,100 L168,100" fill="none" stroke="#005FB6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
                   
                   <!-- Windows -->
-                  <path d="M85,30 L55,60 L120,60 L120,30 Z" fill="none" stroke="var(--primary-color)" stroke-width="5" stroke-linejoin="round"/>
-                  <path d="M130,30 L130,60 L205,60 L175,30 Z" fill="none" stroke="var(--primary-color)" stroke-width="5" stroke-linejoin="round"/>
+                  <path d="M85,30 L55,60 L120,60 L120,30 Z" fill="none" stroke="#005FB6" stroke-width="5" stroke-linejoin="round"/>
+                  <path d="M130,30 L130,60 L205,60 L175,30 Z" fill="none" stroke="#005FB6" stroke-width="5" stroke-linejoin="round"/>
                 </g>
               </svg>
 
-              <!-- Bike SVG (smaller) -->
+              <!-- Bike SVG -->
               <svg viewBox="0 0 250 150" class="bike-svg vehicle-item">
                 <g class="bike-body">
                   <g class="wheel" transform="translate(50, 100)">
-                    <circle r="25" fill="none" stroke="var(--primary-color)" stroke-width="4"/>
-                    <circle r="5" fill="var(--primary-color)"/>
-                    <g stroke="var(--primary-color)" stroke-width="2" class="spokes">
+                    <circle r="25" fill="none" stroke="#005FB6" stroke-width="4"/>
+                    <circle r="5" fill="#005FB6"/>
+                    <g stroke="#005FB6" stroke-width="2" class="spokes">
                       <line y1="-25" y2="25" />
                       <line x1="-25" x2="25" />
                       <line x1="-17.6" y1="-17.6" x2="17.6" y2="17.6" />
@@ -109,16 +157,16 @@
                     </g>
                   </g>
                   <g class="wheel" transform="translate(150, 100)">
-                    <circle r="25" fill="none" stroke="var(--primary-color)" stroke-width="4"/>
-                    <circle r="5" fill="var(--primary-color)"/>
-                    <g stroke="var(--primary-color)" stroke-width="2" class="spokes">
+                    <circle r="25" fill="none" stroke="#005FB6" stroke-width="4"/>
+                    <circle r="5" fill="#005FB6"/>
+                    <g stroke="#005FB6" stroke-width="2" class="spokes">
                       <line y1="-25" y2="25" />
                       <line x1="-25" x2="25" />
                       <line x1="-17.6" y1="-17.6" x2="17.6" y2="17.6" />
                       <line x1="17.6" y1="-17.6" x2="-17.6" y2="17.6" />
                     </g>
                   </g>
-                  <g fill="none" stroke="var(--primary-color)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+                  <g fill="none" stroke="#005FB6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="50" y1="100" x2="100" y2="100" />
                     <line x1="50" y1="100" x2="80" y2="40" />
                     <line x1="80" y1="40" x2="100" y2="100" />
@@ -128,22 +176,22 @@
                     <line x1="80" y1="40" x2="75" y2="25" />
                     <line x1="130" y1="40" x2="135" y2="20" />
                   </g>
-                  <path d="M60,25 h25" stroke="var(--primary-color)" stroke-width="7" stroke-linecap="round"/>
-                  <path d="M125,20 h20" stroke="var(--primary-color)" stroke-width="7" stroke-linecap="round"/>
-                  <path d="M50,95 L100,90 M50,105 L100,110" stroke="var(--primary-color)" stroke-width="2" stroke-dasharray="4 2"/>
-                  <g fill="none" stroke="var(--primary-color)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="85" cy="5" r="8" fill="var(--primary-color)" stroke="none" />
+                  <path d="M60,25 h25" stroke="#005FB6" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M125,20 h20" stroke="#005FB6" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M50,95 L100,90 M50,105 L100,110" stroke="#005FB6" stroke-width="2" stroke-dasharray="4 2"/>
+                  <g fill="none" stroke="#005FB6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="85" cy="5" r="8" fill="#005FB6" stroke="none" />
                     <path d="M82,20 Q105,25 125,20" />
                     <line x1="125" y1="20" x2="135" y2="20" />
                     <path d="M82,20 L95,60 L100,118" class="leg-left" opacity="0.4" />
                     <path d="M82,20 L105,50 L100,82" class="leg-right" />
                   </g>
                   <g transform="translate(100, 100)">
-                    <circle r="10" fill="none" stroke="var(--primary-color)" stroke-width="3"/>
+                    <circle r="10" fill="none" stroke="#005FB6" stroke-width="3"/>
                     <g class="crank">
-                      <line y1="-16" y2="16" stroke="var(--primary-color)" stroke-width="4" stroke-linecap="round"/>
-                      <line x1="-6" y1="-16" x2="6" y2="-16" stroke="var(--primary-color)" stroke-width="4" stroke-linecap="round"/>
-                      <line x1="-6" y1="16" x2="6" y2="16" stroke="var(--primary-color)" stroke-width="4" stroke-linecap="round"/>
+                      <line y1="-16" y2="16" stroke="#005FB6" stroke-width="4" stroke-linecap="round"/>
+                      <line x1="-6" y1="-16" x2="6" y2="-16" stroke="#005FB6" stroke-width="4" stroke-linecap="round"/>
+                      <line x1="-6" y1="16" x2="6" y2="16" stroke="#005FB6" stroke-width="4" stroke-linecap="round"/>
                     </g>
                   </g>
                 </g>

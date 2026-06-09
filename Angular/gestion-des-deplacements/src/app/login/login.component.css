@@ -13,7 +13,7 @@
 /* Animation de chargement Vélo SVG */
 .loading-road {
   position: relative;
-  height: 120px;
+  height: 60px;
   background: transparent;
   overflow: hidden;
   border-bottom: 2px solid #e5e7eb; /* La route */
@@ -28,11 +28,11 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  gap: 20px; /* Space between car and bike */
+  gap: 15px; /* Space between vehicles */
 }
 
 .vehicle-item {
-  height: 60px; /* Taille plus petite */
+  height: 35px; /* Taille beaucoup plus petite */
   width: auto;
 }
 
