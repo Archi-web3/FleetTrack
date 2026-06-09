@@ -623,3 +623,60 @@ select {
 .status-badge.draft::before {
   background-color: #64748b; /* slate 500 */
 }
+
+/* =========================================
+   GLOBAL MATERIAL FORM FIELD OVERRIDES
+   ========================================= */
+:root {
+  /* Override MDC Outlined Text Field Variables for a softer, more aesthetic look */
+  --mdc-outlined-text-field-container-shape: 8px; /* Bords arrondis */
+  
+  --mdc-outlined-text-field-outline-color: #d1d5db; /* Gris doux au repos */
+  --mdc-outlined-text-field-hover-outline-color: var(--primary-hover, #7c3aed); /* Violet au survol */
+  --mdc-outlined-text-field-focus-outline-color: var(--primary-color, #8b5cf6); /* Violet au focus */
+  --mdc-outlined-text-field-outline-width: 1px;
+  
+  --mdc-outlined-text-field-label-text-color: #6b7280;
+  --mdc-outlined-text-field-hover-label-text-color: #4b5563;
+  --mdc-outlined-text-field-focus-label-text-color: var(--primary-color, #8b5cf6);
+  
+  --mdc-outlined-text-field-caret-color: var(--primary-color, #8b5cf6);
+  --mdc-outlined-text-field-input-text-color: #1f2937;
+}
+
+/* Fallback override if the CSS variables are not sufficient (forces the softer border) */
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+  border-color: #d1d5db !important;
+  border-width: 1px !important;
+  transition: border-color 0.2s ease-in-out, border-width 0.2s ease-in-out;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-notched-outline__trailing {
+  border-color: var(--primary-hover, #7c3aed) !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: var(--primary-color, #8b5cf6) !important;
+  border-width: 2px !important;
+}
+
+/* Forcer l'arrondi */
+.mdc-text-field--outlined .mdc-notched-outline__leading {
+  border-radius: 8px 0 0 8px !important;
+}
+.mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-radius: 0 8px 8px 0 !important;
+}
+
+/* Amélioration de l'apparence des panneaux déroulants (select) */
+.mat-mdc-select-panel {
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #f3f4f6 !important;
+}
