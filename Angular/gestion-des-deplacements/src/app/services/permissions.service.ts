@@ -103,6 +103,18 @@ export class PermissionsService {
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
       'admin_settings': { view_menu: false, manage: false }
+    },
+    'Technicien': {
+      'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
+      'mouvements_workflow': { view_menu: false, manage_levels: false, validate_level_1: false, validate_level_2: false, validate_level_3: false, validate_level_4: false, validate_level_5: false },
+      'mouvements_consolidation': { view_menu: false, manage: false },
+      'mobile_chauffeur': { access_app: false, view_missions: false, start_trip: false, end_trip: false, fill_daily_log: false, report_incident: false },
+      'flotte_vehicules': { view_menu: true, create: false, edit: false, delete: false },
+      'flotte_chauffeurs': { view_menu: true, create: false, edit: false, delete: false },
+      'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
+      'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
+      'admin_users': { view_menu: false, create: false, edit: false },
+      'admin_settings': { view_menu: false, manage: false }
     }
   };
 
@@ -115,7 +127,19 @@ export class PermissionsService {
     const saved = localStorage.getItem(this.STORAGE_KEY);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        let hasChanges = false;
+        // Fusionner les profils par défaut manquants (ex: si on ajoute "Technicien" plus tard)
+        for (const profile of Object.keys(this.defaultMatrix)) {
+          if (!parsed[profile]) {
+            parsed[profile] = this.defaultMatrix[profile];
+            hasChanges = true;
+          }
+        }
+        if (hasChanges) {
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(parsed));
+        }
+        return parsed;
       } catch (e) {
         console.error('Erreur parsing permissions matrix', e);
       }
