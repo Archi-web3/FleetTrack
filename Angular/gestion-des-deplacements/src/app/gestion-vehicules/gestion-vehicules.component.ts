@@ -5,6 +5,7 @@ import { VehiculeService } from '../vehicule.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
 import { SettingsService } from '../settings.service';
+import { PermissionsService } from '../services/permissions.service';
 import { ChauffeurService } from '../chauffeur.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
@@ -98,6 +99,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
     private adminService: AdminService,
     private settingsService: SettingsService,
     private chauffeurService: ChauffeurService,
+    public perms: PermissionsService,
     private dialog: MatDialog
   ) { }
 

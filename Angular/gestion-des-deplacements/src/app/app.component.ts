@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { AuthService } from './auth.service';
 import { SettingsService } from './settings.service';
+import { PermissionsService } from './services/permissions.service';
 // Imports pour Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -40,7 +41,8 @@ export class AppComponent implements OnInit {
     private authService: AuthService, 
     private dialog: MatDialog, 
     private settingsService: SettingsService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public perms: PermissionsService
   ) {
     this.translate.setDefaultLang('fr');
     this.translate.use('fr');

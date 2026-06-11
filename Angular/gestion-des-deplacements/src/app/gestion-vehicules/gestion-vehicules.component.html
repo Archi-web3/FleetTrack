@@ -5,7 +5,7 @@
       {{ 'VEHICLES.TITLE' | translate }}
     </h2>
     <div style="display: flex; gap: 15px; align-items: center;">
-      <button *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'" 
+      <button *ngIf="perms.hasPermission('flotte_vehicules', 'create')" 
         mat-flat-button color="primary" (click)="openVehiculeModal()">
         <mat-icon>add</mat-icon> NOUVEAU VÉHICULE
       </button>
@@ -66,10 +66,10 @@
               <button mat-icon-button color="accent" [routerLink]="['/vehicle-profile', element._id]" matTooltip="Profil 360°">
                 <mat-icon>visibility</mat-icon>
               </button>
-              <button mat-icon-button color="primary" (click)="openVehiculeModal(element)" matTooltip="Modifier">
+              <button *ngIf="perms.hasPermission('flotte_vehicules', 'edit')" mat-icon-button color="primary" (click)="openVehiculeModal(element)" matTooltip="Modifier">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin'" mat-icon-button color="warn" (click)="deleteVehicule(element._id)" matTooltip="Supprimer">
+              <button *ngIf="perms.hasPermission('flotte_vehicules', 'delete')" mat-icon-button color="warn" (click)="deleteVehicule(element._id)" matTooltip="Supprimer">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>

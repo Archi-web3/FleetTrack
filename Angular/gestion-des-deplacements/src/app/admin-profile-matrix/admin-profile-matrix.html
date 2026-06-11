@@ -1,0 +1,92 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1><mat-icon>security</mat-icon> Matrice des Rôles & Profils</h1>
+    <p>Gérez finement les permissions et accès pour chaque type d'utilisateur de la plateforme.</p>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- VUE 1 : LISTE DES PROFILS -->
+    <div class="profiles-grid" *ngIf="!selectedProfile">
+      <mat-card class="profile-card" *ngFor="let profile of profiles">
+        <mat-card-header>
+          <div mat-card-avatar class="profile-avatar">
+            <mat-icon>manage_accounts</mat-icon>
+          </div>
+          <mat-card-title>{{ profile }}</mat-card-title>
+          <mat-card-subtitle>Profil Système</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="permissions-summary">
+            <strong>Accès principaux :</strong>
+            <div class="badges-container">
+              <!-- Afficher quelques badges dynamiques basés sur view_menu -->
+              <span class="module-badge" *ngIf="matrix[profile]['mouvements_demandes']?.['view_menu']">Mouvements</span>
+              <span class="module-badge" *ngIf="matrix[profile]['flotte_vehicules']?.['view_menu']">Flotte</span>
+              <span class="module-badge" *ngIf="matrix[profile]['mobile_chauffeur']?.['access_app']">App Mobile</span>
+              <span class="module-badge admin-badge" *ngIf="matrix[profile]['admin_settings']?.['manage']">Admin</span>
+              <span class="module-badge no-access" *ngIf="!matrix[profile]['mouvements_demandes']?.['view_menu'] && !matrix[profile]['flotte_vehicules']?.['view_menu'] && !matrix[profile]['mobile_chauffeur']?.['access_app']">Accès Restreint</span>
+            </div>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button mat-flat-button color="primary" (click)="selectProfile(profile)">
+            <mat-icon>edit_note</mat-icon> Modifier les droits
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- VUE 2 : LA MATRICE (EDITION) -->
+    <div class="matrix-editor" *ngIf="selectedProfile">
+      <div class="editor-header">
+        <button mat-icon-button (click)="backToList()" matTooltip="Retour à la liste">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h2>Édition du Profil : <strong>{{ selectedProfile }}</strong></h2>
+        <span class="spacer"></span>
+        <button mat-stroked-button (click)="backToList()" style="margin-right: 10px;">Annuler</button>
+        <button mat-flat-button color="primary" (click)="save()"><mat-icon>save</mat-icon> Enregistrer</button>
+      </div>
+
+      <mat-card class="matrix-card">
+        <mat-tab-group [(selectedIndex)]="selectedCategoryIndex" animationDuration="0ms">
+          <mat-tab *ngFor="let cat of categories" [label]="cat.label">
+            
+            <div class="table-container">
+              <table class="permissions-table">
+                <thead>
+                  <tr>
+                    <th class="col-module">Module / Fonctionnalité</th>
+                    <th class="col-perms">Permissions accordées</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let mod of cat.modules">
+                    <td class="cell-module">
+                      <strong>{{ mod.label }}</strong>
+                    </td>
+                    <td class="cell-perms">
+                      <div class="checkbox-grid">
+                        <mat-checkbox 
+                          *ngFor="let perm of mod.permissions"
+                          color="primary"
+                          [checked]="hasPerm(mod.key, perm.key)"
+                          (change)="togglePerm(mod.key, perm.key, $event)">
+                          {{ perm.label }}
+                        </mat-checkbox>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,206 @@
+.dashboard-container {
+  padding: 30px;
+  background-color: #f8fafc;
+  min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.dashboard-header h1 mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #0f172a;
+}
+
+.dashboard-header p {
+  color: #64748b;
+  margin: 0;
+  font-size: 15px;
+}
+
+/* VUE 1 : GRILLE DES PROFILS */
+.profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.profile-card {
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar {
+  background-color: #e2e8f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar mat-icon {
+  color: #475569;
+}
+
+.permissions-summary {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  flex-grow: 1;
+}
+
+.permissions-summary strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.module-badge {
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.admin-badge {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.no-access {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  border: 1px dashed #cbd5e1;
+}
+
+mat-card-actions {
+  padding: 16px !important;
+  margin-top: auto;
+}
+
+mat-card-actions button {
+  width: 100%;
+}
+
+/* VUE 2 : EDITEUR DE MATRICE */
+.matrix-editor {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.editor-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #1e293b;
+  margin-left: 10px;
+}
+
+.editor-header h2 strong {
+  color: #0ea5e9;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.matrix-card {
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.table-container {
+  margin-top: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.permissions-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  text-align: left;
+  padding: 16px;
+  font-size: 14px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.col-module {
+  width: 30%;
+  border-right: 1px solid #e2e8f0;
+}
+
+.permissions-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+
+.permissions-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cell-module {
+  background-color: #fafaf9;
+  border-right: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+::ng-deep .mat-mdc-checkbox-label {
+  color: #475569 !important;
+  font-size: 14px;
+}

@@ -57,8 +57,8 @@
         <button mat-menu-item routerLink="/mes-mouvements"><mat-icon>history</mat-icon><span>{{ 'MENU.MY_TRIPS' | translate }}</span></button>
       </mat-menu>
 
-            <!-- OPERATIONS -->
-      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin'">
+      <!-- OPERATIONS -->
+      <ng-container *ngIf="perms.canViewMenu('mouvements_workflow') || perms.canViewMenu('mouvements_consolidation')">
         <button class="nav-item" [matMenuTriggerFor]="opsMenu">
           <mat-icon>flash_on</mat-icon> {{ 'MENU.GROUPS.OPERATIONS' | translate }} <mat-icon>expand_more</mat-icon>
         </button>
@@ -68,9 +68,8 @@
         </mat-menu>
       </ng-container>
 
-      <!-- VEHICLES (Was Fleet, now "Véhicules & Maintenance" or similar, wait user didn't specify removing vehicles. We will keep Vehicles under Fleet but the user said "Parametres Fleet et dedans Gestion Utilisateurs...". This is confusing. The user meant the new Fleet Settings?) -->
-      <!-- Let's just create a single "Véhicules & Maintenance" for actual fleet -->
-      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'SuperAdmin'">
+      <!-- VEHICLES -->
+      <ng-container *ngIf="perms.canViewMenu('flotte_vehicules') || perms.canViewMenu('flotte_chauffeurs') || perms.canViewMenu('flotte_maintenance')">
         <button class="nav-item" [matMenuTriggerFor]="vehiclesMenu">
           <mat-icon>local_shipping</mat-icon> Flotte & Maintenance <mat-icon>expand_more</mat-icon>
         </button>
@@ -78,9 +77,9 @@
           <button mat-menu-item routerLink="/gestion-vehicules"><mat-icon>directions_car</mat-icon><span>{{ 'MENU.VEHICLE_MANAGEMENT' | translate }}</span></button>
           <button mat-menu-item routerLink="/gestion-chauffeurs"><mat-icon>people_alt</mat-icon><span>{{ 'MENU.DRIVER_MANAGEMENT' | translate }}</span></button>
           <mat-divider></mat-divider>
-          <button mat-menu-item routerLink="/gestion-maintenance"><mat-icon>build</mat-icon><span>{{ 'MENU.MAINTENANCE_TRACKING' | translate }}</span></button>
-          <button mat-menu-item routerLink="/recap-flotte"><mat-icon>assessment</mat-icon><span>{{ 'MENU.FLEET_RECAP' | translate }}</span></button>
-          <button mat-menu-item routerLink="/rapports-mensuels"><mat-icon>bar_chart</mat-icon><span>{{ 'MENU.MONTHLY_REPORTS' | translate }}</span></button>
+          <button mat-menu-item routerLink="/gestion-maintenance" *ngIf="perms.canViewMenu('flotte_maintenance')"><mat-icon>build</mat-icon><span>{{ 'MENU.MAINTENANCE_TRACKING' | translate }}</span></button>
+          <button mat-menu-item routerLink="/recap-flotte" *ngIf="perms.canViewMenu('flotte_vehicules')"><mat-icon>assessment</mat-icon><span>{{ 'MENU.FLEET_RECAP' | translate }}</span></button>
+          <button mat-menu-item routerLink="/rapports-mensuels" *ngIf="perms.canViewMenu('flotte_vehicules')"><mat-icon>bar_chart</mat-icon><span>{{ 'MENU.MONTHLY_REPORTS' | translate }}</span></button>
         </mat-menu>
       </ng-container>
 
@@ -96,22 +95,23 @@
           <button mat-menu-item routerLink="/admin/waivers"><mat-icon>folder_shared</mat-icon><span>{{ 'MENU.WAIVERS' | translate }}</span></button>
           <button mat-menu-item routerLink="/admin/audit-logs"><mat-icon>history_edu</mat-icon><span>{{ 'MENU.AUDIT_LOGS' | translate }}</span></button>
           <button mat-menu-item routerLink="/admin/security-matrix"><mat-icon style="color: #4caf50;">shield</mat-icon><span>{{ 'MENU.SECURITY_MATRIX' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/profile-matrix" *ngIf="userProfile === 'SuperAdmin'"><mat-icon style="color: #9c27b0;">admin_panel_settings</mat-icon><span>Matrice des Profils (RBAC)</span></button>
         </mat-menu>
       </ng-container>
 
       <!-- PARAMETRAGE FLEET -->
-      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
+      <ng-container *ngIf="perms.canViewMenu('admin_geo') || perms.canViewMenu('admin_users')">
         <button class="nav-item" [matMenuTriggerFor]="paramFleetMenu">
           <mat-icon>tune</mat-icon> Paramétrages Fleet <mat-icon>expand_more</mat-icon>
         </button>
         <mat-menu #paramFleetMenu="matMenu">
-          <button mat-menu-item routerLink="/gestion-utilisateurs"><mat-icon>people</mat-icon><span>{{ 'MENU.USER_MANAGEMENT' | translate }}</span></button>
-          <button mat-menu-item routerLink="/gestion-projets"><mat-icon>folder</mat-icon><span>{{ 'MENU.PROJECT_MANAGEMENT' | translate }}</span></button>
-          <button mat-menu-item routerLink="/gestion-lieux"><mat-icon>place</mat-icon><span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span></button>
-          <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="userProfile === 'SuperAdmin'"><mat-icon>public</mat-icon><span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span></button>
-          <button mat-menu-item routerLink="/environment-roadmap"><mat-icon>eco</mat-icon><span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span></button>
+          <button mat-menu-item routerLink="/gestion-utilisateurs" *ngIf="perms.canViewMenu('admin_users')"><mat-icon>people</mat-icon><span>{{ 'MENU.USER_MANAGEMENT' | translate }}</span></button>
+          <button mat-menu-item routerLink="/gestion-projets" *ngIf="perms.canViewMenu('admin_settings')"><mat-icon>folder</mat-icon><span>{{ 'MENU.PROJECT_MANAGEMENT' | translate }}</span></button>
+          <button mat-menu-item routerLink="/gestion-lieux" *ngIf="perms.canViewMenu('admin_geo')"><mat-icon>place</mat-icon><span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="perms.canViewMenu('admin_geo')"><mat-icon>public</mat-icon><span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span></button>
+          <button mat-menu-item routerLink="/environment-roadmap" *ngIf="perms.canViewMenu('admin_settings')"><mat-icon>eco</mat-icon><span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span></button>
           <mat-divider></mat-divider>
-          <button mat-menu-item [matMenuTriggerFor]="maintSettings"><mat-icon>build_circle</mat-icon><span>Gestion des Maintenances</span></button>
+          <button mat-menu-item [matMenuTriggerFor]="maintSettings" *ngIf="perms.canViewMenu('flotte_maintenance')"><mat-icon>build_circle</mat-icon><span>Gestion des Maintenances</span></button>
         </mat-menu>
         
         <mat-menu #maintSettings="matMenu">
@@ -128,7 +128,7 @@
       </ng-container>
 
       <!-- PARAMETRAGES SYSTEME -->
-      <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'SuperAdmin'">
+      <ng-container *ngIf="perms.canViewMenu('admin_settings')">
         <button class="nav-item" routerLink="/admin/settings" [queryParams]="{tab: 'brand'}">
           <mat-icon>settings_applications</mat-icon> Paramétrages Système
         </button>

@@ -56,7 +56,7 @@ export const routes: Routes = [
     path: 'valider-mouvements',
     component: ValidationMouvementsComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité'] }
+    data: { requiredPermission: { module: 'mouvements_workflow', action: 'view_menu' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité'] }
   },
   {
     path: 'planning',
@@ -73,7 +73,7 @@ export const routes: Routes = [
     path: 'gestion-utilisateurs',
     component: GestionUtilisateursComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin'] }
+    data: { requiredPermission: { module: 'admin_users', action: 'view_menu' }, roles: ['SuperAdmin', 'Admin'] }
   },
   {
     path: 'gestion-lieux',
@@ -85,7 +85,7 @@ export const routes: Routes = [
     path: 'gestion-vehicules',
     component: GestionVehiculesComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'flotte_vehicules', action: 'view_menu' }, roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
   {
     path: 'gestion-chauffeurs',
@@ -228,6 +228,12 @@ export const routes: Routes = [
     loadComponent: () => import('./security-matrix/security-matrix.component').then(m => m.SecurityMatrixComponent),
     canActivate: [AuthGuard],
     data: { roles: ['SuperAdmin', 'Admin', 'Superviseur Sécurité'] }
+  },
+  {
+    path: 'admin/profile-matrix',
+    loadComponent: () => import('./admin-profile-matrix/admin-profile-matrix').then(m => m.AdminProfileMatrixComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin'] }
   },
   {
     path: 'environment-roadmap',
