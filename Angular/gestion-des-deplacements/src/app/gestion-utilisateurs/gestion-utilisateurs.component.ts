@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-gestion-utilisateurs',
@@ -74,7 +74,7 @@ export class GestionUtilisateursComponent implements OnInit {
     niveauValidationSecu: 1
   };
   selectedUser: any = null; // Pour la modification
-  profiles = ['Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur']; // Profils possibles
+  profiles: string[] = []; // Profils dynamiques
 
   securityLevels = [1, 2, 3, 4, 5]; // Niveaux de validation sécurité
   userProfile: string | null = null;
@@ -95,6 +95,7 @@ export class GestionUtilisateursComponent implements OnInit {
     private adminService: AdminService,
     private projetService: ProjetService,
     public perms: PermissionsService,
+    private translate: TranslateService,
     private dialog: MatDialog
   ) { }
 
@@ -103,12 +104,13 @@ export class GestionUtilisateursComponent implements OnInit {
     this.userPaysId = this.authService.getUserPaysId();
 
     // Adapter les profils disponibles
+    const allProfiles = Object.keys(this.perms.getMatrix());
     if (this.userProfile === 'SuperAdmin') {
-      this.profiles = ['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur'];
+      this.profiles = allProfiles;
       this.loadPays();
       // On ne charge pas les bases tout de suite, on attend la sélection du pays
     } else if (this.userProfile === 'Admin') {
-      this.profiles = ['Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur']; // Admin ne crée pas Admin
+      this.profiles = allProfiles.filter(p => p !== 'SuperAdmin' && p !== 'Admin'); // Admin ne crée pas d'autres Admins
       this.newUser.pays = this.userPaysId; // Force le pays
       this.loadBases(this.userPaysId!);
     } else {
@@ -119,6 +121,14 @@ export class GestionUtilisateursComponent implements OnInit {
     this.loadVehicules();
     this.loadProjets(); // Charger les projets dynamiquement
     this.loadUtilisateurs();
+  }
+
+  getProfileLabel(profile: string): string {
+    if (!profile) return '';
+    const translationKey = 'PROFILES.' + profile;
+    const translated = this.translate.instant(translationKey);
+    // Si la traduction n'existe pas, ngx-translate retourne la clé
+    return translated === translationKey ? profile : translated;
   }
 
   openUserModal(user?: any) {

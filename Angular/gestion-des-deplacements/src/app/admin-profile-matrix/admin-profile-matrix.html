@@ -1,7 +1,12 @@
 <div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1><mat-icon>security</mat-icon> Matrice des Rôles & Profils</h1>
-    <p>Gérez finement les permissions et accès pour chaque type d'utilisateur de la plateforme.</p>
+  <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1><mat-icon>security</mat-icon> Matrice des Rôles & Profils</h1>
+      <p>Gérez finement les permissions et accès pour chaque type d'utilisateur de la plateforme.</p>
+    </div>
+    <button *ngIf="!selectedProfile" mat-flat-button color="primary" (click)="createNewProfile()" style="height: 42px;">
+      <mat-icon>add</mat-icon> Nouveau Profil
+    </button>
   </div>
 
   <div class="content-wrapper">

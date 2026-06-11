@@ -188,6 +188,23 @@ export class AdminProfileMatrixComponent implements OnInit {
     this.matrix[this.selectedProfile][moduleKey][permKey] = event.checked;
   }
 
+  createNewProfile() {
+    const profileName = prompt('Entrez le nom du nouveau profil (ex: Technicien RP) :');
+    if (profileName && profileName.trim()) {
+      const name = profileName.trim();
+      if (this.matrix[name]) {
+        this.snackBar.open('Ce profil existe déjà !', 'Erreur', { duration: 3000 });
+        return;
+      }
+      // Initialize with empty permissions
+      this.matrix[name] = {};
+      this.permissionsService.saveMatrix(this.matrix);
+      this.profiles = Object.keys(this.matrix);
+      this.snackBar.open(`Profil "${name}" créé avec succès !`, 'OK', { duration: 3000 });
+      this.selectProfile(name); // Select to start editing immediately
+    }
+  }
+
   save() {
     this.permissionsService.saveMatrix(this.matrix);
     this.snackBar.open('Matrice des droits sauvegardée avec succès !', 'OK', { duration: 3000 });
