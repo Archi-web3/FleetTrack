@@ -86,16 +86,12 @@
       <!-- SECURITY -->
       <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin'">
         <button class="nav-item" [matMenuTriggerFor]="securityMenu">
-          <mat-icon>security</mat-icon> {{ 'MENU.GROUPS.SECURITY' | translate }} <mat-icon>expand_more</mat-icon>
+          <mat-icon>security</mat-icon> Sécurité <mat-icon>expand_more</mat-icon>
         </button>
         <mat-menu #securityMenu="matMenu">
           <button mat-menu-item routerLink="/security-alerts"><mat-icon style="color: #f44336;">notification_important</mat-icon><span>{{ 'MENU.SECURITY_ALERTS' | translate }}</span></button>
-          <button mat-menu-item routerLink="/roadmap"><mat-icon>rocket_launch</mat-icon><span>{{ 'MENU.VISION_SECURITY' | translate }}</span></button>
-          <mat-divider></mat-divider>
           <button mat-menu-item routerLink="/admin/waivers"><mat-icon>folder_shared</mat-icon><span>{{ 'MENU.WAIVERS' | translate }}</span></button>
-          <button mat-menu-item routerLink="/admin/audit-logs"><mat-icon>history_edu</mat-icon><span>{{ 'MENU.AUDIT_LOGS' | translate }}</span></button>
           <button mat-menu-item routerLink="/admin/security-matrix"><mat-icon style="color: #4caf50;">shield</mat-icon><span>{{ 'MENU.SECURITY_MATRIX' | translate }}</span></button>
-          <button mat-menu-item routerLink="/admin/profile-matrix" *ngIf="userProfile === 'SuperAdmin'"><mat-icon style="color: #9c27b0;">admin_panel_settings</mat-icon><span>Matrice des Profils (RBAC)</span></button>
         </mat-menu>
       </ng-container>
 
@@ -129,9 +125,23 @@
 
       <!-- PARAMETRAGES SYSTEME -->
       <ng-container *ngIf="perms.canViewMenu('admin_settings')">
-        <button class="nav-item" routerLink="/admin/settings" [queryParams]="{tab: 'brand'}">
-          <mat-icon>settings_applications</mat-icon> Paramétrages Système
+        <button class="nav-item" [matMenuTriggerFor]="sysSettingsMenu">
+          <mat-icon>settings_applications</mat-icon> Paramètres Système <mat-icon>expand_more</mat-icon>
         </button>
+        <mat-menu #sysSettingsMenu="matMenu">
+          <button mat-menu-item routerLink="/admin/settings" [queryParams]="{tab: 'brand'}">
+            <mat-icon>settings</mat-icon><span>Configuration Générale</span>
+          </button>
+          <button mat-menu-item routerLink="/roadmap">
+            <mat-icon>rocket_launch</mat-icon><span>Roadmap et sécurité de l'APP</span>
+          </button>
+          <button mat-menu-item routerLink="/admin/audit-logs">
+            <mat-icon>history_edu</mat-icon><span>Journal d'activité</span>
+          </button>
+          <button mat-menu-item routerLink="/admin/profile-matrix" *ngIf="userProfile === 'SuperAdmin'">
+            <mat-icon style="color: #9c27b0;">admin_panel_settings</mat-icon><span>Matrice des Profils (RBAC)</span>
+          </button>
+        </mat-menu>
       </ng-container>
 
       <!-- GUIDE UTILISATEUR -->
