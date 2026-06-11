@@ -14,7 +14,7 @@
       </button>
       
       <!-- Bouton Nouveau -->
-      <button mat-flat-button color="primary" *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin'" 
+      <button mat-flat-button color="primary" *ngIf="perms.hasPermission('admin_users', 'create')" 
               (click)="openUserModal()" style="background-color: var(--primary-color); height: 42px;">
         <mat-icon>add</mat-icon> Nouveau
       </button>
@@ -435,7 +435,7 @@
 
   <mat-menu #actionMenu="matMenu" xPosition="before">
     <ng-template matMenuContent let-user="user">
-      <button mat-menu-item (click)="openUserModal(user)" [disabled]="userProfile !== 'SuperAdmin' && userProfile !== 'Admin'">
+      <button mat-menu-item (click)="openUserModal(user)" [disabled]="!perms.hasPermission('admin_users', 'edit')">
         <mat-icon style="color: #0284c7;">edit</mat-icon>
         <span style="color: #0284c7;">{{ 'USERS.ACTIONS.UPDATE' | translate }}</span>
       </button>
@@ -457,7 +457,7 @@
         <span>Disable Login</span>
       </button>
       <button mat-menu-item (click)="deleteUser(user._id)" 
-        [disabled]="(userProfile !== 'SuperAdmin' && userProfile !== 'Admin') || authService.getUserId() === user._id">
+        [disabled]="!perms.hasPermission('admin_users', 'delete') || authService.getUserId() === user._id">
         <mat-icon style="color: #ef4444;">delete</mat-icon>
         <span style="color: #ef4444;">{{ 'USERS.ACTIONS.DELETE' | translate }}</span>
       </button>

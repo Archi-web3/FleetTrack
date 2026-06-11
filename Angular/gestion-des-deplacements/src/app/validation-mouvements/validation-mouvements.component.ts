@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Assurez-vous d'importer CommonModule
-import { MouvementService } from '../mouvement.service'; // Assurez-vous d'importer MouvementService
-import { AuthService } from '../auth.service'; // Assurez-vous d'importer AuthService
+import { MouvementService } from '../mouvement.service';
+import { AuthService } from '../auth.service';
+import { PermissionsService } from '../services/permissions.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -18,7 +19,8 @@ export class ValidationMouvementsComponent implements OnInit {
 
   constructor(
     private mouvementService: MouvementService,
-    private authService: AuthService
+    private authService: AuthService,
+    public perms: PermissionsService
   ) { }
 
   ngOnInit(): void {
@@ -57,26 +59,18 @@ export class ValidationMouvementsComponent implements OnInit {
         this.mouvementsPourValidationSecurite = []; // Réinitialiser pour chaque chargement
         this.mouvementsPourValidationLogistique = []; // Réinitialiser pour chaque chargement
 
-        if (this.userProfile === 'SuperAdmin' || this.userProfile === 'Admin') {
-          // SuperAdmin/Admin voit TOUT
+        // Filtrage dynamique avec PermissionsService
+        if (this.perms.hasPermission('mouvements_workflow', 'validate_level_1') || 
+            this.perms.hasPermission('mouvements_workflow', 'validate_level_2') || 
+            this.perms.hasPermission('mouvements_workflow', 'validate_level_3') || 
+            this.perms.hasPermission('mouvements_workflow', 'validate_level_4') || 
+            this.perms.hasPermission('mouvements_workflow', 'validate_level_5')) {
           this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
-          this.mouvementsPourValidationLogistique = data.filter(m => m.statut === 'en attente');
-        } else if (this.userProfile === 'Superviseur Sécurité') {
-          // Superviseur Sécurité voit SEULEMENT la sécurité
-          this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
-        } else if (this.userProfile === 'Superviseur') {
-          // Superviseur (classique) voit SEULEMENT la logistique
-          this.mouvementsPourValidationLogistique = data.filter(m => m.statut === 'en attente');
-        } else {
-          console.log('⚠️ [VALIDATION] Profil non autorisé pour la validation:', this.userProfile);
         }
 
-        console.log('✅ [VALIDATION] Mouvements pour validation sécurité:', this.mouvementsPourValidationSecurite.length);
-        console.log('✅ [VALIDATION] Mouvements pour validation logistique:', this.mouvementsPourValidationLogistique.length);
-        // Si nous avions un rôle 'CoordinateurTerrain' distinct, ce serait ici:
-        // else if (this.userProfile === 'CoordinateurTerrain') {
-        //   this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
-        // }
+        if (this.perms.hasPermission('mouvements_workflow', 'validate')) {
+          this.mouvementsPourValidationLogistique = data.filter(m => m.statut === 'en attente');
+        }
 
         if (this.mouvementsPourValidationLogistique.length === 0 && this.mouvementsPourValidationSecurite.length === 0) {
           console.log('ℹ️ [VALIDATION] Aucun mouvement à valider trouvé.');

@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { AdminService } from '../../admin.service';
 import { AuthService } from '../../auth.service';
+import { PermissionsService } from '../../services/permissions.service';
 
 @Component({
   selector: 'app-admin-pays-bases',
@@ -63,6 +64,7 @@ export class AdminPaysBasesComponent implements OnInit, AfterViewInit {
   constructor(
     private adminService: AdminService,
     public authService: AuthService,
+    public perms: PermissionsService,
     private dialog: MatDialog
   ) {}
 

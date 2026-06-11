@@ -13,6 +13,7 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaysService, Pays } from '../pays.service';
+import { PermissionsService } from '../services/permissions.service';
 
 @Component({
   selector: 'app-gestion-pays',
@@ -55,6 +56,7 @@ export class GestionPaysComponent implements OnInit, AfterViewInit {
 
   constructor(
     private paysService: PaysService,
+    public perms: PermissionsService,
     private dialog: MatDialog
   ) {}
 

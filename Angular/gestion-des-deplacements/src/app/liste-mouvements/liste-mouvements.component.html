@@ -4,7 +4,7 @@
       <mat-icon>history</mat-icon> {{ 'MY_TRIPS.TITLE' | translate }}
     </h2>
     <div style="display: flex; gap: 10px;">
-      <button mat-raised-button color="primary" (click)="openNouvelleDemande()" style="font-weight: 500;">
+      <button *ngIf="perms.hasPermission('mouvements_demandes', 'create')" mat-raised-button color="primary" (click)="openNouvelleDemande()" style="font-weight: 500;">
         <mat-icon>add</mat-icon> {{ 'MENU.NEW_REQUEST' | translate }}
       </button>
       <button mat-raised-button [style.background-color]="showCompleted ? '#52ae32' : '#005fb6'"
@@ -146,12 +146,12 @@
         </button>
 
         <button mat-icon-button class="action-btn edit"
-          *ngIf="authService.getUserProfile() === 'Admin' || authService.getUserProfile() === 'Superviseur' || authService.getUserProfile() === 'SuperAdmin'"
+          *ngIf="perms.hasPermission('mouvements_demandes', 'edit')"
           (click)="navigateToEdit(mouvement._id)" [title]="'MY_TRIPS.ACTIONS.EDIT' | translate">
           <mat-icon>edit</mat-icon>
         </button>
 
-        <button mat-icon-button class="action-btn delete" (click)="deleteMouvement(mouvement._id)"
+        <button mat-icon-button class="action-btn delete" *ngIf="perms.hasPermission('mouvements_demandes', 'delete')" (click)="deleteMouvement(mouvement._id)"
           [title]="'MY_TRIPS.ACTIONS.DELETE' | translate">
           <mat-icon>delete</mat-icon>
         </button>

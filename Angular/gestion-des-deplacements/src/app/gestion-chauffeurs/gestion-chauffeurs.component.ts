@@ -6,6 +6,7 @@ import { UtilisateurService } from '../utilisateur.service'; // Pour update/dele
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
 import { ProjetService } from '../projet.service';
+import { PermissionsService } from '../services/permissions.service';
 
 // Imports Angular Material
 import { MatCardModule } from '@angular/material/card';
@@ -83,6 +84,7 @@ export class GestionChauffeursComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private adminService: AdminService,
     private projetService: ProjetService,
+    public perms: PermissionsService,
     private dialog: MatDialog
   ) { }
 

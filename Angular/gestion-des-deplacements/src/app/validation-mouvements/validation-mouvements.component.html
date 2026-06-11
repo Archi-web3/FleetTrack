@@ -2,7 +2,7 @@
   ('VALIDATION.NOT_CONNECTED' | translate) }}) <small style="font-size: 0.6em; color: gray;">[v2.2]</small></h2>
 
 <!-- Section pour les mouvements en attente de validation SECURITE -->
-<div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur Sécurité'">
+<div *ngIf="perms.hasPermission('mouvements_workflow', 'validate_level_1') || perms.hasPermission('mouvements_workflow', 'validate_level_2') || perms.hasPermission('mouvements_workflow', 'validate_level_3') || perms.hasPermission('mouvements_workflow', 'validate_level_4') || perms.hasPermission('mouvements_workflow', 'validate_level_5')">
   <!-- Ajustez le rôle si vous avez 'CoordinateurTerrain' -->
   <h3>{{ 'VALIDATION.SECURITY_VALIDATION' | translate }}</h3>
   <p *ngIf="mouvementsPourValidationSecurite.length === 0">{{ 'VALIDATION.NO_PENDING_SECURITY' | translate }}</p>
@@ -95,7 +95,7 @@
 </div>
 
 <!-- Section pour les mouvements en attente de validation LOGISTIQUE -->
-<div *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin' || userProfile === 'Superviseur'">
+<div *ngIf="perms.hasPermission('mouvements_workflow', 'validate')">
   <h3>{{ 'VALIDATION.LOGISTICS_VALIDATION' | translate }}</h3>
   <p *ngIf="mouvementsPourValidationLogistique.length === 0">{{ 'VALIDATION.NO_PENDING_LOGS' | translate }}</p>
 

@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MouvementDetailsDialogComponent } from './mouvement-details-dialog.component';
 import { DemandeMouvementComponent } from '../demande-mouvement/demande-mouvement.component';
+import { PermissionsService } from '../services/permissions.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -50,6 +51,7 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
+    public perms: PermissionsService,
     private dialog: MatDialog
   ) { }
 

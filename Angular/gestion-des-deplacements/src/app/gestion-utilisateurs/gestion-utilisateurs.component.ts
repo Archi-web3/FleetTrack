@@ -6,6 +6,7 @@ import { UtilisateurService } from '../utilisateur.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
 import { ProjetService } from '../projet.service';
+import { PermissionsService } from '../services/permissions.service';
 
 // Imports Angular Material
 import { MatCardModule } from '@angular/material/card';
@@ -93,6 +94,7 @@ export class GestionUtilisateursComponent implements OnInit {
     public authService: AuthService,
     private adminService: AdminService,
     private projetService: ProjetService,
+    public perms: PermissionsService,
     private dialog: MatDialog
   ) { }
 

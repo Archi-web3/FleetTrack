@@ -16,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LieuService } from '../lieu.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
+import { PermissionsService } from '../services/permissions.service';
 
 @Component({
   selector: 'app-gestion-lieux',
@@ -83,6 +84,7 @@ export class GestionLieuxComponent implements OnInit, AfterViewInit {
     private lieuService: LieuService,
     private authService: AuthService,
     private adminService: AdminService,
+    public perms: PermissionsService,
     private dialog: MatDialog
   ) { }
 
