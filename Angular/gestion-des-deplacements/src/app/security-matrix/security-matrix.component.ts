@@ -8,11 +8,12 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { InfoBannerComponent } from '../core/info-banner/info-banner';
 
 @Component({
     selector: 'app-security-matrix',
     standalone: true,
-    imports: [CommonModule, FormsModule, TranslateModule, MatTooltipModule, MatIconModule],
+    imports: [CommonModule, FormsModule, TranslateModule, MatTooltipModule, MatIconModule, InfoBannerComponent],
     templateUrl: './security-matrix.component.html',
     styleUrls: ['./security-matrix.component.css']
 })

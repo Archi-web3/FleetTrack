@@ -22,6 +22,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { InfoBannerComponent } from '../core/info-banner/info-banner';
 
 @Component({
   selector: 'app-gestion-utilisateurs',
@@ -41,7 +42,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     MatMenuModule,
     MatTooltipModule,
     MatDialogModule,
-    TranslateModule
+    TranslateModule,
+    InfoBannerComponent
   ],
   templateUrl: './gestion-utilisateurs.component.html',
   styleUrls: ['./gestion-utilisateurs.component.css']

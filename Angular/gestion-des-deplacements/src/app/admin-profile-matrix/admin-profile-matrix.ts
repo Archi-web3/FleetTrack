@@ -8,6 +8,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionsService, ProfileMatrix, RolePermissions } from '../services/permissions.service';
+import { InfoBannerComponent } from '../core/info-banner/info-banner';
 
 interface ModuleConfig {
   key: string;
@@ -23,7 +24,7 @@ interface CategoryConfig {
 @Component({
   selector: 'app-admin-profile-matrix',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatIconModule, MatButtonModule, MatCheckboxModule, MatTabsModule, MatSnackBarModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatIconModule, MatButtonModule, MatCheckboxModule, MatTabsModule, MatSnackBarModule, InfoBannerComponent],
   templateUrl: './admin-profile-matrix.html',
   styleUrls: ['./admin-profile-matrix.css']
 })
@@ -148,7 +149,8 @@ export class AdminProfileMatrixComponent implements OnInit {
           label: 'Paramètres Globaux',
           permissions: [
             { key: 'view_menu', label: 'Voir (Menu)' },
-            { key: 'manage', label: 'Modifier les paramètres' }
+            { key: 'manage', label: 'Configuration Générale' },
+            { key: 'view_helpers', label: 'Afficher les encarts d\'aide' }
           ]
         }
       ]

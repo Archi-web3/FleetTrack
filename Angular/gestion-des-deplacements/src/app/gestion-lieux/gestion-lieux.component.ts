@@ -17,6 +17,7 @@ import { LieuService } from '../lieu.service';
 import { AuthService } from '../auth.service';
 import { AdminService } from '../admin.service';
 import { PermissionsService } from '../services/permissions.service';
+import { InfoBannerComponent } from '../core/info-banner/info-banner';
 
 @Component({
   selector: 'app-gestion-lieux',
@@ -35,7 +36,9 @@ import { PermissionsService } from '../services/permissions.service';
     MatInputModule,
     MatDialogModule,
     MatTooltipModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    TranslateModule,
+    InfoBannerComponent
   ],
   templateUrl: './gestion-lieux.component.html',
   styleUrls: ['./gestion-lieux.component.css']

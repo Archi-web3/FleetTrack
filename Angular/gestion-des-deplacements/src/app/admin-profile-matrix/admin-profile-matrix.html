@@ -9,16 +9,11 @@
     </button>
   </div>
 
-  <div class="info-banner" style="background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-    <h3 style="margin: 0 0 5px 0; color: #2e7d32; display: flex; align-items: center; gap: 8px;">
-      <mat-icon style="font-size: 20px; height: 20px; width: 20px;">info</mat-icon> Note pour les Super Administrateurs
-    </h3>
-    <p style="margin: 0; color: #1b5e20;">
-      Cette matrice permet de configurer finement les droits d'accès à chaque module de l'application. 
-      Vous pouvez créer de nouveaux profils (ex: <strong>Responsable Projet</strong>) et définir précisément ce qu'ils ont le droit de voir, créer, modifier ou valider. 
-      Ces profils seront ensuite disponibles lors de la création d'un utilisateur.
-    </p>
-  </div>
+  <app-info-banner title="Note pour les Super Administrateurs">
+    Cette matrice permet de configurer finement les droits d'accès à chaque module de l'application. 
+    Vous pouvez créer de nouveaux profils (ex: <strong>Responsable Projet</strong>) et définir précisément ce qu'ils ont le droit de voir, créer, modifier ou valider. 
+    Ces profils seront ensuite disponibles lors de la création d'un utilisateur.
+  </app-info-banner>
 
   <div class="content-wrapper">
     <!-- VUE 1 : LISTE DES PROFILS -->

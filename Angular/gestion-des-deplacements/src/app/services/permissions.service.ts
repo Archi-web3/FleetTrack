@@ -30,7 +30,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: true },
       'admin_geo': { view_menu: true, manage_countries: true, manage_bases: true },
       'admin_users': { view_menu: true, create: true, edit: true },
-      'admin_settings': { view_menu: true, manage: true }
+      'admin_settings': { view_menu: true, manage: true, view_helpers: true }
     },
     'Admin': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: true },
@@ -42,7 +42,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: true },
       'admin_geo': { view_menu: true, manage_countries: true, manage_bases: true },
       'admin_users': { view_menu: true, create: true, edit: true },
-      'admin_settings': { view_menu: true, manage: true }
+      'admin_settings': { view_menu: true, manage: true, view_helpers: false }
     },
     'Superviseur': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
@@ -54,7 +54,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
     },
     'Superviseur Sécurité': {
       'mouvements_demandes': { view_menu: true, create: false, edit: false, delete: false },
@@ -66,7 +66,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false },
       'admin_geo': { view_menu: false },
       'admin_users': { view_menu: false },
-      'admin_settings': { view_menu: false }
+      'admin_settings': { view_menu: false, view_helpers: false }
     },
     'Logisticien': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
@@ -78,7 +78,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: false },
       'admin_geo': { view_menu: false },
       'admin_users': { view_menu: false },
-      'admin_settings': { view_menu: false }
+      'admin_settings': { view_menu: false, view_helpers: false }
     },
     'Chauffeur': {
       'mouvements_demandes': { view_menu: false, create: false, edit: false, delete: false },
@@ -90,7 +90,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
     },
     'Guest': {
       'mouvements_demandes': { view_menu: true, create: true, edit: false, delete: false },
@@ -102,7 +102,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
     },
     'Technicien': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
@@ -114,7 +114,7 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
     }
   };
 
@@ -129,11 +129,25 @@ export class PermissionsService {
       try {
         const parsed = JSON.parse(saved);
         let hasChanges = false;
-        // Fusionner les profils par défaut manquants (ex: si on ajoute "Technicien" plus tard)
+        // Fusionner les profils et permissions par défaut manquants
         for (const profile of Object.keys(this.defaultMatrix)) {
           if (!parsed[profile]) {
-            parsed[profile] = this.defaultMatrix[profile];
+            parsed[profile] = JSON.parse(JSON.stringify(this.defaultMatrix[profile]));
             hasChanges = true;
+          } else {
+            for (const module of Object.keys(this.defaultMatrix[profile])) {
+              if (!parsed[profile][module]) {
+                parsed[profile][module] = JSON.parse(JSON.stringify(this.defaultMatrix[profile][module]));
+                hasChanges = true;
+              } else {
+                for (const perm of Object.keys(this.defaultMatrix[profile][module])) {
+                  if (parsed[profile][module][perm] === undefined) {
+                    parsed[profile][module][perm] = this.defaultMatrix[profile][module][perm];
+                    hasChanges = true;
+                  }
+                }
+              }
+            }
           }
         }
         if (hasChanges) {

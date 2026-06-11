@@ -15,6 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { AdminService } from '../../admin.service';
 import { AuthService } from '../../auth.service';
 import { PermissionsService } from '../../services/permissions.service';
+import { InfoBannerComponent } from '../../core/info-banner/info-banner';
 
 @Component({
   selector: 'app-admin-pays-bases',
@@ -32,7 +33,8 @@ import { PermissionsService } from '../../services/permissions.service';
     MatInputModule,
     MatDialogModule,
     MatTooltipModule,
-    MatCardModule
+    MatCardModule,
+    InfoBannerComponent
   ],
   templateUrl: './admin-pays-bases.html',
   styleUrls: ['./admin-pays-bases.css']

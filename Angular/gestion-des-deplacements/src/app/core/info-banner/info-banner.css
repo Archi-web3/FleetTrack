@@ -1,0 +1,50 @@
+.info-banner-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.toggle-wrapper {
+  position: absolute;
+  top: -15px;
+  right: 0;
+  z-index: 10;
+}
+
+.toggle-btn {
+  color: #81c784;
+  transform: scale(0.85);
+}
+
+.toggle-btn:hover {
+  color: #4caf50;
+}
+
+.info-banner-content {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.banner-title {
+  margin: 0 0 8px 0;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.banner-title mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
+.banner-body {
+  margin: 0;
+  color: #1b5e20;
+  font-size: 14px;
+  line-height: 1.5;
+}

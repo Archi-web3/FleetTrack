@@ -15,6 +15,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProjetService } from '../projet.service';
 import { AuthService } from '../auth.service';
+import { InfoBannerComponent } from '../core/info-banner/info-banner';
 
 @Component({
   selector: 'app-gestion-projets',
@@ -33,7 +34,8 @@ import { AuthService } from '../auth.service';
     MatDialogModule,
     MatTooltipModule,
     MatCheckboxModule,
-    TranslateModule
+    TranslateModule,
+    InfoBannerComponent
   ],
   templateUrl: './gestion-projets.component.html',
   styleUrls: ['./gestion-projets.component.css']
