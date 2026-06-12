@@ -22,6 +22,7 @@ export class SecurityMatrixComponent implements OnInit {
     supervisors: any[] = [];
     config: SecurityConfig = { pays: '', rules: [] };
     isLoading = true;
+    errorMessage: string | null = null;
 
     constructor(
         private securityConfigService: SecurityConfigService,
@@ -50,12 +51,20 @@ export class SecurityMatrixComponent implements OnInit {
                     this.config = cfg;
                     this.initializeEmptyRules();
                     this.isLoading = false;
+                    this.errorMessage = null;
                 },
                 (err) => {
                     console.error('Erreur chargement config', err);
-                    // Si 404 ou vide, on initialise
-                    this.initializeEmptyRules();
                     this.isLoading = false;
+                    
+                    if (err.status === 400) {
+                        // Utilisateur en vue globale (SuperAdmin avec 'Tous' ou aucun pays)
+                        this.errorMessage = err.error?.message || "Veuillez sélectionner un pays spécifique dans le menu en haut pour configurer la matrice de sécurité.";
+                        this.config = { pays: '', rules: [] };
+                    } else {
+                        // Si 404 ou autre, on initialise
+                        this.initializeEmptyRules();
+                    }
                 }
             );
         });

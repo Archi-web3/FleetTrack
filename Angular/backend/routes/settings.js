@@ -55,8 +55,8 @@ router.get('/:key', auth(), async (req, res) => {
     try {
         const setting = await Setting.findOne({ key: req.params.key });
         if (!setting) {
-            // Return null or default value logic could go here, for now 404
-            return res.status(404).json({ msg: 'Setting not found' });
+            // Return 200 with null value to avoid console errors for optional settings
+            return res.status(200).json({ key: req.params.key, value: null, msg: 'Setting not found' });
         }
         res.json(setting);
     } catch (err) {

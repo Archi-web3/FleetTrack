@@ -15,7 +15,12 @@
         Chargement...
     </div>
 
-    <div *ngIf="!isLoading" class="table-container">
+    <div *ngIf="errorMessage" class="error-message" style="background-color: #fee2e2; color: #dc2626; padding: 16px; border-radius: 6px; margin: 20px 0; border: 1px solid #fca5a5; display: flex; align-items: center;">
+        <mat-icon style="margin-right: 12px;">error_outline</mat-icon>
+        <span style="font-size: 15px;">{{ errorMessage }}</span>
+    </div>
+
+    <div *ngIf="!isLoading && !errorMessage" class="table-container">
         <table class="matrix-table">
             <thead>
                 <tr>

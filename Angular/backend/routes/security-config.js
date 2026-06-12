@@ -10,8 +10,9 @@ router.get('/security-config', auth(['SuperAdmin', 'Admin', 'Superviseur Sécuri
         const pays = req.selectedCountry || req.utilisateur.pays;
         const base = req.utilisateur.base;
 
-        if (!pays) {
-            return res.status(400).json({ message: 'Aucun pays sélectionné ou défini.' });
+        const mongoose = require('mongoose');
+        if (!pays || pays === 'all' || pays === 'none' || !mongoose.Types.ObjectId.isValid(pays)) {
+            return res.status(400).json({ message: 'Veuillez sélectionner un pays spécifique.' });
         }
 
         // Chercher une config spécifique à la base, sinon celle du pays
@@ -44,8 +45,9 @@ router.post('/security-config', auth(['SuperAdmin', 'Admin', 'Superviseur Sécur
         const base = req.utilisateur.base; // TODO: handle base for SuperAdmin if needed
         const { rules } = req.body;
 
-        if (!pays) {
-            return res.status(400).json({ message: 'Aucun pays sélectionné ou défini.' });
+        const mongoose = require('mongoose');
+        if (!pays || pays === 'all' || pays === 'none' || !mongoose.Types.ObjectId.isValid(pays)) {
+            return res.status(400).json({ message: 'Veuillez sélectionner un pays spécifique.' });
         }
 
         // Upsert (Mise à jour ou Création)
