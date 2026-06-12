@@ -3,7 +3,12 @@
     <p class="subtitle">{{ 'SECURITY_MATRIX.SUBTITLE' | translate }}</p>
 
     <app-info-banner bannerId="security-matrix" title="Matrice de Sécurité">
-      Définissez les règles de validation requises pour chaque niveau de sécurité (de 1 à 5). Vous pouvez exiger l'unanimité des valideurs ou définir un quorum précis.
+      <p style="margin-bottom: 8px;">Définissez les règles de validation requises pour chaque niveau de sécurité (de 1 à 5). Seuls les utilisateurs ayant un niveau suffisant sont affichés pour chaque palier.</p>
+      <ul style="margin: 0; padding-left: 20px;">
+        <li><strong>Niveau 5</strong> : Personne du siège (HQ)</li>
+        <li><strong>Niveau 4</strong> : Coordination</li>
+        <li><strong>Niveau 2 et 3</strong> : Base</li>
+      </ul>
     </app-info-banner>
 
     <div *ngIf="isLoading" class="loading">
@@ -39,16 +44,16 @@
                     </td>
                     <td>
                         <div class="validators-list">
-                            <div *ngFor="let supervisor of supervisors" class="validator-item">
+                            <div *ngFor="let supervisor of getEligibleValidators(rule.level)" class="validator-item">
                                 <input type="checkbox" [id]="'val-' + rule.level + '-' + supervisor._id"
                                     [checked]="isValidatorSelected(rule, supervisor._id)"
                                     (change)="toggleValidator(rule, supervisor._id, $event)">
                                 <label [for]="'val-' + rule.level + '-' + supervisor._id">
-                                    {{ supervisor.nom }} {{ supervisor.prenom }}
+                                    {{ supervisor.nom }} {{ supervisor.prenom }} <span style="color: #64748b; font-size: 11px;">(Niveau {{ supervisor.niveauValidationSecu }})</span>
                                 </label>
                             </div>
-                            <div *ngIf="supervisors.length === 0" class="no-supervisors">
-                                Aucun superviseur sécurité trouvé.
+                            <div *ngIf="getEligibleValidators(rule.level).length === 0" class="no-supervisors">
+                                Aucun utilisateur éligible pour ce niveau.
                             </div>
                         </div>
                     </td>

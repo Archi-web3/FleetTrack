@@ -39,9 +39,10 @@ export class SecurityMatrixComponent implements OnInit {
         // 1. Charger les superviseurs sécurité
         // On suppose qu'il y a une méthode pour ça, sinon on filtre
         this.utilisateurService.getUtilisateurs().subscribe(users => {
-            // Filtrer pour ne garder que les Superviseurs Sécurité du même pays (idéalement)
-            // Pour l'instant on prend tous les Superviseurs Sécurité
-            this.supervisors = users.filter((u: any) => u.profil === 'Superviseur Sécurité');
+            // Filtrer pour ne garder que le personnel administratif/sécurité
+            this.supervisors = users.filter((u: any) => 
+                !['Chauffeur', 'Guest', 'Technicien'].includes(u.profil) && u.niveauValidationSecu >= 1
+            );
 
             // 2. Charger la config existante
             this.securityConfigService.getConfig().subscribe(
@@ -83,6 +84,11 @@ export class SecurityMatrixComponent implements OnInit {
 
     isValidatorSelected(rule: SecurityRule, userId: string): boolean {
         return rule.mandatoryValidators.includes(userId);
+    }
+
+    getEligibleValidators(level: number): any[] {
+        // Un utilisateur ne peut valider que s'il a un niveau supérieur ou égal au niveau requis
+        return this.supervisors.filter(u => u.niveauValidationSecu >= level);
     }
 
     toggleValidator(rule: SecurityRule, userId: string, event: any): void {

@@ -7,10 +7,11 @@ const auth = require('../middleware/authMiddleware');
 // Récupérer la config pour le pays (et base optionnelle) de l'utilisateur connecté
 router.get('/security-config', auth(['SuperAdmin', 'Admin', 'Superviseur Sécurité']), async (req, res) => {
     try {
-        const { pays, base } = req.utilisateur;
+        const pays = req.selectedCountry || req.utilisateur.pays;
+        const base = req.utilisateur.base;
 
         if (!pays) {
-            return res.status(400).json({ message: 'Utilisateur sans pays défini.' });
+            return res.status(400).json({ message: 'Aucun pays sélectionné ou défini.' });
         }
 
         // Chercher une config spécifique à la base, sinon celle du pays
@@ -39,11 +40,12 @@ router.get('/security-config', auth(['SuperAdmin', 'Admin', 'Superviseur Sécuri
 // Seul un Admin ou Superviseur Sécurité peut modifier la matrice
 router.post('/security-config', auth(['SuperAdmin', 'Admin', 'Superviseur Sécurité']), async (req, res) => {
     try {
-        const { pays, base } = req.utilisateur; // On force le pays/base de l'admin pour éviter qu'il modifie ailleurs
+        const pays = req.selectedCountry || req.utilisateur.pays;
+        const base = req.utilisateur.base; // TODO: handle base for SuperAdmin if needed
         const { rules } = req.body;
 
         if (!pays) {
-            return res.status(400).json({ message: 'Utilisateur sans pays défini.' });
+            return res.status(400).json({ message: 'Aucun pays sélectionné ou défini.' });
         }
 
         // Upsert (Mise à jour ou Création)
