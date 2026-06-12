@@ -100,9 +100,15 @@
           </mat-select>
         </mat-form-field>
 
+        <div style="margin-bottom: 10px;">
+          <mat-checkbox name="autoManageNewSecu" [(ngModel)]="autoManageNewUserSecurity" (change)="onAutoManageNewSecurityChange()">
+            {{ 'USERS.FORM.AUTO_MANAGE_SECURITY' | translate }}
+          </mat-checkbox>
+        </div>
+
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}</mat-label>
-          <mat-select name="newUserSecurityLevel" [(ngModel)]="newUser.niveauValidationSecu" [required]="!selectedUser">
+          <mat-select name="newUserSecurityLevel" [(ngModel)]="newUser.niveauValidationSecu" [required]="!selectedUser" [disabled]="autoManageNewUserSecurity">
             <mat-option *ngFor="let level of securityLevels" [value]="level">
               {{ 'COMMON.LEVEL' | translate }} {{ level }}
             </mat-option>
@@ -220,16 +226,22 @@
 
           <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
             <mat-label>{{ 'USERS.FORM.PROFILE' | translate }}</mat-label>
-            <mat-select name="editUserProfile" [(ngModel)]="selectedUser.profil" required>
+            <mat-select name="editUserProfile" [(ngModel)]="selectedUser.profil" required (selectionChange)="onEditProfilChange()">
               <mat-option *ngFor="let profile of profiles" [value]="profile">
                 {{ getProfileLabel(profile) }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
+          <div style="margin-bottom: 10px;">
+            <mat-checkbox name="autoManageEditSecu" [(ngModel)]="autoManageEditUserSecurity" (change)="onAutoManageEditSecurityChange()">
+              {{ 'USERS.FORM.AUTO_MANAGE_SECURITY' | translate }}
+            </mat-checkbox>
+          </div>
+
           <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
             <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}</mat-label>
-            <mat-select name="editUserSecurityLevel" [(ngModel)]="selectedUser.niveauValidationSecu" required>
+            <mat-select name="editUserSecurityLevel" [(ngModel)]="selectedUser.niveauValidationSecu" required [disabled]="autoManageEditUserSecurity">
               <mat-option *ngFor="let level of securityLevels" [value]="level">
                 {{ 'COMMON.LEVEL' | translate }} {{ level }}
               </mat-option>

@@ -450,6 +450,7 @@
             "PROFILE": "Profil",
             "SECURITY_LEVEL": "Niveau Validation Sécurité",
             "SECURITY_HINT": "Niveau maximum que cet utilisateur peut valider",
+            "AUTO_MANAGE_SECURITY": "Lier automatiquement au niveau du profil",
             "COUNTRY": "Pays",
             "BASE": "Base d'affectation",
             "PROJECT": "Projet/Programme",

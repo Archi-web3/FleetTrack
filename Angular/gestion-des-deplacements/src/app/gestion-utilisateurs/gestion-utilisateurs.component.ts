@@ -89,6 +89,9 @@ export class GestionUtilisateursComponent implements OnInit {
   selectedPays: string = ''; // Pays sélectionné par SuperAdmin
   selectedProfileFilter: string = ''; // Filtre par profil
   
+  autoManageNewUserSecurity: boolean = true;
+  autoManageEditUserSecurity: boolean = true;
+  
   viewMode: 'list' | 'bubble' = 'list'; // Mode d'affichage: 'list' (tableau) ou 'bubble' (cartes)
 
   constructor(
@@ -194,6 +197,20 @@ export class GestionUtilisateursComponent implements OnInit {
     );
   }
 
+  getMaxSecurityLevelForProfile(profileName: string): number {
+    const matrix = this.perms.getMatrix();
+    const profilePerms = matrix[profileName];
+    if (!profilePerms || !profilePerms['mouvements_workflow']) return 1;
+
+    const wf = profilePerms['mouvements_workflow'];
+    if (wf['validate_level_5']) return 5;
+    if (wf['validate_level_4']) return 4;
+    if (wf['validate_level_3']) return 3;
+    if (wf['validate_level_2']) return 2;
+    if (wf['validate_level_1']) return 1;
+    return 1;
+  }
+
   onProfilChange(): void {
     // Réinitialiser les champs chauffeur si on change de profil
     if (this.newUser.profil !== 'Chauffeur') {
@@ -201,6 +218,28 @@ export class GestionUtilisateursComponent implements OnInit {
       this.newUser.formationEcoConduite = { effectuee: false, date: null };
       this.newUser.vehiculeAttitre = '';
       this.newUser.disponible = true;
+    }
+    
+    if (this.autoManageNewUserSecurity) {
+      this.newUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.newUser.profil);
+    }
+  }
+
+  onEditProfilChange(): void {
+    if (this.autoManageEditUserSecurity && this.selectedUser) {
+      this.selectedUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.selectedUser.profil);
+    }
+  }
+
+  onAutoManageNewSecurityChange(): void {
+    if (this.autoManageNewUserSecurity) {
+      this.newUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.newUser.profil);
+    }
+  }
+
+  onAutoManageEditSecurityChange(): void {
+    if (this.autoManageEditUserSecurity && this.selectedUser) {
+      this.selectedUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.selectedUser.profil);
     }
   }
 
