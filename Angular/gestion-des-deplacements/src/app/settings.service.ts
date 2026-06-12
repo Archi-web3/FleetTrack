@@ -147,4 +147,19 @@ export class SettingsService {
     saveCurrencies(currencies: any[]): Observable<any> {
         return this.http.post(`${this.apiUrl}/currencies`, { value: currencies });
     }
+
+    // Info Banners Settings
+    getInfoBanners(): Observable<any> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/infoBanners`).pipe(
+            map(setting => setting && setting.value ? setting.value : {}),
+            catchError(err => {
+                console.error('Erreur chargement Info Banners', err);
+                return of({});
+            })
+        );
+    }
+
+    saveInfoBanners(banners: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/infoBanners`, { value: banners });
+    }
 }

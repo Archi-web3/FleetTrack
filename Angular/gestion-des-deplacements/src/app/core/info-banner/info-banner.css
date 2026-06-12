@@ -19,6 +19,15 @@
   color: #4caf50;
 }
 
+.edit-btn {
+  color: #64b5f6;
+  margin-right: -10px;
+}
+
+.edit-btn:hover {
+  color: #2196f3;
+}
+
 .info-banner-content {
   background-color: #e8f5e9;
   border-left: 4px solid #4caf50;
