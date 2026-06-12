@@ -92,6 +92,7 @@ router.post('/utilisateurs', auth(['SuperAdmin', 'Admin']), async (req, res) => 
       // Info Pro
       numeroEmploye: req.body.numeroEmploye,
       niveauValidationSecu: req.body.niveauValidationSecu,
+      autoManageSecurity: req.body.autoManageSecurity !== undefined ? req.body.autoManageSecurity : true,
       // Champs spécifiques aux chauffeurs
       prenom: req.body.prenom,
       telephone: req.body.telephone,
@@ -126,6 +127,7 @@ router.put('/utilisateurs/:id', auth(['SuperAdmin', 'Admin']), async (req, res) 
     if (req.body.projet !== undefined) utilisateur.projet = req.body.projet; // Mise à jour du projet
     if (req.body.numeroEmploye !== undefined) utilisateur.numeroEmploye = req.body.numeroEmploye;
     if (req.body.niveauValidationSecu !== undefined) utilisateur.niveauValidationSecu = req.body.niveauValidationSecu;
+    if (req.body.autoManageSecurity !== undefined) utilisateur.autoManageSecurity = req.body.autoManageSecurity;
 
     // Champs spécifiques aux chauffeurs
     if (req.body.prenom != null) utilisateur.prenom = req.body.prenom;

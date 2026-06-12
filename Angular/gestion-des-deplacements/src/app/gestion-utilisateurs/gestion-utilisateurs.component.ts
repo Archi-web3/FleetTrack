@@ -89,9 +89,6 @@ export class GestionUtilisateursComponent implements OnInit {
   selectedPays: string = ''; // Pays sélectionné par SuperAdmin
   selectedProfileFilter: string = ''; // Filtre par profil
   
-  autoManageNewUserSecurity: boolean = true;
-  autoManageEditUserSecurity: boolean = true;
-  
   viewMode: 'list' | 'bubble' = 'list'; // Mode d'affichage: 'list' (tableau) ou 'bubble' (cartes)
 
   constructor(
@@ -197,21 +194,6 @@ export class GestionUtilisateursComponent implements OnInit {
     );
   }
 
-  getMaxSecurityLevelForProfile(profileName: string): number {
-    const matrix = this.perms.getMatrix();
-    const profilePerms = matrix[profileName];
-    console.log(`[DEBUG] getMaxSecurityLevelForProfile('${profileName}')`, profilePerms);
-    if (!profilePerms || !profilePerms['mouvements_workflow']) return 1;
-
-    const wf = profilePerms['mouvements_workflow'];
-    console.log(`[DEBUG] workflow perms:`, wf);
-    if (wf['validate_level_5']) return 5;
-    if (wf['validate_level_4']) return 4;
-    if (wf['validate_level_3']) return 3;
-    if (wf['validate_level_2']) return 2;
-    if (wf['validate_level_1']) return 1;
-    return 1;
-  }
 
   onProfilChange(): void {
     // Réinitialiser les champs chauffeur si on change de profil
@@ -222,26 +204,26 @@ export class GestionUtilisateursComponent implements OnInit {
       this.newUser.disponible = true;
     }
     
-    if (this.autoManageNewUserSecurity) {
-      this.newUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.newUser.profil);
+    if (this.newUser.autoManageSecurity !== false) {
+      this.newUser.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(this.newUser.profil);
     }
   }
 
   onEditProfilChange(): void {
-    if (this.autoManageEditUserSecurity && this.selectedUser) {
-      this.selectedUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.selectedUser.profil);
+    if (this.selectedUser.autoManageSecurity) {
+      this.selectedUser.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(this.selectedUser.profil);
     }
   }
 
   onAutoManageNewSecurityChange(): void {
-    if (this.autoManageNewUserSecurity) {
-      this.newUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.newUser.profil);
+    if (this.newUser.autoManageSecurity !== false) {
+      this.newUser.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(this.newUser.profil);
     }
   }
 
   onAutoManageEditSecurityChange(): void {
-    if (this.autoManageEditUserSecurity && this.selectedUser) {
-      this.selectedUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.selectedUser.profil);
+    if (this.selectedUser.autoManageSecurity) {
+      this.selectedUser.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(this.selectedUser.profil);
     }
   }
 
@@ -278,8 +260,8 @@ export class GestionUtilisateursComponent implements OnInit {
     if (userData.vehiculeAttitre === '') userData.vehiculeAttitre = null;
 
     // Force security level calculation if auto-manage is checked
-    if (this.autoManageNewUserSecurity) {
-      userData.niveauValidationSecu = this.getMaxSecurityLevelForProfile(userData.profil);
+    if (userData.autoManageSecurity !== false) {
+      userData.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(userData.profil);
     }
 
     console.log('Données envoyées au serveur:', userData); // DEBUG
@@ -308,7 +290,8 @@ export class GestionUtilisateursComponent implements OnInit {
           vehiculeAttitre: '',
           projet: 'Support',
           numeroEmploye: '',
-          niveauValidationSecu: 1
+          niveauValidationSecu: 1,
+          autoManageSecurity: true
         };
         if (this.userProfile === 'Admin') {
           this.loadBases(this.userPaysId!);
@@ -327,6 +310,9 @@ export class GestionUtilisateursComponent implements OnInit {
 
   selectUser(user: any): void {
     this.selectedUser = { ...user, motDePasse: '' }; // Copie l'utilisateur pour modification
+    if (this.selectedUser.autoManageSecurity === undefined) {
+      this.selectedUser.autoManageSecurity = true; // Par défaut pour les anciens utilisateurs
+    }
 
     // Si base est un objet peuplé, on garde juste l'ID pour le select
     if (this.selectedUser.base && this.selectedUser.base._id) {
@@ -349,8 +335,8 @@ export class GestionUtilisateursComponent implements OnInit {
     }
 
     // Auto-calculate security level on open if checked
-    if (this.autoManageEditUserSecurity) {
-      this.selectedUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.selectedUser.profil);
+    if (this.selectedUser.autoManageSecurity) {
+      this.selectedUser.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(this.selectedUser.profil);
     }
   }
 
@@ -370,8 +356,8 @@ export class GestionUtilisateursComponent implements OnInit {
     const userData = { ...this.selectedUser };
     
     // Force security level calculation if auto-manage is checked
-    if (this.autoManageEditUserSecurity) {
-      userData.niveauValidationSecu = this.getMaxSecurityLevelForProfile(userData.profil);
+    if (userData.autoManageSecurity) {
+      userData.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(userData.profil);
     }
     if (!userData.motDePasse || userData.motDePasse.trim() === '') {
       delete userData.motDePasse;

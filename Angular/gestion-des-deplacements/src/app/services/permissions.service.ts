@@ -163,7 +163,21 @@ export class PermissionsService {
 
   saveMatrix(matrix: ProfileMatrix) {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(matrix));
-    this.permissionsSubject.next(matrix);
+    this.permissionsSubject.next(this.loadMatrix());
+  }
+
+  getMaxSecurityLevelForProfile(profileName: string): number {
+    const matrix = this.getMatrix();
+    const profilePerms = matrix[profileName];
+    if (!profilePerms || !profilePerms['mouvements_workflow']) return 1;
+
+    const wf = profilePerms['mouvements_workflow'];
+    if (wf['validate_level_5']) return 5;
+    if (wf['validate_level_4']) return 4;
+    if (wf['validate_level_3']) return 3;
+    if (wf['validate_level_2']) return 2;
+    if (wf['validate_level_1']) return 1;
+    return 1;
   }
 
   getMatrix(): ProfileMatrix {

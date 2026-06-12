@@ -17,6 +17,7 @@ const utilisateurSchema = new mongoose.Schema({
   // Info Pro
   numeroEmploye: { type: String },
   niveauValidationSecu: { type: Number, enum: [1, 2, 3, 4, 5], default: 1 }, // Jusqu'à quel niveau cet utilisateur peut valider (ex: 3 = peut valider 1, 2 et 3)
+  autoManageSecurity: { type: Boolean, default: true }, // NOUVEAU: Indique si le niveau est lié automatiquement au profil
 
   // Champs spécifiques aux chauffeurs
   prenom: { type: String },

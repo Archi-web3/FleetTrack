@@ -98,17 +98,18 @@
               {{ getProfileLabel(profile) }}
             </mat-option>
           </mat-select>
-        </mat-form-field>
+          </mat-form-field>
+          <!-- Checkbox d'auto-gestion du niveau de sécurité -->
+          <div style="margin-top: 15px; margin-bottom: 5px;">
+            <mat-checkbox color="primary" [(ngModel)]="newUser.autoManageSecurity" name="autoManageNewUserSecurity" (change)="onAutoManageNewSecurityChange()">
+              {{ 'USERS.FORM.AUTO_MANAGE_SECURITY' | translate }}
+            </mat-checkbox>
+          </div>
 
-        <div style="margin-bottom: 10px;">
-          <mat-checkbox name="autoManageNewSecu" [(ngModel)]="autoManageNewUserSecurity" (change)="onAutoManageNewSecurityChange()">
-            {{ 'USERS.FORM.AUTO_MANAGE_SECURITY' | translate }}
-          </mat-checkbox>
-        </div>
-
-        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
-          <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}</mat-label>
-          <mat-select name="newUserSecurityLevel" [(ngModel)]="newUser.niveauValidationSecu" [required]="!selectedUser" [disabled]="autoManageNewUserSecurity">
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 5px;">
+            <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}*</mat-label>
+            <mat-select name="newUserSecurityLevel" [(ngModel)]="newUser.niveauValidationSecu" required
+              [disabled]="newUser.autoManageSecurity !== false">
             <mat-option *ngFor="let level of securityLevels" [value]="level">
               {{ 'COMMON.LEVEL' | translate }} {{ level }}
             </mat-option>
@@ -234,16 +235,17 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-
-          <div style="margin-bottom: 10px;">
-            <mat-checkbox name="autoManageEditSecu" [(ngModel)]="autoManageEditUserSecurity" (change)="onAutoManageEditSecurityChange()">
+          <!-- Checkbox d'auto-gestion du niveau de sécurité -->
+          <div style="margin-top: 15px; margin-bottom: 5px;">
+            <mat-checkbox color="primary" [(ngModel)]="selectedUser.autoManageSecurity" name="autoManageEditUserSecurity" (change)="onAutoManageEditSecurityChange()">
               {{ 'USERS.FORM.AUTO_MANAGE_SECURITY' | translate }}
             </mat-checkbox>
           </div>
 
           <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
-            <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}</mat-label>
-            <mat-select name="editUserSecurityLevel" [(ngModel)]="selectedUser.niveauValidationSecu" required [disabled]="autoManageEditUserSecurity">
+            <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}*</mat-label>
+            <mat-select name="editUserSecurityLevel" [(ngModel)]="selectedUser.niveauValidationSecu" required
+              [disabled]="selectedUser.autoManageSecurity">
               <mat-option *ngFor="let level of securityLevels" [value]="level">
                 {{ 'COMMON.LEVEL' | translate }} {{ level }}
               </mat-option>

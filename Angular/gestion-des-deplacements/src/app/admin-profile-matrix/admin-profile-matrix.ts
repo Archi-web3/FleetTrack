@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionsService, ProfileMatrix, RolePermissions } from '../services/permissions.service';
 import { InfoBannerComponent } from '../core/info-banner/info-banner';
+import { UtilisateurService } from '../utilisateur.service';
 
 interface ModuleConfig {
   key: string;
@@ -157,7 +159,7 @@ export class AdminProfileMatrixComponent implements OnInit {
     }
   ];
 
-  constructor(private permissionsService: PermissionsService, private snackBar: MatSnackBar) {}
+  constructor(private permissionsService: PermissionsService, private snackBar: MatSnackBar, private utilisateurService: UtilisateurService) {}
 
   ngOnInit(): void {
     this.matrix = JSON.parse(JSON.stringify(this.permissionsService.getMatrix())); // Deep copy
@@ -210,6 +212,33 @@ export class AdminProfileMatrixComponent implements OnInit {
   save() {
     this.permissionsService.saveMatrix(this.matrix);
     this.snackBar.open('Matrice des droits sauvegardée avec succès !', 'OK', { duration: 3000 });
+    
+    // Auto-update users whose security level is managed automatically
+    this.utilisateurService.getUtilisateurs().subscribe({
+      next: (users) => {
+        const updates = users
+          .filter(u => u.autoManageSecurity)
+          .map(u => {
+            const newLevel = this.permissionsService.getMaxSecurityLevelForProfile(u.profil);
+            if (newLevel !== u.niveauValidationSecu) {
+              return firstValueFrom(this.utilisateurService.updateUser(u._id, { niveauValidationSecu: newLevel }));
+            }
+            return null;
+          })
+          .filter(p => p !== null);
+
+        if (updates.length > 0) {
+          Promise.all(updates).then(() => {
+            this.snackBar.open(`Mise à jour automatique de ${updates.length} utilisateur(s) affecté(s).`, 'OK', { duration: 4000 });
+          }).catch(err => {
+            console.error('Erreur lors de la mise à jour des utilisateurs', err);
+            this.snackBar.open('Erreur lors de la mise à jour des utilisateurs.', 'Fermer', { duration: 3000 });
+          });
+        }
+      },
+      error: (err) => console.error('Erreur de chargement des utilisateurs pour maj auto:', err)
+    });
+
     this.backToList();
   }
 }
