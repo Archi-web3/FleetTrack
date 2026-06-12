@@ -121,14 +121,16 @@
           style="width: 100%; margin-bottom: 10px;">
           <mat-label>{{ 'USERS.FORM.COUNTRY' | translate }}</mat-label>
           <mat-select name="selectedPays" [(ngModel)]="selectedPays" (selectionChange)="onPaysChange($event.value)"
-            [required]="!selectedUser">
+            [required]="!selectedUser && newUser.profil !== 'SuperAdmin'">
+            <mat-option [value]="null">Global (Aucun)</mat-option>
             <mat-option *ngFor="let pays of paysList" [value]="pays._id">{{ pays.nom }}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>{{ 'USERS.FORM.BASE' | translate }}</mat-label>
-          <mat-select name="newUserBase" [(ngModel)]="newUser.base" [required]="!selectedUser">
+          <mat-select name="newUserBase" [(ngModel)]="newUser.base" [required]="newUser.profil !== 'SuperAdmin'">
+            <mat-option [value]="null">Global (Aucune)</mat-option>
             <mat-option *ngFor="let b of bases" [value]="b._id">{{ b.nom }} ({{ b.pays?.code }})</mat-option>
           </mat-select>
           <mat-hint *ngIf="userProfile === 'SuperAdmin' && bases.length === 0">
@@ -299,14 +301,16 @@
             style="width: 100%; margin-bottom: 10px;">
             <mat-label>{{ 'USERS.FORM.COUNTRY' | translate }}</mat-label>
             <mat-select name="editUserPays" [(ngModel)]="selectedUser.pays"
-              (selectionChange)="onEditPaysChange($event.value)" required>
+              (selectionChange)="onEditPaysChange($event.value)" [required]="selectedUser.profil !== 'SuperAdmin'">
+              <mat-option [value]="null">Global (Aucun)</mat-option>
               <mat-option *ngFor="let p of paysList" [value]="p._id">{{ p.nom }} ({{ p.code }})</mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
             <mat-label>{{ 'USERS.FORM.BASE' | translate }}</mat-label>
-            <mat-select name="editUserBase" [(ngModel)]="selectedUser.base" required>
+            <mat-select name="editUserBase" [(ngModel)]="selectedUser.base" [required]="selectedUser.profil !== 'SuperAdmin'">
+              <mat-option [value]="null">Global (Aucune)</mat-option>
               <mat-option *ngFor="let b of bases" [value]="b._id">{{ b.nom }} ({{ b.pays?.code }})</mat-option>
             </mat-select>
             <mat-hint *ngIf="bases.length === 0">Sélectionnez d'abord un pays</mat-hint>
