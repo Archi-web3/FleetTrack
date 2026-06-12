@@ -30,7 +30,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: true },
       'admin_geo': { view_menu: true, manage_countries: true, manage_bases: true },
       'admin_users': { view_menu: true, create: true, edit: true },
-      'admin_settings': { view_menu: true, manage: true, view_helpers: true }
+      'admin_settings': { view_menu: true, manage: true, view_helpers: true },
+      'security_matrix': { manage: true }
     },
     'Admin': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: true },
@@ -42,7 +43,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: true },
       'admin_geo': { view_menu: true, manage_countries: true, manage_bases: true },
       'admin_users': { view_menu: true, create: true, edit: true },
-      'admin_settings': { view_menu: true, manage: true, view_helpers: false }
+      'admin_settings': { view_menu: true, manage: true, view_helpers: false },
+      'security_matrix': { manage: true }
     },
     'Superviseur': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
@@ -54,7 +56,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false },
+      'security_matrix': { manage: false }
     },
     'Superviseur Sécurité': {
       'mouvements_demandes': { view_menu: true, create: false, edit: false, delete: false },
@@ -66,7 +69,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false },
       'admin_geo': { view_menu: false },
       'admin_users': { view_menu: false },
-      'admin_settings': { view_menu: false, view_helpers: false }
+      'admin_settings': { view_menu: false, view_helpers: false },
+      'security_matrix': { manage: false }
     },
     'Logisticien': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
@@ -78,7 +82,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: true, manage_alerts: true, edit_config: false },
       'admin_geo': { view_menu: false },
       'admin_users': { view_menu: false },
-      'admin_settings': { view_menu: false, view_helpers: false }
+      'admin_settings': { view_menu: false, view_helpers: false },
+      'security_matrix': { manage: false }
     },
     'Chauffeur': {
       'mouvements_demandes': { view_menu: false, create: false, edit: false, delete: false },
@@ -90,7 +95,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false },
+      'security_matrix': { manage: false }
     },
     'Guest': {
       'mouvements_demandes': { view_menu: true, create: true, edit: false, delete: false },
@@ -102,7 +108,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false },
+      'security_matrix': { manage: false }
     },
     'Technicien': {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
@@ -114,7 +121,8 @@ export class PermissionsService {
       'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
       'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
       'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
+      'admin_settings': { view_menu: false, manage: false, view_helpers: false },
+      'security_matrix': { manage: false }
     }
   };
 

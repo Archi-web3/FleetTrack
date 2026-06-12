@@ -56,7 +56,8 @@
                             <div *ngFor="let supervisor of getEligibleValidators(rule.level)" class="validator-item">
                                 <input type="checkbox" [id]="'val-' + rule.level + '-' + supervisor._id"
                                     [checked]="isValidatorSelected(rule, supervisor._id)"
-                                    (change)="toggleValidator(rule, supervisor._id, $event)">
+                                    (change)="toggleValidator(rule, supervisor._id, $event)"
+                                    [disabled]="!canManageMatrix">
                                 <label [for]="'val-' + rule.level + '-' + supervisor._id">
                                     {{ supervisor.nom }} {{ supervisor.prenom }} <span style="color: #64748b; font-size: 11px;">(Niveau {{ supervisor.niveauValidationSecu }})</span>
                                 </label>
@@ -67,21 +68,21 @@
                         </div>
                     </td>
                     <td class="center-cell">
-                        <input type="checkbox" [(ngModel)]="rule.requireUnanimity">
+                        <input type="checkbox" [(ngModel)]="rule.requireUnanimity" [disabled]="!canManageMatrix">
                     </td>
                     <td class="center-cell">
-                        <input type="number" [(ngModel)]="rule.quorum" [disabled]="rule.requireUnanimity" min="1"
+                        <input type="number" [(ngModel)]="rule.quorum" [disabled]="rule.requireUnanimity || !canManageMatrix" min="1"
                             class="quorum-input">
                     </td>
                     <td class="center-cell">
-                        <input type="checkbox" [(ngModel)]="rule.includeLowerLevels">
+                        <input type="checkbox" [(ngModel)]="rule.includeLowerLevels" [disabled]="!canManageMatrix">
                         <span style="display: block; font-size: 11px; color: #64748b; margin-top: 4px;">Inclure niv. &lt; {{rule.level}}</span>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="actions">
+        <div class="actions" *ngIf="canManageMatrix">
             <button class="btn-save" (click)="save()">Enregistrer la Configuration</button>
         </div>
     </div>

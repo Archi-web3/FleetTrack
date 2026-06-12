@@ -148,11 +148,18 @@ export class AdminProfileMatrixComponent implements OnInit {
         },
         {
           key: 'admin_settings',
-          label: 'Paramètres Globaux',
+          label: 'Paramètres Système',
           permissions: [
-            { key: 'view_menu', label: 'Voir (Menu)' },
-            { key: 'manage', label: 'Configuration Générale' },
-            { key: 'view_helpers', label: 'Afficher les encarts d\'aide' }
+            { key: 'view_menu', label: 'Accès Menu' },
+            { key: 'manage', label: 'Gérer Configuration Générale' },
+            { key: 'view_helpers', label: 'Gérer Projets et Textes d\'aide' }
+          ]
+        },
+        {
+          key: 'security_matrix',
+          label: 'Matrice de Sécurité',
+          permissions: [
+            { key: 'manage', label: 'Modifier la matrice' }
           ]
         }
       ]

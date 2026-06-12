@@ -59,32 +59,43 @@ export class HomeDashboardComponent implements OnInit {
 
     this.mouvementService.getMouvements().subscribe({
       next: (mouvements) => {
+        console.log(`[HomeDashboard] Total mouvements reçus : ${mouvements.length}`);
         this.pendingValidations = mouvements.filter(m => {
           const isLogAttente = m.statutLogistique === 'en attente' || (!m.statutLogistique && m.statut === 'en attente');
           const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité');
 
           // Logistique
           if (['Admin', 'Superviseur', 'SuperAdmin'].includes(this.userProfile) && isLogAttente) {
+            console.log(`[HomeDashboard] Gardé (Logistique): ${m._id} - statut: ${m.statut}`);
             return true;
           }
           // Sécurité
           if (['Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile) && isSecuAttente) {
             if (this.userProfile === 'SuperAdmin') {
+              console.log(`[HomeDashboard] Gardé (Sécurité SuperAdmin): ${m._id} - statut: ${m.statut}`);
               return true; // Le SuperAdmin voit toutes les demandes de sécurité en attente
             }
             if (m.securityApprovals && m.securityApprovals.length > 0) {
-              return m.securityApprovals.some((a:any) => {
+              const hasPending = m.securityApprovals.some((a:any) => {
                 const validatorId = typeof a.validator === 'string' ? a.validator : a.validator?._id;
                 return validatorId === this.userId && a.status === 'pending';
               });
+              if (hasPending) {
+                console.log(`[HomeDashboard] Gardé (Sécurité Validator): ${m._id} - statut: ${m.statut}`);
+                return true;
+              }
+            } else {
+              console.log(`[HomeDashboard] Gardé (Sécurité Legacy Fallback): ${m._id} - statut: ${m.statut}`);
+              return true; // Legacy fallback
             }
-            return true; // Legacy fallback
           }
           return false;
         });
+        console.log(`[HomeDashboard] Mouvements en attente conservés : ${this.pendingValidations.length}`);
         this.loadingValidations = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error(`[HomeDashboard] Erreur chargement mouvements :`, err);
         this.loadingValidations = false;
       }
     });

@@ -91,7 +91,7 @@
         <mat-menu #securityMenu="matMenu">
           <button mat-menu-item routerLink="/security-alerts"><mat-icon style="color: #f44336;">notification_important</mat-icon><span>{{ 'MENU.SECURITY_ALERTS' | translate }}</span></button>
           <button mat-menu-item routerLink="/admin/waivers"><mat-icon>folder_shared</mat-icon><span>{{ 'MENU.WAIVERS' | translate }}</span></button>
-          <button mat-menu-item routerLink="/admin/security-matrix"><mat-icon style="color: #4caf50;">shield</mat-icon><span>{{ 'MENU.SECURITY_MATRIX' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/security-matrix" *ngIf="perms.hasPermission('security_matrix', 'manage') || userProfile === 'SuperAdmin'"><mat-icon style="color: #4caf50;">shield</mat-icon><span>{{ 'MENU.SECURITY_MATRIX' | translate }}</span></button>
         </mat-menu>
       </ng-container>
 

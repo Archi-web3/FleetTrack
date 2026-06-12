@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SecurityConfigService, SecurityConfig, SecurityRule } from '../security-config.service';
 import { UtilisateurService } from '../utilisateur.service';
 import { AuthService } from '../auth.service';
+import { PermissionsService } from '../services/permissions.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -23,14 +24,17 @@ export class SecurityMatrixComponent implements OnInit {
     config: SecurityConfig = { pays: '', rules: [] };
     isLoading = true;
     errorMessage: string | null = null;
+    canManageMatrix = false;
 
     constructor(
         private securityConfigService: SecurityConfigService,
         private utilisateurService: UtilisateurService,
-        private authService: AuthService
+        private authService: AuthService,
+        public perms: PermissionsService
     ) { }
 
     ngOnInit(): void {
+        this.canManageMatrix = this.perms.hasPermission('security_matrix', 'manage') || localStorage.getItem('userProfile') === 'SuperAdmin';
         this.loadData();
     }
 
