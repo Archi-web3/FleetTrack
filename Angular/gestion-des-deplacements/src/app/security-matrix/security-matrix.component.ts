@@ -83,7 +83,8 @@ export class SecurityMatrixComponent implements OnInit {
                     level: level,
                     mandatoryValidators: [],
                     requireUnanimity: true,
-                    quorum: 1
+                    quorum: 1,
+                    includeLowerLevels: false
                 });
             }
         });

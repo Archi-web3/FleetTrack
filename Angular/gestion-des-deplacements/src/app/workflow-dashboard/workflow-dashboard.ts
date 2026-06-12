@@ -16,6 +16,8 @@ interface WorkflowStep {
   notifications: string[];
   enabled: boolean;
   canDisable: boolean;
+  isParallel?: boolean;
+  subSteps?: WorkflowStep[];
 }
 
 interface WorkflowDef {
@@ -42,10 +44,23 @@ export class WorkflowDashboardComponent implements OnInit {
       name: 'Validation de Mouvement',
       description: 'Processus standard de création et validation d\'un déplacement.',
       steps: [
-        { id: 'req', title: 'Nouvelle Demande', actor: 'Utilisateur Demandeur', description: 'Le demandeur soumet une demande de mouvement via le formulaire.', icon: 'assignment', notifications: ['Logisticiens'], enabled: true, canDisable: false },
-        { id: 'log', title: 'Consolidation Logistique', actor: 'Pôle Logistique', description: 'Le logisticien vérifie la demande, assigne un véhicule et un chauffeur.', icon: 'inventory_2', notifications: [], enabled: true, canDisable: false },
-        { id: 'sec', title: 'Validation Sécurité', actor: 'Admin Sécurité', description: 'Évaluation des risques (Matrice Sécurité). Obligatoire si la zone est sensible.', icon: 'security', notifications: ['Logisticiens'], enabled: true, canDisable: true },
-        { id: 'confirm', title: 'Mouvement Confirmé', actor: 'Système', description: 'Le mouvement est validé et prêt à démarrer.', icon: 'check_circle', notifications: ['Demandeur', 'Chauffeur'], enabled: true, canDisable: false }
+        { id: 'req', title: 'Nouvelle Demande', actor: 'Utilisateur Demandeur', description: 'Le demandeur soumet une demande de mouvement via le formulaire.', icon: 'assignment', notifications: ['Logisticiens', 'Sécurité'], enabled: true, canDisable: false },
+        { 
+          id: 'parallel-val', 
+          title: 'Validations Parallèles', 
+          actor: 'Pôle Logistique & Pôle Sécurité', 
+          description: 'Les validations logistiques et sécuritaires s\'effectuent en même temps.', 
+          icon: 'call_split', 
+          notifications: [], 
+          enabled: true, 
+          canDisable: false,
+          isParallel: true,
+          subSteps: [
+            { id: 'log', title: 'Validation Logistique', actor: 'Pôle Logistique', description: 'Le logisticien vérifie la demande, assigne un véhicule et un chauffeur.', icon: 'inventory_2', notifications: [], enabled: true, canDisable: false },
+            { id: 'sec', title: 'Validation Sécurité', actor: 'Pôle Sécurité', description: 'Évaluation des risques selon la matrice. Validation en cascade possible.', icon: 'security', notifications: [], enabled: true, canDisable: true }
+          ]
+        },
+        { id: 'confirm', title: 'Mouvement Confirmé', actor: 'Système', description: 'Le mouvement est validé globalement lorsque les deux branches sont approuvées.', icon: 'check_circle', notifications: ['Demandeur', 'Chauffeur'], enabled: true, canDisable: false }
       ]
     },
     {

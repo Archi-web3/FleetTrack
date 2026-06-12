@@ -39,8 +39,8 @@
     <div class="wf-graph">
       <ng-container *ngFor="let step of selectedWorkflow.steps; let i = index">
         
-        <!-- The Node -->
-        <div class="wf-node" [class.disabled]="!step.enabled">
+        <!-- The Node (Standard) -->
+        <div class="wf-node" [class.disabled]="!step.enabled" *ngIf="!step.isParallel">
           <div class="wf-node-header">
             <div class="wf-node-icon"><mat-icon>{{ step.icon }}</mat-icon></div>
             <div class="wf-node-title">{{ step.title }}</div>
@@ -62,6 +62,42 @@
             <div class="notif-badges">
               <span class="badge" *ngFor="let notif of step.notifications">{{ notif }}</span>
             </div>
+          </div>
+        </div>
+
+        <!-- The Node (Parallel Container) -->
+        <div class="wf-parallel-container" *ngIf="step.isParallel">
+          <div class="wf-parallel-header">
+             <mat-icon>{{ step.icon }}</mat-icon>
+             <span>{{ step.title }}</span>
+          </div>
+          <div class="wf-parallel-branches">
+            <ng-container *ngFor="let subStep of step.subSteps">
+              <div class="wf-node parallel-node" [class.disabled]="!subStep.enabled">
+                <div class="wf-node-header">
+                  <div class="wf-node-icon"><mat-icon>{{ subStep.icon }}</mat-icon></div>
+                  <div class="wf-node-title">{{ subStep.title }}</div>
+                  <div class="wf-node-toggle" *ngIf="subStep.canDisable">
+                    <mat-slide-toggle color="primary" [(ngModel)]="subStep.enabled" matTooltip="Activer / Désactiver cette étape"></mat-slide-toggle>
+                  </div>
+                </div>
+                
+                <div class="wf-node-body">
+                  <div class="wf-actor">
+                    <mat-icon>person</mat-icon>
+                    <span>{{ subStep.actor }}</span>
+                  </div>
+                  <p class="wf-desc">{{ subStep.description }}</p>
+                </div>
+      
+                <div class="wf-node-footer" *ngIf="subStep.notifications.length > 0">
+                  <mat-icon>notifications</mat-icon>
+                  <div class="notif-badges">
+                    <span class="badge" *ngFor="let notif of subStep.notifications">{{ notif }}</span>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
           </div>
         </div>
 

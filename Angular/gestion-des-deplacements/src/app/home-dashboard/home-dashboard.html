@@ -41,5 +41,42 @@
         </button>
       </mat-card-content>
     </mat-card>
+
+    <!-- Validations en attente -->
+    <div class="section-header" style="margin-top: 30px;" *ngIf="userProfile !== 'Chauffeur' && userProfile !== 'Technicien' && userProfile !== 'Guest'">
+      <div class="icon-circle" style="background-color: #fee2e2; color: #dc2626;">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+      <h2>Demandes en attente de validation</h2>
+    </div>
+
+    <mat-card class="full-width-card" *ngIf="userProfile !== 'Chauffeur' && userProfile !== 'Technicien' && userProfile !== 'Guest'">
+      <mat-card-content>
+        <div *ngIf="loadingValidations" style="display: flex; justify-content: center; padding: 20px;">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+        
+        <div *ngIf="!loadingValidations && pendingValidations.length === 0" style="text-align: center; padding: 20px; color: #64748b;">
+          <mat-icon style="font-size: 40px; height: 40px; width: 40px; color: #cbd5e1; margin-bottom: 10px;">done_all</mat-icon>
+          <p>Aucune demande en attente de votre validation.</p>
+        </div>
+
+        <div *ngIf="!loadingValidations && pendingValidations.length > 0" class="validations-list">
+          <div *ngFor="let m of pendingValidations" class="validation-item" routerLink="/validation">
+            <div class="val-header">
+              <span class="val-objectif">{{ m.objectif || 'Mouvement sans objectif' }}</span>
+              <span class="val-date">{{ m.dateDepart | date:'short' }}</span>
+            </div>
+            <div class="val-body">
+              <span><strong>Demandeur:</strong> {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }}</span>
+              <span><strong>Type de validation:</strong> 
+                <span *ngIf="m.statutLogistique === 'en attente' && ['Admin', 'Superviseur', 'SuperAdmin'].includes(userProfile)" style="color: var(--primary-color);">Logistique</span>
+                <span *ngIf="m.statutSecurite === 'en attente' && ['Superviseur Sécurité', 'SuperAdmin'].includes(userProfile)" style="color: #dc2626;">Sécurité</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

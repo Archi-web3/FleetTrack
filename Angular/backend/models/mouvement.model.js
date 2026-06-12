@@ -26,6 +26,8 @@ const mouvementSchema = new mongoose.Schema({
   materiel: [String],
   objectif: String,
   statut: { type: String, enum: ['en attente', 'validé', 'pris en charge', 'en cours', 'terminé', 'annulé', 'refusé', 'en attente validation sécurité', 'regroupé', 'regroupé-enfant'], default: 'en attente' },
+  statutLogistique: { type: String, enum: ['en attente', 'validé', 'refusé', 'non requis'], default: 'en attente' },
+  statutSecurite: { type: String, enum: ['en attente', 'validé', 'refusé', 'non requis'], default: 'non requis' },
   motifRefus: { type: String },
   parentMouvement: { type: mongoose.Schema.Types.ObjectId, ref: 'Mouvement' },
   enfantsMouvements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Mouvement' }],

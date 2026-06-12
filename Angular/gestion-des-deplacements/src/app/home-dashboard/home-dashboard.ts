@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MouvementService } from '../mouvement.service';
 
 @Component({
   selector: 'app-home-dashboard',
@@ -26,7 +27,12 @@ export class HomeDashboardComponent implements OnInit {
   weatherLoading = true;
   weatherError = false;
 
-  constructor(private settingsService: SettingsService, private http: HttpClient) {}
+  pendingValidations: any[] = [];
+  loadingValidations = true;
+  userId: string = '';
+  userProfile: string = '';
+
+  constructor(private settingsService: SettingsService, private http: HttpClient, private mouvementService: MouvementService) {}
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName') || 'Utilisateur';
@@ -38,6 +44,44 @@ export class HomeDashboardComponent implements OnInit {
     });
     
     this.initWeather();
+    this.fetchPendingValidations();
+  }
+
+  fetchPendingValidations() {
+    this.userProfile = localStorage.getItem('userProfile') || '';
+    this.userId = localStorage.getItem('userId') || '';
+    
+    // Si l'utilisateur n'a aucun profil permettant la validation, on ne charge rien
+    if (!['Admin', 'Superviseur', 'Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile)) {
+      this.loadingValidations = false;
+      return;
+    }
+
+    this.mouvementService.getMouvements().subscribe({
+      next: (mouvements) => {
+        this.pendingValidations = mouvements.filter(m => {
+          // Logistique
+          if (['Admin', 'Superviseur', 'SuperAdmin'].includes(this.userProfile) && m.statutLogistique === 'en attente') {
+            return true;
+          }
+          // Sécurité
+          if (['Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile) && m.statutSecurite === 'en attente') {
+            if (m.securityApprovals && m.securityApprovals.length > 0) {
+              return m.securityApprovals.some((a:any) => {
+                const validatorId = typeof a.validator === 'string' ? a.validator : a.validator?._id;
+                return validatorId === this.userId && a.status === 'pending';
+              });
+            }
+            return true; // Legacy fallback
+          }
+          return false;
+        });
+        this.loadingValidations = false;
+      },
+      error: () => {
+        this.loadingValidations = false;
+      }
+    });
   }
 
   initWeather() {

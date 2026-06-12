@@ -313,12 +313,15 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
     // --- NOUVELLE LOGIQUE DE VALIDATION SÉCURITÉ ---
     let statutInitial = 'en attente';
+    let statutLogistiqueInitial = 'en attente';
+    let statutSecuriteInitial = 'en attente';
     let maxSecurityLevel = 0; // Initialisé ici pour être visible partout
 
     // Pour la maintenance, on bypass toute la logique de sécurité des lieux
     if (req.body.type === 'maintenance') {
       statutInitial = 'validé'; // Maintenance auto-validée par défaut (créée par superviseur)
-      // On peut aussi ajouter 'indisponible' si on veut un statut spécifique
+      statutLogistiqueInitial = 'non requis';
+      statutSecuriteInitial = 'non requis';
       console.log('🔧 [CREATE MOUVEMENT] Type Maintenance détecté -> Statut: "validé" (Bypass Sécurité)');
 
     } else {
@@ -344,14 +347,12 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
         }
       });
 
-      console.log(`🔒 [CREATE MOUVEMENT] Niveau de sécurité MAX du trajet: ${maxSecurityLevel}`);
+      if (maxSecurityLevel === 0) {
+          statutSecuriteInitial = 'non requis';
+      }
 
-      // MODIFICATION WORKFLOW (Demande User):
-      // Le mouvement démarre TOUJOURS "en attente" (Validation Logistique + Consolidation d'abord).
-      // La validation Sécurité viendra en DERNIER, après l'affectation véhicule.
-      // On ne met PLUS "en attente validation sécurité" dès la création.
-      console.log('✅ [CREATE MOUVEMENT] Risque évalué, mais workflow séquentiel -> Statut initial: "en attente"');
-      // --- FIN NOUVELLE LOGIQUE ---
+      console.log(`🔒 [CREATE MOUVEMENT] Niveau de sécurité MAX du trajet: ${maxSecurityLevel}`);
+      console.log('✅ [CREATE MOUVEMENT] Workflow parallèle: LOG et SECU en attente simultanément.');
     }
 
     const mouvement = new Mouvement({
@@ -363,7 +364,9 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       materiel: req.body.materiel,
       objectif: req.body.objectif,
       projet: req.body.projet,
-      statut: statutInitial, // Utiliser le statut déterminé par la logique de sécurité
+      statut: statutInitial, // Utiliser le statut global
+      statutLogistique: statutLogistiqueInitial,
+      statutSecurite: statutSecuriteInitial,
       isRoundTrip: req.body.isRoundTrip, // Récupérer l'information aller-retour
       // Nouveaux champs Module 2
       modeTransport: req.body.modeTransport,
@@ -452,6 +455,49 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       }
     }
 
+    // --- POPULATION IMMEDIATE DES VALIDATEURS SÉCURITÉ (PARALLÈLE) ---
+    if (mouvement.statutSecurite === 'en attente') {
+      try {
+        const SecurityConfig = require('../models/security-config.model');
+        const config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base }) ||
+                       await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
+        
+        let allValidators = [];
+        if (config) {
+          const rule = config.rules.find(r => r.level === maxSecurityLevel);
+          if (rule) {
+            if (rule.mandatoryValidators) {
+              allValidators.push(...rule.mandatoryValidators.map(id => id.toString()));
+            }
+            if (rule.includeLowerLevels) {
+              for (let i = 1; i < maxSecurityLevel; i++) {
+                const lowerRule = config.rules.find(r => r.level === i);
+                if (lowerRule && lowerRule.mandatoryValidators) {
+                  allValidators.push(...lowerRule.mandatoryValidators.map(id => id.toString()));
+                }
+              }
+            }
+          }
+        }
+
+        allValidators = [...new Set(allValidators)]; // Deduplicate
+
+        if (allValidators.length > 0) {
+          mouvement.securityApprovals = allValidators.map(uid => ({ validator: uid, status: 'pending' }));
+        } else {
+          // Fallback
+          const validatorsToNotify = await Utilisateur.find({
+            profil: 'Superviseur Sécurité',
+            niveauValidationSecu: { $gte: maxSecurityLevel },
+            pays: mouvement.pays
+          });
+          mouvement.securityApprovals = validatorsToNotify.map(u => ({ validator: u._id, status: 'pending' }));
+        }
+      } catch (err) {
+        console.error('❌ [CREATE MOUVEMENT] Erreur populating securityApprovals:', err);
+      }
+    }
+
     const nouveauMouvement = await mouvement.save();
     console.log('✅ [CREATE MOUVEMENT] Mouvement créé avec succès!');
     console.log('✅ [CREATE MOUVEMENT] ID:', nouveauMouvement._id);
@@ -470,38 +516,42 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       }
     );
 
-    // --- NOTIFICATION EMAIL (MODULE 2) ---
-    if (mouvement.statut === 'en attente validation sécurité') {
+    // --- NOTIFICATIONS EMAIL PARALLÈLES (MODULE 2) ---
+    // 1. Notifier Logistique
+    if (nouveauMouvement.statutLogistique === 'en attente') {
       try {
-        console.log('📧 [CREATE MOUVEMENT] Envoi des notifications aux valideurs...');
-        // Trouver les valideurs (Admin, Superviseur Sécurité, ou SuperAdmin) du même pays/base
-        // Note: C'est une simplification, on pourrait affiner selon la base
-        // Trouver les valideurs (Profil "Superviseur Sécurité" UNIQUEMENT) avec niveau suffisant
-        // Règle : niveau utilisateur >= niveau requis mouvement
-        const queryValideurs = {
-          profil: 'Superviseur Sécurité',
-          niveauValidationSecu: { $gte: mouvement.validationLevelRequired || 1 },
-          pays: mouvement.pays // Doit être du même pays
-        };
-
-        const valideurs = await Utilisateur.find(queryValideurs);
-        console.log(`📧 [CREATE MOUVEMENT] ${valideurs.length} valideurs trouvés (Profil Security & Niveau suffisant).`);
-
-        for (const valideur of valideurs) {
-          if (valideur.email) {
-            // Ne pas attendre (fire and forget) pour ne pas bloquer la réponse API
-            mailer.sendValidationRequest(valideur.email, await nouveauMouvement.populate([
-              { path: 'vehicule' },
-              { path: 'stops.lieu' },
-              { path: 'demandeur' }
-            ]));
+        console.log('📧 [CREATE MOUVEMENT] Envoi des notifications LOGISTIQUE...');
+        const logisticiens = await Utilisateur.find({
+          profil: { $in: ['Superviseur', 'Admin'] },
+          pays: nouveauMouvement.pays
+        });
+        for (const log of logisticiens) {
+          if (log.email) {
+            mailer.sendValidationRequest(log.email, await nouveauMouvement.populate([{ path: 'vehicule' }, { path: 'stops.lieu' }, { path: 'demandeur' }]));
           }
         }
-      } catch (emailErr) {
-        console.error('❌ [CREATE MOUVEMENT] Erreur notification email:', emailErr);
+      } catch (err) {
+        console.error('❌ [CREATE MOUVEMENT] Erreur notification logistique:', err);
       }
     }
-    // --- FIN NOTIFICATION EMAIL ---
+
+    // 2. Notifier Sécurité
+    if (nouveauMouvement.statutSecurite === 'en attente') {
+      try {
+        console.log('📧 [CREATE MOUVEMENT] Envoi des notifications SÉCURITÉ...');
+        const validatorIds = nouveauMouvement.securityApprovals.map(a => a.validator);
+        const valideursSecu = await Utilisateur.find({ _id: { $in: validatorIds } });
+        
+        for (const valideur of valideursSecu) {
+          if (valideur.email) {
+            mailer.sendValidationRequest(valideur.email, await nouveauMouvement.populate([{ path: 'vehicule' }, { path: 'stops.lieu' }, { path: 'demandeur' }]));
+          }
+        }
+      } catch (err) {
+        console.error('❌ [CREATE MOUVEMENT] Erreur notification sécurité:', err);
+      }
+    }
+    // --- FIN NOTIFICATIONS ---
 
     res.status(201).json(nouveauMouvement);
   } catch (err) {
@@ -619,91 +669,32 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
     if (req.body.passagers != null) mouvement.passagers = req.body.passagers;
     if (req.body.materiel != null) mouvement.materiel = req.body.materiel;
     if (req.body.objectif != null) mouvement.objectif = req.body.objectif;
-    // --- INTERCEPTION WORKFLOW VALIDATION ---
-    // Si on essaie de passer en 'validé'
+    // --- INTERCEPTION WORKFLOW VALIDATION PARALLÈLE (LOGISTIQUE) ---
     if (req.body.statut === 'validé') {
-      const requiredLevel = mouvement.validationLevelRequired || 1;
+      console.log(`✅ [UPDATE MOUVEMENT] Validation LOGISTIQUE reçue.`);
+      mouvement.statutLogistique = 'validé';
 
-      // Validation de LOGISTIQUE (Consolidation)
-      // Si on valide, on vérifie si le niveau Sécu est requis
-      const userLevel = req.utilisateur.niveauValidationSecu || 0;
-
-      // La règle : Si le niveau de risque est > au niveau de l'utilisateur qui valide,
-      // ALORS il faut une validation supérieure (Sécurité).
-      // OU si le niveau est >= 3 (Risque Élevé), on force toujours la sécu (sauf si c'est déjà un Superviseur Sécu).
-
-      const isSecuUser = req.utilisateur.profil === 'Superviseur Sécurité' || req.utilisateur.profil === 'SuperAdmin';
-
-      // Si le niveau requis est supérieur au niveau de l'utilisateur actuel
-      if (requiredLevel > userLevel && !isSecuUser) {
-        console.log(`🔒 [UPDATE MOUVEMENT] Validation partielle (User Level ${userLevel} < Trip Level ${requiredLevel}). Passage en "Attente Sécurité".`);
-        mouvement.statut = 'en attente validation sécurité';
-        // req.body.statut déjà set, mais on s'assure
-
-        // --- NOUVELLE LOGIQUE MATRICE ---
-        try {
-          // 1. Chercher la config
-          const config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base }) ||
-            await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
-
-          let validatorsToNotify = [];
-
-          if (config) {
-            const rule = config.rules.find(r => r.level === requiredLevel);
-            if (rule && rule.mandatoryValidators && rule.mandatoryValidators.length > 0) {
-              // On a des validateurs obligatoires
-              console.log(`🔒 [MATRIX] Utilisation des validateurs configurés pour niveau ${requiredLevel}: ${rule.mandatoryValidators.length} utilisateurs.`);
-
-              // Reset approvals if any
-              mouvement.securityApprovals = rule.mandatoryValidators.map(uid => ({
-                validator: uid,
-                status: 'pending'
-              }));
-              validatorsToNotify = await Utilisateur.find({ _id: { $in: rule.mandatoryValidators } });
-            } else {
-              console.log(`🔒 [MATRIX] Pas de validateurs spécifiques pour niveau ${requiredLevel}, fallback sur tous les superviseurs.`);
-              // Fallback: Tous les Superviseurs éligibles
-              validatorsToNotify = await Utilisateur.find({
-                profil: 'Superviseur Sécurité',
-                niveauValidationSecu: { $gte: requiredLevel },
-                pays: mouvement.pays
-              });
-              // On les ajoute tous commes "pending"
-              mouvement.securityApprovals = validatorsToNotify.map(u => ({
-                validator: u._id,
-                status: 'pending'
-              }));
-            }
-          } else {
-            console.log(`🔒 [MATRIX] Pas de config trouvée, fallback legacy.`);
-            // Fallback Legacy: Tous les Superviseurs éligibles
-            validatorsToNotify = await Utilisateur.find({
-              profil: 'Superviseur Sécurité',
-              niveauValidationSecu: { $gte: requiredLevel },
-              pays: mouvement.pays
-            });
-            mouvement.securityApprovals = validatorsToNotify.map(u => ({
-              validator: u._id,
-              status: 'pending'
-            }));
-          }
-
-          // Trigger Emails
-          for (const valideur of validatorsToNotify) {
-            if (valideur.email) {
-              mailer.sendValidationRequest(valideur.email, await mouvement.populate([{ path: 'vehicule' }, { path: 'stops.lieu' }, { path: 'demandeur' }]));
-            }
-          }
-        } catch (e) {
-          console.error('❌ [MATRIX] Erreur lors de l\'initialisation des validateurs:', e);
-        }
-
-      }
-      // Sinon, on peut valider directement (Risque Faible OU Utilisateur habilité)
-      else {
-        console.log(`✅ [UPDATE MOUVEMENT] Validation finale accordée (User Level ${userLevel} >= Trip Level ${requiredLevel}).`);
+      if (mouvement.statutSecurite === 'validé' || mouvement.statutSecurite === 'non requis') {
+        console.log(`✅ [UPDATE MOUVEMENT] Sécurité déjà OK (${mouvement.statutSecurite}). Statut global -> validé.`);
         mouvement.statut = 'validé';
+        
+        // Notify demandeur
+        try {
+          if (mouvement.demandeur) {
+            const demandeur = await Utilisateur.findById(mouvement.demandeur);
+            if (demandeur && demandeur.email) {
+              mailer.sendStatusUpdate(demandeur.email, await mouvement.populate([{ path: 'stops.lieu' }, { path: 'demandeur' }]), 'validé');
+            }
+          }
+        } catch (e) { console.error(e); }
+      } else {
+        console.log(`⏳ [UPDATE MOUVEMENT] Sécurité en attente. Statut global -> en attente validation sécurité.`);
+        mouvement.statut = 'en attente validation sécurité';
       }
+    } else if (req.body.statut === 'refusé') {
+      mouvement.statutLogistique = 'refusé';
+      mouvement.statut = 'refusé'; // Un refus d'une branche refuse le tout
+      mouvement.motifRefus = req.body.motifRefus || req.body.commentaire;
     } else if (req.body.statut != null) {
       mouvement.statut = req.body.statut;
     }
@@ -856,32 +847,38 @@ router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) =
       }
 
       if (isConsensusReached) {
-        console.log('🎉 [VALIDATE MATRIX] Consensus Atteint ! Validation finale du mouvement.');
-        mouvement.statut = 'validé';
+        console.log('🎉 [VALIDATE MATRIX] Consensus Atteint ! Validation Sécurité terminée.');
+        mouvement.statutSecurite = 'validé';
         mouvement.securityConsensusReached = true;
+
+        if (mouvement.statutLogistique === 'validé' || mouvement.statutLogistique === 'non requis') {
+          console.log('🎉 [VALIDATE MATRIX] Logistique déjà OK. Validation finale du mouvement.');
+          mouvement.statut = 'validé';
+
+          // Email Demandeur (Seulement au consensus final complet)
+          try {
+            if (mouvement.demandeur) {
+              const demandeur = await Utilisateur.findById(mouvement.demandeur);
+              if (demandeur && demandeur.email) {
+                mailer.sendStatusUpdate(demandeur.email, await mouvement.populate([{ path: 'stops.lieu' }, { path: 'demandeur' }]), 'validé');
+              }
+            }
+          } catch (e) { console.error(e); }
+        } else {
+          console.log('⏳ [VALIDATE MATRIX] Sécurité OK, mais Logistique toujours en attente.');
+          mouvement.statut = 'en attente';
+        }
 
         // Historique Global (pour compatibilité)
         mouvement.validationHistory.push({
           validatedBy: req.utilisateur.id, // On met le dernier qui a validé
           validatedAt: new Date(),
           level: requiredLevel,
-          status: 'validé (Consensus)'
+          status: 'validé (Consensus Sécurité)'
         });
-
-        // Email Demandeur (Seulement au consensus final)
-        try {
-          if (mouvement.demandeur) {
-            const demandeur = await Utilisateur.findById(mouvement.demandeur);
-            if (demandeur && demandeur.email) {
-              mailer.sendStatusUpdate(demandeur.email, await mouvement.populate([{ path: 'stops.lieu' }, { path: 'demandeur' }]), 'validé');
-            }
-          }
-        } catch (e) { console.error(e); }
 
       } else {
         console.log('⏳ [VALIDATE MATRIX] Consensus non atteint. En attente des autres.');
-        // On reste en 'en attente validation sécurité'
-        // On ne déclenche PAS l'email de validation finale
       }
 
     } else {
@@ -894,23 +891,28 @@ router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) =
         });
       }
 
-      mouvement.statut = 'validé';
+      mouvement.statutSecurite = 'validé';
+      if (mouvement.statutLogistique === 'validé' || mouvement.statutLogistique === 'non requis') {
+        mouvement.statut = 'validé';
+        // Email (Legacy)
+        try {
+          if (mouvement.demandeur) {
+            const demandeur = await Utilisateur.findById(mouvement.demandeur);
+            if (demandeur && demandeur.email) {
+              mailer.sendStatusUpdate(demandeur.email, await mouvement.populate([{ path: 'stops.lieu' }, { path: 'demandeur' }]), 'validé');
+            }
+          }
+        } catch (e) { console.error(e); }
+      } else {
+        mouvement.statut = 'en attente';
+      }
+      
       mouvement.validationHistory.push({
         validatedBy: req.utilisateur.id,
         validatedAt: new Date(),
         level: requiredLevel,
-        status: 'validé'
+        status: 'validé (Sécurité)'
       });
-
-      // Email (Legacy)
-      try {
-        if (mouvement.demandeur) {
-          const demandeur = await Utilisateur.findById(mouvement.demandeur);
-          if (demandeur && demandeur.email) {
-            mailer.sendStatusUpdate(demandeur.email, await mouvement.populate([{ path: 'stops.lieu' }, { path: 'demandeur' }]), 'validé');
-          }
-        }
-      } catch (e) { console.error(e); }
     }
 
     const mouvementValide = await mouvement.save();

@@ -14,7 +14,8 @@ const securityConfigSchema = new mongoose.Schema({
         // Est-ce que TOUS les validateurs listés ci-dessus doivent valider ? (Unanimité)
         // Sinon, combien de validations minimum sont requises ?
         requireUnanimity: { type: Boolean, default: true },
-        quorum: { type: Number, default: 1 } // Utilisé si requireUnanimity = false. Min validateurs requis.
+        quorum: { type: Number, default: 1 }, // Utilisé si requireUnanimity = false. Min validateurs requis.
+        includeLowerLevels: { type: Boolean, default: false } // Inclure les validateurs des niveaux inférieurs
     }],
 
     updatedAt: { type: Date, default: Date.now },

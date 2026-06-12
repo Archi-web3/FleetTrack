@@ -8,6 +8,7 @@ export interface SecurityRule {
     mandatoryValidators: string[]; // List of User IDs
     requireUnanimity: boolean;
     quorum: number;
+    includeLowerLevels?: boolean;
 }
 
 export interface SecurityConfig {
