@@ -36,13 +36,54 @@ export class AuthService {
   userBaseId$ = this._userBaseId.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
-    if (this.hasToken()) {
-      this.setProfileAndNameAndIdFromToken(this.getToken());
+    const token = this.getToken();
+    if (token) {
+      if (this.isTokenExpired(token)) {
+        // Token expiré : on nettoie discrètement (sans redirect forcé, AuthGuard s'en chargera)
+        localStorage.removeItem(this.tokenKey);
+        localStorage.removeItem('selectedCountry');
+        this._isAuthenticated.next(false);
+      } else {
+        this.setProfileAndNameAndIdFromToken(token);
+        this.startTokenExpirationCheck();
+      }
     }
   }
 
+  private tokenCheckInterval: any;
+
+  private startTokenExpirationCheck() {
+    // Vérifie toutes les 60 secondes si le token a expiré
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
+    }
+    this.tokenCheckInterval = setInterval(() => {
+      const token = this.getToken();
+      if (token && this.isTokenExpired(token)) {
+        console.warn('[AuthService] Token expiré détecté en arrière-plan. Déconnexion automatique.');
+        this.logout();
+      }
+    }, 60000); // 1 minute
+  }
+
   private hasToken(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+    const token = localStorage.getItem(this.tokenKey);
+    if (!token) return false;
+    return !this.isTokenExpired(token);
+  }
+
+  isTokenExpired(token: string): boolean {
+    try {
+      const decoded = this.decodeToken(token);
+      if (decoded && decoded.exp) {
+        const expirationDate = new Date(0);
+        expirationDate.setUTCSeconds(decoded.exp);
+        return expirationDate.valueOf() < new Date().valueOf();
+      }
+      return false; // Si pas de champ exp, on ne peut pas savoir
+    } catch (e) {
+      return true; // En cas d'erreur de parsing, on considère expiré
+    }
   }
 
   getToken(): string | null {
@@ -219,6 +260,7 @@ export class AuthService {
           localStorage.setItem(this.tokenKey, res.token);
           this._isAuthenticated.next(true);
           this.setProfileAndNameAndIdFromToken(res.token);
+          this.startTokenExpirationCheck();
         }
       })
     );
@@ -232,12 +274,16 @@ export class AuthService {
           localStorage.setItem(this.tokenKey, res.token);
           this._isAuthenticated.next(true);
           this.setProfileAndNameAndIdFromToken(res.token);
+          this.startTokenExpirationCheck();
         }
       })
     );
   }
 
   logout(): void {
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
+    }
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem('selectedCountry'); // Clear selected country
     this._isAuthenticated.next(false);
