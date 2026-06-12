@@ -200,9 +200,11 @@ export class GestionUtilisateursComponent implements OnInit {
   getMaxSecurityLevelForProfile(profileName: string): number {
     const matrix = this.perms.getMatrix();
     const profilePerms = matrix[profileName];
+    console.log(`[DEBUG] getMaxSecurityLevelForProfile('${profileName}')`, profilePerms);
     if (!profilePerms || !profilePerms['mouvements_workflow']) return 1;
 
     const wf = profilePerms['mouvements_workflow'];
+    console.log(`[DEBUG] workflow perms:`, wf);
     if (wf['validate_level_5']) return 5;
     if (wf['validate_level_4']) return 4;
     if (wf['validate_level_3']) return 3;
@@ -339,6 +341,11 @@ export class GestionUtilisateursComponent implements OnInit {
     } else if (this.userProfile === 'Admin' && this.userPaysId) {
       // Si pas de pays défini mais Admin, charger les bases de son pays
       this.loadBases(this.userPaysId);
+    }
+
+    // Auto-calculate security level on open if checked
+    if (this.autoManageEditUserSecurity) {
+      this.selectedUser.niveauValidationSecu = this.getMaxSecurityLevelForProfile(this.selectedUser.profil);
     }
   }
 
