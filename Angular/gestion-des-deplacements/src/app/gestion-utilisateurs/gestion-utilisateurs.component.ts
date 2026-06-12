@@ -277,6 +277,11 @@ export class GestionUtilisateursComponent implements OnInit {
     if (userData.base === '') userData.base = null;
     if (userData.vehiculeAttitre === '') userData.vehiculeAttitre = null;
 
+    // Force security level calculation if auto-manage is checked
+    if (this.autoManageNewUserSecurity) {
+      userData.niveauValidationSecu = this.getMaxSecurityLevelForProfile(userData.profil);
+    }
+
     console.log('Données envoyées au serveur:', userData); // DEBUG
     this.utilisateurService.addUser(userData).subscribe(
       (response) => {
@@ -363,6 +368,11 @@ export class GestionUtilisateursComponent implements OnInit {
 
     // Nettoyer l'objet avant envoi
     const userData = { ...this.selectedUser };
+    
+    // Force security level calculation if auto-manage is checked
+    if (this.autoManageEditUserSecurity) {
+      userData.niveauValidationSecu = this.getMaxSecurityLevelForProfile(userData.profil);
+    }
     if (!userData.motDePasse || userData.motDePasse.trim() === '') {
       delete userData.motDePasse;
     }

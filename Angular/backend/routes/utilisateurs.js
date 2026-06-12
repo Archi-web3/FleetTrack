@@ -35,7 +35,7 @@ const auditService = require('../services/audit.service');
  */
 router.get('/utilisateurs', auth(), countryFilter, async (req, res) => {
   try {
-    const utilisateurs = await Utilisateur.find(req.countryFilter).select('-motDePasse');
+    const utilisateurs = await Utilisateur.find(req.countryFilter).populate('pays base').select('-motDePasse');
     res.json(utilisateurs);
   } catch (err) {
     console.error("Erreur GET /utilisateurs:", err);
