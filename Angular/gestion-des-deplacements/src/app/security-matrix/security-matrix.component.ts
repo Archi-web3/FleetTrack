@@ -92,7 +92,11 @@ export class SecurityMatrixComponent implements OnInit {
     }
 
     isValidatorSelected(rule: SecurityRule, userId: string): boolean {
-        return rule.mandatoryValidators.includes(userId);
+        if (!rule.mandatoryValidators) return false;
+        return rule.mandatoryValidators.some((v: any) => {
+            const id = typeof v === 'string' ? v : v._id;
+            return id === userId;
+        });
     }
 
     getEligibleValidators(level: number): any[] {
@@ -101,12 +105,18 @@ export class SecurityMatrixComponent implements OnInit {
     }
 
     toggleValidator(rule: SecurityRule, userId: string, event: any): void {
+        if (!rule.mandatoryValidators) rule.mandatoryValidators = [];
+        
         if (event.target.checked) {
-            if (!rule.mandatoryValidators.includes(userId)) {
-                rule.mandatoryValidators.push(userId);
+            if (!this.isValidatorSelected(rule, userId)) {
+                // On pousse l'ID sous forme de string
+                rule.mandatoryValidators.push(userId as any);
             }
         } else {
-            rule.mandatoryValidators = rule.mandatoryValidators.filter(id => id !== userId);
+            rule.mandatoryValidators = rule.mandatoryValidators.filter((v: any) => {
+                const id = typeof v === 'string' ? v : v._id;
+                return id !== userId;
+            });
         }
     }
 
