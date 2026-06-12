@@ -66,6 +66,9 @@ export class HomeDashboardComponent implements OnInit {
           }
           // Sécurité
           if (['Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile) && m.statutSecurite === 'en attente') {
+            if (this.userProfile === 'SuperAdmin') {
+              return true; // Le SuperAdmin voit toutes les demandes de sécurité en attente
+            }
             if (m.securityApprovals && m.securityApprovals.length > 0) {
               return m.securityApprovals.some((a:any) => {
                 const validatorId = typeof a.validator === 'string' ? a.validator : a.validator?._id;
