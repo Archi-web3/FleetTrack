@@ -60,12 +60,15 @@ export class HomeDashboardComponent implements OnInit {
     this.mouvementService.getMouvements().subscribe({
       next: (mouvements) => {
         this.pendingValidations = mouvements.filter(m => {
+          const isLogAttente = m.statutLogistique === 'en attente' || (!m.statutLogistique && m.statut === 'en attente');
+          const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité');
+
           // Logistique
-          if (['Admin', 'Superviseur', 'SuperAdmin'].includes(this.userProfile) && m.statutLogistique === 'en attente') {
+          if (['Admin', 'Superviseur', 'SuperAdmin'].includes(this.userProfile) && isLogAttente) {
             return true;
           }
           // Sécurité
-          if (['Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile) && m.statutSecurite === 'en attente') {
+          if (['Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile) && isSecuAttente) {
             if (this.userProfile === 'SuperAdmin') {
               return true; // Le SuperAdmin voit toutes les demandes de sécurité en attente
             }
