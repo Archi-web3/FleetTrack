@@ -79,7 +79,7 @@
     </div>
 
     <div style="margin-top: 10px;">
-      <button (click)="validerMouvement(mouvement._id, mouvement.statut)" [disabled]="hasUserValidated(mouvement)"
+      <button (click)="validerMouvement(mouvement._id, mouvement.statut, 'security')" [disabled]="hasUserValidated(mouvement)"
         [class.disabled-btn]="hasUserValidated(mouvement)"
         style="background-color: #28a745; color: white; border: none; padding: 8px 15px; cursor: pointer; margin-right: 10px;">
 
@@ -135,7 +135,7 @@
     <!-- Véhicule et Chauffeur MASQUÉS car pas encore attribués -->
 
     <div style="margin-top: 10px;">
-      <button (click)="validerMouvement(mouvement._id, mouvement.statut)"
+      <button (click)="validerMouvement(mouvement._id, mouvement.statut, 'logistics')"
         style="background-color: #28a745; color: white; border: none; padding: 8px 15px; cursor: pointer; margin-right: 10px;">{{
         'VALIDATION.VALIDATE_LOGS' | translate }}</button>
       <button (click)="refuserMouvement(mouvement._id)"

@@ -108,18 +108,6 @@ export class PermissionsService {
       'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
       'mouvements_workflow': { view_menu: false, manage_levels: false, validate_level_1: false, validate_level_2: false, validate_level_3: false, validate_level_4: false, validate_level_5: false },
       'mouvements_consolidation': { view_menu: false, manage: false },
-      'mobile_chauffeur': { access_app: false, view_missions: false, start_trip: false, end_trip: false, fill_daily_log: false, report_incident: false },
-      'flotte_vehicules': { view_menu: true, create: false, edit: false, delete: false },
-      'flotte_chauffeurs': { view_menu: true, create: false, edit: false, delete: false },
-      'flotte_maintenance': { view_menu: false, manage_alerts: false, edit_config: false },
-      'admin_geo': { view_menu: false, manage_countries: false, manage_bases: false },
-      'admin_users': { view_menu: false, create: false, edit: false },
-      'admin_settings': { view_menu: false, manage: false, view_helpers: false }
-    },
-    'Technicien': {
-      'mouvements_demandes': { view_menu: true, create: true, edit: true, delete: false },
-      'mouvements_workflow': { view_menu: false, manage_levels: false, validate_level_1: false, validate_level_2: false, validate_level_3: false, validate_level_4: false, validate_level_5: false },
-      'mouvements_consolidation': { view_menu: false, manage: false },
       'mobile_chauffeur': { access_app: true, view_missions: true, start_trip: true, end_trip: true, fill_daily_log: true, report_incident: true },
       'flotte_vehicules': { view_menu: true, create: false, edit: false, delete: false },
       'flotte_chauffeurs': { view_menu: true, create: false, edit: false, delete: false },

@@ -60,16 +60,29 @@ export class ValidationMouvementsComponent implements OnInit {
         this.mouvementsPourValidationLogistique = []; // Réinitialiser pour chaque chargement
 
         // Filtrage dynamique avec PermissionsService
-        if (this.perms.hasPermission('mouvements_workflow', 'validate_level_1') || 
+        const canValidateSecurity = this.perms.hasPermission('mouvements_workflow', 'validate_level_1') || 
             this.perms.hasPermission('mouvements_workflow', 'validate_level_2') || 
             this.perms.hasPermission('mouvements_workflow', 'validate_level_3') || 
             this.perms.hasPermission('mouvements_workflow', 'validate_level_4') || 
-            this.perms.hasPermission('mouvements_workflow', 'validate_level_5')) {
-          this.mouvementsPourValidationSecurite = data.filter(m => m.statut === 'en attente validation sécurité');
+            this.perms.hasPermission('mouvements_workflow', 'validate_level_5');
+            
+        if (canValidateSecurity) {
+          this.mouvementsPourValidationSecurite = data.filter(m => 
+            m.statut === 'en attente validation sécurité' || 
+            (m.statut === 'en attente' && m.validationLevelRequired > 1)
+          );
         }
 
-        if (this.perms.hasPermission('mouvements_workflow', 'validate')) {
-          this.mouvementsPourValidationLogistique = data.filter(m => m.statut === 'en attente');
+        const canValidateLogistics = this.perms.hasPermission('mouvements_consolidation', 'manage') || 
+                                     this.userProfile === 'Logisticien' ||
+                                     this.userProfile === 'SuperAdmin' ||
+                                     this.userProfile === 'Admin';
+                                     
+        if (canValidateLogistics) {
+          this.mouvementsPourValidationLogistique = data.filter(m => 
+            m.statut === 'en attente' && 
+            (!m.validationLevelRequired || m.validationLevelRequired <= 1)
+          );
         }
 
         if (this.mouvementsPourValidationLogistique.length === 0 && this.mouvementsPourValidationSecurite.length === 0) {
@@ -98,10 +111,10 @@ export class ValidationMouvementsComponent implements OnInit {
     return prompt('Motif de refus :');
   }
 
-  validerMouvement(mouvementId: string, currentStatut: string): void {
+  validerMouvement(mouvementId: string, currentStatut: string, type: 'security' | 'logistics' = 'security'): void {
 
     // CAS 1 : Validation SÉCURITÉ (Module 2)
-    if (currentStatut === 'en attente validation sécurité') {
+    if (type === 'security') {
       console.log('🛡️ [VALIDATION] Tentative de validation sécurisée...');
       this.mouvementService.validateMouvement(mouvementId).subscribe(
         (response) => {
