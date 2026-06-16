@@ -84,10 +84,7 @@ export class ValidationMouvementsComponent implements OnInit {
           });
         }
 
-        const canValidateLogistics = this.perms.hasPermission('mouvements_consolidation', 'manage') || 
-                                     this.userProfile === 'Logisticien' ||
-                                     this.userProfile === 'SuperAdmin' ||
-                                     this.userProfile === 'Admin';
+        const canValidateLogistics = this.perms.hasPermission('mouvements_consolidation', 'manage') || this.userProfile === 'SuperAdmin';
                                      
         if (canValidateLogistics) {
           this.mouvementsPourValidationLogistique = data.filter(m => {

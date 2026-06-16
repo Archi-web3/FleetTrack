@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MouvementService } from '../mouvement.service';
 import { AuthService } from '../auth.service';
+import { PermissionsService } from '../services/permissions.service';
 
 @Component({
   selector: 'app-home-dashboard',
@@ -37,7 +38,8 @@ export class HomeDashboardComponent implements OnInit {
     private settingsService: SettingsService, 
     private http: HttpClient, 
     private mouvementService: MouvementService,
-    private authService: AuthService
+    private authService: AuthService,
+    private perms: PermissionsService
   ) {}
 
   ngOnInit(): void {
@@ -57,8 +59,16 @@ export class HomeDashboardComponent implements OnInit {
     this.userProfile = this.authService.getUserProfile() || '';
     this.userId = this.authService.getUserId() || '';
     
+    // Vérification des droits via la matrice RBAC (PermissionsService)
+    const canValidateLogistics = this.perms.hasPermission('mouvements_consolidation', 'manage');
+    const canValidateSecurity = this.perms.hasPermission('mouvements_workflow', 'validate_level_1') || 
+                                this.perms.hasPermission('mouvements_workflow', 'validate_level_2') || 
+                                this.perms.hasPermission('mouvements_workflow', 'validate_level_3') || 
+                                this.perms.hasPermission('mouvements_workflow', 'validate_level_4') || 
+                                this.perms.hasPermission('mouvements_workflow', 'validate_level_5');
+
     // Si l'utilisateur n'a aucun profil permettant la validation, on ne charge rien
-    if (!['Admin', 'Superviseur', 'Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile)) {
+    if (!canValidateLogistics && !canValidateSecurity && this.userProfile !== 'SuperAdmin') {
       this.loadingValidations = false;
       return;
     }
@@ -70,32 +80,35 @@ export class HomeDashboardComponent implements OnInit {
           const isLogAttente = m.statutLogistique === 'en attente' || (!m.statutLogistique && m.statut === 'en attente');
           const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité') || (!m.statutSecurite && m.statut === 'en attente' && m.validationLevelRequired > 1);
 
+          let keep = false;
+
           // Logistique
-          if (['Admin', 'Superviseur', 'SuperAdmin'].includes(this.userProfile) && isLogAttente) {
+          if ((canValidateLogistics || this.userProfile === 'SuperAdmin') && isLogAttente) {
             console.log(`[HomeDashboard] Gardé (Logistique): ${m._id} - statut: ${m.statut}`);
-            return true;
+            keep = true;
           }
+          
           // Sécurité
-          if (['Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile) && isSecuAttente) {
+          if ((canValidateSecurity || this.userProfile === 'SuperAdmin') && isSecuAttente) {
             if (this.userProfile === 'SuperAdmin') {
               console.log(`[HomeDashboard] Gardé (Sécurité SuperAdmin): ${m._id} - statut: ${m.statut}`);
-              return true; // Le SuperAdmin voit toutes les demandes de sécurité en attente
-            }
-            if (m.securityApprovals && m.securityApprovals.length > 0) {
+              keep = true; // Le SuperAdmin voit toutes les demandes de sécurité en attente
+            } else if (m.securityApprovals && m.securityApprovals.length > 0) {
               const hasPending = m.securityApprovals.some((a:any) => {
                 const validatorId = typeof a.validator === 'string' ? a.validator : a.validator?._id;
                 return validatorId === this.userId && a.status === 'pending';
               });
               if (hasPending) {
                 console.log(`[HomeDashboard] Gardé (Sécurité Validator): ${m._id} - statut: ${m.statut}`);
-                return true;
+                keep = true;
               }
             } else {
               console.log(`[HomeDashboard] Gardé (Sécurité Legacy Fallback): ${m._id} - statut: ${m.statut}`);
-              return true; // Legacy fallback
+              keep = true; // Legacy fallback pour les anciens mouvements
             }
           }
-          return false;
+          
+          return keep;
         });
         console.log(`[HomeDashboard] Mouvements en attente conservés : ${this.pendingValidations.length}`);
         this.loadingValidations = false;

@@ -57,11 +57,11 @@ export class AdminProfileMatrixComponent implements OnInit {
           permissions: [
             { key: 'view_menu', label: 'Voir le Dashboard Workflow' },
             { key: 'manage_levels', label: 'Gérer les Niveaux' },
-            { key: 'validate_level_1', label: 'Valider Niveau 1' },
-            { key: 'validate_level_2', label: 'Valider Niveau 2' },
-            { key: 'validate_level_3', label: 'Valider Niveau 3' },
-            { key: 'validate_level_4', label: 'Valider Niveau 4' },
-            { key: 'validate_level_5', label: 'Valider Niveau 5' }
+            { key: 'validate_level_1', label: 'Valider Sécurité (Niveau 1)' },
+            { key: 'validate_level_2', label: 'Valider Sécurité (Niveau 2)' },
+            { key: 'validate_level_3', label: 'Valider Sécurité (Niveau 3)' },
+            { key: 'validate_level_4', label: 'Valider Sécurité (Niveau 4)' },
+            { key: 'validate_level_5', label: 'Valider Sécurité (Niveau 5)' }
           ]
         },
         {
@@ -69,7 +69,7 @@ export class AdminProfileMatrixComponent implements OnInit {
           label: 'Consolidation / Planning',
           permissions: [
             { key: 'view_menu', label: 'Voir (Menu)' },
-            { key: 'manage', label: 'Gérer / Valider la logistique' }
+            { key: 'manage', label: 'Valider Logistique (Gérer Consolidation)' }
           ]
         }
       ]
