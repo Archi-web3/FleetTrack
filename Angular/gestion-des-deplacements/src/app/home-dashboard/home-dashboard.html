@@ -62,7 +62,7 @@
         </div>
 
         <div *ngIf="!loadingValidations && pendingValidations.length > 0" class="validations-list">
-          <div *ngFor="let m of pendingValidations" class="validation-item" routerLink="/validation">
+          <div *ngFor="let m of pendingValidations" class="validation-item" routerLink="/valider-mouvements">
             <div class="val-header">
               <span class="val-objectif">{{ m.objectif || 'Mouvement sans objectif' }}</span>
               <span class="val-date">{{ m.dateDepart | date:'short' }}</span>

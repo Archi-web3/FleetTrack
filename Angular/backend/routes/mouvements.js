@@ -230,7 +230,8 @@ router.get('/mouvements', auth(), countryFilter, async (req, res) => {
       .populate('demandeur', 'nom email')
       .populate('vehicule', 'marque modele immatriculation')
       .populate('chauffeur', 'nom prenom telephone')
-      .populate('passagers', 'nom email');
+      .populate('passagers', 'nom email')
+      .populate('securityApprovals.validator', 'nom prenom email');
 
     console.log('📥 [GET MOUVEMENTS] Mouvements trouvés:', mouvements.length);
     console.log('📥 [GET MOUVEMENTS] Mouvements récupérés:', mouvements.length);

@@ -67,10 +67,21 @@ export class ValidationMouvementsComponent implements OnInit {
             this.perms.hasPermission('mouvements_workflow', 'validate_level_5');
             
         if (canValidateSecurity) {
-          this.mouvementsPourValidationSecurite = data.filter(m => 
-            m.statut === 'en attente validation sécurité' || 
-            (m.statut === 'en attente' && m.validationLevelRequired > 1)
-          );
+          this.mouvementsPourValidationSecurite = data.filter(m => {
+            const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité') || (!m.statutSecurite && m.statut === 'en attente' && m.validationLevelRequired > 1);
+            if (!isSecuAttente) return false;
+            
+            if (this.userProfile === 'SuperAdmin') return true;
+            
+            if (m.securityApprovals && m.securityApprovals.length > 0) {
+              return m.securityApprovals.some((a:any) => {
+                const validatorId = typeof a.validator === 'string' ? a.validator : a.validator?._id;
+                const localUserId = localStorage.getItem('userId');
+                return validatorId === localUserId && a.status === 'pending';
+              });
+            }
+            return true; // Legacy fallback
+          });
         }
 
         const canValidateLogistics = this.perms.hasPermission('mouvements_consolidation', 'manage') || 
@@ -79,10 +90,10 @@ export class ValidationMouvementsComponent implements OnInit {
                                      this.userProfile === 'Admin';
                                      
         if (canValidateLogistics) {
-          this.mouvementsPourValidationLogistique = data.filter(m => 
-            m.statut === 'en attente' && 
-            (!m.validationLevelRequired || m.validationLevelRequired <= 1)
-          );
+          this.mouvementsPourValidationLogistique = data.filter(m => {
+            const isLogAttente = m.statutLogistique === 'en attente' || (!m.statutLogistique && m.statut === 'en attente');
+            return isLogAttente;
+          });
         }
 
         if (this.mouvementsPourValidationLogistique.length === 0 && this.mouvementsPourValidationSecurite.length === 0) {
