@@ -77,9 +77,9 @@ export class HomeDashboardComponent implements OnInit {
       next: (mouvements) => {
         console.log(`[HomeDashboard] Total mouvements reçus : ${mouvements.length}`);
         this.pendingValidations = mouvements.filter(m => {
-          // On ignore d'office les mouvements terminés, annulés, refusés ou regroupés
+          // On ignore d'office les mouvements terminés, annulés, refusés, regroupés ou de maintenance
           const inactiveStatuses = ['terminé', 'annulé', 'refusé', 'regroupé'];
-          if (inactiveStatuses.includes(m.statut)) {
+          if (inactiveStatuses.includes(m.statut) || m.type === 'maintenance') {
             return false;
           }
 
