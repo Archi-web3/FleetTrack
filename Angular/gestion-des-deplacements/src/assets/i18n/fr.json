@@ -131,6 +131,7 @@
         "ID": "ID Mouvement",
         "STATUS": "Statut",
         "RISK_LEVEL": "Niveau de Risque",
+        "REQUIRED_VALIDATORS": "Validateurs attendus",
         "STABLE": "(Stable)",
         "MODERATE": "(Modéré)",
         "DIFFICULT": "(Difficile)",

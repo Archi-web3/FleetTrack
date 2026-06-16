@@ -62,7 +62,7 @@ export class HomeDashboardComponent implements OnInit {
         console.log(`[HomeDashboard] Total mouvements reçus : ${mouvements.length}`);
         this.pendingValidations = mouvements.filter(m => {
           const isLogAttente = m.statutLogistique === 'en attente' || (!m.statutLogistique && m.statut === 'en attente');
-          const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité');
+          const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité') || (!m.statutSecurite && m.statut === 'en attente' && m.validationLevelRequired > 1);
 
           // Logistique
           if (['Admin', 'Superviseur', 'SuperAdmin'].includes(this.userProfile) && isLogAttente) {
