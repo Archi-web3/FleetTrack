@@ -68,6 +68,9 @@ export class ValidationMouvementsComponent implements OnInit {
             
         if (canValidateSecurity) {
           this.mouvementsPourValidationSecurite = data.filter(m => {
+            const inactiveStatuses = ['terminé', 'annulé', 'refusé', 'regroupé'];
+            if (inactiveStatuses.includes(m.statut)) return false;
+
             const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité') || (!m.statutSecurite && m.statut === 'en attente' && m.validationLevelRequired > 1);
             if (!isSecuAttente) return false;
             
@@ -88,6 +91,9 @@ export class ValidationMouvementsComponent implements OnInit {
                                      
         if (canValidateLogistics) {
           this.mouvementsPourValidationLogistique = data.filter(m => {
+            const inactiveStatuses = ['terminé', 'annulé', 'refusé', 'regroupé'];
+            if (inactiveStatuses.includes(m.statut)) return false;
+
             const isLogAttente = m.statutLogistique === 'en attente' || (!m.statutLogistique && m.statut === 'en attente');
             return isLogAttente;
           });
