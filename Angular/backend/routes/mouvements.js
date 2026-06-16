@@ -660,7 +660,73 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
 
 
     // Mettre à jour les champs si présents dans le body
-    if (req.body.stops != null) mouvement.stops = req.body.stops;
+    if (req.body.stops != null) {
+      mouvement.stops = req.body.stops;
+
+      // RECALCUL DU NIVEAU DE SECURITE SI LES STOPS CHANGENT
+      const stopLieuIds = req.body.stops.map((stop) => stop.lieu);
+      const lieuxImpliques = await Lieu.find({ _id: { $in: stopLieuIds } });
+      let maxSecurityLevel = 0;
+      lieuxImpliques.forEach(lieu => {
+        const niveau = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
+        if (niveau > maxSecurityLevel) {
+          maxSecurityLevel = niveau;
+        }
+      });
+      
+      // Mettre à jour le niveau requis
+      mouvement.validationLevelRequired = maxSecurityLevel;
+      
+      // Mettre à jour le statut et regénérer les approbations seulement si le statut sécurité n'est pas déjà validé
+      // (si le mouvement a déjà été validé par la sécurité, changer le trajet relance l'approbation si le risque augmente ou change)
+      if (maxSecurityLevel === 0) {
+        mouvement.statutSecurite = 'non requis';
+        mouvement.securityApprovals = [];
+      } else {
+        mouvement.statutSecurite = 'en attente';
+        // Si on relance l'attente sécurité, le statut global redevient "en attente validation sécurité"
+        mouvement.statut = 'en attente validation sécurité';
+        
+        try {
+          const config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base }) ||
+                         await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
+          
+          let allValidators = [];
+          if (config) {
+            const rule = config.rules.find(r => r.level === maxSecurityLevel);
+            if (rule) {
+              if (rule.mandatoryValidators) {
+                allValidators.push(...rule.mandatoryValidators.map(id => id.toString()));
+              }
+              if (rule.includeLowerLevels) {
+                for (let i = 1; i < maxSecurityLevel; i++) {
+                  const lowerRule = config.rules.find(r => r.level === i);
+                  if (lowerRule && lowerRule.mandatoryValidators) {
+                    allValidators.push(...lowerRule.mandatoryValidators.map(id => id.toString()));
+                  }
+                }
+              }
+            }
+          }
+
+          allValidators = [...new Set(allValidators)]; // Deduplicate
+
+          if (allValidators.length > 0) {
+            mouvement.securityApprovals = allValidators.map(uid => ({ validator: uid, status: 'pending' }));
+          } else {
+            // Fallback
+            const validatorsToNotify = await Utilisateur.find({
+              profil: 'Superviseur Sécurité',
+              niveauValidationSecu: { $gte: maxSecurityLevel },
+              pays: mouvement.pays
+            });
+            mouvement.securityApprovals = validatorsToNotify.map(u => ({ validator: u._id, status: 'pending' }));
+          }
+        } catch (err) {
+          console.error('❌ [UPDATE MOUVEMENT] Erreur populating securityApprovals:', err);
+        }
+      }
+    }
     if (req.body.demandeur != null) mouvement.demandeur = req.body.demandeur;
     // Ne pas affecter vehicule/chauffeur si le mouvement devient regroupé-enfant
     if (req.body.statut !== 'regroupé-enfant') {

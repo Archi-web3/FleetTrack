@@ -76,7 +76,7 @@ export class ValidationMouvementsComponent implements OnInit {
             if (m.securityApprovals && m.securityApprovals.length > 0) {
               return m.securityApprovals.some((a:any) => {
                 const validatorId = typeof a.validator === 'string' ? a.validator : a.validator?._id;
-                const localUserId = localStorage.getItem('userId');
+                const localUserId = this.authService.getUserId();
                 return validatorId === localUserId && a.status === 'pending';
               });
             }

@@ -10,6 +10,7 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MouvementService } from '../mouvement.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-home-dashboard',
@@ -32,7 +33,12 @@ export class HomeDashboardComponent implements OnInit {
   userId: string = '';
   userProfile: string = '';
 
-  constructor(private settingsService: SettingsService, private http: HttpClient, private mouvementService: MouvementService) {}
+  constructor(
+    private settingsService: SettingsService, 
+    private http: HttpClient, 
+    private mouvementService: MouvementService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName') || 'Utilisateur';
@@ -48,8 +54,8 @@ export class HomeDashboardComponent implements OnInit {
   }
 
   fetchPendingValidations() {
-    this.userProfile = localStorage.getItem('userProfile') || '';
-    this.userId = localStorage.getItem('userId') || '';
+    this.userProfile = this.authService.getUserProfile() || '';
+    this.userId = this.authService.getUserId() || '';
     
     // Si l'utilisateur n'a aucun profil permettant la validation, on ne charge rien
     if (!['Admin', 'Superviseur', 'Superviseur Sécurité', 'SuperAdmin'].includes(this.userProfile)) {
