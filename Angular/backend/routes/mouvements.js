@@ -488,7 +488,6 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
         } else {
           // Fallback
           const validatorsToNotify = await Utilisateur.find({
-            profil: 'Superviseur Sécurité',
             niveauValidationSecu: { $gte: maxSecurityLevel },
             pays: mouvement.pays
           });
@@ -716,7 +715,6 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
           } else {
             // Fallback
             const validatorsToNotify = await Utilisateur.find({
-              profil: 'Superviseur Sécurité',
               niveauValidationSecu: { $gte: maxSecurityLevel },
               pays: mouvement.pays
             });

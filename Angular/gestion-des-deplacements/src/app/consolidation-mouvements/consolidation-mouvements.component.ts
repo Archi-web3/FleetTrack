@@ -90,10 +90,10 @@ export class ConsolidationMouvementsComponent implements OnInit {
 
         console.log('Chauffeurs chargés pour cette base:', this.chauffeurs.length);
 
-        // Filtrer les mouvements "validés" OU "en attente validation sécurité" (Workflow Séquentiel)
+        // Filtrer les mouvements "validés" OU "en attente validation sécurité" OU "en attente" (Workflow Parallèle)
         // IMPORTANT: Exclure les mouvements "regroupé" (mouvements enfants) ET Aérien/Maritime
         this.mouvementsValides = mouvements.filter(m =>
-          (m.statut === 'validé' || m.statut === 'en attente validation sécurité') &&
+          (m.statut === 'validé' || m.statut === 'en attente validation sécurité' || m.statut === 'en attente') &&
           (!m.vehicule || !m.chauffeur) &&
           m.stops && m.stops.length > 0 &&
           (m.modeTransport === 'Routier' || !m.modeTransport) // Par défaut Routier si non défini
