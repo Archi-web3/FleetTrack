@@ -505,33 +505,30 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       try {
         const SecurityConfig = require('../models/security-config.model');
         let config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base });
-        if (!config) {
-            config = await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
-        }
-        
-        console.log(`🛡️ [CREATE MOUVEMENT] Security config found: ${!!config}`);
-        
         let allValidators = [];
-        if (config) {
-          const rule = config.rules.find(r => r.level === maxSecurityLevel);
-          if (rule) {
-            console.log(`🛡️ [CREATE MOUVEMENT] Found rule for level ${maxSecurityLevel}. Validators count: ${rule.mandatoryValidators?.length}`);
-            if (rule.mandatoryValidators && rule.mandatoryValidators.length > 0) {
-              allValidators.push(...rule.mandatoryValidators.map(id => id.toString()));
-            }
-            if (rule.includeLowerLevels) {
-              for (let i = 1; i < maxSecurityLevel; i++) {
-                const lowerRule = config.rules.find(r => r.level === i);
-                if (lowerRule && lowerRule.mandatoryValidators) {
-                  allValidators.push(...lowerRule.mandatoryValidators.map(id => id.toString()));
+        const extractValidators = (cfg) => {
+          let vals = [];
+          if (cfg && cfg.rules) {
+            const rule = cfg.rules.find(r => r.level === maxSecurityLevel);
+            if (rule && rule.mandatoryValidators && rule.mandatoryValidators.length > 0) {
+              vals.push(...rule.mandatoryValidators.map(id => id.toString()));
+              if (rule.includeLowerLevels) {
+                for (let i = 1; i < maxSecurityLevel; i++) {
+                  const lowerRule = cfg.rules.find(r => r.level === i);
+                  if (lowerRule && lowerRule.mandatoryValidators) {
+                    vals.push(...lowerRule.mandatoryValidators.map(id => id.toString()));
+                  }
                 }
               }
             }
-          } else {
-            console.warn(`⚠️ [CREATE MOUVEMENT] No rule found for level ${maxSecurityLevel} in config!`);
           }
+          return vals;
+        };
+        allValidators = extractValidators(config);
+        if (allValidators.length === 0) {
+          config = await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
+          allValidators = extractValidators(config);
         }
-
         allValidators = [...new Set(allValidators)]; // Deduplicate
 
         if (allValidators.length > 0) {
@@ -751,27 +748,31 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
         mouvement.statut = 'en attente validation sécurité';
         
         try {
-          const config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base }) ||
-                         await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
-          
+          let config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base });
           let allValidators = [];
-          if (config) {
-            const rule = config.rules.find(r => r.level === maxSecurityLevel);
-            if (rule) {
-              if (rule.mandatoryValidators) {
-                allValidators.push(...rule.mandatoryValidators.map(id => id.toString()));
-              }
-              if (rule.includeLowerLevels) {
-                for (let i = 1; i < maxSecurityLevel; i++) {
-                  const lowerRule = config.rules.find(r => r.level === i);
-                  if (lowerRule && lowerRule.mandatoryValidators) {
-                    allValidators.push(...lowerRule.mandatoryValidators.map(id => id.toString()));
+          const extractValidators = (cfg) => {
+            let vals = [];
+            if (cfg && cfg.rules) {
+              const rule = cfg.rules.find(r => r.level === maxSecurityLevel);
+              if (rule && rule.mandatoryValidators && rule.mandatoryValidators.length > 0) {
+                vals.push(...rule.mandatoryValidators.map(id => id.toString()));
+                if (rule.includeLowerLevels) {
+                  for (let i = 1; i < maxSecurityLevel; i++) {
+                    const lowerRule = cfg.rules.find(r => r.level === i);
+                    if (lowerRule && lowerRule.mandatoryValidators) {
+                      vals.push(...lowerRule.mandatoryValidators.map(id => id.toString()));
+                    }
                   }
                 }
               }
             }
+            return vals;
+          };
+          allValidators = extractValidators(config);
+          if (allValidators.length === 0) {
+            config = await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
+            allValidators = extractValidators(config);
           }
-
           allValidators = [...new Set(allValidators)]; // Deduplicate
 
           if (allValidators.length > 0) {
