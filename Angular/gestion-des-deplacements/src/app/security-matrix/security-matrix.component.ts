@@ -126,7 +126,15 @@ export class SecurityMatrixComponent implements OnInit {
     }
 
     save(): void {
-        this.securityConfigService.saveConfig(this.config).subscribe(
+        // Nettoyer les objets avant l'envoi, s'assurer que ce sont bien des chaînes (IDs)
+        const configToSave = JSON.parse(JSON.stringify(this.config));
+        configToSave.rules.forEach((rule: any) => {
+            if (rule.mandatoryValidators) {
+                rule.mandatoryValidators = rule.mandatoryValidators.map((v: any) => typeof v === 'string' ? v : v._id);
+            }
+        });
+
+        this.securityConfigService.saveConfig(configToSave).subscribe(
             (res) => {
                 alert('Configuration sauvegardée avec succès !');
                 this.config = res; // Update with saved data

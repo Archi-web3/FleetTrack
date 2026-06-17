@@ -526,6 +526,11 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
         } else {
           // Fallback
           console.warn(`⚠️ [CREATE MOUVEMENT] FALLBACK TRIGGERED! No valid matrix config found for level ${maxSecurityLevel} and pays ${mouvement.pays}`);
+          if (config) {
+             console.warn(`⚠️ [CREATE MOUVEMENT] Config was found! Rules:`, JSON.stringify(config.rules));
+          } else {
+             console.warn(`⚠️ [CREATE MOUVEMENT] Config was NULL!`);
+          }
           const fallbackQuery = { niveauValidationSecu: { $gte: maxSecurityLevel } };
           if (mouvement.pays) fallbackQuery.pays = mouvement.pays;
           
@@ -533,7 +538,7 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
           mouvement.securityApprovals = validatorsToNotify.map(u => ({ 
             validator: u._id, 
             status: 'pending',
-            isBackup: u.niveauValidationSecu > maxSecurityLevel 
+            isBackup: Number(u.niveauValidationSecu) > maxSecurityLevel 
           }));
           mouvement.securityValidationMode = 'fallback';
         }
@@ -755,14 +760,20 @@ router.put('/mouvements/:id', auth(['SuperAdmin', 'Admin', 'Superviseur', 'Super
           allValidators = [...new Set(allValidators)]; // Deduplicate
 
           if (allValidators.length > 0) {
-            mouvement.securityApprovals = allValidators.map(uid => ({ validator: uid, status: 'pending' }));
+            mouvement.securityApprovals = allValidators.map(uid => ({ validator: uid, status: 'pending', isBackup: false }));
+            mouvement.securityValidationMode = 'matrix';
           } else {
             // Fallback
             const validatorsToNotify = await Utilisateur.find({
               niveauValidationSecu: { $gte: maxSecurityLevel },
               pays: mouvement.pays
             });
-            mouvement.securityApprovals = validatorsToNotify.map(u => ({ validator: u._id, status: 'pending' }));
+            mouvement.securityApprovals = validatorsToNotify.map(u => ({ 
+              validator: u._id, 
+              status: 'pending',
+              isBackup: Number(u.niveauValidationSecu) > maxSecurityLevel
+            }));
+            mouvement.securityValidationMode = 'fallback';
           }
         } catch (err) {
           console.error('❌ [UPDATE MOUVEMENT] Erreur populating securityApprovals:', err);
