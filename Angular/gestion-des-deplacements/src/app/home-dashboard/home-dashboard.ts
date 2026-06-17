@@ -119,7 +119,7 @@ export class HomeDashboardComponent implements OnInit {
             }
           }
           
-          m.validationTypeDisplay = displayTypes.join(' & ');
+          m.validationTypes = displayTypes;
           return keep;
         });
         console.log(`[HomeDashboard] Mouvements en attente conservés : ${this.pendingValidations.length}`);
