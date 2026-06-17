@@ -237,6 +237,21 @@ router.get('/mouvements', auth(), countryFilter, async (req, res) => {
     console.log('📥 [GET MOUVEMENTS] Mouvements récupérés:', mouvements.length);
     const traceCount = mouvements.filter(m => m.gpsTrace && m.gpsTrace.length > 0).length;
     console.log(`📥 [GET MOUVEMENTS] ${traceCount} mouvements ont une trace GPS.`);
+// --- DEBUG ROUTE ---
+router.get("/mouvements/debug-matrix", async (req, res) => {
+  try {
+    const SecurityConfig = require("../models/security-config.model");
+    const Utilisateur = require("../models/utilisateur.model");
+    const allConfigs = await SecurityConfig.find({}).populate("rules.mandatoryValidators");
+    const allUsers = await Utilisateur.find({ niveauValidationSecu: { $gte: 1 } });
+    res.json({
+      configs: allConfigs,
+      users: allUsers.map(u => ({ nom: u.nom, prenom: u.prenom, profil: u.profil, niv: u.niveauValidationSecu, type: typeof u.niveauValidationSecu }))
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
     res.json(mouvements);
   } catch (err) {
@@ -1212,24 +1227,6 @@ router.post('/mouvements/fix-countries', auth(), async (req, res) => {
   } catch (err) {
     console.error('❌ [FIX COUNTRIES] Erreur:', err);
     res.status(500).json({ message: err.message });
-  }
-});
-
-// --- DEBUG ROUTE ---
-router.get('/mouvements/debug-matrix', async (req, res) => {
-  try {
-    const SecurityConfig = require('../models/security-config.model');
-    const Utilisateur = require('../models/utilisateur.model');
-    
-    const allConfigs = await SecurityConfig.find({}).populate('rules.mandatoryValidators');
-    const allUsers = await Utilisateur.find({ niveauValidationSecu: { $gte: 1 } });
-    
-    res.json({
-      configs: allConfigs,
-      users: allUsers.map(u => ({ nom: u.nom, profil: u.profil, niv: u.niveauValidationSecu, type: typeof u.niveauValidationSecu }))
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 });
 
