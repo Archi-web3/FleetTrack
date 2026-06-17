@@ -131,6 +131,21 @@ app.post('/api/mouvements/test', async (req, res) => {
 
 
 // ROUTES : AUCUN app.use(auth()) global ICI !
+app.get('/api/debug-matrix', async (req, res) => {
+  try {
+    const SecurityConfig = require('./models/security-config.model');
+    const Utilisateur = require('./models/utilisateur.model');
+    const allConfigs = await SecurityConfig.find({}).populate('rules.mandatoryValidators');
+    const allUsers = await Utilisateur.find({ niveauValidationSecu: { $gte: 1 } });
+    res.json({
+      configs: allConfigs,
+      users: allUsers.map(u => ({ nom: u.nom, prenom: u.prenom, profil: u.profil, niv: u.niveauValidationSecu, type: typeof u.niveauValidationSecu, base: u.base }))
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.use('/api', mouvementsRoute);
 app.use('/api', utilisateursRoute);
 app.use('/api', vehiculesRoute);
