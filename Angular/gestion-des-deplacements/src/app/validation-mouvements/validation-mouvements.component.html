@@ -57,25 +57,42 @@
 
     <!-- Section Validateurs (Matrice Sécurité) -->
     <div *ngIf="mouvement.securityApprovals && mouvement.securityApprovals.length > 0" class="validators-section">
-      <strong>{{ 'VALIDATION.REQUIRED_VALIDATORS' | translate }}:</strong>
-      <div class="validators-grid">
-        <div *ngFor="let approval of mouvement.securityApprovals" class="validator-badge"
+      
+      <!-- Primary Validators -->
+      <strong *ngIf="getPrimaryValidators(mouvement).length > 0">{{ 'VALIDATION.REQUIRED_VALIDATORS' | translate }}:</strong>
+      <div class="validators-grid" *ngIf="getPrimaryValidators(mouvement).length > 0">
+        <div *ngFor="let approval of getPrimaryValidators(mouvement)" class="validator-badge"
           [class.approved]="approval.status === 'approved'" [class.pending]="approval.status === 'pending'">
-
           <span class="status-icon">
             <i *ngIf="approval.status === 'approved'" class="material-icons">check_circle</i>
             <i *ngIf="approval.status === 'pending'" class="material-icons">hourglass_empty</i>
           </span>
-
-          <!-- Nous n'avons que l'ID ici, idéalement il faudrait populate. 
-               Pour l'instant on affiche "Validateur" ou on pourrait récupérer les noms via un pipe ou service.
-               Simplification: On demandera au backend de populate 'securityApprovals.validator' dans 'getMouvements' -->
           <span class="validator-name">
             {{ approval.validator?.nom }} {{ approval.validator?.prenom }}
             <span *ngIf="!approval.validator?.nom">Validateur {{ approval.validator | slice:0:6 }}...</span>
           </span>
         </div>
       </div>
+
+      <!-- Backup Validators -->
+      <div *ngIf="getBackupValidators(mouvement).length > 0" style="margin-top: 15px;">
+        <strong style="color: #6c757d;">Validateurs de Secours (Niveau Supérieur) :</strong>
+        <div class="validators-grid" style="margin-top: 5px;">
+          <div *ngFor="let approval of getBackupValidators(mouvement)" class="validator-badge"
+            style="background-color: #f8f9fa; border: 1px dashed #6c757d;"
+            [class.approved]="approval.status === 'approved'" [class.pending]="approval.status === 'pending'">
+            <span class="status-icon">
+              <i *ngIf="approval.status === 'approved'" class="material-icons">check_circle</i>
+              <i *ngIf="approval.status === 'pending'" class="material-icons">hourglass_empty</i>
+            </span>
+            <span class="validator-name" style="color: #6c757d;">
+              {{ approval.validator?.nom }} {{ approval.validator?.prenom }}
+              <span *ngIf="!approval.validator?.nom">Validateur {{ approval.validator | slice:0:6 }}...</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div style="margin-top: 10px;">

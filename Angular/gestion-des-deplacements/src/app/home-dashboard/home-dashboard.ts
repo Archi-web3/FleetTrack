@@ -87,10 +87,12 @@ export class HomeDashboardComponent implements OnInit {
           const isSecuAttente = m.statutSecurite === 'en attente' || (!m.statutSecurite && m.statut === 'en attente validation sécurité') || (!m.statutSecurite && m.statut === 'en attente' && m.validationLevelRequired > 1);
 
           let keep = false;
+          let displayTypes: string[] = [];
 
           // Logistique
           if ((canValidateLogistics || this.userProfile === 'SuperAdmin') && isLogAttente) {
             console.log(`[HomeDashboard] Gardé (Logistique): ${m._id} - statut: ${m.statut}`);
+            displayTypes.push('Logistique');
             keep = true;
           }
           
@@ -98,6 +100,7 @@ export class HomeDashboardComponent implements OnInit {
           if ((canValidateSecurity || this.userProfile === 'SuperAdmin') && isSecuAttente) {
             if (this.userProfile === 'SuperAdmin') {
               console.log(`[HomeDashboard] Gardé (Sécurité SuperAdmin): ${m._id} - statut: ${m.statut}`);
+              displayTypes.push('Sécurité');
               keep = true; // Le SuperAdmin voit toutes les demandes de sécurité en attente
             } else if (m.securityApprovals && m.securityApprovals.length > 0) {
               const hasPending = m.securityApprovals.some((a:any) => {
@@ -106,14 +109,17 @@ export class HomeDashboardComponent implements OnInit {
               });
               if (hasPending) {
                 console.log(`[HomeDashboard] Gardé (Sécurité Validator): ${m._id} - statut: ${m.statut}`);
+                displayTypes.push('Sécurité');
                 keep = true;
               }
             } else {
               console.log(`[HomeDashboard] Gardé (Sécurité Legacy Fallback): ${m._id} - statut: ${m.statut}`);
+              displayTypes.push('Sécurité');
               keep = true; // Legacy fallback pour les anciens mouvements
             }
           }
           
+          m.validationTypeDisplay = displayTypes.join(' & ');
           return keep;
         });
         console.log(`[HomeDashboard] Mouvements en attente conservés : ${this.pendingValidations.length}`);

@@ -179,6 +179,17 @@ export class ValidationMouvementsComponent implements OnInit {
       }
     );
   }
+
+  getPrimaryValidators(mouvement: any): any[] {
+    if (!mouvement.securityApprovals) return [];
+    return mouvement.securityApprovals.filter((a: any) => !a.isBackup);
+  }
+
+  getBackupValidators(mouvement: any): any[] {
+    if (!mouvement.securityApprovals) return [];
+    return mouvement.securityApprovals.filter((a: any) => a.isBackup);
+  }
+
   // NOUVEAU: Vérifier si l'utilisateur connecté a déjà validé ce mouvement (dans la matrice)
   hasUserValidated(mouvement: any): boolean {
     if (!mouvement.securityApprovals || mouvement.securityApprovals.length === 0) return false;

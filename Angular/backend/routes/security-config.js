@@ -46,7 +46,7 @@ router.post('/security-config', auth(['SuperAdmin', 'Admin']), async (req, res) 
 
         // Upsert (Mise à jour ou Création)
         // La matrice est maintenant uniquement au niveau pays.
-        const filter = { pays: pays };
+        const filter = { pays: pays, base: null };
         const update = {
             pays: pays,
             rules: rules,

@@ -66,10 +66,13 @@ const mouvementSchema = new mongoose.Schema({
     validator: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' }, // L'utilisateur qui DOIT valider
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     approvedAt: { type: Date },
-    comment: { type: String } // Commentaire optionnel lors de la validation
+    comment: { type: String }, // Commentaire optionnel lors de la validation
+    isBackup: { type: Boolean, default: false } // Indique si cet utilisateur est un validateur de secours (niveau supérieur)
   }],
   // Champ calculé pour savoir si le consensus est atteint (facilite les requêtes frontend)
   securityConsensusReached: { type: Boolean, default: false },
+  securityValidationMode: { type: String, enum: ['matrix', 'fallback'], default: 'matrix' }, // Indique si le mouvement suit une matrice stricte ou le mode fallback
+
 
   // Gestion Financière (Module 2)
   projetsVentilation: [{

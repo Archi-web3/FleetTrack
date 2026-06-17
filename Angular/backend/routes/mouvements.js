@@ -521,15 +521,21 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
 
         if (allValidators.length > 0) {
           console.log(`🛡️ [CREATE MOUVEMENT] Using matrix validators:`, allValidators);
-          mouvement.securityApprovals = allValidators.map(uid => ({ validator: uid, status: 'pending' }));
+          mouvement.securityApprovals = allValidators.map(uid => ({ validator: uid, status: 'pending', isBackup: false }));
+          mouvement.securityValidationMode = 'matrix';
         } else {
           // Fallback
           console.warn(`⚠️ [CREATE MOUVEMENT] FALLBACK TRIGGERED! No valid matrix config found for level ${maxSecurityLevel} and pays ${mouvement.pays}`);
-          const validatorsToNotify = await Utilisateur.find({
-            niveauValidationSecu: { $gte: maxSecurityLevel },
-            pays: mouvement.pays
-          });
-          mouvement.securityApprovals = validatorsToNotify.map(u => ({ validator: u._id, status: 'pending' }));
+          const fallbackQuery = { niveauValidationSecu: { $gte: maxSecurityLevel } };
+          if (mouvement.pays) fallbackQuery.pays = mouvement.pays;
+          
+          const validatorsToNotify = await Utilisateur.find(fallbackQuery);
+          mouvement.securityApprovals = validatorsToNotify.map(u => ({ 
+            validator: u._id, 
+            status: 'pending',
+            isBackup: u.niveauValidationSecu > maxSecurityLevel 
+          }));
+          mouvement.securityValidationMode = 'fallback';
         }
       } catch (err) {
         console.error('❌ [CREATE MOUVEMENT] Erreur populating securityApprovals:', err);
@@ -923,30 +929,40 @@ router.put('/mouvements/:id/validate', auth(), countryFilter, async (req, res) =
         await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
 
       let isConsensusReached = false;
-      const totalApproved = mouvement.securityApprovals.filter(a => a.status === 'approved').length;
-      const totalRequired = mouvement.securityApprovals.length;
 
-      // Par défaut: Unanimité
-      let requireUnanimity = true;
-      let quorum = totalRequired;
+      if (mouvement.securityValidationMode === 'fallback') {
+        // En mode Fallback, une seule validation (Primary ou Backup) suffit pour valider la sécurité
+        console.log('🛡️ [VALIDATE MATRIX] Mode FALLBACK détecté. Une seule validation suffit.');
+        isConsensusReached = true;
+        
+        // Optionnel: On pourrait marquer les autres comme "non requis" ou auto-approuvés,
+        // mais le consensusReached=true suffira pour faire avancer le mouvement.
+      } else {
+        const totalApproved = mouvement.securityApprovals.filter(a => a.status === 'approved').length;
+        const totalRequired = mouvement.securityApprovals.length;
 
-      if (config) {
-        const rule = config.rules.find(r => r.level === requiredLevel);
-        if (rule) {
-          // Si requireUnanimity est défini explicitement à false, on utilise le quorum
-          if (rule.requireUnanimity === false) {
-            requireUnanimity = false;
-            quorum = rule.quorum || 1;
+        // Par défaut: Unanimité
+        let requireUnanimity = true;
+        let quorum = totalRequired;
+
+        if (config) {
+          const rule = config.rules.find(r => r.level === requiredLevel);
+          if (rule) {
+            // Si requireUnanimity est défini explicitement à false, on utilise le quorum
+            if (rule.requireUnanimity === false) {
+              requireUnanimity = false;
+              quorum = rule.quorum || 1;
+            }
           }
         }
-      }
 
-      console.log(`🛡️ [VALIDATE MATRIX] Status: ${totalApproved}/${totalRequired} approved. Rule: ${requireUnanimity ? 'Unanimité' : 'Quorum (' + quorum + ')'}`);
+        console.log(`🛡️ [VALIDATE MATRIX] Status: ${totalApproved}/${totalRequired} approved. Rule: ${requireUnanimity ? 'Unanimité' : 'Quorum (' + quorum + ')'}`);
 
-      if (requireUnanimity) {
-        isConsensusReached = (totalApproved === totalRequired);
-      } else {
-        isConsensusReached = (totalApproved >= quorum);
+        if (requireUnanimity) {
+          isConsensusReached = (totalApproved === totalRequired);
+        } else {
+          isConsensusReached = (totalApproved >= quorum);
+        }
       }
 
       if (isConsensusReached) {
