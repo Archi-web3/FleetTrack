@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 
@@ -25,11 +25,15 @@ export class SecurityConfigService {
 
     constructor(private http: HttpClient) { }
 
-    getConfig(): Observable<SecurityConfig> {
-        return this.http.get<SecurityConfig>(this.apiUrl);
+    getConfig(baseId?: string | null): Observable<SecurityConfig> {
+        let params = new HttpParams();
+        if (baseId !== undefined) {
+            params = params.set('baseId', baseId === null ? 'null' : baseId);
+        }
+        return this.http.get<SecurityConfig>(this.apiUrl, { params });
     }
 
-    saveConfig(config: SecurityConfig): Observable<SecurityConfig> {
-        return this.http.post<SecurityConfig>(this.apiUrl, config);
+    saveConfig(config: SecurityConfig, baseId?: string | null): Observable<SecurityConfig> {
+        return this.http.post<SecurityConfig>(this.apiUrl, { ...config, base: baseId === undefined ? config.base : baseId });
     }
 }

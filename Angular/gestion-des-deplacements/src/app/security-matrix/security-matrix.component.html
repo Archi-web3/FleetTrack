@@ -9,7 +9,20 @@
         <li><strong>Niveau 4</strong> : Coordination</li>
         <li><strong>Niveau 2 et 3</strong> : Base</li>
       </ul>
+      <div style="margin-top: 15px; padding: 10px; background-color: rgba(255, 255, 255, 0.5); border-left: 4px solid #0056b3; border-radius: 4px;">
+        <strong>Logique de validation :</strong> Lors d'un mouvement, le système vérifie d'abord la matrice spécifique à la Base de départ. Si celle-ci n'a pas de validateur défini pour le niveau de risque requis, le système se rabat automatiquement sur la matrice globale (Bureau Pays).
+      </div>
     </app-info-banner>
+
+    <div class="base-selector-container" *ngIf="bases && bases.length > 0" style="margin: 20px 0; display: flex; align-items: center; gap: 15px; background-color: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+      <label for="baseSelector" style="font-weight: 600; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 8px;">
+        <mat-icon style="color: #3b82f6;">location_city</mat-icon> Configuration par Base :
+      </label>
+      <select id="baseSelector" [(ngModel)]="selectedBaseId" (change)="onBaseChange()" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #cbd5e1; background-color: white; font-size: 14px; min-width: 250px; outline: none; transition: border-color 0.2s;">
+        <option [ngValue]="null">🌍 Bureau Pays (Matrice Globale & Fallback)</option>
+        <option *ngFor="let base of bases" [ngValue]="base._id">🏢 Base : {{ base.nom }}</option>
+      </select>
+    </div>
 
     <div *ngIf="isLoading" class="loading">
         Chargement...

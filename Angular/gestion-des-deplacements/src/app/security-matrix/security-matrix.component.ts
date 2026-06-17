@@ -5,6 +5,7 @@ import { SecurityConfigService, SecurityConfig, SecurityRule } from '../security
 import { UtilisateurService } from '../utilisateur.service';
 import { AuthService } from '../auth.service';
 import { PermissionsService } from '../services/permissions.service';
+import { AdminService } from '../admin.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -26,15 +27,43 @@ export class SecurityMatrixComponent implements OnInit {
     errorMessage: string | null = null;
     canManageMatrix = false;
 
+    bases: any[] = [];
+    selectedBaseId: string | null = null;
+
     constructor(
         private securityConfigService: SecurityConfigService,
         private utilisateurService: UtilisateurService,
         private authService: AuthService,
-        public perms: PermissionsService
+        public perms: PermissionsService,
+        private adminService: AdminService
     ) { }
 
     ngOnInit(): void {
         this.canManageMatrix = this.perms.hasPermission('security_matrix', 'manage') || localStorage.getItem('userProfile') === 'SuperAdmin';
+        this.loadBasesAndData();
+    }
+
+    loadBasesAndData(): void {
+        const currentUser = this.authService.getUserDetails();
+        const paysId = currentUser?.pays;
+        
+        if (paysId && paysId !== 'all') {
+            this.adminService.getBases(paysId).subscribe(
+                (bases) => {
+                    this.bases = bases;
+                    this.loadData();
+                },
+                (err) => {
+                    console.error('Erreur chargement bases', err);
+                    this.loadData(); // On charge quand même les données
+                }
+            );
+        } else {
+            this.loadData();
+        }
+    }
+
+    onBaseChange(): void {
         this.loadData();
     }
 
@@ -45,12 +74,15 @@ export class SecurityMatrixComponent implements OnInit {
         // On suppose qu'il y a une méthode pour ça, sinon on filtre
         this.utilisateurService.getUtilisateurs().subscribe(users => {
             // Filtrer pour ne garder que le personnel administratif/sécurité
+            // Si une base est sélectionnée, on pourrait aussi filtrer les utilisateurs de cette base ? 
+            // Mais généralement la matrice utilise des validateurs qui peuvent venir d'ailleurs (ex: Admin RDC).
+            // On garde tous les superviseurs du pays pour permettre la flexibilité.
             this.supervisors = users.filter((u: any) => 
                 !['Chauffeur', 'Guest', 'Technicien'].includes(u.profil) && u.niveauValidationSecu >= 1
             );
 
             // 2. Charger la config existante
-            this.securityConfigService.getConfig().subscribe(
+            this.securityConfigService.getConfig(this.selectedBaseId).subscribe(
                 (cfg) => {
                     this.config = cfg;
                     this.initializeEmptyRules();
@@ -134,7 +166,7 @@ export class SecurityMatrixComponent implements OnInit {
             }
         });
 
-        this.securityConfigService.saveConfig(configToSave).subscribe(
+        this.securityConfigService.saveConfig(configToSave, this.selectedBaseId).subscribe(
             (res) => {
                 alert('Configuration sauvegardée avec succès !');
                 this.config = res; // Update with saved data
