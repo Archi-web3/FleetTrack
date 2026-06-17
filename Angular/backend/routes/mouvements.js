@@ -387,21 +387,50 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
       console.log('🆕 [CREATE MOUVEMENT] Demandeur assigné depuis le token:', mouvement.demandeur);
     }
 
-    // Assigner la base du créateur au mouvement
-    if (req.utilisateur.base) {
-      mouvement.base = req.utilisateur.base;
-      console.log('🆕 [CREATE MOUVEMENT] Base assignée:', mouvement.base);
-    } else {
-      console.warn('⚠️ [CREATE MOUVEMENT] Aucune base assignée à l\'utilisateur!');
+    // -----------------------------------------------------------------------------------
+    // INFÉRENCE DE LA BASE ET DU PAYS (Correction pour SuperAdmin sans base/pays fixes)
+    // -----------------------------------------------------------------------------------
+    let inferredBase = null;
+    let inferredPays = null;
+    
+    if (req.body.type !== 'maintenance' && req.body.stops && req.body.stops.length > 0) {
+      try {
+        const firstStopLieu = await Lieu.findById(req.body.stops[0].lieu);
+        if (firstStopLieu) {
+          inferredBase = firstStopLieu.base;
+          inferredPays = firstStopLieu.pays;
+        }
+      } catch (err) {
+        console.error('❌ [CREATE MOUVEMENT] Erreur inférence depuis le lieu de départ:', err);
+      }
     }
 
-    // Assigner le pays depuis l'utilisateur si disponible
+    // 1. Assigner la base
+    if (req.utilisateur.base) {
+      mouvement.base = req.utilisateur.base;
+      console.log('🆕 [CREATE MOUVEMENT] Base assignée depuis l\'utilisateur:', mouvement.base);
+    } else if (inferredBase) {
+      mouvement.base = inferredBase;
+      console.log('🆕 [CREATE MOUVEMENT] Base inférée depuis le lieu de départ:', mouvement.base);
+    } else {
+      console.warn('⚠️ [CREATE MOUVEMENT] Aucune base assignée au mouvement!');
+    }
+
+    // 2. Assigner le pays
     if (req.utilisateur.pays) {
       mouvement.pays = req.utilisateur.pays;
-      console.log('🆕 [CREATE MOUVEMENT] Pays assigné:', mouvement.pays);
+      console.log('🆕 [CREATE MOUVEMENT] Pays assigné depuis l\'utilisateur:', mouvement.pays);
+    } else if (req.selectedCountry && req.selectedCountry !== 'all' && req.selectedCountry !== 'none') {
+      // Priorité à la sélection de l'interface (ex: SuperAdmin qui a sélectionné RDC)
+      mouvement.pays = req.selectedCountry;
+      console.log('🆕 [CREATE MOUVEMENT] Pays assigné depuis la sélection (selectedCountry):', mouvement.pays);
+    } else if (inferredPays) {
+      mouvement.pays = inferredPays;
+      console.log('🆕 [CREATE MOUVEMENT] Pays inféré depuis le lieu de départ:', mouvement.pays);
     } else {
-      console.warn('⚠️ [CREATE MOUVEMENT] Aucun pays assigné à l\'utilisateur!');
+      console.warn('⚠️ [CREATE MOUVEMENT] Aucun pays assigné au mouvement!');
     }
+    // -----------------------------------------------------------------------------------
 
     // Si le projet n'est pas fourni, le récupérer depuis le demandeur
     if (!mouvement.projet && mouvement.demandeur) {
@@ -460,14 +489,19 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
     if (mouvement.statutSecurite === 'en attente') {
       try {
         const SecurityConfig = require('../models/security-config.model');
-        const config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base }) ||
-                       await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
+        let config = await SecurityConfig.findOne({ pays: mouvement.pays, base: mouvement.base });
+        if (!config) {
+            config = await SecurityConfig.findOne({ pays: mouvement.pays, base: null });
+        }
+        
+        console.log(`🛡️ [CREATE MOUVEMENT] Security config found: ${!!config}`);
         
         let allValidators = [];
         if (config) {
           const rule = config.rules.find(r => r.level === maxSecurityLevel);
           if (rule) {
-            if (rule.mandatoryValidators) {
+            console.log(`🛡️ [CREATE MOUVEMENT] Found rule for level ${maxSecurityLevel}. Validators count: ${rule.mandatoryValidators?.length}`);
+            if (rule.mandatoryValidators && rule.mandatoryValidators.length > 0) {
               allValidators.push(...rule.mandatoryValidators.map(id => id.toString()));
             }
             if (rule.includeLowerLevels) {
@@ -478,15 +512,19 @@ router.post('/mouvements', auth(), countryFilter, async (req, res) => {
                 }
               }
             }
+          } else {
+            console.warn(`⚠️ [CREATE MOUVEMENT] No rule found for level ${maxSecurityLevel} in config!`);
           }
         }
 
         allValidators = [...new Set(allValidators)]; // Deduplicate
 
         if (allValidators.length > 0) {
+          console.log(`🛡️ [CREATE MOUVEMENT] Using matrix validators:`, allValidators);
           mouvement.securityApprovals = allValidators.map(uid => ({ validator: uid, status: 'pending' }));
         } else {
           // Fallback
+          console.warn(`⚠️ [CREATE MOUVEMENT] FALLBACK TRIGGERED! No valid matrix config found for level ${maxSecurityLevel} and pays ${mouvement.pays}`);
           const validatorsToNotify = await Utilisateur.find({
             niveauValidationSecu: { $gte: maxSecurityLevel },
             pays: mouvement.pays
