@@ -70,8 +70,7 @@
             <div class="val-body">
               <span><strong>Demandeur:</strong> {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }}</span>
               <span><strong>Type de validation:</strong> 
-                <span *ngIf="m.statutLogistique === 'en attente' && ['Admin', 'Superviseur', 'SuperAdmin'].includes(userProfile)" style="color: var(--primary-color);">Logistique</span>
-                <span *ngIf="m.statutSecurite === 'en attente' && ['Superviseur Sécurité', 'SuperAdmin'].includes(userProfile)" style="color: #dc2626;">Sécurité</span>
+                <span style="color: var(--primary-color);">{{ m.validationTypeDisplay }}</span>
               </span>
             </div>
           </div>
