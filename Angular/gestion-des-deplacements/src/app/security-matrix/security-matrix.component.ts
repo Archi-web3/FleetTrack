@@ -44,8 +44,8 @@ export class SecurityMatrixComponent implements OnInit {
     }
 
     loadBasesAndData(): void {
-        const currentUser = this.authService.getUserDetails();
-        const paysId = currentUser?.pays;
+        const currentUser = this.authService.getUser();
+        const paysId = currentUser?.pays?.id || localStorage.getItem('selectedCountry');
         
         if (paysId && paysId !== 'all') {
             this.adminService.getBases(paysId).subscribe(
