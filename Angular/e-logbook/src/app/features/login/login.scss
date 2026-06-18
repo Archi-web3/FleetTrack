@@ -1,74 +1,181 @@
-// NOUVEAU: Styles pour le bandeau supérieur
-.login-toolbar {
-    height: 64px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Dynamic gradient background */
+  background: linear-gradient(-45deg, #001d35, #003e6b, #005fb6, #3d91e0);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  padding: 16px;
+  position: relative;
+}
 
-    .toolbar-logo {
-        height: 40px;
-        width: auto;
-    }
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-    .toolbar-spacer {
-        flex: 1 1 auto;
-    }
+.top-right-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
 }
 
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 64px);
-    background: #ffffff;
-    padding: 16px;
+  width: 100%;
+  max-width: 420px;
+  animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.login-card {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  padding: 40px 30px;
 }
 
 .login-branding {
-    text-align: center;
-    margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .acf-logo {
-    max-width: 150px;
-    height: auto;
-    margin-bottom: 15px;
+  max-width: 130px;
+  height: auto;
+  margin-bottom: 20px;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
 }
 
 .app-title {
-    font-size: 28px;
-    font-weight: 600;
-    color: #005fb6;
-    margin: 0;
-    letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #003258;
+  margin: 0 0 5px 0;
+  letter-spacing: 0.5px;
+}
+
+.version {
+  font-size: 14px;
+  font-weight: 400;
+  color: #64748b;
+  vertical-align: middle;
+}
+
+.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #52ae32; /* ACF Green */
+  margin: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Warning Offline */
+.offline-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background-color: rgba(255, 193, 7, 0.15);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  color: #b48500;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  mat-icon {
+    color: #d97706;
+    margin-top: 2px;
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
 }
 
 .full-width {
-    width: 100%;
-    margin-bottom: 16px;
+  width: 100%;
+}
+
+.custom-input {
+  margin-bottom: 8px;
+  
+  mat-icon {
+    color: #64748b;
+    margin-right: 8px;
+  }
 }
 
 .login-btn {
-    height: 56px;
-    font-size: 18px;
-    margin-top: 16px;
+  height: 52px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #005fb6, #004a7f);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.login-btn:not([disabled]):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 95, 182, 0.4);
+}
+
+.login-btn[disabled] {
+  background: #cbd5e1;
+  color: #94a3b8;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .error-message {
-    color: #f44336;
-    margin-bottom: 16px;
-    text-align: center;
-}
-
-mat-card-title {
-    font-size: 24px;
-    text-align: center;
-}
-
-mat-card-subtitle {
-    text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
 }
