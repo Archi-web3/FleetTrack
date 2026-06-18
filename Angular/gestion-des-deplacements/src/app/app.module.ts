@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { ListeMouvementsComponent } from './liste-mouvements/liste-mouvements.component';
+import { ListeMouvementsComponent } from './features/liste-mouvements/liste-mouvements.component';
 
 @NgModule({
   declarations: [],

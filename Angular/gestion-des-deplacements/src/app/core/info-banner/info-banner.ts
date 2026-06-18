@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { PermissionsService } from '../../services/permissions.service';
-import { SettingsService } from '../../settings.service';
-import { AuthService } from '../../auth.service';
+import { PermissionsService } from '../services/permissions.service';
+import { SettingsService } from '../services/settings.service';
+import { AuthService } from '../services/auth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({

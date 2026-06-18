@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import { AuthService } from './auth.service';
-import { SettingsService } from './settings.service';
-import { PermissionsService } from './services/permissions.service';
+import { AuthService } from './core/services/auth.service';
+import { SettingsService } from './core/services/settings.service';
+import { PermissionsService } from './core/services/permissions.service';
 // Imports pour Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,12 +12,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CountrySelectorComponent } from './country-selector/country-selector.component';
-import { LanguageSelectorComponent } from './language-selector/language-selector.component';
+import { CountrySelectorComponent } from './shared/components/country-selector/country-selector.component';
+import { LanguageSelectorComponent } from './shared/components/language-selector/language-selector.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { MatDialog } from '@angular/material/dialog';
-import { DemandeMouvementComponent } from './demande-mouvement/demande-mouvement.component';
+import { DemandeMouvementComponent } from './features/demande-mouvement/demande-mouvement.component';
 
 import { TranslateService } from '@ngx-translate/core';
 

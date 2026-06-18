@@ -5,9 +5,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AuditService, AuditLog } from '../../core/services/audit.service';
-import { PaysService } from '../../pays.service';
+import { PaysService } from '../../core/services/pays.service';
 
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

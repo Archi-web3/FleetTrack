@@ -5,8 +5,8 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { countryInterceptor } from './interceptors/country.interceptor';
-import { authInterceptor } from './interceptors/auth.interceptor';
+import { countryInterceptor } from './core/interceptors/country.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 // Imports spécifiques pour angular-calendar
 import { provideAnimations } from '@angular/platform-browser/animations';

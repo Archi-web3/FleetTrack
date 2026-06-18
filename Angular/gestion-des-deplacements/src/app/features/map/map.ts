@@ -10,9 +10,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
-import { MouvementService } from '../../mouvement.service';
-import { VehiculeService } from '../../vehicule.service';
-import { MapMouvementsComponent } from '../../map-mouvements/map-mouvements.component';
+import { MouvementService } from '../../core/services/mouvement.service';
+import { VehiculeService } from '../../core/services/vehicule.service';
+import { MapMouvementsComponent } from '../map-mouvements/map-mouvements.component';
 import { ViewChild } from '@angular/core';
 
 import { startOfWeek, endOfWeek } from 'date-fns';

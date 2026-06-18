@@ -11,7 +11,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { SecurityAlertService, Alert } from './security-alert.service';
-import { VehiculeService } from '../../vehicule.service';
+import { VehiculeService } from '../../core/services/vehicule.service';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { TranslateModule } from '@ngx-translate/core';
 
