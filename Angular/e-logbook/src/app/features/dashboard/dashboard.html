@@ -52,9 +52,9 @@
         <mat-card *ngIf="hasActiveTrip()" class="dashboard-card active-trip-card" (click)="resumeActiveTrip()">
             <mat-card-content>
                 <div class="card-icon-container">
-                    <mat-icon class="card-icon" style="color: #9c27b0;">trip_origin</mat-icon>
+                    <mat-icon class="card-icon">trip_origin</mat-icon>
                 </div>
-                <h3 style="color: #9c27b0;">🚗 {{ 'DASHBOARD.ACTIVE_TRIP' | translate }}</h3>
+                <h3>🚗 {{ 'DASHBOARD.ACTIVE_TRIP' | translate }}</h3>
                 <p class="card-description">{{ 'DASHBOARD.ACTIVE_TRIP_DESC' | translate }}</p>
             </mat-card-content>
         </mat-card>
@@ -88,7 +88,7 @@
         <mat-card class="dashboard-card service-card" (click)="navigateTo('/scheduled-service')">
             <mat-card-content>
                 <div class="card-icon-container">
-                    <mat-icon class="card-icon" style="color: #673ab7;" [matBadge]="alertsCount"
+                    <mat-icon class="card-icon" [matBadge]="alertsCount"
                         [matBadgeHidden]="alertsCount === 0" matBadgeColor="warn" matBadgeSize="medium">
                         build_circle
                     </mat-icon>
@@ -116,7 +116,7 @@
         <mat-card class="dashboard-card waiver-card" (click)="navigateTo('/waiver')">
             <mat-card-content>
                 <div class="card-icon-container">
-                    <mat-icon class="card-icon" style="color: #607d8b;">draw</mat-icon>
+                    <mat-icon class="card-icon">draw</mat-icon>
                 </div>
                 <h3>{{ 'DASHBOARD.WAIVER' | translate }}</h3>
                 <p class="card-description">{{ 'DASHBOARD.WAIVER_DESC' | translate }}</p>

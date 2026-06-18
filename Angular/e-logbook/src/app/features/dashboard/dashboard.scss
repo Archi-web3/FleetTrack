@@ -10,10 +10,10 @@
     align-items: center;
     margin-bottom: 30px;
     padding: 20px;
-    background: linear-gradient(135deg, #005fb6 0%, #003e6b 100%);
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%); /* Hulo Dark Grey */
     border-radius: 12px;
     color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     position: relative; // Pour positionner la cloche en absolu
 
     // NOUVEAU: Bouton Notification Absolute
@@ -134,13 +134,18 @@
 
 .dashboard-card {
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 
     &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(139, 92, 246, 0.15); /* Purple shadow hint */
+        border-color: rgba(139, 92, 246, 0.3);
     }
 
     mat-card-content {
@@ -150,110 +155,41 @@
 
     .card-icon-container {
         margin-bottom: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 15px auto;
+        background: #f5f3ff; /* Very light purple circle */
+        border-radius: 50%;
     }
 
     .card-icon {
-        font-size: 64px;
-        width: 64px;
-        height: 64px;
-        display: inline-block;
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        color: #8b5cf6; /* Hulo Purple */
     }
 
     h3 {
         margin: 10px 0;
         font-size: 20px;
-        font-weight: 600;
+        font-weight: 700;
+        color: #1f2937; /* Dark Grey Title */
     }
 
     .card-description {
         margin: 5px 0 0 0;
-        color: #666;
+        color: #6b7280; /* Light Grey Description */
         font-size: 14px;
     }
 }
 
-.planning-card {
-    // Vert ACF: rgb(82, 174, 50)
-    background: linear-gradient(135deg, rgb(82, 174, 50) 0%, rgb(65, 140, 40) 100%);
-    color: white;
-
-    .card-icon {
-        color: white;
-    }
-
-    .card-description {
-        color: rgba(255, 255, 255, 0.9);
-    }
-}
-
-// NOUVEAU: Checklist Card - Orange
-.checklist-card {
-    background: linear-gradient(135deg, rgb(255, 152, 0) 0%, rgb(230, 120, 0) 100%);
-    color: white;
-
-    .card-icon {
-        color: white;
-    }
-
-    .card-description {
-        color: rgba(255, 255, 255, 0.9);
-    }
-}
-
-.trips-card {
-    // Bleu ACF: rgb(0, 95, 182)
-    background: linear-gradient(135deg, rgb(0, 95, 182) 0%, rgb(0, 70, 140) 100%);
-    color: white;
-
-    .card-icon {
-        color: white;
-    }
-
-    .card-description {
-        color: rgba(255, 255, 255, 0.9);
-    }
-}
-
-.fuel-card {
-    // Violet professionnel
-    background: linear-gradient(135deg, rgb(142, 68, 173) 0%, rgb(106, 48, 147) 100%);
-    color: white;
-
-    .card-icon {
-        color: white;
-    }
-
-    .card-description {
-        color: rgba(255, 255, 255, 0.9);
-    }
-}
-
-.maintenance-card {
-    // Gris/Bleu neutre professionnel
-    background: linear-gradient(135deg, rgb(96, 125, 139) 0%, rgb(69, 90, 100) 100%);
-    color: white;
-
-    .card-icon {
-        color: white;
-    }
-
-    .card-description {
-        color: rgba(255, 255, 255, 0.9);
-    }
-}
-
-.incidents-card {
-    // Orange ACF: rgb(238, 114, 3)
-    background: linear-gradient(135deg, rgb(238, 114, 3) 0%, rgb(200, 90, 0) 100%);
-    color: white;
-
-    .card-icon {
-        color: white;
-    }
-
-    .card-description {
-        color: rgba(255, 255, 255, 0.9);
-    }
+/* Specific highlight for active trip if needed */
+.active-trip-card {
+    border: 2px solid #8b5cf6;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(139, 92, 246, 0.1) 100%);
 }
 
 /* Responsive */
