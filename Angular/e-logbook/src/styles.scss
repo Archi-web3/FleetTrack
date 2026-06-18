@@ -9,48 +9,48 @@
 // Primary Blue: RGB(0, 95, 182) = #005fb6
 // Secondary Green: RGB(82, 174, 50) = #52ae32
 
-// Define custom ACF color palettes
-$acf-blue-palette: (
+// Define custom Hulo color palettes (Purple/Grey)
+$hulo-purple-palette: (
   0: #000000,
-  10: #001d35,
-  20: #003258,
-  25: #003e6b,
-  30: #004a7f,
-  35: #005693,
-  40: #005fb6,
-  50: #0077d4,
-  60: #3d91e0,
-  70: #5fa8ec,
-  80: #7ebff7,
-  90: #b8dcff,
-  95: #ddeeff,
-  98: #f5f9ff,
-  99: #fafcff,
+  10: #2e1065,
+  20: #4c1d95,
+  25: #5b21b6,
+  30: #6d28d9,
+  35: #7c3aed,
+  40: #8b5cf6, // Primary Purple
+  50: #a78bfa,
+  60: #c4b5fd,
+  70: #ddd6fe,
+  80: #ede9fe,
+  90: #f5f3ff,
+  95: #faf5ff,
+  98: #fdf2f8,
+  99: #fdf4ff,
   100: #ffffff,
 );
 
-$acf-green-palette: (
+$hulo-grey-palette: (
   0: #000000,
-  10: #0d2000,
-  20: #1a3600,
-  25: #224200,
-  30: #2a4f00,
-  35: #335c00,
-  40: #3d6900,
-  50: #52ae32,
-  60: #6bc04a,
-  70: #84d162,
-  80: #9ee27b,
-  90: #b8f394,
-  95: #d2ffad,
-  98: #eaffd9,
-  99: #f5ffec,
+  10: #111827,
+  20: #1f2937,
+  25: #374151,
+  30: #4b5563,
+  35: #6b7280,
+  40: #9ca3af,
+  50: #d1d5db,
+  60: #e5e7eb,
+  70: #f3f4f6, // Secondary Background
+  80: #f9fafb,
+  90: #ffffff,
+  95: #ffffff,
+  98: #ffffff,
+  99: #ffffff,
   100: #ffffff,
 );
 
 html {
-  @include mat.theme((color: (primary: $acf-blue-palette,
-        tertiary: $acf-green-palette,
+  @include mat.theme((color: (primary: $hulo-purple-palette,
+        tertiary: $hulo-grey-palette,
       ),
       typography: Inter,
       density: 0,
@@ -97,8 +97,8 @@ body {
 body {
   margin: 0;
   font-family: 'Inter', "Helvetica Neue", sans-serif;
-  background-color: #f4f7f9; /* Soft background */
-  color: #333;
+  background-color: #f3f4f6; /* Hulo soft grey background */
+  color: #1f2937; /* Hulo dark grey text */
 }
 
 /* Animations globales */
@@ -181,7 +181,7 @@ select {
 }
 .mat-mdc-raised-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 95, 182, 0.3) !important;
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4) !important;
 }
 .mat-mdc-raised-button:active {
   transform: translateY(0);

@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   /* Dynamic gradient background */
-  background: linear-gradient(-45deg, #001d35, #003e6b, #005fb6, #3d91e0);
+  background: linear-gradient(-45deg, #2e1065, #4c1d95, #7c3aed, #d8b4fe, #f3f4f6);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
   padding: 16px;
@@ -67,7 +67,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 26px;
   font-weight: 700;
-  color: #003258;
+  color: #111827; /* Dark Grey for Title */
   margin: 0 0 5px 0;
   letter-spacing: 0.5px;
 }
@@ -82,7 +82,7 @@
 .subtitle {
   font-family: 'Inter', sans-serif;
   font-size: 16px;
-  color: #52ae32; /* ACF Green */
+  color: #8b5cf6; /* Hulo Purple */
   margin: 0;
   font-weight: 500;
   text-transform: uppercase;
@@ -133,7 +133,7 @@
   font-weight: 600;
   margin-top: 10px;
   border-radius: 50px;
-  background: linear-gradient(135deg, #005fb6, #004a7f);
+  background: linear-gradient(135deg, #8b5cf6, #5b21b6); /* Hulo Purple Gradient */
   color: white;
   display: flex;
   justify-content: center;
@@ -144,7 +144,7 @@
 
 .login-btn:not([disabled]):hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 95, 182, 0.4);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4); /* Purple Shadow */
 }
 
 .login-btn[disabled] {
