@@ -10,7 +10,10 @@
     <div class="hero-banner-content">
       <div class="hero-logo-section">
         <img [src]="brandSettings?.logoDark || 'assets/logo_acf.png'" alt="Logo" class="hero-logo-img">
-        <h2 *ngIf="!brandSettings?.logoDark" class="hero-app-name">{{ brandSettings?.appName || 'FleetTrack' }}</h2>
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+          <h2 *ngIf="!brandSettings?.logoDark" class="hero-app-name" style="margin: 0;">{{ brandSettings?.appName || 'FleetTrack' }}</h2>
+          <span *ngIf="brandSettings?.appTagline" class="hero-app-tagline" style="margin: 0; font-size: 14px; font-weight: 400; opacity: 0.9; margin-top: 4px; color: white;">{{ brandSettings?.appTagline }}</span>
+        </div>
       </div>
       
       <div class="hero-welcome-card">

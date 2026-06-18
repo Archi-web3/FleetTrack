@@ -72,6 +72,11 @@
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.appName">
             </div>
             
+            <div class="modern-form-group">
+              <label>Tagline (Sous-titre)</label>
+              <input type="text" class="modern-input" [(ngModel)]="brandSettings.appTagline" placeholder="Votre phrase d'accroche...">
+            </div>
+            
             <div class="modern-form-group" style="grid-column: 1 / -1;">
               <label>Bandeau d'actualités (Accueil)</label>
               <textarea class="modern-input" [(ngModel)]="brandSettings.newsBanner" placeholder="Message important pour tous les utilisateurs..."></textarea>
@@ -154,6 +159,27 @@
                 <div class="image-preview" *ngIf="!useDefaultLogoLight && brandSettings.logoLight">
                   <img [src]="brandSettings.logoLight" alt="Logo Light" style="height: 40px; background: #1e293b; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('logoLight')"><mat-icon>delete</mat-icon></button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mobile App Logo -->
+            <div class="modern-form-group">
+              <label>Logo de l'application mobile (eLogbook)</label>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox" [(ngModel)]="useDefaultMobileLogo" (change)="toggleDefaultMobileLogo()"> Utiliser le logo par défaut
+                </label>
+                <div *ngIf="useDefaultMobileLogo" style="height: 40px; background: #f8fafc; padding: 5px; display: flex; align-items: center;"><img src="assets/logo_acf.png" style="height: 30px;"></div>
+
+                <div class="image-upload-box" *ngIf="!useDefaultMobileLogo && !brandSettings.mobileAppLogo">
+                  <input type="file" (change)="onFileSelected($event, 'mobileAppLogo')" accept="image/*">
+                  <mat-icon>cloud_upload</mat-icon>
+                  <span>Choisir une image (Max 2MB)</span>
+                </div>
+                <div class="image-preview" *ngIf="!useDefaultMobileLogo && brandSettings.mobileAppLogo">
+                  <img [src]="brandSettings.mobileAppLogo" alt="Mobile App Logo" style="height: 40px; background: #f8fafc; padding: 5px;">
+                  <button mat-icon-button color="warn" (click)="removeImage('mobileAppLogo')"><mat-icon>delete</mat-icon></button>
                 </div>
               </div>
             </div>

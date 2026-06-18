@@ -43,15 +43,18 @@ export class GeneralSettingsComponent implements OnInit {
   brandSettings: any = {
     primaryColor: '#8b5cf6',
     appName: 'FleetTrack ACF',
+    appTagline: '',
     footerText: 'Copyright © 2026, Action Contre la Faim',
     loginBackgroundUrl: '',
     logoDark: '',
-    logoLight: ''
+    logoLight: '',
+    mobileAppLogo: ''
   };
   
   useDefaultBackground = true;
   useDefaultLogoDark = true;
   useDefaultLogoLight = true;
+  useDefaultMobileLogo = true;
 
   toggleDefaultBackground() {
     if (this.useDefaultBackground) this.brandSettings.loginBackgroundUrl = '';
@@ -61,6 +64,9 @@ export class GeneralSettingsComponent implements OnInit {
   }
   toggleDefaultLogoLight() {
     if (this.useDefaultLogoLight) this.brandSettings.logoLight = '';
+  }
+  toggleDefaultMobileLogo() {
+    if (this.useDefaultMobileLogo) this.brandSettings.mobileAppLogo = '';
   }
   presetColors: string[] = ['#8b5cf6', '#2196F3', '#4CAF50', '#f44336', '#E91E63', '#009688', '#FF9800', '#607D8B'];
 
@@ -145,6 +151,7 @@ export class GeneralSettingsComponent implements OnInit {
         if (this.brandSettings.loginBackgroundUrl) this.useDefaultBackground = false;
         if (this.brandSettings.logoDark) this.useDefaultLogoDark = false;
         if (this.brandSettings.logoLight) this.useDefaultLogoLight = false;
+        if (this.brandSettings.mobileAppLogo) this.useDefaultMobileLogo = false;
       }
     });
   }
