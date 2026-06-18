@@ -24,12 +24,11 @@
 /* Hero Banner */
 .hero-banner-container {
   width: 100%;
-  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #f1f5f9 100%);
-  /* If they have a background image, we can use it here, but a gradient is clean */
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%); /* Hulo Dark Grey */
   padding: 60px 0;
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #111827;
 }
 
 .hero-banner-content {
@@ -56,7 +55,7 @@
 .hero-app-name {
   font-size: 36px;
   font-weight: 700;
-  color: #334155;
+  color: #ffffff;
   margin: 0;
 }
 
@@ -109,9 +108,9 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--primary-color, #005FB6);
-  color: var(--primary-color, #005FB6);
-  background-color: transparent;
+  border: 1px solid var(--primary-color, #8b5cf6);
+  color: var(--primary-color, #8b5cf6);
+  background-color: #f5f3ff; /* Light purple background */
 }
 
 .icon-circle mat-icon {

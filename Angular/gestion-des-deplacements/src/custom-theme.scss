@@ -5,54 +5,54 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
-// ACF Brand Colors
-// Primary Blue: RGB(0, 95, 182) = #005fb6
-// Secondary Green: RGB(82, 174, 50) = #52ae32
+// Hulo Brand Colors
+// Primary Purple: #8b5cf6
+// Secondary Grey: #1f2937
 
-// Define custom ACF color palettes
-$acf-blue-palette: (
+// Define custom Hulo color palettes
+$hulo-purple-palette: (
   0: #000000,
-  10: #001d35,
-  20: #003258,
-  25: #003e6b,
-  30: #004a7f,
-  35: #005693,
-  40: #005fb6,
-  50: #0077d4,
-  60: #3d91e0,
-  70: #5fa8ec,
-  80: #7ebff7,
-  90: #b8dcff,
-  95: #ddeeff,
-  98: #f5f9ff,
-  99: #fafcff,
+  10: #1a0033,
+  20: #330066,
+  25: #400080,
+  30: #4d0099,
+  35: #5900b3,
+  40: #6600cc,
+  50: #8b5cf6,
+  60: #a78bfa,
+  70: #c4b5fd,
+  80: #ddd6fe,
+  90: #ede9fe,
+  95: #f5f3ff,
+  98: #faf5ff,
+  99: #fcfaff,
   100: #ffffff,
 );
 
-$acf-green-palette: (
+$hulo-grey-palette: (
   0: #000000,
-  10: #0d2000,
-  20: #1a3600,
-  25: #224200,
-  30: #2a4f00,
-  35: #335c00,
-  40: #3d6900,
-  50: #52ae32,
-  60: #6bc04a,
-  70: #84d162,
-  80: #9ee27b,
-  90: #b8f394,
-  95: #d2ffad,
-  98: #eaffd9,
-  99: #f5ffec,
+  10: #030712,
+  20: #111827,
+  25: #1f2937,
+  30: #374151,
+  35: #4b5563,
+  40: #6b7280,
+  50: #9ca3af,
+  60: #d1d5db,
+  70: #e5e7eb,
+  80: #f3f4f6,
+  90: #f8fafc,
+  95: #f9fafb,
+  98: #fcfcfd,
+  99: #fdfdfd,
   100: #ffffff,
 );
 
 html {
-  @include mat.theme((color: (primary: $acf-blue-palette,
-        tertiary: $acf-green-palette,
+  @include mat.theme((color: (primary: $hulo-purple-palette,
+        tertiary: $hulo-grey-palette,
       ),
-      typography: Roboto,
+      typography: "Inter",
       density: 0,
     ));
 }
