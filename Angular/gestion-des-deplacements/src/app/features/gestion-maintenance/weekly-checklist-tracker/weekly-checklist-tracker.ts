@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   templateUrl: './weekly-checklist-tracker.html',
-  styleUrls: ['./weekly-checklist-tracker.css']
+  styleUrls: ['./weekly-checklist-tracker.scss']
 })
 export class WeeklyChecklistTracker implements OnInit {
   vehicles: any[] = [];

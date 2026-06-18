@@ -37,7 +37,7 @@ import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
     InfoBannerComponent
   ],
   templateUrl: './admin-pays-bases.html',
-  styleUrls: ['./admin-pays-bases.css']
+  styleUrls: ['./admin-pays-bases.scss']
 })
 export class AdminPaysBasesComponent implements OnInit, AfterViewInit {
   userProfile: string | null = null;

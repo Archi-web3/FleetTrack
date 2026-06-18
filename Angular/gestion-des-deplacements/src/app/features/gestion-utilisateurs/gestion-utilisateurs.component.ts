@@ -46,7 +46,7 @@ import { InfoBannerComponent } from '../../core/info-banner/info-banner';
     InfoBannerComponent
   ],
   templateUrl: './gestion-utilisateurs.component.html',
-  styleUrls: ['./gestion-utilisateurs.component.css']
+  styleUrls: ['./gestion-utilisateurs.component.scss']
 })
 export class GestionUtilisateursComponent implements OnInit {
   @ViewChild('userFormDialog') userFormDialog!: TemplateRef<any>;

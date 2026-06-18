@@ -39,7 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule
   ],
   templateUrl: './logbook-dashboard.component.html',
-  styleUrls: ['./logbook-dashboard.component.css']
+  styleUrls: ['./logbook-dashboard.component.scss']
 })
 export class LogbookDashboardComponent implements OnInit, AfterViewInit {
   vehicules: any[] = [];

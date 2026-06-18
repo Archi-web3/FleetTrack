@@ -47,7 +47,7 @@ import { ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
     TranslateModule
   ],
   templateUrl: './gestion-chauffeurs.component.html',
-  styleUrls: ['./gestion-chauffeurs.component.css']
+  styleUrls: ['./gestion-chauffeurs.component.scss']
 })
 export class GestionChauffeursComponent implements OnInit, AfterViewInit {
   chauffeurs: any[] = [];

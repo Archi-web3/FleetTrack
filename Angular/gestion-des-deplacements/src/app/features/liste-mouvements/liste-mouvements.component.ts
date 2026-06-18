@@ -31,7 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   templateUrl: './liste-mouvements.component.html',
-  styleUrls: ['./liste-mouvements.component.css']
+  styleUrls: ['./liste-mouvements.component.scss']
 })
 export class ListeMouvementsComponent implements OnInit, OnDestroy {
   mouvements: any[] = [];

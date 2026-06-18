@@ -33,7 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
         TranslateModule
     ],
     templateUrl: './movement-dashboard.component.html',
-    styleUrls: ['./movement-dashboard.component.css']
+    styleUrls: ['./movement-dashboard.component.scss']
 })
 export class MovementDashboardComponent implements OnChanges {
     @Input() movements: any[] = [];

@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule, MatSelectModule, MatFormFieldModule, MatOptionModule, TranslateModule],
   templateUrl: './demande-mouvement.component.html',
-  styleUrls: ['./demande-mouvement.component.css']
+  styleUrls: ['./demande-mouvement.component.scss']
 })
 export class DemandeMouvementComponent implements OnInit {
 

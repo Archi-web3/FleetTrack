@@ -38,7 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   templateUrl: './map.html',
-  styleUrl: './map.css',
+  styleUrl: './map.scss',
 })
 export class MapComponent implements OnInit {
   @ViewChild(MapMouvementsComponent) mapMouvementsComponent!: MapMouvementsComponent;

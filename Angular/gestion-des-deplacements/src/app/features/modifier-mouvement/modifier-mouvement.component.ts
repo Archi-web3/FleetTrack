@@ -18,7 +18,7 @@ import { StatsService } from '../../core/services/stats.service';
   standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './modifier-mouvement.component.html',
-  styleUrls: ['./modifier-mouvement.component.css']
+  styleUrls: ['./modifier-mouvement.component.scss']
 })
 export class ModifierMouvementComponent implements OnInit {
   mouvementId: string | null = null;

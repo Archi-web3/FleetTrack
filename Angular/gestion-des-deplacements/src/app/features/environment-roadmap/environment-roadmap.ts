@@ -29,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   templateUrl: './environment-roadmap.html',
-  styleUrls: ['./environment-roadmap.css']
+  styleUrls: ['./environment-roadmap.scss']
 })
 export class EnvironmentRoadmapComponent implements OnInit {
   currentYear = new Date().getFullYear();

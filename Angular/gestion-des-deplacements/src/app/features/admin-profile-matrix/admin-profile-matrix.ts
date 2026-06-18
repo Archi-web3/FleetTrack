@@ -28,7 +28,7 @@ interface CategoryConfig {
   standalone: true,
   imports: [CommonModule, FormsModule, MatCardModule, MatIconModule, MatButtonModule, MatCheckboxModule, MatTabsModule, MatSnackBarModule, InfoBannerComponent],
   templateUrl: './admin-profile-matrix.html',
-  styleUrls: ['./admin-profile-matrix.css']
+  styleUrls: ['./admin-profile-matrix.scss']
 })
 export class AdminProfileMatrixComponent implements OnInit {
   matrix: ProfileMatrix = {};

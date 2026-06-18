@@ -18,7 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule
   ],
   templateUrl: './profile.html',
-  styleUrls: ['./profile.css']
+  styleUrls: ['./profile.scss']
 })
 export class ProfileComponent {
   activeTab: 'personal' | 'password' = 'personal';

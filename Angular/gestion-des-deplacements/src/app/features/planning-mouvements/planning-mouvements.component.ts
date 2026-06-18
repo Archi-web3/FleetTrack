@@ -49,7 +49,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
   standalone: true,
   imports: [CommonModule, CalendarModule, CalendarWeekViewComponent, MovementDashboardComponent, MatButtonModule, MatTooltipModule, MatIconModule, TranslateModule],
   templateUrl: './planning-mouvements.component.html',
-  styleUrls: ['./planning-mouvements.component.css'],
+  styleUrls: ['./planning-mouvements.component.scss'],
   providers: [
     {
       provide: DateAdapter,

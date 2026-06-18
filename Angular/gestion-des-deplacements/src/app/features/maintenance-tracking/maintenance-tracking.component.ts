@@ -46,7 +46,7 @@ import { PredictiveDashboardComponent } from './predictive-dashboard/predictive-
     PredictiveDashboardComponent
   ],
   templateUrl: './maintenance-tracking.component.html',
-  styleUrls: ['./maintenance-tracking.component.css']
+  styleUrls: ['./maintenance-tracking.component.scss']
 })
 export class MaintenanceTrackingComponent implements OnInit {
   vehicules: any[] = [];

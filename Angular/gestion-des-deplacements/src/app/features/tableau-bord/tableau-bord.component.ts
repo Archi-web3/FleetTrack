@@ -39,7 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   templateUrl: './tableau-bord.component.html',
-  styleUrls: ['./tableau-bord.component.css']
+  styleUrls: ['./tableau-bord.component.scss']
 })
 export class TableauBordComponent implements OnInit {
   // Colonnes affichées dans le tableau

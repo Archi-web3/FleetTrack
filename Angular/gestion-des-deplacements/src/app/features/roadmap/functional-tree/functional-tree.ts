@@ -29,7 +29,7 @@ export interface TreeNode {
     standalone: true,
     imports: [CommonModule, MatIconModule, MatButtonModule, FormsModule, MatTooltipModule, DragDropModule, HttpClientModule, MatSnackBarModule],
     templateUrl: './functional-tree.html',
-    styleUrls: ['./functional-tree.css']
+    styleUrls: ['./functional-tree.scss']
 })
 export class FunctionalTreeComponent implements OnInit {
 

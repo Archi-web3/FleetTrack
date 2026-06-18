@@ -28,7 +28,7 @@ interface ChangelogItem {
     standalone: true,
     imports: [CommonModule, MatIconModule, MatTabsModule, FunctionalTreeComponent],
     templateUrl: './roadmap.html',
-    styleUrls: ['./roadmap.css']
+    styleUrls: ['./roadmap.scss']
 })
 export class RoadmapComponent {
     changelogItems: ChangelogItem[] = [

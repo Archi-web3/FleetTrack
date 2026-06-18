@@ -25,7 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
         TranslateModule
     ],
     templateUrl: './predictive-dashboard.component.html',
-    styleUrls: ['./predictive-dashboard.component.css']
+    styleUrls: ['./predictive-dashboard.component.scss']
 })
 export class PredictiveDashboardComponent implements OnInit {
     stats: any = {

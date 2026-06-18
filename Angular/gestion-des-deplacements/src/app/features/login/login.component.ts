@@ -22,7 +22,7 @@ import { LanguageSelectorComponent } from '../../shared/components/language-sele
   standalone: true, // <<< DOIT ÊTRE TRUE
   imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatIconModule, TranslateModule, LanguageSelectorComponent],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   credentials = {

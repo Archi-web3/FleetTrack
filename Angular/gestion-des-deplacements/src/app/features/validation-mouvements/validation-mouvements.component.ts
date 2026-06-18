@@ -10,7 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, TranslateModule], // CommonModule est nécessaire pour *ngIf, *ngFor, et les pipes
   templateUrl: './validation-mouvements.component.html',
-  styleUrls: ['./validation-mouvements.component.css']
+  styleUrls: ['./validation-mouvements.component.scss']
 })
 export class ValidationMouvementsComponent implements OnInit {
   mouvementsPourValidationSecurite: any[] = [];

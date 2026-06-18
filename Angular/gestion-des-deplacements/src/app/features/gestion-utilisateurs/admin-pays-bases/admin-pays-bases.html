@@ -164,7 +164,7 @@
       <button class="custom-modal-btn-cancel" (click)="closePaysModal()">
         <mat-icon>close</mat-icon> Annuler
       </button>
-      <button class="custom-modal-btn-submit" type="submit" attr.form="paysForm" [disabled]="!paysForm.form.valid">
+      <button class="custom-modal-btn-submit" type="submit" form="paysForm" [disabled]="!paysForm.form.valid">
         <mat-icon>check</mat-icon> {{ editingPays ? 'Mettre à jour' : 'Ajouter' }}
       </button>
     </div>
@@ -201,7 +201,7 @@
       <button class="custom-modal-btn-cancel" (click)="closeBaseModal()">
         <mat-icon>close</mat-icon> Annuler
       </button>
-      <button class="custom-modal-btn-submit" type="submit" attr.form="baseForm" [disabled]="!baseForm.form.valid">
+      <button class="custom-modal-btn-submit" type="submit" form="baseForm" [disabled]="!baseForm.form.valid">
         <mat-icon>check</mat-icon> {{ editingBase ? 'Mettre à jour' : 'Ajouter' }}
       </button>
     </div>

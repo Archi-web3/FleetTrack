@@ -41,7 +41,7 @@ import { InfoBannerComponent } from '../../core/info-banner/info-banner';
     InfoBannerComponent
   ],
   templateUrl: './gestion-lieux.component.html',
-  styleUrls: ['./gestion-lieux.component.css']
+  styleUrls: ['./gestion-lieux.component.scss']
 })
 export class GestionLieuxComponent implements OnInit, AfterViewInit {
   lieux: any[] = [];

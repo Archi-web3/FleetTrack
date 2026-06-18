@@ -17,7 +17,7 @@ import { InfoBannerComponent } from '../../core/info-banner/info-banner';
     standalone: true,
     imports: [CommonModule, FormsModule, TranslateModule, MatTooltipModule, MatIconModule, InfoBannerComponent],
     templateUrl: './security-matrix.component.html',
-    styleUrls: ['./security-matrix.component.css']
+    styleUrls: ['./security-matrix.component.scss']
 })
 export class SecurityMatrixComponent implements OnInit {
     levels = [1, 2, 3, 4, 5];

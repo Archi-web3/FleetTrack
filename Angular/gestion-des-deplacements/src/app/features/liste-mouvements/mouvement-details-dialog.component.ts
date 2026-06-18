@@ -16,7 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
         MatDividerModule
     ],
     templateUrl: './mouvement-details-dialog.component.html',
-    styleUrls: ['./mouvement-details-dialog.component.css']
+    styleUrls: ['./mouvement-details-dialog.component.scss']
 })
 export class MouvementDetailsDialogComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {

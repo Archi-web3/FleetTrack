@@ -16,7 +16,7 @@ import { forkJoin, firstValueFrom } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule, MapMouvementsComponent, MatIconModule, TranslateModule],
   templateUrl: './consolidation-mouvements.component.html',
-  styleUrls: ['./consolidation-mouvements.component.css']
+  styleUrls: ['./consolidation-mouvements.component.scss']
 })
 export class ConsolidationMouvementsComponent implements OnInit {
   mouvementsValides: any[] = [];

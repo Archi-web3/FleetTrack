@@ -13,7 +13,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule],
   templateUrl: './info-banner.html',
-  styleUrls: ['./info-banner.css'],
+  styleUrls: ['./info-banner.scss'],
   animations: [
     trigger('expandCollapse', [
       state('collapsed', style({ height: '0px', padding: '0px', opacity: 0, overflow: 'hidden' })),

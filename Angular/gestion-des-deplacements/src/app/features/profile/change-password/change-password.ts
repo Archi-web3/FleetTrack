@@ -9,7 +9,7 @@ import { UtilisateurService } from '../../../core/services/utilisateur.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './change-password.html',
-  styleUrls: ['./change-password.css']
+  styleUrls: ['./change-password.scss']
 })
 export class ChangePasswordComponent implements OnInit {
   passwordForm!: FormGroup;

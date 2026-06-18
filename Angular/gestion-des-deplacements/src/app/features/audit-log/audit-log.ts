@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
         TranslateModule
     ],
     templateUrl: './audit-log.html',
-    styleUrls: ['./audit-log.css']
+    styleUrls: ['./audit-log.scss']
 })
 export class AuditLogComponent implements OnInit {
     logs: AuditLog[] = [];

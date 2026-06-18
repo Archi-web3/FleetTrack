@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './personal-info.html',
-  styleUrls: ['./personal-info.css']
+  styleUrls: ['./personal-info.scss']
 })
 export class PersonalInfoComponent implements OnInit {
   personalInfoForm!: FormGroup;

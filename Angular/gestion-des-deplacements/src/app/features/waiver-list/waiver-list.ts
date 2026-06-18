@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
         TranslateModule
     ],
     templateUrl: './waiver-list.html',
-    styleUrls: ['./waiver-list.css']
+    styleUrls: ['./waiver-list.scss']
 })
 export class WaiverListComponent implements OnInit {
     waivers: Waiver[] = [];

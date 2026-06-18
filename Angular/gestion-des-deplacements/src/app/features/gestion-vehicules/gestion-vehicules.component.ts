@@ -30,7 +30,7 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogModule, MatFormFieldModule, MatInputModule, RouterModule
   ],
   templateUrl: './gestion-vehicules.component.html',
-  styleUrls: ['./gestion-vehicules.component.css']
+  styleUrls: ['./gestion-vehicules.component.scss']
 })
 export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   vehicules: any[] = [];

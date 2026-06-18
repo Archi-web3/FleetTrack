@@ -18,7 +18,7 @@ import { PermissionsService } from '../../core/services/permissions.service';
   standalone: true,
   imports: [CommonModule, RouterModule, MatCardModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './home-dashboard.html',
-  styleUrls: ['./home-dashboard.css']
+  styleUrls: ['./home-dashboard.scss']
 })
 export class HomeDashboardComponent implements OnInit {
   newsBanner: string | null = null;

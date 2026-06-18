@@ -32,7 +32,7 @@ interface WorkflowDef {
   standalone: true,
   imports: [CommonModule, MatCardModule, MatIconModule, MatListModule, MatSlideToggleModule, FormsModule, MatButtonModule],
   templateUrl: './workflow-dashboard.html',
-  styleUrls: ['./workflow-dashboard.css']
+  styleUrls: ['./workflow-dashboard.scss']
 })
 export class WorkflowDashboardComponent implements OnInit {
 

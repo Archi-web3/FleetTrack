@@ -38,7 +38,7 @@ import { InfoBannerComponent } from '../../core/info-banner/info-banner';
     InfoBannerComponent
   ],
   templateUrl: './gestion-projets.component.html',
-  styleUrls: ['./gestion-projets.component.css']
+  styleUrls: ['./gestion-projets.component.scss']
 })
 export class GestionProjetsComponent implements OnInit, AfterViewInit {
   projets: any[] = [];
