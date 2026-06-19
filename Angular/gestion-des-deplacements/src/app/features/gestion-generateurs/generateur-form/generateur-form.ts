@@ -14,6 +14,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { GenerateursService, Generateur } from '../../../core/services/generateurs.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../core/services/auth.service';
+import { AdminService } from '../../../core/services/admin.service';
 
 @Component({
   selector: 'app-generateur-form',
@@ -72,7 +74,9 @@ export class GenerateurFormComponent implements OnInit {
     private router: Router,
     private generateursService: GenerateursService,
     private snackBar: MatSnackBar,
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
@@ -81,9 +85,23 @@ export class GenerateurFormComponent implements OnInit {
   }
 
   loadReferentials() {
-    // Load bases and pays
-    this.http.get<any[]>(`${environment.apiUrl}/bases`).subscribe(bases => this.bases = bases);
-    this.http.get<any[]>(`${environment.apiUrl}/pays`).subscribe(pays => this.paysList = pays);
+    // Get current selected country context
+    const selectedPaysId = localStorage.getItem('selectedCountry') || this.authService.getUserPaysId() || undefined;
+
+    // Load bases filtered by country context
+    this.adminService.getBases(selectedPaysId).subscribe(bases => this.bases = bases);
+    
+    // Load pays (AdminService usually requires no args for all pays, or we just load them)
+    this.adminService.getPays().subscribe(pays => {
+      // If user is restricted to a country, we could optionally filter the list, 
+      // but usually AdminService returns what's allowed.
+      this.paysList = pays;
+      
+      // Auto-select pays if creating new and we have a context
+      if (!this.generateurId && selectedPaysId && !this.generateur.pays) {
+         this.generateur.pays = selectedPaysId;
+      }
+    });
 
     if (this.generateurId) {
       this.loadGenerateur();

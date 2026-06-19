@@ -59,6 +59,9 @@
             <button mat-icon-button color="primary" [routerLink]="['/gestion-generateurs/detail', element._id]" matTooltip="Voir détails & Logbook">
               <mat-icon>visibility</mat-icon>
             </button>
+            <button mat-icon-button color="primary" [routerLink]="['/gestion-generateurs/edit', element._id]" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
             <button mat-icon-button color="accent" [routerLink]="['/gestion-generateurs/intervention', element._id]" matTooltip="Nouvelle intervention">
               <mat-icon>build</mat-icon>
             </button>
