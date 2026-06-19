@@ -66,8 +66,8 @@
           <div class="grid-2">
             
             <div class="modern-form-group" style="grid-column: 1 / -1;">
-              <label>Mode d'affichage (En-tête et Accueil)</label>
-              <mat-select class="modern-input" [(ngModel)]="brandSettings.displayMode">
+              <label>Mode d'affichage (Page d'accueil)</label>
+              <mat-select class="modern-input" [(ngModel)]="brandSettings.heroDisplayMode">
                 <mat-option value="text">Afficher uniquement le nom de l'application (Texte)</mat-option>
                 <mat-option value="logo">Afficher uniquement le Logo</mat-option>
                 <mat-option value="both">Afficher le Logo + le Texte</mat-option>
@@ -268,12 +268,12 @@
               </div>
             </div>
 
-            <!-- Mode d'affichage de la bannière Hero -->
+            <!-- Mode d'affichage du Bandeau En-tête -->
             <div class="modern-form-group">
-              <label>Affichage Titre/Logo (Page d'Accueil)</label>
+              <label>Affichage Titre/Logo (Bandeau Haut)</label>
               <mat-form-field appearance="outline" style="width: 100%; margin-top: 8px;">
                 <mat-label>Mode d'affichage</mat-label>
-                <mat-select [(ngModel)]="brandSettings.displayMode">
+                <mat-select [(ngModel)]="brandSettings.headerDisplayMode">
                   <mat-option value="text">Titre Uniquement</mat-option>
                   <mat-option value="logo">Logo Uniquement</mat-option>
                   <mat-option value="both">Titre et Logo</mat-option>

@@ -2,7 +2,7 @@
   <!-- TOP BAR (Dark) -->
   <div class="top-bar">
     <div class="logo-container" routerLink="/" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
-      <ng-container *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && (brandSettings?.webHeaderLogo || brandSettings?.logoLight)">
+      <ng-container *ngIf="((brandSettings?.headerDisplayMode || brandSettings?.displayMode) === 'logo' || (brandSettings?.headerDisplayMode || brandSettings?.displayMode) === 'both') && (brandSettings?.webHeaderLogo || brandSettings?.logoLight)">
         
         <!-- Conteneur relatif qui prend exactement la taille de l'image -->
         <div style="position: relative; display: inline-block;">
@@ -20,7 +20,7 @@
         </div>
 
       </ng-container>
-      <h1 *ngIf="brandSettings?.displayMode === 'text' || brandSettings?.displayMode === 'both' || !brandSettings?.displayMode" style="margin: 0;">
+      <h1 *ngIf="(brandSettings?.headerDisplayMode || brandSettings?.displayMode) === 'text' || (brandSettings?.headerDisplayMode || brandSettings?.displayMode) === 'both' || !(brandSettings?.headerDisplayMode || brandSettings?.displayMode)" style="margin: 0;">
         {{ brandSettings?.appName }}
       </h1>
     </div>

@@ -55,7 +55,9 @@ export class GeneralSettingsComponent implements OnInit {
     logoDark: '', // Legacy, keep for safety
     logoLight: '', // Legacy
     mobileAppLogo: '', // Legacy
-    displayMode: 'both', // 'text', 'logo', 'both'
+    displayMode: 'both', // Legacy, keep for backward compatibility
+    headerDisplayMode: 'both',
+    heroDisplayMode: 'both',
 
     // Nouveaux champs pour logos séparés et couleurs
     webLoginLogo: '',
@@ -208,6 +210,8 @@ export class GeneralSettingsComponent implements OnInit {
         this.brandSettings = data;
         if (this.brandSettings.loginBackgroundUrl) this.useDefaultBackground = false;
         if (!this.brandSettings.displayMode) this.brandSettings.displayMode = 'both';
+        if (!this.brandSettings.headerDisplayMode) this.brandSettings.headerDisplayMode = this.brandSettings.displayMode;
+        if (!this.brandSettings.heroDisplayMode) this.brandSettings.heroDisplayMode = this.brandSettings.displayMode;
       }
     });
   }

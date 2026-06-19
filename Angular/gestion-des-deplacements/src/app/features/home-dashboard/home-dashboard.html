@@ -10,7 +10,7 @@
     <div class="hero-banner-content">
       <div class="hero-logo-section">
         <!-- Logo Display -->
-        <ng-container *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && (brandSettings?.webHeroLogo || brandSettings?.logoDark)">
+        <ng-container *ngIf="((brandSettings?.heroDisplayMode || brandSettings?.displayMode) === 'logo' || (brandSettings?.heroDisplayMode || brandSettings?.displayMode) === 'both') && (brandSettings?.webHeroLogo || brandSettings?.logoDark)">
           <div style="position: relative; display: inline-block;">
             <img [src]="brandSettings.webHeroLogo || brandSettings.logoDark" style="visibility: hidden; max-height: 100px; width: auto; display: block;">
             
@@ -26,7 +26,7 @@
         
         <!-- Text Display -->
         <div style="display: flex; flex-direction: column; justify-content: center;"
-             *ngIf="brandSettings?.displayMode === 'text' || brandSettings?.displayMode === 'both' || !brandSettings?.displayMode">
+             *ngIf="(brandSettings?.heroDisplayMode || brandSettings?.displayMode) === 'text' || (brandSettings?.heroDisplayMode || brandSettings?.displayMode) === 'both' || !(brandSettings?.heroDisplayMode || brandSettings?.displayMode)">
           <h2 class="hero-app-name" style="margin: 0;">{{ brandSettings?.appName }}</h2>
           <span *ngIf="brandSettings?.appTagline" class="hero-app-tagline" style="margin: 0; font-size: 14px; font-weight: 400; opacity: 0.9; margin-top: 4px; color: white;">{{ brandSettings?.appTagline }}</span>
         </div>
