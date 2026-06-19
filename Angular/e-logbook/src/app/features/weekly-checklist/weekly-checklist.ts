@@ -214,7 +214,7 @@ export class WeeklyChecklistComponent implements OnInit {
 
     getCategoryColor(categorie: string): string {
         const colors: { [key: string]: string } = {
-            'Détection': '#005fb6',
+            'Détection': '#8b5cf6',
             'Moteur': '#52ae32',
             'Pneus': '#9c27b0',
             'Électricité': '#ff9800',

@@ -13,7 +13,8 @@
             align-items: center;
             gap: 10px;
             font-size: 24px;
-            color: #005fb6;
+            font-size: 24px;
+            color: var(--primary-color, #8b5cf6);
 
             mat-icon {
                 font-size: 32px;
@@ -84,8 +85,8 @@
 .tasks-container {
     mat-expansion-panel {
         margin-bottom: 15px;
-        border-radius: 8px !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        border-radius: var(--radius-md) !important;
+        box-shadow: var(--glass-shadow) !important;
 
         mat-expansion-panel-header {
             mat-panel-title {
@@ -107,7 +108,7 @@
 
                 .category-badge {
                     background-color: #e3f2fd;
-                    color: #005fb6;
+                    color: var(--primary-color, #8b5cf6);
                     padding: 4px 12px;
                     border-radius: 12px;
                     font-size: 13px;
@@ -157,7 +158,7 @@
             align-items: center;
             gap: 4px;
             margin-left: 10px;
-            color: #005fb6;
+            color: var(--primary-color, #8b5cf6);
 
             .manual-label {
                 font-size: 11px;

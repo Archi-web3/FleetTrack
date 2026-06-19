@@ -6,7 +6,7 @@
 
 .header-card {
     margin-bottom: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
     color: white;
 
     mat-card-title {
@@ -96,7 +96,7 @@
 
                 &.highlight {
                     .value {
-                        color: #667eea;
+                        color: var(--primary-color, #8b5cf6);
                         font-size: 24px;
                     }
                 }
@@ -120,11 +120,11 @@
         font-size: 14px;
 
         mat-icon {
-            color: #667eea;
+            color: var(--primary-color, #8b5cf6);
         }
 
         strong {
-            color: #667eea;
+            color: var(--primary-color, #8b5cf6);
         }
     }
 }
@@ -154,7 +154,7 @@
 
             &:hover {
                 background: #f9f9f9;
-                border-color: #667eea;
+                border-color: var(--primary-color, #8b5cf6);
             }
 
             &.completed {
@@ -170,7 +170,7 @@
                 .task-number {
                     font-weight: 600;
                     margin-right: 8px;
-                    color: #667eea;
+                    color: var(--primary-color, #8b5cf6);
                 }
 
                 .task-description {
@@ -179,7 +179,7 @@
             }
 
             .manual-button {
-                color: #667eea;
+                color: var(--primary-color, #8b5cf6);
                 margin-left: 8px;
             }
 
