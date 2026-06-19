@@ -36,7 +36,7 @@ export class PlanMaintenanceComponent implements OnInit {
   events: any[] = [];
   
   // Table view
-  displayedColumns: string[] = ['vehicule', 'service', 'kmPrevu', 'kmRestants', 'dateEstimee', 'statut'];
+  displayedColumns: string[] = ['eventType', 'vehicule', 'service', 'kmPrevu', 'kmRestants', 'dateEstimee', 'statut'];
   
   // Calendar view
   view: CalendarView = CalendarView.Month;
@@ -67,13 +67,26 @@ export class PlanMaintenanceComponent implements OnInit {
 
   buildCalendarEvents() {
     this.calendarEvents = this.events.map(event => {
-      const isUrgent = event.kmRestants <= 0;
+      let primaryColor = '#2196f3'; // Bleu par défaut (service)
+      let secondaryColor = '#e3f2fd';
+      
+      if (event.eventType === 'mouvement') {
+        primaryColor = '#ff9800'; // Orange
+        secondaryColor = '#fff3e0';
+      } else if (event.eventType === 'alerte_conso') {
+        primaryColor = '#9c27b0'; // Violet
+        secondaryColor = '#f3e5f5';
+      } else if (event.kmRestants <= 0) {
+        primaryColor = '#f44336'; // Rouge (Urgent)
+        secondaryColor = '#ffebee';
+      }
+
       return {
         start: event.dateEstimee,
-        title: `${event.immatriculation} - Service ${event.typeService}`,
+        title: `${event.immatriculation} - ${event.typeService}`,
         color: {
-          primary: isUrgent ? '#f44336' : '#2196f3',
-          secondary: isUrgent ? '#ffebee' : '#e3f2fd'
+          primary: primaryColor,
+          secondary: secondaryColor
         },
         meta: event
       };

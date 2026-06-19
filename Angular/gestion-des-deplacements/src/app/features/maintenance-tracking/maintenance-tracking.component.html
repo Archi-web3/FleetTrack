@@ -32,6 +32,19 @@
   <mat-tab [label]="'MAINTENANCE.TABS.TRACKING' | translate">
     <div class="table-container" style="margin-top: 20px; box-shadow: none;">
       
+      <!-- ENCART D'EXPLICATION (VERT) -->
+      <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
+        <mat-icon style="color: #4caf50;">info</mat-icon>
+        <div>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement du Suivi Kilométrique</h4>
+          <p style="margin: 0; font-size: 0.95rem;">
+            Cet onglet vous permet de visualiser l'état de santé de chaque véhicule de votre flotte par rapport à ses obligations de maintenance.
+            Il compare le kilométrage actuel avec les services configurés (A, B, C...) pour déterminer l'écart exact. 
+            Les véhicules nécessitant une attention immédiate apparaissent avec un statut Critique ou En retard.
+          </p>
+        </div>
+      </div>
+      
       <div class="table-header-container" style="flex-wrap: wrap; gap: 15px;">
         <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
           <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 200px;">
@@ -107,7 +120,8 @@
             <td mat-cell *matCellDef="let row">
               <span *ngIf="row.prochainService">
                 {{ 'MAINTENANCE.TABLE.SERVICE' | translate }} <strong>{{ row.prochainService.type }}</strong><br>
-                <small style="color: #6b7280;">{{ row.prochainService.kmPrevu | number:'1.0-0' }} km</small>
+                <small style="color: #6b7280;">{{ row.prochainService.kmPrevu | number:'1.0-0' }} km</small><br>
+                <small *ngIf="row.prochainService.dateEstimee" style="color: #2196f3; font-weight: 500;">Est: {{ formatDate(row.prochainService.dateEstimee) }}</small>
               </span>
               <span *ngIf="!row.prochainService" style="color: #9ca3af;">-</span>
             </td>
@@ -155,6 +169,18 @@
   <mat-tab [label]="'MAINTENANCE.TABS.PLANNING' | translate">
     <div class="table-container" style="margin-top: 20px; box-shadow: none;">
       
+      <!-- ENCART D'EXPLICATION (VERT) -->
+      <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
+        <mat-icon style="color: #4caf50;">info</mat-icon>
+        <div>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement des Maintenances Planifiées</h4>
+          <p style="margin: 0; font-size: 0.95rem;">
+            Ici sont recensées toutes les interventions manuelles et demandes spécifiques d'indisponibilité pour réparation ou vérification. 
+            Vous pouvez créer, modifier ou supprimer ces événements. Les statuts "Terminé" indiquent que l'intervention est clôturée et que le véhicule est de nouveau disponible.
+          </p>
+        </div>
+      </div>
+
       <div class="table-header-container">
         <h3 style="margin: 0; color: #4b5563;">{{ 'MAINTENANCE.PLANNING.TITLE' | translate }}</h3>
         
@@ -236,6 +262,19 @@
   <!-- ONGLET 3 : SMART COST -->
   <mat-tab label="Smart Cost & Analytics">
     <div style="padding-top: 20px;">
+      
+      <!-- ENCART D'EXPLICATION (VERT) -->
+      <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
+        <mat-icon style="color: #4caf50;">info</mat-icon>
+        <div>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement du Smart Cost & Analytics</h4>
+          <p style="margin: 0; font-size: 0.95rem;">
+            Cette section analyse financièrement votre flotte. Elle consolide les coûts de carburant, de réparation, d'assurance et d'acquisition pour calculer le coût global et unitaire par véhicule et par kilomètre.
+            Les graphiques vous aident à identifier les véhicules les plus coûteux à l'entretien.
+          </p>
+        </div>
+      </div>
+
       <app-smart-cost-dashboard></app-smart-cost-dashboard>
     </div>
   </mat-tab>
@@ -243,6 +282,19 @@
   <!-- ONGLET 4 : PRÉDICTIONS -->
   <mat-tab [label]="'MAINTENANCE.TABS.PREDICTIVE' | translate">
     <div style="padding-top: 20px;">
+      
+      <!-- ENCART D'EXPLICATION (VERT) -->
+      <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
+        <mat-icon style="color: #4caf50;">info</mat-icon>
+        <div>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement des Prédictions</h4>
+          <p style="margin: 0; font-size: 0.95rem;">
+            L'outil analyse automatiquement la <strong>moyenne réelle de kilomètres parcourus</strong> par chaque véhicule entre ses anciens services pour prédire la date exacte de son prochain service.
+            <br>Il surveille également en arrière-plan la consommation d'essence réelle via le logbook, et génère une <strong>alerte de surconsommation</strong> (en violet ou rouge) si la moyenne réelle dépasse de 20% la valeur théorique du constructeur.
+          </p>
+        </div>
+      </div>
+
       <app-predictive-dashboard></app-predictive-dashboard>
     </div>
   </mat-tab>

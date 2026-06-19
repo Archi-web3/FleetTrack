@@ -4,6 +4,8 @@ const auth = require('../middleware/authMiddleware');
 const Vehicule = require('../models/vehicule.model');
 const ServiceSchedule = require('../models/service-schedule.model');
 const MaintenanceConfig = require('../models/maintenance-config.model');
+const Mouvement = require('../models/mouvement.model');
+const predictiveService = require('../services/predictive-maintenance.service');
 
 const WeeklyChecklist = require('../models/weekly-checklist.model');
 const Base = require('../models/base.model');
@@ -126,6 +128,31 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                 else if (ecartKm < 500 && ecartKm >= 0) statusCode = 'proche'; // Bientôt
             }
 
+            // Calculer la date estimée
+            let dateEstimee = null;
+            if (ecartKm !== null && ecartKm > 0) {
+                const servicesCompletes = await ServiceSchedule.find({
+                    vehicule: vehicule._id,
+                    statut: 'Complété'
+                }).sort({ dateCompletion: 1 });
+
+                let moyenneKmParMois = 1000;
+                if (servicesCompletes.length >= 2) {
+                    const premier = servicesCompletes[0];
+                    const dernier = servicesCompletes[servicesCompletes.length - 1];
+                    const kmParcourus = dernier.kilometragePrevu - premier.kilometragePrevu;
+                    const tempsMois = (dernier.dateCompletion - premier.dateCompletion) / (1000 * 60 * 60 * 24 * 30);
+                    if (tempsMois > 0) {
+                        moyenneKmParMois = Math.round(kmParcourus / tempsMois);
+                    }
+                }
+                const moisEstimes = ecartKm / moyenneKmParMois;
+                dateEstimee = new Date();
+                dateEstimee.setDate(dateEstimee.getDate() + Math.round(moisEstimes * 30));
+            } else if (ecartKm !== null && ecartKm <= 0) {
+                dateEstimee = new Date(); // Déjà dû
+            }
+
             return {
                 vehicule: {
                     _id: vehicule._id,
@@ -144,12 +171,14 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                 prochainService: prochainService ? {
                     type: prochainService.typeService,
                     kmPrevu: prochainService.kilometragePrevu,
-                    statut: prochainService.statut
+                    statut: prochainService.statut,
+                    dateEstimee: dateEstimee
                 } : {
                     // Si pas de service planifié, on renvoie l'estimation
                     type: 'Estimé',
                     kmPrevu: (vehicule.kilometrage + (ecartKm || 0)),
-                    statut: 'Planifié (Auto)'
+                    statut: 'Planifié (Auto)',
+                    dateEstimee: dateEstimee
                 },
                 checklist: {
                     status: checklistStatus,
@@ -422,8 +451,52 @@ router.get('/calendar', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                 statut: prochainService.statut,
                 kilometragePrevu: prochainService.kilometragePrevu,
                 kmRestants: kmRestants,
-                dateEstimee: dateEstimee
+                dateEstimee: dateEstimee,
+                eventType: 'service'
             });
+        }
+
+        // 2. Indisponibilités (Mouvements de type maintenance)
+        const vehiculeIds = vehicules.map(v => v._id);
+        const mouvementsMaint = await Mouvement.find({
+            vehicule: { $in: vehiculeIds },
+            type: 'maintenance',
+            statut: { $in: ['en attente', 'validé', 'pris en charge', 'en cours'] }
+        }).populate('vehicule', 'immatriculation marque modele');
+
+        for (const mouv of mouvementsMaint) {
+            calendarEvents.push({
+                vehiculeId: mouv.vehicule._id,
+                immatriculation: mouv.vehicule.immatriculation,
+                marque: mouv.vehicule.marque,
+                modele: mouv.vehicule.modele,
+                typeService: mouv.objectif || 'Indisponibilité',
+                statut: mouv.statut,
+                dateEstimee: mouv.dateDepart || new Date(),
+                eventType: 'mouvement'
+            });
+        }
+
+        // 3. Prédictions IA & Alertes Surconsommation
+        const aiData = await predictiveService.getFleetHealthPrediction(req.selectedCountry || 'All');
+        
+        // Filter alerts for the vehicles in our scope
+        const aiAlerts = aiData.alerts.filter(a => vehiculeIds.some(vid => vid.toString() === a.vehicleId.toString()));
+        
+        for (const alert of aiAlerts) {
+            if (alert.type === 'HIGH_CONSUMPTION') {
+                calendarEvents.push({
+                    vehiculeId: alert.vehicleId,
+                    immatriculation: alert.immatriculation,
+                    marque: alert.marque,
+                    modele: alert.modele,
+                    typeService: 'Alerte Surconso',
+                    statut: 'Urgent',
+                    dateEstimee: alert.estimatedDate || new Date(),
+                    message: alert.message,
+                    eventType: 'alerte_conso'
+                });
+            }
         }
 
         // Trier par date estimée (du plus proche au plus lointain)
