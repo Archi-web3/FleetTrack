@@ -60,6 +60,8 @@ export class GeneralSettingsComponent implements OnInit {
     webLoginLogoColor: '',
     webHeaderLogo: '',
     webHeaderLogoColor: '',
+    webHeroLogo: '',
+    webHeroLogoColor: '',
     mobileLoginLogo: '',
     mobileLoginLogoColor: '',
     mobileHeaderLogo: '',

@@ -10,8 +10,14 @@
     <div class="hero-banner-content">
       <div class="hero-logo-section">
         <!-- Logo Display -->
-        <img *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && brandSettings?.logoDark" 
-             [src]="brandSettings?.logoDark" alt="Logo" class="hero-logo-img">
+        <ng-container *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && (brandSettings?.webHeroLogo || brandSettings?.logoDark)">
+          <div *ngIf="brandSettings?.webHeroLogoColor" 
+               [style.width]="'auto'" [style.height]="'60px'" [style.min-width]="'100px'" [style.background-color]="brandSettings.webHeroLogoColor"
+               [style.-webkit-mask]="'url(' + (brandSettings.webHeroLogo || brandSettings.logoDark) + ') no-repeat left center / contain'"
+               [style.mask]="'url(' + (brandSettings.webHeroLogo || brandSettings.logoDark) + ') no-repeat left center / contain'">
+          </div>
+          <img *ngIf="!brandSettings?.webHeroLogoColor" [src]="brandSettings.webHeroLogo || brandSettings.logoDark" alt="Hero Logo" class="hero-logo" style="max-height: 60px; width: auto; object-fit: contain;">
+        </ng-container>
         
         <!-- Text Display -->
         <div style="display: flex; flex-direction: column; justify-content: center;"

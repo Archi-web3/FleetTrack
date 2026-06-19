@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -61,7 +61,8 @@ export class DashboardComponent implements OnInit {
         private pushService: PushNotificationService, // NOUVEAU
         private settingsService: SettingsService,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private cdr: ChangeDetectorRef
     ) { }
 
     async ngOnInit() {
@@ -81,6 +82,7 @@ export class DashboardComponent implements OnInit {
         this.settingsService.getBrandSettings().subscribe(settings => {
             if (settings) {
                 this.brandSettings = settings;
+                this.cdr.detectChanges();
             }
         });
 

@@ -10,10 +10,10 @@
             <div class="login-branding">
                 <ng-container *ngIf="brandSettings?.mobileLoginLogo || brandSettings?.mobileAppLogo">
                     <div *ngIf="brandSettings?.mobileLoginLogoColor" 
-                         [style.width]="'100%'" [style.height]="'60px'" [style.background-color]="brandSettings.mobileLoginLogoColor"
+                         [style.width]="'150px'" [style.height]="'60px'" [style.background-color]="brandSettings.mobileLoginLogoColor"
                          [style.-webkit-mask]="'url(' + (brandSettings.mobileLoginLogo || brandSettings.mobileAppLogo) + ') no-repeat center / contain'"
                          [style.mask]="'url(' + (brandSettings.mobileLoginLogo || brandSettings.mobileAppLogo) + ') no-repeat center / contain'"
-                         style="margin-bottom: 10px;">
+                         style="margin: 0 auto 10px auto;">
                     </div>
                     <img *ngIf="!brandSettings?.mobileLoginLogoColor" [src]="brandSettings?.mobileLoginLogo || brandSettings?.mobileAppLogo" alt="Logo" class="acf-logo" style="margin-bottom: 10px;">
                 </ng-container>

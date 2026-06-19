@@ -1,7 +1,7 @@
 <ng-container *ngIf="isAuthenticated">
   <!-- TOP BAR (Dark) -->
   <div class="top-bar">
-    <div class="logo-container" routerLink="/" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+    <div class="logo-container" routerLink="/" style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
       <ng-container *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && (brandSettings?.webHeaderLogo || brandSettings?.logoLight)">
         <div *ngIf="brandSettings?.webHeaderLogoColor" 
              [style.width]="'auto'" [style.height]="'40px'" [style.min-width]="'100px'" [style.background-color]="brandSettings.webHeaderLogoColor"

@@ -7,13 +7,13 @@
         </button>
 
         <!-- Logo -->
-        <div class="logo-container" *ngIf="brandSettings?.mobileHeaderLogo">
+        <div class="logo-container" *ngIf="brandSettings?.mobileHeaderLogo || brandSettings?.mobileAppLogo">
             <div *ngIf="brandSettings?.mobileHeaderLogoColor" 
                  [style.width]="'40px'" [style.height]="'40px'" [style.background-color]="brandSettings.mobileHeaderLogoColor"
-                 [style.-webkit-mask]="'url(' + brandSettings.mobileHeaderLogo + ') no-repeat center / contain'"
-                 [style.mask]="'url(' + brandSettings.mobileHeaderLogo + ') no-repeat center / contain'">
+                 [style.-webkit-mask]="'url(' + (brandSettings.mobileHeaderLogo || brandSettings.mobileAppLogo) + ') no-repeat center / contain'"
+                 [style.mask]="'url(' + (brandSettings.mobileHeaderLogo || brandSettings.mobileAppLogo) + ') no-repeat center / contain'">
             </div>
-            <img *ngIf="!brandSettings?.mobileHeaderLogoColor" [src]="brandSettings.mobileHeaderLogo" alt="Logo" class="acf-logo">
+            <img *ngIf="!brandSettings?.mobileHeaderLogoColor" [src]="brandSettings.mobileHeaderLogo || brandSettings.mobileAppLogo" alt="Logo" class="acf-logo" style="max-height: 40px; width: auto;">
         </div>
 
         <div class="vehicle-info">

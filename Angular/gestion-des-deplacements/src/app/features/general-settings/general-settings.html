@@ -141,11 +141,16 @@
                   <img [src]="brandSettings.webLoginLogo || brandSettings.logoDark" alt="Web Login Logo" style="height: 40px; background: #f8fafc; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('webLoginLogo'); removeImage('logoDark')"><mat-icon>delete</mat-icon></button>
                 </div>
-                <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
-                  <mat-label>Couleur personnalisée (optionnel)</mat-label>
-                  <input matInput type="color" [(ngModel)]="brandSettings.webLoginLogoColor">
-                  <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
-                </mat-form-field>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                  <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                    <input matInput type="color" [(ngModel)]="brandSettings.webLoginLogoColor">
+                    <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                  </mat-form-field>
+                  <button mat-icon-button matTooltip="Réinitialiser la couleur" (click)="brandSettings.webLoginLogoColor = null" *ngIf="brandSettings.webLoginLogoColor" style="color: #64748b; margin-top: -15px;">
+                    <mat-icon>refresh</mat-icon>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -162,10 +167,50 @@
                   <img [src]="brandSettings.webHeaderLogo || brandSettings.logoLight" alt="Web Header Logo" style="height: 40px; background: #1e293b; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('webHeaderLogo'); removeImage('logoLight')"><mat-icon>delete</mat-icon></button>
                 </div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                  <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                    <input matInput type="color" [(ngModel)]="brandSettings.webHeaderLogoColor">
+                    <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                  </mat-form-field>
+                  <button mat-icon-button matTooltip="Réinitialiser la couleur" (click)="brandSettings.webHeaderLogoColor = null" *ngIf="brandSettings.webHeaderLogoColor" style="color: #64748b; margin-top: -15px;">
+                    <mat-icon>refresh</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Web Hero Logo -->
+            <div class="modern-form-group">
+              <label>Logo Page d'accueil (App Web)</label>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="image-upload-box" *ngIf="!brandSettings.webHeroLogo && !brandSettings.logoDark">
+                  <input type="file" (change)="onFileSelected($event, 'webHeroLogo')" accept="image/*">
+                  <mat-icon>cloud_upload</mat-icon>
+                  <span>Choisir une image (Max 2MB)</span>
+                </div>
+                <div class="image-preview" *ngIf="brandSettings.webHeroLogo || brandSettings.logoDark">
+                  <img [src]="brandSettings.webHeroLogo || brandSettings.logoDark" alt="Web Hero Logo" style="height: 40px; background: #f8fafc; padding: 5px;">
+                  <button mat-icon-button color="warn" (click)="removeImage('webHeroLogo'); removeImage('logoDark')"><mat-icon>delete</mat-icon></button>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                  <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                    <input matInput type="color" [(ngModel)]="brandSettings.webHeroLogoColor">
+                    <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                  </mat-form-field>
+                  <button mat-icon-button matTooltip="Réinitialiser la couleur" (click)="brandSettings.webHeroLogoColor = null" *ngIf="brandSettings.webHeroLogoColor" style="color: #64748b; margin-top: -15px;">
+                    <mat-icon>refresh</mat-icon>
+                  </button>
+                </div>
+                <!-- Affichage du Mode pour la bannière héro -->
                 <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
-                  <mat-label>Couleur personnalisée (optionnel)</mat-label>
-                  <input matInput type="color" [(ngModel)]="brandSettings.webHeaderLogoColor">
-                  <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                  <mat-label>Affichage sur la page d'accueil</mat-label>
+                  <mat-select [(ngModel)]="brandSettings.displayMode">
+                    <mat-option value="text">Titre Uniquement</mat-option>
+                    <mat-option value="logo">Logo Uniquement</mat-option>
+                    <mat-option value="both">Titre et Logo</mat-option>
+                  </mat-select>
                 </mat-form-field>
               </div>
             </div>
@@ -183,11 +228,16 @@
                   <img [src]="brandSettings.mobileLoginLogo || brandSettings.mobileAppLogo" alt="Mobile Login Logo" style="height: 40px; background: #f8fafc; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('mobileLoginLogo'); removeImage('mobileAppLogo')"><mat-icon>delete</mat-icon></button>
                 </div>
-                <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
-                  <mat-label>Couleur personnalisée (optionnel)</mat-label>
-                  <input matInput type="color" [(ngModel)]="brandSettings.mobileLoginLogoColor">
-                  <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
-                </mat-form-field>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                  <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                    <input matInput type="color" [(ngModel)]="brandSettings.mobileLoginLogoColor">
+                    <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                  </mat-form-field>
+                  <button mat-icon-button matTooltip="Réinitialiser la couleur" (click)="brandSettings.mobileLoginLogoColor = null" *ngIf="brandSettings.mobileLoginLogoColor" style="color: #64748b; margin-top: -15px;">
+                    <mat-icon>refresh</mat-icon>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -204,12 +254,30 @@
                   <img [src]="brandSettings.mobileHeaderLogo" alt="Mobile Header Logo" style="height: 40px; background: #1e293b; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('mobileHeaderLogo')"><mat-icon>delete</mat-icon></button>
                 </div>
-                <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
-                  <mat-label>Couleur personnalisée (optionnel)</mat-label>
-                  <input matInput type="color" [(ngModel)]="brandSettings.mobileHeaderLogoColor">
-                  <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
-                </mat-form-field>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                  <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                    <input matInput type="color" [(ngModel)]="brandSettings.mobileHeaderLogoColor">
+                    <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                  </mat-form-field>
+                  <button mat-icon-button matTooltip="Réinitialiser la couleur" (click)="brandSettings.mobileHeaderLogoColor = null" *ngIf="brandSettings.mobileHeaderLogoColor" style="color: #64748b; margin-top: -15px;">
+                    <mat-icon>refresh</mat-icon>
+                  </button>
+                </div>
               </div>
+            </div>
+
+            <!-- Mode d'affichage de la bannière Hero -->
+            <div class="modern-form-group">
+              <label>Affichage Titre/Logo (Page d'Accueil)</label>
+              <mat-form-field appearance="outline" style="width: 100%; margin-top: 8px;">
+                <mat-label>Mode d'affichage</mat-label>
+                <mat-select [(ngModel)]="brandSettings.displayMode">
+                  <mat-option value="text">Titre Uniquement</mat-option>
+                  <mat-option value="logo">Logo Uniquement</mat-option>
+                  <mat-option value="both">Titre et Logo</mat-option>
+                </mat-select>
+              </mat-form-field>
             </div>
             
             <!-- Favicon -->
