@@ -164,8 +164,8 @@ export class SettingsService {
     }
 
     // Email Settings
-    getEmailSettings(): Observable<any[]> {
-        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/emailSettings`).pipe(
+    getEmailSettings(contextKey: string = 'emailSettings_global'): Observable<any[]> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/${contextKey}`).pipe(
             map(setting => setting && setting.value ? setting.value : []),
             catchError(err => {
                 console.error('Erreur chargement Email Settings', err);
@@ -174,7 +174,7 @@ export class SettingsService {
         );
     }
 
-    saveEmailSettings(emails: any[]): Observable<any> {
-        return this.http.post(`${this.apiUrl}/emailSettings`, { value: emails });
+    saveEmailSettings(emails: any[], contextKey: string = 'emailSettings_global'): Observable<any> {
+        return this.http.post(`${this.apiUrl}/${contextKey}`, { value: emails });
     }
 }

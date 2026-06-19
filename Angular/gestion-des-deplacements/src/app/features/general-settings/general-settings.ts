@@ -9,10 +9,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SettingsService } from '../../core/services/settings.service';
+import { UtilisateurService } from '../../core/services/utilisateur.service';
+import { PermissionsService } from '../../core/services/permissions.service';
+import { AdminService } from '../../core/services/admin.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-general-settings',
@@ -29,7 +33,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatSnackBarModule,
     TranslateModule,
     MatSidenavModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatSelectModule
   ],
   templateUrl: './general-settings.html',
   styleUrls: ['./general-settings.scss']
@@ -84,6 +89,9 @@ export class GeneralSettingsComponent implements OnInit {
 
   constructor(
     private settingsService: SettingsService,
+    private utilisateurService: UtilisateurService,
+    private perms: PermissionsService,
+    private adminService: AdminService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute
   ) { }
@@ -95,6 +103,24 @@ export class GeneralSettingsComponent implements OnInit {
         this.activeTab = params['tab'];
       }
     });
+
+    // Profils dynamiques
+    this.profilesList = Object.keys(this.perms.getMatrix());
+
+    if (this.userProfile === 'SuperAdmin') {
+      this.adminService.getPays().subscribe(data => this.paysList = data);
+    } else if (this.userProfile === 'Admin') {
+      const userPaysId = localStorage.getItem('userPays') || '';
+      if (userPaysId) {
+        this.selectedEmailPaysContext = userPaysId;
+        this.adminService.getBases(userPaysId).subscribe(data => this.basesList = data);
+      }
+    }
+
+    this.utilisateurService.getUtilisateurs().subscribe(users => {
+      this.usersList = users;
+    });
+
     this.loadBrandSettings();
     this.loadTypes();
     this.loadCO2Factors();
@@ -257,21 +283,72 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   // --- EMAIL SETTINGS ---
+  profilesList: string[] = [];
+  usersList: any[] = [];
+  paysList: any[] = [];
+  basesList: any[] = [];
+  
+  selectedEmailContext: 'global' | 'pays' | 'base' = 'global';
+  selectedEmailPaysContext: string = '';
+  selectedEmailBaseContext: string = '';
+
+  onEmailContextChange() {
+    if (this.selectedEmailContext === 'pays' && this.selectedEmailPaysContext) {
+      this.adminService.getBases(this.selectedEmailPaysContext).subscribe(data => this.basesList = data);
+    }
+    this.loadEmailSettings();
+  }
+
+  onEmailPaysChange() {
+    if (this.selectedEmailPaysContext) {
+      this.adminService.getBases(this.selectedEmailPaysContext).subscribe(data => this.basesList = data);
+    } else {
+      this.basesList = [];
+    }
+    this.selectedEmailBaseContext = '';
+    this.loadEmailSettings();
+  }
+
+  onEmailBaseChange() {
+    this.loadEmailSettings();
+  }
+
+  getCurrentEmailContextKey(): string {
+    if (this.selectedEmailContext === 'base' && this.selectedEmailBaseContext) {
+      return `emailSettings_base_${this.selectedEmailBaseContext}`;
+    }
+    if (this.selectedEmailContext === 'pays' && this.selectedEmailPaysContext) {
+      return `emailSettings_pays_${this.selectedEmailPaysContext}`;
+    }
+    return 'emailSettings_global';
+  }
+
   emailNotifications: any[] = [
-    { id: 'req_created', name: 'Nouvelle demande de mouvement', desc: 'Envoyé aux logisticiens lors d\'une nouvelle requête', enabled: true, recipients: 'Logisticiens, SuperAdmin', subject: '[FleetTrack] Nouvelle demande de mouvement : {{movementId}}', body: 'Bonjour,\n\nUne nouvelle demande de mouvement a été soumise par {{user}}.\n\nMerci de vous connecter pour la traiter.\n\nLien : {{link}}' },
-    { id: 'log_validated', name: 'Validation Logistique', desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise', enabled: true, recipients: 'Admin Sécurité, Demandeur', subject: '[FleetTrack] Validation Logistique : {{movementId}}', body: 'Bonjour,\n\nLa demande de mouvement {{movementId}} a été validée par le pôle logistique.\nSi une validation sécurité est requise, merci de procéder à l\'examen.' },
-    { id: 'sec_validated', name: 'Validation Sécurité', desc: 'Envoyé au pôle logistique pour confirmation finale', enabled: true, recipients: 'Logisticiens', subject: '[FleetTrack] Validation Sécurité Accordée', body: 'Bonjour,\n\nLe département sécurité a validé la demande {{movementId}}.\nVous pouvez procéder à l\'assignation finale.' },
-    { id: 'assigned', name: 'Chauffeur Assigné / Mouvement Confirmé', desc: 'Envoyé au demandeur et au chauffeur', enabled: true, recipients: 'Demandeur, Chauffeur', subject: '[FleetTrack] Mouvement Confirmé', body: 'Bonjour,\n\nVotre mouvement est confirmé.\nVéhicule : {{vehicleName}}\nChauffeur : {{driverName}}\n\nBonne route !' },
-    { id: 'cancelled', name: 'Mouvement Annulé', desc: 'Envoyé aux parties prenantes en cas d\'annulation', enabled: true, recipients: 'Demandeur, Chauffeur, Logisticiens', subject: '[FleetTrack] Mouvement Annulé', body: 'Bonjour,\n\nLe mouvement {{movementId}} a été annulé.\n\nRaison : {{cancelReason}}' },
-    { id: 'maintenance_alert', name: 'Alerte Maintenance', desc: 'Envoyé quand un véhicule approche de son échéance de maintenance', enabled: false, recipients: 'Logisticiens', subject: '[FleetTrack] Alerte Maintenance : {{vehiclePlate}}', body: 'Bonjour,\n\nLe véhicule {{vehiclePlate}} nécessitera une maintenance sous peu.\n\nMerci de planifier son passage au garage.' }
+    { id: 'req_created', name: 'Nouvelle demande de mouvement', desc: 'Envoyé aux logisticiens lors d\'une nouvelle requête', enabled: true, recipientProfiles: ['Logisticien', 'SuperAdmin'], recipientUsers: [], subject: '[FleetTrack] Nouvelle demande de mouvement : {{movementId}}', body: 'Bonjour,\n\nUne nouvelle demande de mouvement a été soumise par {{user}}.\n\nMerci de vous connecter pour la traiter.\n\nLien : {{link}}' },
+    { id: 'log_validated', name: 'Validation Logistique', desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise', enabled: true, recipientProfiles: ['Superviseur Sécurité'], recipientUsers: [], subject: '[FleetTrack] Validation Logistique : {{movementId}}', body: 'Bonjour,\n\nLa demande de mouvement {{movementId}} a été validée par le pôle logistique.\nSi une validation sécurité est requise, merci de procéder à l\'examen.' },
+    { id: 'sec_validated', name: 'Validation Sécurité', desc: 'Envoyé au pôle logistique pour confirmation finale', enabled: true, recipientProfiles: ['Logisticien'], recipientUsers: [], subject: '[FleetTrack] Validation Sécurité Accordée', body: 'Bonjour,\n\nLe département sécurité a validé la demande {{movementId}}.\nVous pouvez procéder à l\'assignation finale.' },
+    { id: 'assigned', name: 'Chauffeur Assigné / Mouvement Confirmé', desc: 'Envoyé au demandeur et au chauffeur', enabled: true, recipientProfiles: [], recipientUsers: [], subject: '[FleetTrack] Mouvement Confirmé', body: 'Bonjour,\n\nVotre mouvement est confirmé.\nVéhicule : {{vehicleName}}\nChauffeur : {{driverName}}\n\nBonne route !' },
+    { id: 'cancelled', name: 'Mouvement Annulé', desc: 'Envoyé aux parties prenantes en cas d\'annulation', enabled: true, recipientProfiles: ['Logisticien'], recipientUsers: [], subject: '[FleetTrack] Mouvement Annulé', body: 'Bonjour,\n\nLe mouvement {{movementId}} a été annulé.\n\nRaison : {{cancelReason}}' },
+    { id: 'maintenance_alert', name: 'Alerte Maintenance', desc: 'Envoyé quand un véhicule approche de son échéance de maintenance', enabled: false, recipientProfiles: ['Logisticien'], recipientUsers: [], subject: '[FleetTrack] Alerte Maintenance : {{vehiclePlate}}', body: 'Bonjour,\n\nLe véhicule {{vehiclePlate}} nécessitera une maintenance sous peu.\n\nMerci de planifier son passage au garage.' }
   ];
 
   editingEmail: any = null;
 
   loadEmailSettings() {
-    this.settingsService.getEmailSettings().subscribe(data => {
+    const key = this.getCurrentEmailContextKey();
+    this.settingsService.getEmailSettings(key).subscribe(data => {
       if (data && data.length > 0) {
         this.emailNotifications = data;
+      } else {
+        // Reset to default objects if nothing saved for this context
+        this.emailNotifications = [
+          { id: 'req_created', name: 'Nouvelle demande de mouvement', desc: 'Envoyé aux logisticiens lors d\'une nouvelle requête', enabled: true, recipientProfiles: ['Logisticien', 'SuperAdmin'], recipientUsers: [], subject: '[FleetTrack] Nouvelle demande de mouvement : {{movementId}}', body: 'Bonjour,\n\nUne nouvelle demande de mouvement a été soumise par {{user}}.\n\nMerci de vous connecter pour la traiter.\n\nLien : {{link}}' },
+          { id: 'log_validated', name: 'Validation Logistique', desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise', enabled: true, recipientProfiles: ['Superviseur Sécurité'], recipientUsers: [], subject: '[FleetTrack] Validation Logistique : {{movementId}}', body: 'Bonjour,\n\nLa demande de mouvement {{movementId}} a été validée par le pôle logistique.\nSi une validation sécurité est requise, merci de procéder à l\'examen.' },
+          { id: 'sec_validated', name: 'Validation Sécurité', desc: 'Envoyé au pôle logistique pour confirmation finale', enabled: true, recipientProfiles: ['Logisticien'], recipientUsers: [], subject: '[FleetTrack] Validation Sécurité Accordée', body: 'Bonjour,\n\nLe département sécurité a validé la demande {{movementId}}.\nVous pouvez procéder à l\'assignation finale.' },
+          { id: 'assigned', name: 'Chauffeur Assigné / Mouvement Confirmé', desc: 'Envoyé au demandeur et au chauffeur', enabled: true, recipientProfiles: [], recipientUsers: [], subject: '[FleetTrack] Mouvement Confirmé', body: 'Bonjour,\n\nVotre mouvement est confirmé.\nVéhicule : {{vehicleName}}\nChauffeur : {{driverName}}\n\nBonne route !' },
+          { id: 'cancelled', name: 'Mouvement Annulé', desc: 'Envoyé aux parties prenantes en cas d\'annulation', enabled: true, recipientProfiles: ['Logisticien'], recipientUsers: [], subject: '[FleetTrack] Mouvement Annulé', body: 'Bonjour,\n\nLe mouvement {{movementId}} a été annulé.\n\nRaison : {{cancelReason}}' },
+          { id: 'maintenance_alert', name: 'Alerte Maintenance', desc: 'Envoyé quand un véhicule approche de son échéance de maintenance', enabled: false, recipientProfiles: ['Logisticien'], recipientUsers: [], subject: '[FleetTrack] Alerte Maintenance : {{vehiclePlate}}', body: 'Bonjour,\n\nLe véhicule {{vehiclePlate}} nécessitera une maintenance sous peu.\n\nMerci de planifier son passage au garage.' }
+        ];
       }
     });
   }
@@ -282,7 +359,8 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   saveEmailSettings() {
-    this.settingsService.saveEmailSettings(this.emailNotifications).subscribe({
+    const key = this.getCurrentEmailContextKey();
+    this.settingsService.saveEmailSettings(this.emailNotifications, key).subscribe({
       next: () => {
         this.editingEmail = null;
         this.snackBar.open('Paramètres d\'emails et templates sauvegardés', 'OK', { duration: 2000 });

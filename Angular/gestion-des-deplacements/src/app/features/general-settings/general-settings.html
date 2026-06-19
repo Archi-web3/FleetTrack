@@ -334,17 +334,61 @@
       <p class="section-desc">Gérez les notifications automatiques envoyées par le système. Activez ou désactivez les envois selon les étapes du processus.</p>
 
       <!-- AIDE CONTEXTUELLE SUPER ADMIN -->
-      <div class="admin-help-box" *ngIf="userProfile === 'SuperAdmin'">
+      <div class="admin-help-box" *ngIf="userProfile === 'SuperAdmin' || userProfile === 'Admin'">
         <div class="help-icon"><mat-icon>lightbulb</mat-icon></div>
         <div class="help-content">
-          <strong>Aide SuperAdmin : Portée (Scope) des Notifications</strong>
-          <p>Les notifications fonctionnent selon une règle de cascade géographique stricte :</p>
+          <strong>Portée (Scope) des Notifications</strong>
+          <p>Vous pouvez configurer les notifications pour une Base spécifique, pour un Pays entier, ou de manière Globale.</p>
           <ul>
-            <li>Si le destinataire est un <strong>Logisticien</strong>, l'email est envoyé <em>uniquement</em> aux logisticiens rattachés à la <strong>Base</strong> concernée par le mouvement.</li>
-            <li>Ce mécanisme garantit que seules les personnes directement impliquées géographiquement sont notifiées. Le paramétrage fin des droits par profil se fera via la future <em>Matrice des Rôles</em>.</li>
+            <li>Le système vérifie d'abord si la <strong>Base</strong> concernée a une configuration personnalisée.</li>
+            <li>Sinon, il regarde si le <strong>Pays</strong> a une configuration.</li>
+            <li>Par défaut, il utilise la configuration <strong>Globale</strong>.</li>
           </ul>
         </div>
       </div>
+
+      <!-- CONTEXT SELECTOR -->
+      <mat-card class="setting-card" style="margin-bottom: 20px;">
+        <mat-card-header>
+          <mat-card-title>Contexte de configuration</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            
+            <div class="modern-form-group" style="min-width: 200px;" *ngIf="userProfile === 'SuperAdmin'">
+              <label>Niveau de configuration</label>
+              <mat-select class="modern-input" [(ngModel)]="selectedEmailContext" (selectionChange)="onEmailContextChange()">
+                <mat-option value="global">Global (Défaut pour tous)</mat-option>
+                <mat-option value="pays">Spécifique à un Pays</mat-option>
+                <mat-option value="base">Spécifique à une Base</mat-option>
+              </mat-select>
+            </div>
+            
+            <div class="modern-form-group" style="min-width: 200px;" *ngIf="userProfile === 'Admin'">
+              <label>Niveau de configuration</label>
+              <mat-select class="modern-input" [(ngModel)]="selectedEmailContext" (selectionChange)="onEmailContextChange()">
+                <mat-option value="pays">Mon Pays (Défaut)</mat-option>
+                <mat-option value="base">Spécifique à une Base</mat-option>
+              </mat-select>
+            </div>
+
+            <div class="modern-form-group" style="min-width: 200px;" *ngIf="(selectedEmailContext === 'pays' || selectedEmailContext === 'base') && userProfile === 'SuperAdmin'">
+              <label>Sélectionner le Pays</label>
+              <mat-select class="modern-input" [(ngModel)]="selectedEmailPaysContext" (selectionChange)="onEmailPaysChange()">
+                <mat-option *ngFor="let pays of paysList" [value]="pays._id">{{ pays.nom }}</mat-option>
+              </mat-select>
+            </div>
+
+            <div class="modern-form-group" style="min-width: 200px;" *ngIf="selectedEmailContext === 'base'">
+              <label>Sélectionner la Base</label>
+              <mat-select class="modern-input" [(ngModel)]="selectedEmailBaseContext" (selectionChange)="onEmailBaseChange()" [disabled]="!selectedEmailPaysContext">
+                <mat-option *ngFor="let base of basesList" [value]="base._id">{{ base.nom }}</mat-option>
+              </mat-select>
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
 
       <mat-card class="setting-card">
         <mat-card-header>
@@ -371,9 +415,17 @@
                   <td style="padding: 12px 16px; font-weight: 500;">{{ email.name }}</td>
                   <td style="padding: 12px 16px; color: #64748b; font-size: 13px;">{{ email.desc }}</td>
                   <td style="padding: 12px 16px;">
-                    <span style="background: #e2e8f0; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
-                      {{ email.recipients }}
-                    </span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                      <span *ngIf="email.recipientProfiles?.length > 0" style="background: #e2e8f0; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">group</mat-icon> {{ email.recipientProfiles.join(', ') }}
+                      </span>
+                      <span *ngIf="email.recipientUsers?.length > 0" style="background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                        <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">person</mat-icon> {{ email.recipientUsers.length }} utilisateur(s)
+                      </span>
+                      <span *ngIf="!email.recipientProfiles?.length && !email.recipientUsers?.length" style="color: #94a3b8; font-style: italic; font-size: 12px;">
+                        Aucun destinataire
+                      </span>
+                    </div>
                   </td>
                   <td style="padding: 12px 16px; text-align: center;">
                     <button mat-icon-button color="primary" matTooltip="Modifier le template" (click)="editEmailTemplate(email)">
@@ -389,8 +441,17 @@
                       <h3 style="margin: 0; color: #1e293b; font-size: 16px;"><mat-icon style="vertical-align: bottom; font-size: 20px;">draw</mat-icon> Édition du Template : {{ email.name }}</h3>
                       
                       <div class="modern-form-group">
-                        <label>Profils Destinataires (séparés par des virgules)</label>
-                        <input type="text" class="modern-input" [(ngModel)]="email.recipients" style="width: 100%; max-width: 600px;">
+                        <label>Profils cibles (envoie à tous les utilisateurs ayant ce rôle sur la base)</label>
+                        <mat-select class="modern-input" [(ngModel)]="email.recipientProfiles" multiple style="width: 100%; max-width: 600px;">
+                          <mat-option *ngFor="let profile of profilesList" [value]="profile">{{ profile }}</mat-option>
+                        </mat-select>
+                      </div>
+
+                      <div class="modern-form-group">
+                        <label>Utilisateurs spécifiques (envoie toujours à ces personnes)</label>
+                        <mat-select class="modern-input" [(ngModel)]="email.recipientUsers" multiple style="width: 100%; max-width: 600px;">
+                          <mat-option *ngFor="let user of usersList" [value]="user._id">{{ user.nom }} {{ user.prenom }} ({{ user.email }})</mat-option>
+                        </mat-select>
                       </div>
 
                       <div class="modern-form-group">
