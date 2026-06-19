@@ -150,9 +150,19 @@ export class PlanningMouvementsComponent implements OnInit {
           const tooltip = this.getEventTooltip(mouvement);
           const colors = this.getColorByStatus(mouvement.statut);
 
+          let startStr = mouvement.dateDepart;
+          let endStr = mouvement.dateArrivee;
+
+          if (!startStr && mouvement.stops && mouvement.stops.length > 0) {
+            startStr = mouvement.stops[0].dateDepart;
+          }
+          if (!endStr && mouvement.stops && mouvement.stops.length > 0) {
+            endStr = mouvement.stops[mouvement.stops.length - 1].dateArrivee;
+          }
+
           return {
-            start: new Date(mouvement.dateDepart),
-            end: new Date(mouvement.dateArrivee),
+            start: startStr ? new Date(startStr) : new Date(),
+            end: endStr ? new Date(endStr) : new Date(),
             title: title,
             color: colors,
             allDay: false,
