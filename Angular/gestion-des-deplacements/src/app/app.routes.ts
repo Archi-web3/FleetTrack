@@ -216,7 +216,13 @@ export const routes: Routes = [
     path: 'gestion-maintenance/templates',
     loadComponent: () => import('./features/gestion-maintenance/template-manager/template-manager').then(m => m.TemplateManagerComponent),
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin'] }
+    data: { requiredPermission: 'flotte_maintenance', action: 'view_menu' }
+  },
+  {
+    path: 'plan-maintenance',
+    loadComponent: () => import('./features/gestion-maintenance/plan-maintenance/plan-maintenance.component').then(m => m.PlanMaintenanceComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: 'flotte_maintenance', action: 'view_menu' }
   },
   {
     path: 'logbook',

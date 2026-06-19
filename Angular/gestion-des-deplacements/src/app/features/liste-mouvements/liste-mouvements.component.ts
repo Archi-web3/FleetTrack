@@ -10,6 +10,8 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MouvementDetailsDialogComponent } from './mouvement-details-dialog.component';
 import { DemandeMouvementComponent } from '../demande-mouvement/demande-mouvement.component';
@@ -27,6 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule, 
     MatButtonModule, 
     MatIconModule, 
+    MatButtonToggleModule,
+    MatTableModule,
     MatDialogModule, 
     TranslateModule
   ],
@@ -43,6 +47,9 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   selectedVehicleId: string = '';
   uniqueVehicles: any[] = [];
+  
+  viewMode: 'grid' | 'list' = 'grid';
+  displayedColumns: string[] = ['id', 'date', 'objectif', 'trajet', 'vehicule', 'chauffeur', 'statut', 'actions'];
 
   private routerSubscription: Subscription | undefined;
 

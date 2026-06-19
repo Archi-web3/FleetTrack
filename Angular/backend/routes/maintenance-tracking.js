@@ -340,4 +340,101 @@ router.get('/predictive/:id', auth(['SuperAdmin', 'Admin', 'Superviseur']), asyn
     }
 });
 
+/**
+ * GET /api/maintenance-tracking/calendar
+ * Récupère le planning prévisionnel de tous les véhicules pour le calendrier global
+ */
+router.get('/calendar', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req, res) => {
+    try {
+        const { base, typeVehicule } = req.query;
+        let vehiculeFilter = { enService: true };
+
+        // Filtrage Role-Based
+        if (req.utilisateur.profil === 'Superviseur') {
+            if (req.utilisateur.base) {
+                vehiculeFilter.base = req.utilisateur.base;
+            } else {
+                return res.json([]);
+            }
+        } else if (req.selectedCountry) {
+            const basesInCountry = await Base.find({ pays: req.selectedCountry }).select('_id');
+            const allowedBaseIds = basesInCountry.map(b => b._id.toString());
+            if (base) {
+                if (allowedBaseIds.includes(base)) vehiculeFilter.base = base;
+                else return res.json([]);
+            } else {
+                vehiculeFilter.base = { $in: allowedBaseIds };
+            }
+        } else if (req.utilisateur.profil === 'SuperAdmin') {
+            if (base) vehiculeFilter.base = base;
+        } else {
+            return res.json([]);
+        }
+
+        if (typeVehicule) vehiculeFilter.type = typeVehicule;
+
+        const vehicules = await Vehicule.find(vehiculeFilter).populate('base');
+        let calendarEvents = [];
+
+        // Pour chaque véhicule, on trouve son prochain service
+        for (const vehicule of vehicules) {
+            const prochainService = await ServiceSchedule.findOne({
+                vehicule: vehicule._id,
+                statut: { $ne: 'Complété' }
+            }).sort({ kilometragePrevu: 1 });
+
+            if (!prochainService) continue;
+
+            // Calculer la moyenne km/mois pour ce véhicule
+            const servicesCompletes = await ServiceSchedule.find({
+                vehicule: vehicule._id,
+                statut: 'Complété'
+            }).sort({ dateCompletion: 1 });
+
+            let moyenneKmParMois = 1000; // Par défaut 1000km par mois
+            if (servicesCompletes.length >= 2) {
+                const premier = servicesCompletes[0];
+                const dernier = servicesCompletes[servicesCompletes.length - 1];
+                const kmParcourus = dernier.kilometragePrevu - premier.kilometragePrevu;
+                const tempsMois = (dernier.dateCompletion - premier.dateCompletion) / (1000 * 60 * 60 * 24 * 30);
+                if (tempsMois > 0) {
+                    moyenneKmParMois = Math.round(kmParcourus / tempsMois);
+                }
+            }
+
+            const kmRestants = prochainService.kilometragePrevu - vehicule.kilometrage;
+            
+            // Si le service est déjà en retard ou dû, on fixe la date à aujourd'hui (ou au passé)
+            let dateEstimee = new Date();
+            if (kmRestants > 0) {
+                const moisEstimes = kmRestants / moyenneKmParMois;
+                // Calculer les jours estimés
+                const joursEstimes = moisEstimes * 30;
+                dateEstimee.setDate(dateEstimee.getDate() + Math.round(joursEstimes));
+            }
+
+            calendarEvents.push({
+                vehiculeId: vehicule._id,
+                immatriculation: vehicule.immatriculation,
+                marque: vehicule.marque,
+                modele: vehicule.modele,
+                typeService: prochainService.typeService,
+                statut: prochainService.statut,
+                kilometragePrevu: prochainService.kilometragePrevu,
+                kmRestants: kmRestants,
+                dateEstimee: dateEstimee
+            });
+        }
+
+        // Trier par date estimée (du plus proche au plus lointain)
+        calendarEvents.sort((a, b) => a.dateEstimee - b.dateEstimee);
+
+        res.json(calendarEvents);
+
+    } catch (error) {
+        console.error('❌ [MAINTENANCE-TRACKING] Erreur calendar:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;

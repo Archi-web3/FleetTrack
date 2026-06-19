@@ -78,6 +78,7 @@
           <button mat-menu-item routerLink="/gestion-chauffeurs"><mat-icon>people_alt</mat-icon><span>{{ 'MENU.DRIVER_MANAGEMENT' | translate }}</span></button>
           <mat-divider></mat-divider>
           <button mat-menu-item routerLink="/gestion-maintenance" *ngIf="perms.canViewMenu('flotte_maintenance')"><mat-icon>build</mat-icon><span>{{ 'MENU.MAINTENANCE_TRACKING' | translate }}</span></button>
+          <button mat-menu-item routerLink="/plan-maintenance" *ngIf="perms.canViewMenu('flotte_maintenance')"><mat-icon>event</mat-icon><span>Plan de Maintenance</span></button>
           <button mat-menu-item routerLink="/recap-flotte" *ngIf="perms.canViewMenu('flotte_vehicules')"><mat-icon>assessment</mat-icon><span>{{ 'MENU.FLEET_RECAP' | translate }}</span></button>
           <button mat-menu-item routerLink="/rapports-mensuels" *ngIf="perms.canViewMenu('flotte_vehicules')"><mat-icon>bar_chart</mat-icon><span>{{ 'MENU.MONTHLY_REPORTS' | translate }}</span></button>
         </mat-menu>
@@ -116,12 +117,7 @@
         </mat-menu>
       </ng-container>
 
-      <!-- WORKFLOW (SUPER ADMIN) -->
-      <ng-container *ngIf="userProfile === 'SuperAdmin'">
-        <button class="nav-item" routerLink="/admin/workflow">
-          <mat-icon style="color: #4facfe;">account_tree</mat-icon> Workflow Visualisation
-        </button>
-      </ng-container>
+
 
       <!-- PARAMETRAGES SYSTEME -->
       <ng-container *ngIf="perms.canViewMenu('admin_settings')">
@@ -131,6 +127,9 @@
         <mat-menu #sysSettingsMenu="matMenu">
           <button mat-menu-item routerLink="/admin/settings" [queryParams]="{tab: 'brand'}">
             <mat-icon>settings</mat-icon><span>Configuration Générale</span>
+          </button>
+          <button mat-menu-item routerLink="/admin/workflow" *ngIf="userProfile === 'SuperAdmin'">
+            <mat-icon style="color: #4facfe;">account_tree</mat-icon><span>Workflow Visualisation</span>
           </button>
           <button mat-menu-item routerLink="/roadmap">
             <mat-icon>rocket_launch</mat-icon><span>Roadmap et sécurité de l'APP</span>
