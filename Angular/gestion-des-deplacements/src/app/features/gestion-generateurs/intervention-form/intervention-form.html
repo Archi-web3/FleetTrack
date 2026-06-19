@@ -45,7 +45,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline" class="flex-1" *ngIf="intervention.typeIntervention === 'Préventive'">
           <mat-label>Prochaine maintenance à (heures)</mat-label>
-          <input matInput type="number" [(ngModel)]="intervention.prochaineMaintenanceHeures">
+          <input matInput type="number" [(ngModel)]="intervention.prochaineMaintenanceHeures" readonly>
         </mat-form-field>
       </div>
 

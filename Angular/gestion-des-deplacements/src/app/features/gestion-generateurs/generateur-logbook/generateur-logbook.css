@@ -1,0 +1,32 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.header-actions h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+}
+
+.select-card {
+  border-left: 4px solid #0077b6;
+  border-radius: 8px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
