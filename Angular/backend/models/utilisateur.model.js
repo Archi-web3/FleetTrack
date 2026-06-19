@@ -7,7 +7,7 @@ const utilisateurSchema = new mongoose.Schema({
   motDePasse: { type: String, required: true },
   profil: {
     type: String,
-    enum: ['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien', 'Guest', 'Chauffeur'],
+    enum: ['SuperAdmin', 'Admin', 'Superviseur', 'Superviseur Sécurité', 'Logisticien', 'Technicien', 'Guest', 'Chauffeur'],
     default: 'Technicien'
   },
   // Multi-Tenancy
