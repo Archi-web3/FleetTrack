@@ -132,17 +132,12 @@
             <div class="modern-form-group">
               <label>Logo Principal (Mode Clair)</label>
               <div style="display: flex; flex-direction: column; gap: 10px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: normal; cursor: pointer;">
-                  <input type="checkbox" [(ngModel)]="useDefaultLogoDark" (change)="toggleDefaultLogoDark()"> Utiliser le logo par défaut
-                </label>
-                <div *ngIf="useDefaultLogoDark" style="height: 40px; background: #f8fafc; padding: 5px; display: flex; align-items: center;"><img src="assets/logo_acf.png" style="height: 30px;"></div>
-
-                <div class="image-upload-box" *ngIf="!useDefaultLogoDark && !brandSettings.logoDark">
+                <div class="image-upload-box" *ngIf="!brandSettings.logoDark">
                   <input type="file" (change)="onFileSelected($event, 'logoDark')" accept="image/*">
                   <mat-icon>cloud_upload</mat-icon>
                   <span>Choisir une image (Max 2MB)</span>
                 </div>
-                <div class="image-preview" *ngIf="!useDefaultLogoDark && brandSettings.logoDark">
+                <div class="image-preview" *ngIf="brandSettings.logoDark">
                   <img [src]="brandSettings.logoDark" alt="Logo Dark" style="height: 40px; background: #f8fafc; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('logoDark')"><mat-icon>delete</mat-icon></button>
                 </div>
@@ -153,17 +148,12 @@
             <div class="modern-form-group">
               <label>Logo Secondaire (Mode Sombre / Sidebar)</label>
               <div style="display: flex; flex-direction: column; gap: 10px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: normal; cursor: pointer;">
-                  <input type="checkbox" [(ngModel)]="useDefaultLogoLight" (change)="toggleDefaultLogoLight()"> Utiliser le logo par défaut
-                </label>
-                <div *ngIf="useDefaultLogoLight" style="height: 40px; background: #1e293b; padding: 5px; display: flex; align-items: center;"><img src="assets/logo_acf.png" style="height: 30px; filter: brightness(0) invert(1);"></div>
-
-                <div class="image-upload-box" *ngIf="!useDefaultLogoLight && !brandSettings.logoLight">
+                <div class="image-upload-box" *ngIf="!brandSettings.logoLight">
                   <input type="file" (change)="onFileSelected($event, 'logoLight')" accept="image/*">
                   <mat-icon>cloud_upload</mat-icon>
                   <span>Choisir une image (Max 2MB)</span>
                 </div>
-                <div class="image-preview" *ngIf="!useDefaultLogoLight && brandSettings.logoLight">
+                <div class="image-preview" *ngIf="brandSettings.logoLight">
                   <img [src]="brandSettings.logoLight" alt="Logo Light" style="height: 40px; background: #1e293b; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('logoLight')"><mat-icon>delete</mat-icon></button>
                 </div>
@@ -174,17 +164,12 @@
             <div class="modern-form-group">
               <label>Logo de l'application mobile (eLogbook)</label>
               <div style="display: flex; flex-direction: column; gap: 10px;">
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: normal; cursor: pointer;">
-                  <input type="checkbox" [(ngModel)]="useDefaultMobileLogo" (change)="toggleDefaultMobileLogo()"> Utiliser le logo par défaut
-                </label>
-                <div *ngIf="useDefaultMobileLogo" style="height: 40px; background: #f8fafc; padding: 5px; display: flex; align-items: center;"><img src="assets/logo_acf.png" style="height: 30px;"></div>
-
-                <div class="image-upload-box" *ngIf="!useDefaultMobileLogo && !brandSettings.mobileAppLogo">
+                <div class="image-upload-box" *ngIf="!brandSettings.mobileAppLogo">
                   <input type="file" (change)="onFileSelected($event, 'mobileAppLogo')" accept="image/*">
                   <mat-icon>cloud_upload</mat-icon>
                   <span>Choisir une image (Max 2MB)</span>
                 </div>
-                <div class="image-preview" *ngIf="!useDefaultMobileLogo && brandSettings.mobileAppLogo">
+                <div class="image-preview" *ngIf="brandSettings.mobileAppLogo">
                   <img [src]="brandSettings.mobileAppLogo" alt="Mobile App Logo" style="height: 40px; background: #f8fafc; padding: 5px;">
                   <button mat-icon-button color="warn" (click)="removeImage('mobileAppLogo')"><mat-icon>delete</mat-icon></button>
                 </div>

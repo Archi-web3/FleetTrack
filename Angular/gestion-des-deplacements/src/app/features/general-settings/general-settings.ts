@@ -58,9 +58,6 @@ export class GeneralSettingsComponent implements OnInit {
   };
   
   useDefaultBackground = true;
-  useDefaultLogoDark = true;
-  useDefaultLogoLight = true;
-  useDefaultMobileLogo = true;
 
   // System Settings
   systemPreferences: any = {
@@ -69,15 +66,6 @@ export class GeneralSettingsComponent implements OnInit {
 
   toggleDefaultBackground() {
     if (this.useDefaultBackground) this.brandSettings.loginBackgroundUrl = '';
-  }
-  toggleDefaultLogoDark() {
-    if (this.useDefaultLogoDark) this.brandSettings.logoDark = '';
-  }
-  toggleDefaultLogoLight() {
-    if (this.useDefaultLogoLight) this.brandSettings.logoLight = '';
-  }
-  toggleDefaultMobileLogo() {
-    if (this.useDefaultMobileLogo) this.brandSettings.mobileAppLogo = '';
   }
   presetColors: string[] = ['#8b5cf6', '#2196F3', '#4CAF50', '#f44336', '#E91E63', '#009688', '#FF9800', '#607D8B'];
 
@@ -206,9 +194,6 @@ export class GeneralSettingsComponent implements OnInit {
       if (data) {
         this.brandSettings = data;
         if (this.brandSettings.loginBackgroundUrl) this.useDefaultBackground = false;
-        if (this.brandSettings.logoDark) this.useDefaultLogoDark = false;
-        if (this.brandSettings.logoLight) this.useDefaultLogoLight = false;
-        if (this.brandSettings.mobileAppLogo) this.useDefaultMobileLogo = false;
         if (!this.brandSettings.displayMode) this.brandSettings.displayMode = 'both';
       }
     });
