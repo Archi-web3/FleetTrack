@@ -10,7 +10,7 @@ const auth = require('../middleware/authMiddleware');
 // ==========================================
 
 // Obtenir tous les générateurs
-router.get('/', auth, async (req, res) => {
+router.get('/', auth(), async (req, res) => {
     try {
         const generateurs = await Generateur.find()
             .populate('base', 'nom')
@@ -22,7 +22,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Créer un générateur
-router.post('/', auth, async (req, res) => {
+router.post('/', auth(), async (req, res) => {
     try {
         const nouveauGenerateur = new Generateur(req.body);
         const saved = await nouveauGenerateur.save();
@@ -33,7 +33,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Obtenir un générateur par ID
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth(), async (req, res) => {
     try {
         const gen = await Generateur.findById(req.params.id)
             .populate('base', 'nom')
@@ -46,7 +46,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Mettre à jour un générateur
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth(), async (req, res) => {
     try {
         const updated = await Generateur.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updated) return res.status(404).json({ message: 'Générateur introuvable' });
@@ -57,7 +57,7 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // Supprimer un générateur
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth(), async (req, res) => {
     try {
         const deleted = await Generateur.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ message: 'Générateur introuvable' });
@@ -73,7 +73,7 @@ router.delete('/:id', auth, async (req, res) => {
 // ==========================================
 
 // Obtenir les logbooks d'un générateur
-router.get('/:id/logbooks', auth, async (req, res) => {
+router.get('/:id/logbooks', auth(), async (req, res) => {
     try {
         const logs = await GenerateurLogbook.find({ generateur: req.params.id })
             .populate('utilisateur', 'nom prenom')
@@ -85,7 +85,7 @@ router.get('/:id/logbooks', auth, async (req, res) => {
 });
 
 // Ajouter un relevé de logbook
-router.post('/:id/logbooks', auth, async (req, res) => {
+router.post('/:id/logbooks', auth(), async (req, res) => {
     try {
         const gen = await Generateur.findById(req.params.id);
         if (!gen) return res.status(404).json({ message: 'Générateur introuvable' });
@@ -133,7 +133,7 @@ router.post('/:id/logbooks', auth, async (req, res) => {
 // ==========================================
 
 // Obtenir les interventions d'un générateur
-router.get('/:id/interventions', auth, async (req, res) => {
+router.get('/:id/interventions', auth(), async (req, res) => {
     try {
         const interventions = await GenerateurIntervention.find({ generateur: req.params.id })
             .sort({ dateIntervention: -1 });
@@ -144,7 +144,7 @@ router.get('/:id/interventions', auth, async (req, res) => {
 });
 
 // Enregistrer une intervention
-router.post('/:id/interventions', auth, async (req, res) => {
+router.post('/:id/interventions', auth(), async (req, res) => {
     try {
         const gen = await Generateur.findById(req.params.id);
         if (!gen) return res.status(404).json({ message: 'Générateur introuvable' });
@@ -162,7 +162,7 @@ router.post('/:id/interventions', auth, async (req, res) => {
 });
 
 // Modifier une intervention
-router.put('/interventions/:interventionId', auth, async (req, res) => {
+router.put('/interventions/:interventionId', auth(), async (req, res) => {
     try {
         const updated = await GenerateurIntervention.findByIdAndUpdate(req.params.interventionId, req.body, { new: true });
         if (!updated) return res.status(404).json({ message: 'Intervention introuvable' });
@@ -177,7 +177,7 @@ router.put('/interventions/:interventionId', auth, async (req, res) => {
 // PRÉDICTION & CALENDRIER
 // ==========================================
 
-router.get('/maintenance/overview', auth, async (req, res) => {
+router.get('/maintenance/overview', auth(), async (req, res) => {
     try {
         const generateurs = await Generateur.find();
         

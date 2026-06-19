@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { GenerateursService, Generateur } from '../../../core/services/generateurs.service';
 
@@ -18,6 +19,7 @@ import { GenerateursService, Generateur } from '../../../core/services/generateu
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
+    MatTooltipModule,
     RouterModule
   ],
   templateUrl: './generateurs-list.html',
