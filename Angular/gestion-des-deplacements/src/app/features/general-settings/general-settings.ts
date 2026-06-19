@@ -50,11 +50,20 @@ export class GeneralSettingsComponent implements OnInit {
     appName: 'FleetTrack ACF',
     appTagline: '',
     footerText: 'Copyright © 2026, Action Contre la Faim',
-    loginBackgroundUrl: '',
-    logoDark: '',
-    logoLight: '',
-    mobileAppLogo: '',
-    displayMode: 'both' // 'text', 'logo', 'both'
+    logoDark: '', // Legacy, keep for safety
+    logoLight: '', // Legacy
+    mobileAppLogo: '', // Legacy
+    displayMode: 'both', // 'text', 'logo', 'both'
+
+    // Nouveaux champs pour logos séparés et couleurs
+    webLoginLogo: '',
+    webLoginLogoColor: '',
+    webHeaderLogo: '',
+    webHeaderLogoColor: '',
+    mobileLoginLogo: '',
+    mobileLoginLogoColor: '',
+    mobileHeaderLogo: '',
+    mobileHeaderLogoColor: ''
   };
   
   useDefaultBackground = true;

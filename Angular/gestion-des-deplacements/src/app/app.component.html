@@ -2,8 +2,14 @@
   <!-- TOP BAR (Dark) -->
   <div class="top-bar">
     <div class="logo-container" routerLink="/" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
-      <img *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && brandSettings?.logoLight" 
-           [src]="brandSettings?.logoLight" alt="Logo" style="max-height: 40px; width: auto; object-fit: contain;">
+      <ng-container *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && (brandSettings?.webHeaderLogo || brandSettings?.logoLight)">
+        <div *ngIf="brandSettings?.webHeaderLogoColor" 
+             [style.width]="'auto'" [style.height]="'40px'" [style.min-width]="'100px'" [style.background-color]="brandSettings.webHeaderLogoColor"
+             [style.-webkit-mask]="'url(' + (brandSettings.webHeaderLogo || brandSettings.logoLight) + ') no-repeat left center / contain'"
+             [style.mask]="'url(' + (brandSettings.webHeaderLogo || brandSettings.logoLight) + ') no-repeat left center / contain'">
+        </div>
+        <img *ngIf="!brandSettings?.webHeaderLogoColor" [src]="brandSettings?.webHeaderLogo || brandSettings?.logoLight" alt="Logo" style="max-height: 40px; width: auto; object-fit: contain;">
+      </ng-container>
       <h1 *ngIf="brandSettings?.displayMode === 'text' || brandSettings?.displayMode === 'both' || !brandSettings?.displayMode" style="margin: 0;">
         {{ brandSettings?.appName }}
       </h1>

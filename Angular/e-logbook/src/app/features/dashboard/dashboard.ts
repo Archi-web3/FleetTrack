@@ -15,6 +15,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NotificationListComponent } from '../../shared/components/notification-list/notification-list.component';
 import { PushNotificationService } from '../../core/services/push-notification.service'; // NOUVEAU
+import { SettingsService } from '../../core/services/settings.service';
 import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -48,6 +49,7 @@ export class DashboardComponent implements OnInit {
     pendingMissionsCount = 0;
     alertsCount = 0;
     showResetButton = false;
+    brandSettings: any = {};
 
     constructor(
         private router: Router,
@@ -57,6 +59,7 @@ export class DashboardComponent implements OnInit {
         private maintenanceService: MaintenanceService,
         private alertPoller: AlertPollerService,
         private pushService: PushNotificationService, // NOUVEAU
+        private settingsService: SettingsService,
         private snackBar: MatSnackBar,
         private dialog: MatDialog
     ) { }
@@ -73,6 +76,12 @@ export class DashboardComponent implements OnInit {
             this.currentUser = user;
             console.log('📊 [Dashboard] currentUser mis à jour:', user);
             this.checkAdminStatus(); // Vérifier le statut admin
+        });
+
+        this.settingsService.getBrandSettings().subscribe(settings => {
+            if (settings) {
+                this.brandSettings = settings;
+            }
         });
 
         // NOUVEAU: Vérifier immédiatement le statut admin depuis localStorage

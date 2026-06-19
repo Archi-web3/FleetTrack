@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../core/services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
+import { SettingsService } from '../../core/services/settings.service';
 
 @Component({
   selector: 'app-login',
@@ -30,16 +31,26 @@ import { LanguageSelectorComponent } from '../../shared/components/language-sele
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
   isLoading: boolean = false;
+  brandSettings: any = {};
 
   constructor(
     private authService: AuthService,
+    private settingsService: SettingsService,
     private router: Router
   ) { }
+
+  ngOnInit() {
+    this.settingsService.getBrandSettings().subscribe(settings => {
+      if (settings) {
+        this.brandSettings = settings;
+      }
+    });
+  }
 
   login() {
     if (!this.email || !this.password) {

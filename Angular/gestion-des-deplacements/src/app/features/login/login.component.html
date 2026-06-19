@@ -6,8 +6,18 @@
     </div>
     
     <div class="login-logo-container" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 24px;">
-      <img *ngIf="brandSettings.logoDark" [src]="brandSettings.logoDark" alt="Logo" style="max-height: 60px; max-width: 150px; width: auto; object-fit: contain;">
-      <h2 class="app-title" style="margin: 0; color: var(--text-main); font-size: 28px; font-weight: 600;">{{ brandSettings.appName }}</h2>
+      <ng-container *ngIf="brandSettings.webLoginLogo || brandSettings.logoDark">
+        <div *ngIf="brandSettings.webLoginLogoColor" 
+             [style.width]="'150px'" [style.height]="'60px'" [style.background-color]="brandSettings.webLoginLogoColor"
+             [style.-webkit-mask]="'url(' + (brandSettings.webLoginLogo || brandSettings.logoDark) + ') no-repeat center / contain'"
+             [style.mask]="'url(' + (brandSettings.webLoginLogo || brandSettings.logoDark) + ') no-repeat center / contain'">
+        </div>
+        <img *ngIf="!brandSettings.webLoginLogoColor" [src]="brandSettings.webLoginLogo || brandSettings.logoDark" alt="Logo" style="max-height: 60px; max-width: 150px; width: auto; object-fit: contain;">
+      </ng-container>
+      <h2 class="app-title" style="margin: 0; color: var(--text-main); font-size: 28px; font-weight: 600;"
+          *ngIf="brandSettings.displayMode === 'text' || brandSettings.displayMode === 'both' || !brandSettings.displayMode">
+        {{ brandSettings.appName }}
+      </h2>
     </div>
 
     <div class="login-title-text" style="text-align: center; margin-bottom: 30px;">
