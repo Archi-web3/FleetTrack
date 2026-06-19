@@ -37,5 +37,32 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-settings",
+      "urls": [
+        "https://fleettrack-api.onrender.com/api/settings/public/brandSettings",
+        "/api/settings/public/brandSettings"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 10,
+        "maxAge": "7d"
+      }
+    },
+    {
+      "name": "api-data",
+      "urls": [
+        "https://fleettrack-api.onrender.com/api/**",
+        "/api/**"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "3d",
+        "timeout": "5s"
+      }
+    }
   ]
 }
