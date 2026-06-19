@@ -782,6 +782,11 @@
     "SETTINGS": {
         "TITLE": "General Settings",
         "SUBTITLE": "Application Dropdown Management",
+        "BRAND_THEME": "Brand & Theme",
+        "SYSTEM_PREF": "System Preferences",
+        "CURRENCIES": "Currencies",
+        "MAINTENANCE": "Maintenance & Alerts",
+        "EMAILS": "Email Settings",
         "VEHICLE_TYPES": {
             "TITLE": "Vehicle Types",
             "DESC": "List of types available during vehicle creation and maintenance configuration.",

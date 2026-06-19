@@ -70,13 +70,13 @@ export class AppComponent implements OnInit {
       }
     });
 
-    this.settingsService.getSystemPreferences().subscribe(prefs => {
-      this.systemPreferences = prefs;
-    });
-
-
     this.authService.isAuthenticated$.subscribe(status => {
       this.isAuthenticated = status;
+      if (status) {
+        this.settingsService.getSystemPreferences().subscribe(prefs => {
+          this.systemPreferences = prefs;
+        });
+      }
     });
     this.authService.userProfile$.subscribe(profile => {
       console.log('[AppComponent] Current Profile:', profile);

@@ -802,6 +802,11 @@
     "SETTINGS": {
         "TITLE": "Paramètres Généraux",
         "SUBTITLE": "Gestion des listes déroulantes de l'application",
+        "BRAND_THEME": "Marque & Thème",
+        "SYSTEM_PREF": "Préférences Système",
+        "CURRENCIES": "Devises",
+        "MAINTENANCE": "Maintenance & Alertes",
+        "EMAILS": "Paramètres Emails",
         "VEHICLE_TYPES": {
             "TITLE": "Types de Véhicules",
             "DESC": "Liste des types disponibles lors de la création d'un véhicule et de la configuration de maintenance.",

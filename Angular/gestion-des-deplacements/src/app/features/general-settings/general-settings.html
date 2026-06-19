@@ -5,24 +5,24 @@
     <mat-nav-list>
       <a mat-list-item [class.active]="activeTab === 'brand'" (click)="setTab('brand')">
         <mat-icon matListItemIcon>palette</mat-icon>
-        <span matListItemTitle>Brand & Theme</span>
+        <span matListItemTitle>{{ 'SETTINGS.BRAND_THEME' | translate }}</span>
       </a>
       <a mat-list-item [class.active]="activeTab === 'system'" (click)="setTab('system')">
         <mat-icon matListItemIcon>settings</mat-icon>
-        <span matListItemTitle>System Preferences</span>
+        <span matListItemTitle>{{ 'SETTINGS.SYSTEM_PREF' | translate }}</span>
       </a>
 
       <a mat-list-item [class.active]="activeTab === 'currencies'" (click)="setTab('currencies')">
         <mat-icon matListItemIcon>monetization_on</mat-icon>
-        <span matListItemTitle>Currencies</span>
+        <span matListItemTitle>{{ 'SETTINGS.CURRENCIES' | translate }}</span>
       </a>
       <a mat-list-item [class.active]="activeTab === 'maintenance'" (click)="setTab('maintenance')">
         <mat-icon matListItemIcon>build</mat-icon>
-        <span matListItemTitle>Maintenance & Alerts</span>
+        <span matListItemTitle>{{ 'SETTINGS.MAINTENANCE' | translate }}</span>
       </a>
       <a mat-list-item [class.active]="activeTab === 'emails'" (click)="setTab('emails')">
         <mat-icon matListItemIcon>email</mat-icon>
-        <span matListItemTitle>Email Settings</span>
+        <span matListItemTitle>{{ 'SETTINGS.EMAILS' | translate }}</span>
       </a>
     </mat-nav-list>
   </div>
