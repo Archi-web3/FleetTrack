@@ -162,4 +162,19 @@ export class SettingsService {
     saveInfoBanners(banners: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/infoBanners`, { value: banners });
     }
+
+    // Email Settings
+    getEmailSettings(): Observable<any[]> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/emailSettings`).pipe(
+            map(setting => setting && setting.value ? setting.value : []),
+            catchError(err => {
+                console.error('Erreur chargement Email Settings', err);
+                return of([]);
+            })
+        );
+    }
+
+    saveEmailSettings(emails: any[]): Observable<any> {
+        return this.http.post(`${this.apiUrl}/emailSettings`, { value: emails });
+    }
 }

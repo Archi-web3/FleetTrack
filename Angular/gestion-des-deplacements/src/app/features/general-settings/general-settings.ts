@@ -99,6 +99,7 @@ export class GeneralSettingsComponent implements OnInit {
     this.loadTypes();
     this.loadCO2Factors();
     this.loadCurrencies();
+    this.loadEmailSettings();
   }
 
   setTab(tab: string) {
@@ -267,15 +268,30 @@ export class GeneralSettingsComponent implements OnInit {
 
   editingEmail: any = null;
 
+  loadEmailSettings() {
+    this.settingsService.getEmailSettings().subscribe(data => {
+      if (data && data.length > 0) {
+        this.emailNotifications = data;
+      }
+    });
+  }
+
   editEmailTemplate(email: any) {
     // Si on clique sur le même, on le referme. Sinon on l'ouvre.
     this.editingEmail = this.editingEmail === email ? null : email;
   }
 
   saveEmailSettings() {
-    // In a real app, send this to backend
-    this.editingEmail = null;
-    this.snackBar.open('Paramètres d\'emails et templates sauvegardés', 'OK', { duration: 2000 });
+    this.settingsService.saveEmailSettings(this.emailNotifications).subscribe({
+      next: () => {
+        this.editingEmail = null;
+        this.snackBar.open('Paramètres d\'emails et templates sauvegardés', 'OK', { duration: 2000 });
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('Erreur de sauvegarde', 'Fermer');
+      }
+    });
   }
 }
 // Triggering Vercel build to fix cache
