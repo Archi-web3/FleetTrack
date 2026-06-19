@@ -11,10 +11,7 @@
         <mat-icon matListItemIcon>settings</mat-icon>
         <span matListItemTitle>System Preferences</span>
       </a>
-      <a mat-list-item [class.active]="activeTab === 'fleet'" (click)="setTab('fleet')">
-        <mat-icon matListItemIcon>directions_car</mat-icon>
-        <span matListItemTitle>Fleet & Rules</span>
-      </a>
+
       <a mat-list-item [class.active]="activeTab === 'currencies'" (click)="setTab('currencies')">
         <mat-icon matListItemIcon>monetization_on</mat-icon>
         <span matListItemTitle>Currencies</span>
@@ -206,9 +203,9 @@
       </div>
     </div>
 
-    <!-- 3. FLEET & RULES -->
+    <!-- 3. TYPES DE VEHICULES -->
     <div *ngIf="activeTab === 'fleet'" class="settings-section">
-      <h2><mat-icon>directions_car</mat-icon> Fleet & Rules</h2>
+      <h2><mat-icon>directions_car</mat-icon> Types de véhicules</h2>
       <p class="section-desc">Gérez les types de véhicules et les paramètres d'émission CO2.</p>
 
       <div class="grid-2">

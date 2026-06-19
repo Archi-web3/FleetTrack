@@ -119,6 +119,7 @@
           <button mat-menu-item routerLink="/gestion-lieux" *ngIf="perms.canViewMenu('admin_geo')"><mat-icon>place</mat-icon><span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span></button>
           <button mat-menu-item routerLink="/admin/pays-bases" *ngIf="perms.canViewMenu('admin_geo')"><mat-icon>public</mat-icon><span>{{ 'MENU.COUNTRIES_BASES' | translate }}</span></button>
           <button mat-menu-item routerLink="/environment-roadmap" *ngIf="perms.canViewMenu('admin_settings')"><mat-icon>eco</mat-icon><span>{{ 'MENU.ENV_OBJECTIVES' | translate }}</span></button>
+          <button mat-menu-item routerLink="/admin/settings" [queryParams]="{tab: 'fleet'}" *ngIf="perms.canViewMenu('admin_settings')"><mat-icon>directions_car</mat-icon><span>Types de véhicules</span></button>
           <mat-divider></mat-divider>
           <button mat-menu-item [matMenuTriggerFor]="maintSettings" *ngIf="perms.canViewMenu('flotte_maintenance')"><mat-icon>build_circle</mat-icon><span>Gestion des Maintenances</span></button>
         </mat-menu>
