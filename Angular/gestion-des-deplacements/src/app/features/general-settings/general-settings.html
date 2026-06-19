@@ -64,6 +64,16 @@
         </mat-card-header>
         <mat-card-content>
           <div class="grid-2">
+            
+            <div class="modern-form-group" style="grid-column: 1 / -1;">
+              <label>Mode d'affichage (En-tête et Accueil)</label>
+              <mat-select class="modern-input" [(ngModel)]="brandSettings.displayMode">
+                <mat-option value="text">Afficher uniquement le nom de l'application (Texte)</mat-option>
+                <mat-option value="logo">Afficher uniquement le Logo</mat-option>
+                <mat-option value="both">Afficher le Logo + le Texte</mat-option>
+              </mat-select>
+            </div>
+            
             <div class="modern-form-group">
               <label>Titre de l'application</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.appName">

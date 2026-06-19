@@ -53,7 +53,8 @@ export class GeneralSettingsComponent implements OnInit {
     loginBackgroundUrl: '',
     logoDark: '',
     logoLight: '',
-    mobileAppLogo: ''
+    mobileAppLogo: '',
+    displayMode: 'both' // 'text', 'logo', 'both'
   };
   
   useDefaultBackground = true;
@@ -208,6 +209,7 @@ export class GeneralSettingsComponent implements OnInit {
         if (this.brandSettings.logoDark) this.useDefaultLogoDark = false;
         if (this.brandSettings.logoLight) this.useDefaultLogoLight = false;
         if (this.brandSettings.mobileAppLogo) this.useDefaultMobileLogo = false;
+        if (!this.brandSettings.displayMode) this.brandSettings.displayMode = 'both';
       }
     });
   }

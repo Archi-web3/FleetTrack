@@ -1,9 +1,12 @@
 <ng-container *ngIf="isAuthenticated">
   <!-- TOP BAR (Dark) -->
   <div class="top-bar">
-    <div class="logo-container" routerLink="/" style="cursor: pointer;">
-      <img [src]="brandSettings?.logoLight || 'assets/logo_acf.png'" alt="Logo" style="max-height: 40px; width: auto; object-fit: contain;">
-      <h1>{{ brandSettings?.appName || 'FleetTrack' }}</h1>
+    <div class="logo-container" routerLink="/" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+      <img *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && brandSettings?.logoLight" 
+           [src]="brandSettings?.logoLight" alt="Logo" style="max-height: 40px; width: auto; object-fit: contain;">
+      <h1 *ngIf="brandSettings?.displayMode === 'text' || brandSettings?.displayMode === 'both' || !brandSettings?.displayMode" style="margin: 0;">
+        {{ brandSettings?.appName || 'FleetTrack' }}
+      </h1>
     </div>
 
     <!-- Country Selector -->
