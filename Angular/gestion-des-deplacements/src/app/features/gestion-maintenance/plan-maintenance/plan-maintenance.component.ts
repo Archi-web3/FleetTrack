@@ -70,12 +70,18 @@ export class PlanMaintenanceComponent implements OnInit {
       let primaryColor = '#2196f3'; // Bleu par défaut (service)
       let secondaryColor = '#e3f2fd';
       
+      let title = `${event.immatriculation} - Service ${event.typeService}`;
+      
       if (event.eventType === 'mouvement') {
-        primaryColor = '#ff9800'; // Orange
-        secondaryColor = '#fff3e0';
+        primaryColor = '#4caf50'; // Vert
+        secondaryColor = '#e8f5e9';
+        const timeString = event.dateEstimee.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        // Si le temps est 00:00, ça veut dire qu'il n'y a pas d'horaire précis renseigné, mais on l'affiche quand même si souhaité
+        title = `${event.immatriculation} - Planification Confirmée (${timeString})`;
       } else if (event.eventType === 'alerte_conso') {
         primaryColor = '#9c27b0'; // Violet
         secondaryColor = '#f3e5f5';
+        title = `${event.immatriculation} - Alerte Surconsommation`;
       } else if (event.kmRestants <= 0) {
         primaryColor = '#f44336'; // Rouge (Urgent)
         secondaryColor = '#ffebee';
@@ -83,7 +89,7 @@ export class PlanMaintenanceComponent implements OnInit {
 
       return {
         start: event.dateEstimee,
-        title: `${event.immatriculation} - ${event.typeService}`,
+        title: title,
         color: {
           primary: primaryColor,
           secondary: secondaryColor
