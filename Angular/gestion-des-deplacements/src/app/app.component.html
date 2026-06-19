@@ -1,14 +1,24 @@
 <ng-container *ngIf="isAuthenticated">
   <!-- TOP BAR (Dark) -->
   <div class="top-bar">
-    <div class="logo-container" routerLink="/" style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+    <div class="logo-container" routerLink="/" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
       <ng-container *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && (brandSettings?.webHeaderLogo || brandSettings?.logoLight)">
-        <div *ngIf="brandSettings?.webHeaderLogoColor" 
-             [style.width]="'auto'" [style.height]="'40px'" [style.min-width]="'100px'" [style.background-color]="brandSettings.webHeaderLogoColor"
-             [style.-webkit-mask]="'url(' + (brandSettings.webHeaderLogo || brandSettings.logoLight) + ') no-repeat left center / contain'"
-             [style.mask]="'url(' + (brandSettings.webHeaderLogo || brandSettings.logoLight) + ') no-repeat left center / contain'">
+        
+        <!-- Conteneur relatif qui prend exactement la taille de l'image -->
+        <div style="position: relative; display: inline-block;">
+          <!-- L'image invisible sert juste à donner la bonne taille et proportions au conteneur -->
+          <img [src]="brandSettings?.webHeaderLogo || brandSettings?.logoLight" style="visibility: hidden; max-height: 40px; width: auto; display: block;">
+          
+          <!-- Le masque coloré ou l'image normale s'affiche par-dessus -->
+          <div *ngIf="brandSettings?.webHeaderLogoColor" 
+               [style.background-color]="brandSettings.webHeaderLogoColor"
+               [style.-webkit-mask]="'url(' + (brandSettings.webHeaderLogo || brandSettings.logoLight) + ') no-repeat center / contain'"
+               [style.mask]="'url(' + (brandSettings.webHeaderLogo || brandSettings.logoLight) + ') no-repeat center / contain'"
+               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+          </div>
+          <img *ngIf="!brandSettings?.webHeaderLogoColor" [src]="brandSettings?.webHeaderLogo || brandSettings?.logoLight" alt="Logo" style="position: absolute; top: 0; left: 0; max-height: 40px; width: auto; object-fit: contain; height: 100%;">
         </div>
-        <img *ngIf="!brandSettings?.webHeaderLogoColor" [src]="brandSettings?.webHeaderLogo || brandSettings?.logoLight" alt="Logo" style="max-height: 40px; width: auto; object-fit: contain;">
+
       </ng-container>
       <h1 *ngIf="brandSettings?.displayMode === 'text' || brandSettings?.displayMode === 'both' || !brandSettings?.displayMode" style="margin: 0;">
         {{ brandSettings?.appName }}
