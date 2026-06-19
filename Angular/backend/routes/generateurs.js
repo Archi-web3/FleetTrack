@@ -92,7 +92,7 @@ router.post('/:id/logbooks', auth(), async (req, res) => {
 
         const log = new GenerateurLogbook({
             generateur: gen._id,
-            utilisateur: req.user.id,
+            utilisateur: req.utilisateur._id,
             dateReleve: req.body.dateReleve,
             heureDebut: req.body.heureDebut,
             heureFin: req.body.heureFin,
