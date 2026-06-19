@@ -1,6 +1,6 @@
 <div class="settings-container">
   <!-- Sidebar -->
-  <div class="settings-sidebar">
+  <div class="settings-sidebar" *ngIf="activeTab !== 'types-vehicules' && activeTab !== 'facteurs-co2'">
     <h2 class="sidebar-title">Paramètres</h2>
     <mat-nav-list>
       <a mat-list-item [class.active]="activeTab === 'brand'" (click)="setTab('brand')">
@@ -28,7 +28,7 @@
   </div>
 
   <!-- Content -->
-  <div class="settings-content">
+  <div class="settings-content" [ngStyle]="{'max-width': (activeTab === 'types-vehicules' || activeTab === 'facteurs-co2') ? '100%' : '', 'margin': (activeTab === 'types-vehicules' || activeTab === 'facteurs-co2') ? '0 auto' : ''}">
     
     <!-- 1. BRAND & THEME -->
     <div *ngIf="activeTab === 'brand'" class="settings-section">
@@ -203,57 +203,61 @@
       </div>
     </div>
 
-    <!-- 3. TYPES DE VEHICULES -->
-    <div *ngIf="activeTab === 'fleet'" class="settings-section">
+    <!-- 3A. TYPES DE VEHICULES -->
+    <div *ngIf="activeTab === 'types-vehicules'" class="settings-section">
       <h2><mat-icon>directions_car</mat-icon> Types de véhicules</h2>
-      <p class="section-desc">Gérez les types de véhicules et les paramètres d'émission CO2.</p>
+      <p class="section-desc">Gérez les types de véhicules disponibles pour la flotte.</p>
 
-      <div class="grid-2">
-        <mat-card class="setting-card">
-          <mat-card-header>
-            <mat-card-title>Types de Véhicules</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="add-type-form">
-              <input type="text" class="modern-input" [(ngModel)]="newType" placeholder="Nouveau type...">
-              <button mat-flat-button color="primary" (click)="addType()">Ajouter</button>
-            </div>
-            <mat-list>
-              <mat-list-item *ngFor="let type of vehicleTypes">
-                <span matListItemTitle>{{ type }}</span>
-                <button mat-icon-button color="warn" matListItemMeta (click)="removeType(type)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
+      <mat-card class="setting-card">
+        <mat-card-header>
+          <mat-card-title>Types de Véhicules</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="add-type-form">
+            <input type="text" class="modern-input" [(ngModel)]="newType" placeholder="Nouveau type...">
+            <button mat-flat-button color="primary" (click)="addType()">Ajouter</button>
+          </div>
+          <mat-list>
+            <mat-list-item *ngFor="let type of vehicleTypes">
+              <span matListItemTitle>{{ type }}</span>
+              <button mat-icon-button color="warn" matListItemMeta (click)="removeType(type)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
-        <mat-card class="setting-card">
-          <mat-card-header>
-            <mat-card-title>Facteurs CO2 (g/km)</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="modern-form-group">
-              <label>Trajet court</label>
-              <input type="number" class="modern-input" [(ngModel)]="co2Factors.short">
-            </div>
-            <div class="modern-form-group">
-              <label>Trajet moyen</label>
-              <input type="number" class="modern-input" [(ngModel)]="co2Factors.medium">
-            </div>
-            <div class="modern-form-group">
-              <label>Trajet long</label>
-              <input type="number" class="modern-input" [(ngModel)]="co2Factors.long">
-            </div>
-            <div class="modern-form-group">
-              <label>Source</label>
-              <input type="text" class="modern-input" [(ngModel)]="co2Factors.source">
-            </div>
-            <button mat-flat-button color="primary" style="margin-top: 15px;" (click)="saveCO2()">Save CO2</button>
-          </mat-card-content>
-        </mat-card>
-      </div>
+    <!-- 3B. FACTEURS CO2 -->
+    <div *ngIf="activeTab === 'facteurs-co2'" class="settings-section">
+      <h2><mat-icon>co2</mat-icon> Facteurs CO2</h2>
+      <p class="section-desc">Gérez les paramètres d'émission CO2 pour les différents types de trajets.</p>
+
+      <mat-card class="setting-card">
+        <mat-card-header>
+          <mat-card-title>Facteurs CO2 (g/km)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="modern-form-group">
+            <label>Trajet court</label>
+            <input type="number" class="modern-input" [(ngModel)]="co2Factors.short">
+          </div>
+          <div class="modern-form-group">
+            <label>Trajet moyen</label>
+            <input type="number" class="modern-input" [(ngModel)]="co2Factors.medium">
+          </div>
+          <div class="modern-form-group">
+            <label>Trajet long</label>
+            <input type="number" class="modern-input" [(ngModel)]="co2Factors.long">
+          </div>
+          <div class="modern-form-group">
+            <label>Source</label>
+            <input type="text" class="modern-input" [(ngModel)]="co2Factors.source">
+          </div>
+          <button mat-flat-button color="primary" style="margin-top: 15px;" (click)="saveCO2()">Save CO2</button>
+        </mat-card-content>
+      </mat-card>
     </div>
 
     <!-- 4. CURRENCIES -->
