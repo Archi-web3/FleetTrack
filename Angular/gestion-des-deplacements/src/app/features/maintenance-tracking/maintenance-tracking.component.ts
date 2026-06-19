@@ -21,6 +21,7 @@ import { AdminService } from '../../core/services/admin.service';
 import { MouvementService } from '../../core/services/mouvement.service';
 import { SmartCostDashboardComponent } from './smart-cost-dashboard/smart-cost-dashboard.component';
 import { PredictiveDashboardComponent } from './predictive-dashboard/predictive-dashboard.component';
+import { ServiceValidationDialogComponent } from './service-validation-dialog/service-validation-dialog.component';
 
 @Component({
   selector: 'app-maintenance-tracking',
@@ -210,7 +211,19 @@ export class MaintenanceTrackingComponent implements OnInit {
   }
 
   viewVehiculeDetail(vehicule: any) {
-    alert(`Détail pour ${vehicule.vehicule.immatriculation} - À implémenter`);
+    // Si le véhicule n'a pas de service prochain planifié ou a des données, on ouvre le dialog pour effectuer le service.
+    const dialogRef = this.dialog.open(ServiceValidationDialogComponent, {
+      width: '800px',
+      data: { vehicule: vehicule.vehicule, overviewData: vehicule }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Le service a été validé, on rafraîchit la vue
+        this.loadOverview();
+        this.loadAlerts();
+      }
+    });
   }
 
   loadMaintenanceSlots() {

@@ -175,6 +175,7 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                     km: dernierService.kilometragePrevu
                 } : null,
                 prochainService: prochainService ? {
+                    _id: prochainService._id,
                     type: prochainService.typeService,
                     kmPrevu: prochainService.kilometragePrevu,
                     statut: prochainService.statut,

@@ -116,4 +116,29 @@ export class MaintenanceTrackingService {
         const predictiveApi = this.apiUrl.replace('maintenance-tracking', 'predictive');
         return this.http.get<any>(`${predictiveApi}/fleet-health`);
     }
+
+    /**
+     * Récupère le prochain service pour un véhicule (avec ses tâches)
+     * Utilise l'API définie dans backend/routes/maintenance.js
+     */
+    getNextService(vehiculeId: string): Observable<any> {
+        const maintenanceApi = this.apiUrl.replace('maintenance-tracking', 'maintenance');
+        return this.http.get<any>(`${maintenanceApi}/service/next?vehicule=${vehiculeId}`);
+    }
+
+    /**
+     * Met à jour les tâches d'un service
+     */
+    updateServiceTasks(serviceId: string, taches: any[]): Observable<any> {
+        const maintenanceApi = this.apiUrl.replace('maintenance-tracking', 'maintenance');
+        return this.http.put<any>(`${maintenanceApi}/service/${serviceId}/tasks`, { taches });
+    }
+
+    /**
+     * Marque un service comme complété
+     */
+    completeService(serviceId: string, signature: string = 'WEB_VALIDATION'): Observable<any> {
+        const maintenanceApi = this.apiUrl.replace('maintenance-tracking', 'maintenance');
+        return this.http.post<any>(`${maintenanceApi}/service/complete`, { serviceId, signature });
+    }
 }
