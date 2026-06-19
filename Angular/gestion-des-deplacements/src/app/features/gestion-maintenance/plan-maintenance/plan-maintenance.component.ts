@@ -53,7 +53,7 @@ export class PlanMaintenanceComponent implements OnInit {
   }
 
   loadMaintenancePlan() {
-    this.http.get<any[]>(`${environment.apiUrl}/api/maintenance-tracking/calendar`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/maintenance-tracking/calendar`).subscribe({
       next: (data) => {
         this.events = data.map(d => ({
           ...d,
