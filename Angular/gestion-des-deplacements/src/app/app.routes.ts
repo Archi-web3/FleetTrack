@@ -266,6 +266,18 @@ export const routes: Routes = [
     data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
   },
   {
+    path: 'gestion-generateurs/new',
+    loadComponent: () => import('./features/gestion-generateurs/generateur-form/generateur-form').then(m => m.GenerateurFormComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
+  },
+  {
+    path: 'gestion-generateurs/edit/:id',
+    loadComponent: () => import('./features/gestion-generateurs/generateur-form/generateur-form').then(m => m.GenerateurFormComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
+  },
+  {
     path: 'gestion-generateurs/plan-maintenance',
     loadComponent: () => import('./features/gestion-generateurs/generateur-plan/generateur-plan').then(m => m.GenerateurPlanComponent),
     canActivate: [AuthGuard],

@@ -9,13 +9,23 @@ export interface Generateur {
   modele: string;
   puissanceKVA: number;
   numeroSerie: string;
+  numeroMoteur?: string;
   acfCode?: string;
+  categorie?: string;
+  proprietaire?: string;
+  typeCarburant?: string;
+  anneeFabrication?: number;
+  anneePremiereUtilisation?: number;
+  coutAssuranceAnnuel?: number;
+  dateCommencement?: Date;
   base: any; // ID ou object populé
   pays?: any;
   siteInstallation?: string;
   statut: string;
+  heuresInitiales?: number;
   heuresFonctionnement: number;
   consommationTheorique: number;
+  remarques?: string;
 }
 
 @Injectable({

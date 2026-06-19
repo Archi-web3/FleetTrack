@@ -1,0 +1,52 @@
+.form-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.header-actions h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #1e293b;
+}
+
+.form-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0077b6;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1 1 calc(33.333% - 16px);
+  min-width: 200px;
+}
+
+.full-width {
+  width: 100%;
+}

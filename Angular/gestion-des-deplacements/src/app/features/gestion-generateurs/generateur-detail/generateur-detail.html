@@ -5,6 +5,9 @@
       <h2>Détails du Générateur : {{generateur.marque}} {{generateur.modele}} ({{generateur.numeroSerie}})</h2>
     </div>
     <div style="display: flex; gap: 8px;">
+      <button mat-flat-button color="primary" [routerLink]="['/gestion-generateurs/edit', generateur._id]">
+        <mat-icon>edit</mat-icon> Modifier
+      </button>
       <button mat-flat-button color="accent" [routerLink]="['/gestion-generateurs/intervention', generateur._id]">
         <mat-icon>build</mat-icon> Nouvelle Intervention
       </button>
