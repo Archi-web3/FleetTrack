@@ -5,7 +5,7 @@
       <img *ngIf="(brandSettings?.displayMode === 'logo' || brandSettings?.displayMode === 'both') && brandSettings?.logoLight" 
            [src]="brandSettings?.logoLight" alt="Logo" style="max-height: 40px; width: auto; object-fit: contain;">
       <h1 *ngIf="brandSettings?.displayMode === 'text' || brandSettings?.displayMode === 'both' || !brandSettings?.displayMode" style="margin: 0;">
-        {{ brandSettings?.appName || 'FleetTrack' }}
+        {{ brandSettings?.appName }}
       </h1>
     </div>
 

@@ -16,13 +16,13 @@
         <!-- Text Display -->
         <div style="display: flex; flex-direction: column; justify-content: center;"
              *ngIf="brandSettings?.displayMode === 'text' || brandSettings?.displayMode === 'both' || !brandSettings?.displayMode">
-          <h2 class="hero-app-name" style="margin: 0;">{{ brandSettings?.appName || 'FleetTrack' }}</h2>
+          <h2 class="hero-app-name" style="margin: 0;">{{ brandSettings?.appName }}</h2>
           <span *ngIf="brandSettings?.appTagline" class="hero-app-tagline" style="margin: 0; font-size: 14px; font-weight: 400; opacity: 0.9; margin-top: 4px; color: white;">{{ brandSettings?.appTagline }}</span>
         </div>
       </div>
       
       <div class="hero-welcome-card">
-        <h2>Bienvenue sur {{ brandSettings?.appName || 'FleetTrack' }}, {{ userName }} !</h2>
+        <h2>Bienvenue sur {{ brandSettings?.appName }}, {{ userName }} !</h2>
         <p>Ceci est votre <strong>tableau de bord</strong> personnel. Vous y trouverez toutes les données importantes en un clin d'œil.</p>
       </div>
     </div>
