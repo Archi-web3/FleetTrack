@@ -181,6 +181,10 @@ router.get('/mouvements', auth(), countryFilter, async (req, res) => {
       query.vehicule = req.query.vehicule;
     }
     
+    if (req.query.chauffeurId && mongoose.Types.ObjectId.isValid(req.query.chauffeurId)) {
+      query.chauffeur = req.query.chauffeurId;
+    }
+    
     let demandeurQuery = {}; // Pour stocker la condition demandeur séparément
 
     if (req.utilisateur.profil === 'Technicien' || req.utilisateur.profil === 'Guest') {

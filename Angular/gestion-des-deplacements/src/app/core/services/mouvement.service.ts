@@ -23,6 +23,12 @@ export class MouvementService {
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
     return this.http.get<any>(`${this.apiUrl}/${id}`, { headers });
   }
+  
+  getMouvementsByChauffeur(chauffeurId: string): Observable<any[]> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.get<any[]>(`${this.apiUrl}?chauffeurId=${chauffeurId}`, { headers });
+  }
   getPlanningMouvements(includePending: boolean = false): Observable<any[]> { // MODIFIÉ
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');

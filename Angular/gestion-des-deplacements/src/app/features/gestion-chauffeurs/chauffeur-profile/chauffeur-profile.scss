@@ -1,0 +1,180 @@
+.profile-header {
+  margin-bottom: 24px;
+}
+
+.title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .back-button {
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 12px;
+  }
+}
+
+.profile-card {
+  margin-bottom: 24px;
+
+  mat-card-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    padding: 24px;
+
+    .info-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .value {
+        font-size: 16px;
+        color: #333;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.tabs-card {
+  mat-card-content {
+    padding: 0;
+  }
+
+  .tab-content {
+    padding: 24px;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 18px;
+      color: #333;
+    }
+  }
+}
+
+.full-width-table {
+  width: 100%;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.status-en-attente { background-color: #fff3e0; color: #e65100; }
+  &.status-valide { background-color: #e8f5e9; color: #2e7d32; }
+  &.status-en-cours { background-color: #e3f2fd; color: #1565c0; }
+  &.status-termine { background-color: #f5f5f5; color: #616161; }
+}
+
+.attachments-section {
+  .add-attachment {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+
+    mat-form-field {
+      flex: 1;
+      margin-bottom: -1.25em; /* Remove bottom padding from form field */
+    }
+  }
+
+  .attachments-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+
+    .attachment-card {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background-color: #fff;
+      transition: box-shadow 0.2s;
+
+      &:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+
+      mat-icon {
+        color: #1976d2;
+        margin-right: 16px;
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+
+      .attachment-details {
+        flex: 1;
+        overflow: hidden;
+
+        .attachment-name {
+          margin: 0 0 4px 0;
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .attachment-date {
+          margin: 0;
+          font-size: 12px;
+          color: #666;
+        }
+      }
+
+      .attachment-actions {
+        display: flex;
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px;
+    color: #666;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}

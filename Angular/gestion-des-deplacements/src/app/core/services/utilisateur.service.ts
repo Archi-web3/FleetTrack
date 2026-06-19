@@ -18,6 +18,12 @@ export class UtilisateurService {
     return this.http.get<any[]>(this.apiUrl, { headers });
   }
 
+  getUserById(id: string): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('x-auth-token', token ? token : '');
+    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers });
+  }
+
   addUser(userData: any): Observable<any> { // NOUVELLE MÉTHODE
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('x-auth-token', token ? token : '');

@@ -134,6 +134,7 @@ router.put('/utilisateurs/:id', auth(['SuperAdmin', 'Admin']), async (req, res) 
     if (req.body.telephone != null) utilisateur.telephone = req.body.telephone;
     if (req.body.permis != null) utilisateur.permis = req.body.permis;
     if (req.body.disponible != null) utilisateur.disponible = req.body.disponible;
+    if (req.body.documents !== undefined) utilisateur.documents = req.body.documents;
 
     const utilisateurMisAJour = await utilisateur.save();
     auditService.logAction(req, 'UPDATE_USER', 'ADMIN', `User: ${utilisateurMisAJour.nom}`, { changes: req.body });

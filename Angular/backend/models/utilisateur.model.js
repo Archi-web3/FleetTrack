@@ -29,6 +29,14 @@ const utilisateurSchema = new mongoose.Schema({
     date: { type: Date }
   },
   vehiculeAttitre: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicule' },
+  
+  // Documents / Pièces jointes (Permis scanné, Certificats...)
+  documents: [{
+    nom: { type: String },
+    url: { type: String },
+    dateAjout: { type: Date, default: Date.now },
+    typeSource: { type: String, enum: ['Upload', 'Lien'], default: 'Upload' }
+  }],
 
   // Projet/Programme
   projet: {

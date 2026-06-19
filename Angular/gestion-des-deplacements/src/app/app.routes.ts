@@ -94,6 +94,12 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
   {
+    path: 'chauffeur-profile/:id',
+    loadComponent: () => import('./features/gestion-chauffeurs/chauffeur-profile/chauffeur-profile').then(m => m.ChauffeurProfileComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+  },
+  {
     path: 'consolidation',
     component: ConsolidationMouvementsComponent,
     canActivate: [AuthGuard],

@@ -1,0 +1,195 @@
+<div class="profile-container" *ngIf="chauffeur">
+  <div class="profile-header">
+    <div class="title-section">
+      <div class="header-left">
+        <button mat-icon-button class="back-button" routerLink="/gestion-chauffeurs" matTooltip="Retour à la liste">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>Profil Chauffeur: {{ chauffeur.prenom }} {{ chauffeur.nom }}</h1>
+      </div>
+      <div class="header-actions">
+        <!-- Add actions here if needed -->
+      </div>
+    </div>
+  </div>
+
+  <mat-card class="profile-card">
+    <mat-card-content>
+      <div class="info-group">
+        <label>Statut</label>
+        <div class="value">
+          <mat-icon [style.color]="chauffeur.disponible ? 'green' : 'red'" style="vertical-align: middle; font-size: 18px; width: 18px; height: 18px;">
+            {{ chauffeur.disponible ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          {{ chauffeur.disponible ? 'Disponible' : 'Indisponible' }}
+        </div>
+      </div>
+      <div class="info-group">
+        <label>Téléphone</label>
+        <div class="value">{{ chauffeur.telephone || 'Non renseigné' }}</div>
+      </div>
+      <div class="info-group">
+        <label>Permis</label>
+        <div class="value">{{ chauffeur.permis || 'Non renseigné' }}</div>
+      </div>
+      <div class="info-group" *ngIf="chauffeur.base?.nom">
+        <label>Base</label>
+        <div class="value">{{ chauffeur.base.nom }}</div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="tabs-card">
+    <mat-card-content>
+      <mat-tab-group dynamicHeight>
+        
+        <!-- ONGLET: DEPLACEMENTS -->
+        <mat-tab label="Ses déplacements">
+          <div class="tab-content">
+            <h3>Historique des déplacements</h3>
+            
+            <div class="table-container mat-elevation-z2" *ngIf="mouvements.length > 0; else noMouvements">
+              <table mat-table [dataSource]="mouvements" class="full-width-table">
+                <ng-container matColumnDef="dateDepart">
+                  <th mat-header-cell *matHeaderCellDef> Date de départ </th>
+                  <td mat-cell *matCellDef="let element"> {{element.stops?.[0]?.dateDepart | date:'short'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vehicule">
+                  <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    {{ element.vehicule?.immatriculation || 'Non assigné' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="objectif">
+                  <th mat-header-cell *matHeaderCellDef> Objectif </th>
+                  <td mat-cell *matCellDef="let element"> {{element.objectif}} </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="statut">
+                  <th mat-header-cell *matHeaderCellDef> Statut </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    <span class="status-badge" [ngClass]="'status-' + (element.statut | lowercase | slice:0:10)">
+                      {{element.statut | uppercase}}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="mouvementsColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: mouvementsColumns;"></tr>
+              </table>
+            </div>
+            <ng-template #noMouvements>
+              <div class="empty-state">
+                <mat-icon>history_toggle_off</mat-icon>
+                <p>Aucun déplacement enregistré pour ce chauffeur.</p>
+              </div>
+            </ng-template>
+          </div>
+        </mat-tab>
+
+        <!-- ONGLET: PLANNING -->
+        <mat-tab label="Son planning">
+          <div class="tab-content">
+            <h3>Planning à venir</h3>
+            
+            <div class="table-container mat-elevation-z2" *ngIf="planning.length > 0; else noPlanning">
+              <table mat-table [dataSource]="planning" class="full-width-table">
+                <ng-container matColumnDef="dateDepart">
+                  <th mat-header-cell *matHeaderCellDef> Date </th>
+                  <td mat-cell *matCellDef="let element"> {{element.stops?.[0]?.dateDepart | date:'short'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vehicule">
+                  <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                  <td mat-cell *matCellDef="let element"> 
+                    {{ element.vehicule?.immatriculation || 'Non assigné' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="objectif">
+                  <th mat-header-cell *matHeaderCellDef> Objectif </th>
+                  <td mat-cell *matCellDef="let element"> {{element.objectif}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="planningColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: planningColumns;"></tr>
+              </table>
+            </div>
+            <ng-template #noPlanning>
+              <div class="empty-state">
+                <mat-icon>event_busy</mat-icon>
+                <p>Aucun trajet planifié pour ce chauffeur.</p>
+              </div>
+            </ng-template>
+          </div>
+        </mat-tab>
+
+        <!-- ONGLET: PIECES JOINTES -->
+        <mat-tab label="Pièces jointes">
+          <div class="tab-content attachments-section">
+            <h3>Documents du chauffeur</h3>
+            
+            <div class="add-attachment">
+              <mat-form-field appearance="outline">
+                <mat-label>Nom du document (ex: Permis de conduire)</mat-label>
+                <input matInput [(ngModel)]="newDocName" placeholder="Titre...">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Lien Sharepoint / Drive</mat-label>
+                <input matInput [(ngModel)]="newDocUrl" placeholder="https://...">
+              </mat-form-field>
+
+              <button mat-flat-button color="primary" [disabled]="!newDocName || !newDocUrl" (click)="addLinkDocument()">
+                <mat-icon>add_link</mat-icon> Ajouter
+              </button>
+              
+              <span style="margin: 0 8px; color: #999;">OU</span>
+              
+              <button mat-stroked-button color="primary" (click)="fileInput.click()">
+                <mat-icon>cloud_upload</mat-icon> Uploader
+              </button>
+              <input type="file" #fileInput style="display: none" (change)="uploadDocument($event)">
+            </div>
+
+            <div class="attachments-list" *ngIf="chauffeur.documents && chauffeur.documents.length > 0; else noDocuments">
+              <div class="attachment-card" *ngFor="let doc of chauffeur.documents; let i = index">
+                <mat-icon>{{ doc.typeSource === 'Upload' ? 'description' : 'link' }}</mat-icon>
+                <div class="attachment-details">
+                  <p class="attachment-name" [title]="doc.nom">{{ doc.nom }}</p>
+                  <p class="attachment-date">Ajouté le {{ doc.dateAjout | date:'dd/MM/yyyy' }}</p>
+                </div>
+                <div class="attachment-actions">
+                  <a mat-icon-button color="primary" [href]="doc.url" target="_blank" matTooltip="Ouvrir">
+                    <mat-icon>open_in_new</mat-icon>
+                  </a>
+                  <button mat-icon-button color="warn" (click)="deleteDocument(i)" matTooltip="Supprimer">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <ng-template #noDocuments>
+              <div class="empty-state">
+                <mat-icon>folder_open</mat-icon>
+                <p>Aucune pièce jointe pour le moment.</p>
+              </div>
+            </ng-template>
+
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="loading-shade" *ngIf="loading">
+  <div class="spinner-container">
+    <mat-icon class="spinning-icon">refresh</mat-icon>
+    <p>Chargement du profil...</p>
+  </div>
+</div>

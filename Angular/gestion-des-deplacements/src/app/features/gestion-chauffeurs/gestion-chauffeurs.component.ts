@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ChauffeurService } from '../../core/services/chauffeur.service'; // Gardé pour la liste initiale via route /chauffeurs
 import { UtilisateurService } from '../../core/services/utilisateur.service'; // Pour update/delete complet
@@ -30,6 +31,7 @@ import { ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     FormsModule,
     MatCardModule,
     MatFormFieldModule,
