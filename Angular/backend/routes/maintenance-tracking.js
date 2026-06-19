@@ -146,9 +146,15 @@ router.get('/overview', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                         moyenneKmParMois = Math.round(kmParcourus / tempsMois);
                     }
                 }
+                if (moyenneKmParMois <= 0 || isNaN(moyenneKmParMois)) {
+                    moyenneKmParMois = 1000;
+                }
+                
                 const moisEstimes = ecartKm / moyenneKmParMois;
                 dateEstimee = new Date();
-                dateEstimee.setDate(dateEstimee.getDate() + Math.round(moisEstimes * 30));
+                if (isFinite(moisEstimes)) {
+                    dateEstimee.setDate(dateEstimee.getDate() + Math.round(moisEstimes * 30));
+                }
             } else if (ecartKm !== null && ecartKm <= 0) {
                 dateEstimee = new Date(); // Déjà dû
             }
@@ -430,16 +436,21 @@ router.get('/calendar', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
                     moyenneKmParMois = Math.round(kmParcourus / tempsMois);
                 }
             }
+            if (moyenneKmParMois <= 0 || isNaN(moyenneKmParMois)) {
+                moyenneKmParMois = 1000;
+            }
 
             const kmRestants = prochainService.kilometragePrevu - vehicule.kilometrage;
             
             // Si le service est déjà en retard ou dû, on fixe la date à aujourd'hui (ou au passé)
             let dateEstimee = new Date();
-            if (kmRestants > 0) {
+            if (kmRestants > 0 && isFinite(moyenneKmParMois)) {
                 const moisEstimes = kmRestants / moyenneKmParMois;
                 // Calculer les jours estimés
                 const joursEstimes = moisEstimes * 30;
-                dateEstimee.setDate(dateEstimee.getDate() + Math.round(joursEstimes));
+                if (isFinite(joursEstimes)) {
+                    dateEstimee.setDate(dateEstimee.getDate() + Math.round(joursEstimes));
+                }
             }
 
             calendarEvents.push({
@@ -465,6 +476,8 @@ router.get('/calendar', auth(['SuperAdmin', 'Admin', 'Superviseur']), async (req
         }).populate('vehicule', 'immatriculation marque modele');
 
         for (const mouv of mouvementsMaint) {
+            if (!mouv.vehicule) continue; // Protection contre les véhicules supprimés
+            
             calendarEvents.push({
                 vehiculeId: mouv.vehicule._id,
                 immatriculation: mouv.vehicule.immatriculation,

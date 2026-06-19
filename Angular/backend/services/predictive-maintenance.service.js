@@ -47,13 +47,19 @@ class PredictiveMaintenanceService {
                     }
                 }
 
+                if (moyenneKmParMois <= 0 || isNaN(moyenneKmParMois)) {
+                    moyenneKmParMois = 1000;
+                }
+
                 nextServiceKm = prochainService.kilometragePrevu;
-                remainingKm = nextServiceKm - vehicle.kilometrage;
+                remainingKm = nextServiceKm - (vehicle.kilometrage || 0);
 
                 if (remainingKm > 0) {
                     const moisEstimes = remainingKm / moyenneKmParMois;
                     estimatedDate = new Date();
-                    estimatedDate.setDate(estimatedDate.getDate() + Math.round(moisEstimes * 30));
+                    if (isFinite(moisEstimes)) {
+                        estimatedDate.setDate(estimatedDate.getDate() + Math.round(moisEstimes * 30));
+                    }
                 } else {
                     estimatedDate = new Date();
                 }
