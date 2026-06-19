@@ -21,8 +21,8 @@
                         <img *ngIf="!brandSettings?.mobileLoginLogoColor" [src]="brandSettings?.mobileLoginLogo || brandSettings?.mobileAppLogo" alt="Logo" class="acf-logo" style="position: absolute; top: 0; left: 0; max-height: 40px; max-width: 100px; width: auto; object-fit: contain; height: 100%; margin: 0;">
                     </div>
                 </ng-container>
-                <h2 class="app-title">{{ brandSettings?.appName || 'e-Logbook' }} <span class="version">(v2.14.0)</span></h2>
-                <p class="subtitle">Chauffeur</p>
+                <h2 class="app-title">{{ brandSettings?.mobileAppName || brandSettings?.appName || 'e-Logbook' }}</h2>
+                <p class="subtitle">{{ brandSettings?.mobileAppTagline || 'Chauffeur' }}</p>
             </div>
 
             <!-- Warning Offline -->

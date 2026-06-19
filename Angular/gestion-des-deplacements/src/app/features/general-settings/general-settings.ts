@@ -50,6 +50,8 @@ export class GeneralSettingsComponent implements OnInit {
     appName: 'FleetTrack ACF',
     appTagline: '',
     footerText: 'Copyright © 2026, Action Contre la Faim',
+    mobileAppName: 'e-Logbook',
+    mobileAppTagline: 'Chauffeur',
     logoDark: '', // Legacy, keep for safety
     logoLight: '', // Legacy
     mobileAppLogo: '', // Legacy

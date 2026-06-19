@@ -75,13 +75,23 @@
             </div>
             
             <div class="modern-form-group">
-              <label>Titre de l'application</label>
+              <label>Titre de l'application (Web)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.appName">
             </div>
             
             <div class="modern-form-group">
-              <label>Tagline (Sous-titre)</label>
+              <label>Tagline / Sous-titre (Web)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.appTagline" placeholder="Votre phrase d'accroche...">
+            </div>
+
+            <div class="modern-form-group">
+              <label>Titre de l'application (Mobile)</label>
+              <input type="text" class="modern-input" [(ngModel)]="brandSettings.mobileAppName" placeholder="ex: e-Logbook">
+            </div>
+            
+            <div class="modern-form-group">
+              <label>Tagline / Sous-titre (Mobile)</label>
+              <input type="text" class="modern-input" [(ngModel)]="brandSettings.mobileAppTagline" placeholder="ex: Chauffeur">
             </div>
             
             <div class="modern-form-group" style="grid-column: 1 / -1;">
