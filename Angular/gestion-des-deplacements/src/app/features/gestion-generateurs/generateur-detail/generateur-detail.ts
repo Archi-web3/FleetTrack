@@ -12,6 +12,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
 import { GenerateursService, Generateur } from '../../../core/services/generateurs.service';
 
 @Component({
@@ -29,7 +30,8 @@ import { GenerateursService, Generateur } from '../../../core/services/generateu
     MatDatepickerModule,
     MatNativeDateModule,
     MatTabsModule,
-    RouterModule
+    RouterModule,
+    InfoBannerComponent
   ],
   templateUrl: './generateur-detail.html',
   styleUrls: ['./generateur-detail.css']

@@ -16,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 import { AdminService } from '../../../core/services/admin.service';
+import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
 
 @Component({
   selector: 'app-generateur-form',
@@ -31,7 +32,8 @@ import { AdminService } from '../../../core/services/admin.service';
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    RouterModule
+    RouterModule,
+    InfoBannerComponent
   ],
   templateUrl: './generateur-form.html',
   styleUrls: ['./generateur-form.css']

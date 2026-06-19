@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { RouterModule } from '@angular/router';
 import { GenerateursService } from '../../../core/services/generateurs.service';
+import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
 
 @Component({
   selector: 'app-generateur-plan',
@@ -18,7 +19,8 @@ import { GenerateursService } from '../../../core/services/generateurs.service';
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
-    RouterModule
+    RouterModule,
+    InfoBannerComponent
   ],
   templateUrl: './generateur-plan.html',
   styleUrls: ['./generateur-plan.css']

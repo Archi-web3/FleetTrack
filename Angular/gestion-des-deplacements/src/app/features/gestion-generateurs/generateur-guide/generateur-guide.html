@@ -1,0 +1,40 @@
+<div class="dashboard-container">
+  <div class="header-actions">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <button mat-icon-button routerLink="/gestion-generateurs"><mat-icon>arrow_back</mat-icon></button>
+      <h2>Guide de Maintenance ACF des Générateurs</h2>
+    </div>
+  </div>
+
+  <mat-card class="info-card">
+    <mat-card-content>
+      <p>
+        Ce guide liste l'ensemble des tâches de maintenance à effectuer sur les générateurs et moteurs en fonction de leurs heures de fonctionnement. 
+        Lors de la création d'une intervention préventive, ces tâches seront automatiquement proposées sous forme de checklist à valider par le technicien.
+      </p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-accordion multi>
+    <mat-expansion-panel *ngFor="let service of services; let first = first" [expanded]="first" class="service-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon color="primary" style="margin-right: 12px;">build_circle</mat-icon>
+          <strong>{{ service.title }}</strong>
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ service.description }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-list>
+        <mat-list-item *ngFor="let task of service.tasks">
+          <mat-icon matListItemIcon color="accent">check_circle_outline</mat-icon>
+          <div matListItemTitle style="white-space: normal; line-height: 1.4;">{{ task }}</div>
+        </mat-list-item>
+      </mat-list>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</div>

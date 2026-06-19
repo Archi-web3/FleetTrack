@@ -122,6 +122,14 @@ export class AdminProfileMatrixComponent implements OnInit {
             { key: 'manage_alerts', label: 'Gérer les Alertes' },
             { key: 'edit_config', label: 'Modifier Configuration' }
           ]
+        },
+        {
+          key: 'flotte_generateurs',
+          label: 'Générateurs / Moteurs',
+          permissions: [
+            { key: 'view_menu', label: 'Voir (Menu)' },
+            { key: 'manage', label: 'Gérer la flotte (Ajout, Modif)' }
+          ]
         }
       ]
     },

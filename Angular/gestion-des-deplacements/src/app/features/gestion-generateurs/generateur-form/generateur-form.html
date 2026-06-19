@@ -4,6 +4,8 @@
     <h2>{{ generateurId ? 'Modifier le générateur' : 'Ajouter un générateur' }}</h2>
   </div>
 
+  <app-info-banner bannerId="generateur_form" title="Formulaire d'enregistrement du Moteur"></app-info-banner>
+
   <mat-card class="form-card">
     <mat-card-content>
       <!-- Section 1 : Identification -->
@@ -116,6 +118,10 @@
         <mat-form-field appearance="outline" class="flex-1">
           <mat-label>Nombre d'heures initiales</mat-label>
           <input matInput type="number" [(ngModel)]="generateur.heuresInitiales">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Heures totales actuelles</mat-label>
+          <input matInput type="number" [(ngModel)]="generateur.heuresFonctionnement">
         </mat-form-field>
       </div>
 

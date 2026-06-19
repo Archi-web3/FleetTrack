@@ -266,6 +266,12 @@ export const routes: Routes = [
     data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
   },
   {
+    path: 'gestion-generateurs/guide',
+    loadComponent: () => import('./features/gestion-generateurs/generateur-guide/generateur-guide').then(m => m.GenerateurGuideComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
+  },
+  {
     path: 'gestion-generateurs/new',
     loadComponent: () => import('./features/gestion-generateurs/generateur-form/generateur-form').then(m => m.GenerateurFormComponent),
     canActivate: [AuthGuard],
