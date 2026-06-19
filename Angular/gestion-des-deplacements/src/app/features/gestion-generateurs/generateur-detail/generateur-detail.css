@@ -1,0 +1,75 @@
+.dashboard-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header-actions h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #1e293b;
+}
+
+.stats-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    flex: 1;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.stat-title {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.text-green { color: #10b981; }
+.text-red { color: #ef4444; }
+
+.tab-content {
+    padding: 24px 0;
+}
+
+.preventive-badge {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.curative-badge {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.add-log-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: none;
+}

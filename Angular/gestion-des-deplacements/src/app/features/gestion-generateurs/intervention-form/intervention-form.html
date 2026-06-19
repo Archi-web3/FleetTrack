@@ -1,0 +1,127 @@
+<div class="form-container" *ngIf="!loading">
+  <div class="header-actions">
+    <button mat-icon-button routerLink="/gestion-generateurs"><mat-icon>arrow_back</mat-icon></button>
+    <h2>Fiche d'intervention / Maintenance ({{generateur.marque}} {{generateur.modele}})</h2>
+  </div>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <!-- Section 1 : Données Générales -->
+      <div class="section-title">Données Générales</div>
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Nom de l'intervenant</mat-label>
+          <input matInput [(ngModel)]="intervention.nomIntervenant" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Date d'intervention</mat-label>
+          <input matInput [matDatepicker]="picker" [(ngModel)]="intervention.dateIntervention" required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Type d'intervention</mat-label>
+          <mat-select [(ngModel)]="intervention.typeIntervention" (selectionChange)="onTypeChange()">
+            <mat-option value="Préventive">Préventive</mat-option>
+            <mat-option value="Curative">Curative</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="flex-1" *ngIf="intervention.typeIntervention === 'Préventive'">
+          <mat-label>Fréquence</mat-label>
+          <mat-select [(ngModel)]="intervention.frequence" (selectionChange)="onFrequenceChange()">
+            <mat-option *ngFor="let f of frequences" [value]="f">Chaque {{f}} Hrs</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Nb d'heures de fonctionnement (actuel)</mat-label>
+          <input matInput type="number" [(ngModel)]="intervention.heuresActuelles" readonly>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-1" *ngIf="intervention.typeIntervention === 'Préventive'">
+          <mat-label>Prochaine maintenance à (heures)</mat-label>
+          <input matInput type="number" [(ngModel)]="intervention.prochaineMaintenanceHeures">
+        </mat-form-field>
+      </div>
+
+      <!-- Section 2 : Curative - Description de la panne -->
+      <div *ngIf="intervention.typeIntervention === 'Curative'" class="curative-section">
+        <div class="section-title">Description de la panne</div>
+        <mat-form-field appearance="outline" class="full-width">
+          <textarea matInput rows="4" [(ngModel)]="intervention.descriptionPanne"></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Section 3 : Préventive - Checklist des tâches effectuées -->
+      <div *ngIf="intervention.typeIntervention === 'Préventive' && intervention.frequence" class="preventive-section">
+        <div class="section-title">Checklist des tâches effectuées ({{intervention.frequence}}hrs)</div>
+        <div class="checklist-container">
+          <mat-checkbox *ngFor="let task of getTasksToShow()" [(ngModel)]="intervention.checklist[task.id]" color="primary">
+            {{task.label}}
+          </mat-checkbox>
+        </div>
+      </div>
+
+      <!-- Section 4 : Observation(s) -->
+      <div class="section-title">Observation(s)</div>
+      <mat-form-field appearance="outline" class="full-width">
+        <textarea matInput rows="3" [(ngModel)]="intervention.observations"></textarea>
+      </mat-form-field>
+
+      <!-- Section 5 : Pièce(s) utilisée(s) -->
+      <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>Pièce(s) utilisée(s)</span>
+        <button mat-stroked-button color="primary" (click)="addPiece()">
+          <mat-icon>add</mat-icon> Ajouter une pièce
+        </button>
+      </div>
+      
+      <div class="pieces-list" *ngIf="intervention.piecesUtilisees.length > 0">
+        <div class="piece-row" *ngFor="let p of intervention.piecesUtilisees; let i = index">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Référence</mat-label>
+            <input matInput [(ngModel)]="p.reference">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-2">
+            <mat-label>Détails</mat-label>
+            <input matInput [(ngModel)]="p.details">
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="width: 100px;">
+            <mat-label>Qté</mat-label>
+            <input matInput type="number" [(ngModel)]="p.quantite">
+          </mat-form-field>
+          <button mat-icon-button color="warn" (click)="removePiece(i)" style="margin-top: 10px;">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Section 6 : Test du groupe durant 5 mn après intervention -->
+      <div class="section-title">Test du groupe durant 5 mn après intervention</div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Condition de fonctionnement</mat-label>
+        <mat-select [(ngModel)]="intervention.testCondition">
+          <mat-option value="Fonctionnement normal">Fonctionnement normal</mat-option>
+          <mat-option value="Bruit suspect detecté">Bruit suspect détecté</mat-option>
+          <mat-option value="Mauvais fonctionnement">Mauvais fonctionnement, le groupe ne peut plus être utilisé.</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </mat-card-content>
+    <mat-card-actions align="end" style="padding: 16px;">
+      <button mat-button routerLink="/gestion-generateurs">Annuler</button>
+      <button mat-flat-button color="primary" (click)="saveIntervention()" [disabled]="!intervention.nomIntervenant || !intervention.dateIntervention">
+        Enregistrer l'intervention
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<div *ngIf="loading" style="text-align: center; padding: 40px;">
+  <p>Chargement du générateur...</p>
+</div>

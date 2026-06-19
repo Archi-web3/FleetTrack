@@ -1,0 +1,37 @@
+.dashboard-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header-actions h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    color: #1e293b;
+}
+
+.element-row:hover {
+    background-color: #f8fafc;
+}
+
+table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th.mat-header-cell {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+}

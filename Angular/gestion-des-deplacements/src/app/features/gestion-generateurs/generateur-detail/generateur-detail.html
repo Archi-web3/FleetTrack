@@ -1,0 +1,168 @@
+<div class="dashboard-container" *ngIf="!loading">
+  <div class="header-actions">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <button mat-icon-button routerLink="/gestion-generateurs"><mat-icon>arrow_back</mat-icon></button>
+      <h2>Détails du Générateur : {{generateur.marque}} {{generateur.modele}} ({{generateur.numeroSerie}})</h2>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button mat-flat-button color="accent" [routerLink]="['/gestion-generateurs/intervention', generateur._id]">
+        <mat-icon>build</mat-icon> Nouvelle Intervention
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-title">Heures de fonctionnement</div>
+        <div class="stat-value">{{generateur.heuresFonctionnement}} h</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-title">Consommation Théorique Moyenne</div>
+        <div class="stat-value">{{generateur.consommationTheorique | number:'1.1-2'}} L/h</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-title">Statut</div>
+        <div class="stat-value" [ngClass]="{'text-green': generateur.statut === 'Actif', 'text-red': generateur.statut !== 'Actif'}">{{generateur.statut}}</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-tab-group animationDuration="0ms">
+    
+    <!-- ONGLET LOGBOOK -->
+    <mat-tab label="Logbook Horaire & Carburant">
+      <div class="tab-content">
+        <!-- Formulaire d'ajout rapide de relevé -->
+        <mat-card class="add-log-card">
+          <mat-card-header>
+            <mat-card-title>Nouveau relevé Logbook</mat-card-title>
+          </mat-card-header>
+          <mat-card-content style="padding-top: 16px;">
+            <div style="display: flex; gap: 16px; align-items: center;">
+              <mat-form-field appearance="outline" style="width: 150px;">
+                <mat-label>Date Relevé</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="newLogbook.dateReleve">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" style="width: 120px;">
+                <mat-label>Heure Début</mat-label>
+                <input matInput type="number" [(ngModel)]="newLogbook.heureDebut">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" style="width: 120px;">
+                <mat-label>Heure Fin</mat-label>
+                <input matInput type="number" [(ngModel)]="newLogbook.heureFin">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" style="width: 150px;">
+                <mat-label>Carburant Ajouté (L)</mat-label>
+                <input matInput type="number" [(ngModel)]="newLogbook.carburantAjoute">
+              </mat-form-field>
+
+              <button mat-flat-button color="primary" (click)="addLogbook()" style="height: 56px; margin-bottom: 22px;">
+                <mat-icon>save</mat-icon> Enregistrer
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Tableau Historique Logbook -->
+        <table mat-table [dataSource]="logbooks" class="mat-elevation-z1" style="width: 100%; margin-top: 24px;">
+          <ng-container matColumnDef="dateReleve">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.dateReleve | date:'dd/MM/yyyy'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="heureDebut">
+            <th mat-header-cell *matHeaderCellDef> Hr Début </th>
+            <td mat-cell *matCellDef="let element"> {{element.heureDebut}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="heureFin">
+            <th mat-header-cell *matHeaderCellDef> Hr Fin </th>
+            <td mat-cell *matCellDef="let element"> <strong>{{element.heureFin}}</strong> </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dureeSession">
+            <th mat-header-cell *matHeaderCellDef> Durée (h) </th>
+            <td mat-cell *matCellDef="let element"> {{element.dureeSession}} h </td>
+          </ng-container>
+
+          <ng-container matColumnDef="carburantAjoute">
+            <th mat-header-cell *matHeaderCellDef> Ajout (L) </th>
+            <td mat-cell *matCellDef="let element"> {{element.carburantAjoute}} L </td>
+          </ng-container>
+
+          <ng-container matColumnDef="consommationLpH">
+            <th mat-header-cell *matHeaderCellDef> Conso (L/h) </th>
+            <td mat-cell *matCellDef="let element"> {{element.consommationLpH | number:'1.1-2'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="utilisateur">
+            <th mat-header-cell *matHeaderCellDef> Par </th>
+            <td mat-cell *matCellDef="let element"> {{element.utilisateur?.nom}} {{element.utilisateur?.prenom}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedLogbookColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedLogbookColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+
+    <!-- ONGLET INTERVENTIONS -->
+    <mat-tab label="Historique des Interventions ACF">
+      <div class="tab-content">
+        <table mat-table [dataSource]="interventions" class="mat-elevation-z1" style="width: 100%;">
+          <ng-container matColumnDef="dateIntervention">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.dateIntervention | date:'dd/MM/yyyy'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="typeIntervention">
+            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <td mat-cell *matCellDef="let element"> 
+              <span [ngClass]="{'preventive-badge': element.typeIntervention === 'Préventive', 'curative-badge': element.typeIntervention === 'Curative'}">
+                {{element.typeIntervention}}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="frequence">
+            <th mat-header-cell *matHeaderCellDef> Fréquence </th>
+            <td mat-cell *matCellDef="let element"> {{element.frequence ? element.frequence + ' Hrs' : 'N/A'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="heuresActuelles">
+            <th mat-header-cell *matHeaderCellDef> Heures </th>
+            <td mat-cell *matCellDef="let element"> {{element.heuresActuelles}} h </td>
+          </ng-container>
+
+          <ng-container matColumnDef="nomIntervenant">
+            <th mat-header-cell *matHeaderCellDef> Intervenant </th>
+            <td mat-cell *matCellDef="let element"> {{element.nomIntervenant}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef> Statut </th>
+            <td mat-cell *matCellDef="let element"> {{element.statut}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedInterventionColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedInterventionColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>
+
+<div *ngIf="loading" style="text-align: center; padding: 40px;">
+  <p>Chargement des données du générateur...</p>
+</div>

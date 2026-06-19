@@ -1,0 +1,77 @@
+.form-container {
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.header-actions h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #1e293b;
+}
+
+.form-card {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+    background-color: #f8fafc;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-2 {
+    flex: 2;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.checklist-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    background-color: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.pieces-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.piece-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}

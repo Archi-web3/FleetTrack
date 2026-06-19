@@ -84,6 +84,17 @@
         </mat-menu>
       </ng-container>
 
+      <!-- EQUIPEMENTS & GENERATEURS -->
+      <ng-container *ngIf="systemPreferences?.enableGenerators && perms.canViewMenu('flotte_generateurs')">
+        <button class="nav-item" [matMenuTriggerFor]="generatorsMenu">
+          <mat-icon>power</mat-icon> Équipements & Énergie <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #generatorsMenu="matMenu">
+          <button mat-menu-item routerLink="/gestion-generateurs"><mat-icon>settings_input_component</mat-icon><span>Liste des Générateurs</span></button>
+          <button mat-menu-item routerLink="/gestion-generateurs/plan-maintenance"><mat-icon>event</mat-icon><span>Plan de Maintenance</span></button>
+        </mat-menu>
+      </ng-container>
+
       <!-- SECURITY -->
       <ng-container *ngIf="userProfile === 'Admin' || userProfile === 'Superviseur' || userProfile === 'Superviseur Sécurité' || userProfile === 'SuperAdmin'">
         <button class="nav-item" [matMenuTriggerFor]="securityMenu">

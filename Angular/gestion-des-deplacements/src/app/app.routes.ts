@@ -259,5 +259,29 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
   },
+  {
+    path: 'gestion-generateurs',
+    loadComponent: () => import('./features/gestion-generateurs/generateurs-list/generateurs-list').then(m => m.GenerateursListComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
+  },
+  {
+    path: 'gestion-generateurs/plan-maintenance',
+    loadComponent: () => import('./features/gestion-generateurs/generateur-plan/generateur-plan').then(m => m.GenerateurPlanComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
+  },
+  {
+    path: 'gestion-generateurs/detail/:id',
+    loadComponent: () => import('./features/gestion-generateurs/generateur-detail/generateur-detail').then(m => m.GenerateurDetailComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
+  },
+  {
+    path: 'gestion-generateurs/intervention/:generateurId',
+    loadComponent: () => import('./features/gestion-generateurs/intervention-form/intervention-form').then(m => m.InterventionFormComponent),
+    canActivate: [AuthGuard],
+    data: { requiredPermission: { module: 'flotte_generateurs', action: 'view_menu' } }
+  },
   { path: '**', redirectTo: 'login' }
 ];

@@ -483,8 +483,35 @@
       </mat-card>
     </div>
 
+    <!-- 2. SYSTEM PREFERENCES -->
+    <div *ngIf="activeTab === 'system'" class="settings-section">
+      <h2><mat-icon>settings</mat-icon> System Preferences</h2>
+      <p class="section-desc">Gérez les modules optionnels et les fonctionnalités globales de l'application.</p>
+
+      <mat-card class="setting-card">
+        <mat-card-header>
+          <mat-card-title>Modules Fonctionnels</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #f8fafc; border-radius: 8px;">
+              <div>
+                <strong style="display: block; font-size: 16px; color: #1e293b; margin-bottom: 5px;">Générateurs (GMAO Énergie)</strong>
+                <span style="color: #64748b; font-size: 13px;">Active le module complet de suivi, logbook horaire et maintenance prédictive pour les groupes électrogènes.</span>
+              </div>
+              <mat-slide-toggle color="primary" [(ngModel)]="systemPreferences.enableGenerators"></mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="actions-footer">
+        <button mat-flat-button color="primary" (click)="saveSystemPreferences()">Sauvegarder les préférences système</button>
+      </div>
+    </div>
+
     <!-- PLACEHOLDERS FOR OTHERS -->
-    <div *ngIf="activeTab === 'system' || activeTab === 'maintenance'" class="settings-section">
+    <div *ngIf="activeTab === 'maintenance'" class="settings-section">
       <div class="placeholder-content">
         <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 20px;">construction</mat-icon>
         <h2>Module en construction</h2>

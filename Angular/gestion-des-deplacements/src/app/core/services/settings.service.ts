@@ -177,4 +177,19 @@ export class SettingsService {
     saveEmailSettings(emails: any[], contextKey: string = 'emailSettings_global'): Observable<any> {
         return this.http.post(`${this.apiUrl}/${contextKey}`, { value: emails });
     }
+
+    // System Preferences (Feature Toggles)
+    getSystemPreferences(): Observable<any> {
+        return this.http.get<{ key: string, value: any }>(`${this.apiUrl}/systemPreferences`).pipe(
+            map(setting => setting && setting.value ? setting.value : { enableGenerators: false }),
+            catchError(err => {
+                console.error('Erreur chargement System Preferences', err);
+                return of({ enableGenerators: false });
+            })
+        );
+    }
+
+    saveSystemPreferences(prefs: any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/systemPreferences`, { value: prefs });
+    }
 }

@@ -36,6 +36,7 @@ export class AppComponent implements OnInit {
   brandSettings: any = {};
   userPays: string | null = null;
   userBase: string | null = null;
+  systemPreferences: any = null;
 
   constructor(
     private authService: AuthService, 
@@ -67,6 +68,10 @@ export class AppComponent implements OnInit {
           document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
         }
       }
+    });
+
+    this.settingsService.getSystemPreferences().subscribe(prefs => {
+      this.systemPreferences = prefs;
     });
 
 

@@ -61,6 +61,11 @@ export class GeneralSettingsComponent implements OnInit {
   useDefaultLogoLight = true;
   useDefaultMobileLogo = true;
 
+  // System Settings
+  systemPreferences: any = {
+    enableGenerators: false
+  };
+
   toggleDefaultBackground() {
     if (this.useDefaultBackground) this.brandSettings.loginBackgroundUrl = '';
   }
@@ -126,6 +131,30 @@ export class GeneralSettingsComponent implements OnInit {
     this.loadCO2Factors();
     this.loadCurrencies();
     this.loadEmailSettings();
+    this.loadSystemPreferences();
+  }
+
+  // --- SYSTEM PREFERENCES ---
+  loadSystemPreferences() {
+    this.settingsService.getSystemPreferences().subscribe(data => {
+      if (data) {
+        this.systemPreferences = data;
+      }
+    });
+  }
+
+  saveSystemPreferences() {
+    this.settingsService.saveSystemPreferences(this.systemPreferences).subscribe({
+      next: () => {
+        this.snackBar.open('Préférences Système sauvegardées', 'OK', { duration: 2000 });
+        // Force refresh in app component if needed
+        window.location.reload(); 
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('Erreur de sauvegarde', 'Fermer');
+      }
+    });
   }
 
   setTab(tab: string) {
