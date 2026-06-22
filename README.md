@@ -1,286 +1,98 @@
-# 🚗 FleetTrack
+# 🚛 FleetTrack - Smart Fleet Management System
 
-**Fleet Management & E-Logbook Application for ACF**
+![FleetTrack Banner](https://img.shields.io/badge/FleetTrack-Management_System-blue?style=for-the-badge&logo=angular)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 
-FleetTrack is a comprehensive fleet management system designed for humanitarian organizations, featuring a web-based management interface and a mobile Progressive Web App (PWA) for drivers.
-
----
-
-## 📋 Overview
-
-FleetTrack provides end-to-end vehicle movement management with two main applications:
-
-### 1. **Gestion des Déplacements** (Web Management Interface)
-Administrative platform for planning, consolidating, validating, and tracking vehicle movements.
-
-### 2. **E-Logbook** (Mobile PWA)
-Driver-focused mobile application for real-time trip logging and vehicle data recording.
+*🇬🇧 English below | 🇫🇷 Français plus bas*
 
 ---
 
-## 🏗️ Architecture
+## 👀 Looking for Contributors & Reviewers
 
-```
-FleetTrack/
-├── Angular/
-│   ├── backend/              # Node.js/Express API server
-│   ├── gestion-des-deplacements/  # Web management interface (Angular)
-│   └── e-logbook/            # Mobile PWA (Angular)
-├── Collections/              # Sample data collections
-└── docs/                     # Documentation files
-```
+I am currently looking for feedback on:
+- **Code Quality & Best Practices**
+- **Architecture & Maintainability** (Shared Services, Symlinks handling)
+- **Scalability**
+- **Security**
 
-### Technology Stack
+**Context:** This project was heavily built using AI-assisted development tools. While it works perfectly in production and fulfills all the operational needs, I'd love expert validation from seasoned developers to ensure the foundations are rock solid before scaling.
 
-- **Frontend**: Angular 17+ with Material Design
-- **Backend**: Node.js + Express
-- **Database**: MongoDB
-- **Mobile**: Progressive Web App (PWA)
-- **Authentication**: JWT-based with role-based access control
+If you have experience in Angular, Node.js, or PWA development, I would really value your thoughts! Please feel free to open an issue, submit a PR, or reach out directly.
 
 ---
 
-## ✨ Key Features
+## 🇬🇧 About FleetTrack (English)
 
-### Web Management Interface
-- 🔐 **Multi-role access control** (SuperAdmin, Admin, Supervisor, Technician, Driver)
-- 🌍 **Multi-country & multi-base support** with logical data separation
-- 📊 **Movement planning & consolidation** with vehicle/driver assignment
-- ✅ **Multi-level validation workflow** (Security, Logistics, Fleet Manager)
-- 📈 **Dashboard & reporting** with automated weekly reports
-- 🔄 **Real-time synchronization** with mobile e-logbook
-- 🚀 **Guest access** for inter-organization vehicle sharing (planned)
+FleetTrack is a comprehensive Fleet Management System designed for complex logistical operations, including NGO fields. It is divided into two main applications sharing a common backend:
+1. **Admin Web App (`gestion-des-deplacements`)**: A full dashboard for managers to track vehicles, schedule maintenance, manage drivers, and monitor fuel consumption.
+2. **Driver Mobile PWA (`e-logbook`)**: An offline-first mobile application for drivers to log their trips, record fuel fillings, and submit vehicle checklists.
 
-### Mobile E-Logbook (PWA)
-- 📱 **Offline-first architecture** for areas with limited connectivity
-- 🗺️ **GPS tracking** with automatic distance calculation
-- ⛽ **Fuel consumption logging** with efficiency metrics
-- 🔧 **Maintenance tracking** and incident reporting
-- 📅 **Driver planning view** with assigned movements
-- 🔄 **Automatic sync** when connection is available
-- 📸 **Photo attachments** for incidents and maintenance
+### Key Features
+- **Offline-First PWA (E-Logbook)**: Built with Service Workers and IndexedDB. Drivers can use the app without an internet connection in remote areas. Data syncs automatically when the connection is restored.
+- **Shared Architecture**: Both the Web and Mobile apps share core services (like `SettingsService`) via a symlink-based architecture (`/Angular/shared/`) to ensure a single source of truth without duplicating code.
+- **Dynamic Theming**: Configurable UI through CSS variables to allow different branding based on the environment.
+- **i18n Support**: Full multilingual support (English, French).
+- **Maintenance Tracking**: Automated cost calculation, PDF invoice parsing, and lifecycle tracking.
 
----
+### 🚀 Getting Started
 
-## 🚀 Getting Started
+#### Prerequisites
+- Node.js (v18+)
+- Angular CLI (v17+)
+- MongoDB (Local or Atlas)
 
-### Prerequisites
-
-- Node.js 18+ and npm
-- MongoDB 6+
-- Git
-
-### Installation
+#### Installation
 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/Archi-web3/FleetTrack.git
-   cd FleetTrack
+   cd FleetTrack/Angular
    ```
 
-2. **Install backend dependencies**
+2. **Backend Setup**
    ```bash
-   cd Angular/backend
+   cd backend
    npm install
+   cp .env.example .env
+   # Update the .env file with your MongoDB URI
+   npm run start
    ```
 
-3. **Install web app dependencies**
+3. **Frontend Setup (Admin Web App)**
    ```bash
    cd ../gestion-des-deplacements
    npm install
+   ng serve -o
    ```
 
-4. **Install mobile PWA dependencies**
+4. **Frontend Setup (Driver Mobile App)**
    ```bash
    cd ../e-logbook
    npm install
+   ng serve --port 4201 -o
    ```
 
-### Configuration
-
-1. **Backend configuration**
-   
-   Create `.env` file in `Angular/backend/`:
-   ```env
-   PORT=3000
-   MONGODB_URI=mongodb://localhost:27017/fleettrack
-   JWT_SECRET=your_secret_key_here
-   NODE_ENV=development
-   ```
-
-2. **Frontend configuration**
-   
-   Update API endpoints in:
-   - `Angular/gestion-des-deplacements/src/environments/environment.ts`
-   - `Angular/e-logbook/src/environments/environment.ts`
-
-### Running the Application
-
-1. **Start MongoDB**
-   ```bash
-   mongod
-   ```
-
-2. **Start the backend server**
-   ```bash
-   cd Angular/backend
-   npm start
-   ```
-
-3. **Start the web management interface**
-   ```bash
-   cd Angular/gestion-des-deplacements
-   npm start
-   ```
-   Access at: `http://localhost:4200`
-
-4. **Start the mobile e-logbook**
-   ```bash
-   cd Angular/e-logbook
-   npm start
-   ```
-   Access at: `http://localhost:4201`
-
 ---
 
-## 👥 User Roles & Permissions
+## 🇫🇷 À propos de FleetTrack (Français)
 
-| Role | Permissions |
-|------|-------------|
-| **SuperAdmin** | Full system access, country management, cross-country data view |
-| **Admin** | Country-level administration, user management, all features within assigned country |
-| **Superviseur** | Movement validation, base-level oversight, reporting |
-| **Technicien** | Movement requests, basic data entry |
-| **Chauffeur** | E-logbook access, trip logging, assigned movement view |
+FleetTrack est un système complet de gestion de flotte automobile, pensé pour des opérations logistiques complexes (notamment sur le terrain pour les ONG). Il est composé de deux applications partageant le même Backend :
+1. **L'application Web Admin (`gestion-des-deplacements`)** : Un tableau de bord complet pour les gestionnaires (véhicules, entretiens, chauffeurs, carburant).
+2. **La PWA Mobile Chauffeur (`e-logbook`)** : Une application mobile pensée pour fonctionner hors-ligne (Offline-first) permettant aux chauffeurs d'enregistrer leurs trajets et leurs pleins.
 
----
+### Fonctionnalités Clés
+- **PWA Hors-Ligne** : Utilisation de Service Workers et IndexedDB pour garantir une utilisation en zone blanche. Synchronisation automatique au retour réseau.
+- **Code Partagé** : Architecture par liens symboliques (symlinks) pour mutualiser les services vitaux (ex: `SettingsService`) entre les applications Web et Mobile.
+- **Multilingue (i18n)** : Support complet de l'anglais et du français.
+- **Gestion des Entretiens** : Calcul des coûts, historiques complets et extraction d'invoices PDF.
 
-## 🌍 Multi-Tenancy Architecture
+### 🚀 Installation (Rapide)
 
-FleetTrack supports **multi-country and multi-base deployments** with logical data separation:
-
-- **Countries (Missions)**: Top-level organizational units (e.g., ACF DRC, ACF Mali)
-- **Bases**: Sub-units within countries (e.g., Kinshasa, Goma, Bamako)
-- **Automatic filtering**: Users only see data relevant to their assigned base/country
-- **SuperAdmin override**: Can switch between countries for global oversight
-
-See [ARCHITECTURE_MULTI_SITES.md](ARCHITECTURE_MULTI_SITES.md) for detailed architecture documentation.
+1. **Backend** : Allez dans `/Angular/backend`, faites `npm install`, copiez `.env.example` en `.env` et lancez `npm run start`.
+2. **Web App** : Allez dans `/Angular/gestion-des-deplacements`, faites `npm install` puis `ng serve`.
+3. **Mobile PWA** : Allez dans `/Angular/e-logbook`, faites `npm install` puis `ng serve --port 4201`.
 
 ---
-
-## 📱 Mobile PWA Features
-
-The e-logbook is designed as a Progressive Web App for:
-
-- **Installable**: Add to home screen on mobile devices
-- **Offline-capable**: Full functionality without internet
-- **Responsive**: Optimized for mobile and tablet screens
-- **Fast**: Service worker caching for instant loading
-
-### PWA Installation
-
-On mobile devices:
-1. Open the e-logbook URL in your browser
-2. Tap "Add to Home Screen" when prompted
-3. Launch from your home screen like a native app
-
----
-
-## 🔒 Security
-
-- **JWT authentication** with secure token storage
-- **Role-based access control** (RBAC) at API level
-- **Data encryption** in transit (HTTPS required for production)
-- **Input validation** and sanitization
-- **XSS and CSRF protection**
-
----
-
-## 📊 Database Models
-
-### Core Collections
-
-- **Pays** (Countries): Mission-level organization
-- **Bases**: Sub-locations within countries
-- **Utilisateurs** (Users): System users with role assignments
-- **Vehicules** (Vehicles): Fleet inventory
-- **Mouvements** (Movements): Planned and executed trips
-- **Logbook**: Driver trip logs with fuel, maintenance, incidents
-- **Lieux** (Locations): GPS-tagged destinations
-
----
-
-## 🛠️ Development
-
-### Project Structure
-
-```
-Angular/
-├── backend/
-│   ├── models/          # MongoDB schemas
-│   ├── routes/          # API endpoints
-│   ├── middleware/      # Auth & validation
-│   └── server.js        # Express server
-├── gestion-des-deplacements/
-│   └── src/
-│       ├── app/
-│       │   ├── features/      # Feature modules
-│       │   ├── core/          # Services & guards
-│       │   └── shared/        # Shared components
-│       └── environments/
-└── e-logbook/
-    └── src/
-        ├── app/
-        │   ├── features/      # Mobile features
-        │   └── core/          # Services & sync
-        └── manifest.webmanifest
-```
-
-### API Documentation
-
-Backend API runs on `http://localhost:3000/api`
-
-Key endpoints:
-- `POST /api/auth/login` - User authentication
-- `GET /api/mouvements` - List movements
-- `GET /api/vehicules` - List vehicles
-- `POST /api/logbook` - Create trip log
-- `GET /api/pays` - List countries
-
----
-
-## 📈 Roadmap
-
-- [x] Core movement management
-- [x] Multi-role authentication
-- [x] E-logbook PWA with offline support
-- [x] Multi-country architecture
-- [ ] Guest access for inter-organization sharing
-- [ ] Advanced analytics & reporting
-- [ ] Mobile native apps (iOS/Android)
-- [ ] Real-time GPS tracking
-- [ ] Automated fuel efficiency alerts
-
----
-
-## 📄 License
-
-Proprietary - ACF Internal Use
-
----
-
-## 👤 Author
-
-**Jonathan** - [Archi-web3](https://github.com/Archi-web3)
-
----
-
-## 🤝 Contributing
-
-This is a private project for ACF. For internal contributions, please contact the project maintainer.
-
----
-
-## 📞 Support
-
-For issues or questions, please contact the development team or create an issue in this repository.
+*Built with ❤️ (and AI).*
