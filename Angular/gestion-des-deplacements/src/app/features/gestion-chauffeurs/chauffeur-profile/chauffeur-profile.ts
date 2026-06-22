@@ -15,6 +15,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CalendarModule, CalendarView, CalendarEvent } from 'angular-calendar';
+import { isSameMonth, isSameDay } from 'date-fns';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-chauffeur-profile',
@@ -22,7 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule, RouterModule, MatTabsModule, MatCardModule, 
     MatIconModule, MatButtonModule, MatTableModule, 
-    MatFormFieldModule, MatInputModule, FormsModule, MatTooltipModule
+    MatFormFieldModule, MatInputModule, FormsModule, MatTooltipModule,
+    CalendarModule
   ],
   templateUrl: './chauffeur-profile.html',
   styleUrls: ['./chauffeur-profile.scss']
@@ -39,6 +43,22 @@ export class ChauffeurProfileComponent implements OnInit {
 
   newDocName: string = '';
   newDocUrl: string = '';
+
+  // Calendar & Schedule
+  view: CalendarView = CalendarView.Month;
+  CalendarView = CalendarView;
+  viewDate: Date = new Date();
+  events: CalendarEvent[] = [];
+  refresh = new Subject<void>();
+  activeDayIsOpen: boolean = false;
+
+  newSchedule: any = {
+    status: 'On Duty',
+    startDate: '',
+    endDate: '',
+    notes: ''
+  };
+  scheduleEntries: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -64,6 +84,11 @@ export class ChauffeurProfileComponent implements OnInit {
         if (!this.chauffeur.documents) {
           this.chauffeur.documents = [];
         }
+        if (!this.chauffeur.schedules) {
+          this.chauffeur.schedules = [];
+        }
+        this.scheduleEntries = this.chauffeur.schedules;
+        this.buildCalendarEvents();
         this.loading = false;
       },
       error: (err) => {
@@ -87,6 +112,86 @@ export class ChauffeurProfileComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading mouvements:', err);
+      }
+    });
+  }
+
+  // --- SCHEDULE METHODS ---
+
+  buildCalendarEvents(): void {
+    this.events = this.scheduleEntries.map((sch: any) => {
+      let color: any = { primary: '#1e90ff', secondary: '#D1E8FF' }; // On Duty
+      if (sch.status === 'Off Duty') color = { primary: '#e3bc08', secondary: '#FDF1BA' };
+      if (sch.status === 'Sick') color = { primary: '#ad2121', secondary: '#FAE3E3' };
+      if (sch.status === 'Vacation') color = { primary: '#4caf50', secondary: '#E8F5E9' };
+
+      return {
+        start: new Date(sch.startDate),
+        end: new Date(sch.endDate),
+        title: `${sch.status} ${sch.notes ? '- ' + sch.notes : ''}`,
+        color: color,
+        allDay: true,
+        meta: { schedule: sch }
+      };
+    });
+    this.refresh.next();
+  }
+
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (isSameMonth(date, this.viewDate)) {
+      if ((isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) || events.length === 0) {
+        this.activeDayIsOpen = false;
+      } else {
+        this.activeDayIsOpen = true;
+      }
+      this.viewDate = date;
+    }
+  }
+
+  setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  closeOpenMonthViewDay() {
+    this.activeDayIsOpen = false;
+  }
+
+  addSchedule(): void {
+    if (!this.newSchedule.status || !this.newSchedule.startDate || !this.newSchedule.endDate) {
+      alert('Veuillez remplir les champs obligatoires (Statut, Date début, Date fin).');
+      return;
+    }
+    
+    const newEntry = { ...this.newSchedule };
+    const updatedSchedules = [...this.scheduleEntries, newEntry];
+    
+    this.updateSchedules(updatedSchedules, () => {
+      // Reset form
+      this.newSchedule = { status: 'On Duty', startDate: '', endDate: '', notes: '' };
+    });
+  }
+
+  deleteSchedule(index: number): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet horaire ?')) {
+      const updatedSchedules = [...this.scheduleEntries];
+      updatedSchedules.splice(index, 1);
+      this.updateSchedules(updatedSchedules);
+    }
+  }
+
+  private updateSchedules(schedules: any[], onSuccess?: () => void): void {
+    if (!this.chauffeur || !this.chauffeur._id) return;
+    
+    this.utilisateurService.updateUser(this.chauffeur._id, { schedules: schedules }).subscribe({
+      next: (updatedUser) => {
+        this.chauffeur.schedules = updatedUser.schedules;
+        this.scheduleEntries = updatedUser.schedules;
+        this.buildCalendarEvents();
+        if (onSuccess) onSuccess();
+      },
+      error: (err) => {
+        console.error('Error updating schedules:', err);
+        alert('Erreur lors de la mise à jour du planning.');
       }
     });
   }

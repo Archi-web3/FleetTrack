@@ -1,55 +1,51 @@
 <div class="profile-container" *ngIf="chauffeur">
-  <div class="profile-header">
-    <div class="title-section">
-      <div class="header-left">
-        <button mat-icon-button class="back-button" routerLink="/gestion-chauffeurs" matTooltip="Retour à la liste">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <h1>Profil Chauffeur: {{ chauffeur.prenom }} {{ chauffeur.nom }}</h1>
+<div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px;">
+  <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+    <button mat-icon-button class="back-button" routerLink="/gestion-chauffeurs" matTooltip="Retour à la liste">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <mat-icon style="color: var(--primary-color);">account_circle</mat-icon>
+    Profil Chauffeur: {{ chauffeur.prenom }} {{ chauffeur.nom }}
+  </h2>
+  <div class="header-actions">
+    <!-- Add actions here if needed -->
+  </div>
+</div>
+
+  <div class="profile-info-container">
+    <div class="info-group">
+      <label>Statut</label>
+      <div class="value">
+        <mat-icon [style.color]="chauffeur.disponible ? 'green' : 'red'" style="vertical-align: middle; font-size: 16px; width: 16px; height: 16px;">
+          {{ chauffeur.disponible ? 'check_circle' : 'cancel' }}
+        </mat-icon>
+        {{ chauffeur.disponible ? 'Disponible' : 'Indisponible' }}
       </div>
-      <div class="header-actions">
-        <!-- Add actions here if needed -->
-      </div>
+    </div>
+    <div class="info-group">
+      <label>Téléphone</label>
+      <div class="value">{{ chauffeur.telephone || 'Non renseigné' }}</div>
+    </div>
+    <div class="info-group">
+      <label>Permis</label>
+      <div class="value">{{ chauffeur.permis || 'Non renseigné' }}</div>
+    </div>
+    <div class="info-group" *ngIf="chauffeur.base?.nom">
+      <label>Base</label>
+      <div class="value">{{ chauffeur.base.nom }}</div>
     </div>
   </div>
 
-  <mat-card class="profile-card">
-    <mat-card-content>
-      <div class="info-group">
-        <label>Statut</label>
-        <div class="value">
-          <mat-icon [style.color]="chauffeur.disponible ? 'green' : 'red'" style="vertical-align: middle; font-size: 18px; width: 18px; height: 18px;">
-            {{ chauffeur.disponible ? 'check_circle' : 'cancel' }}
-          </mat-icon>
-          {{ chauffeur.disponible ? 'Disponible' : 'Indisponible' }}
-        </div>
-      </div>
-      <div class="info-group">
-        <label>Téléphone</label>
-        <div class="value">{{ chauffeur.telephone || 'Non renseigné' }}</div>
-      </div>
-      <div class="info-group">
-        <label>Permis</label>
-        <div class="value">{{ chauffeur.permis || 'Non renseigné' }}</div>
-      </div>
-      <div class="info-group" *ngIf="chauffeur.base?.nom">
-        <label>Base</label>
-        <div class="value">{{ chauffeur.base.nom }}</div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card class="tabs-card">
-    <mat-card-content>
-      <mat-tab-group dynamicHeight>
+  <div class="tabs-container">
+    <mat-tab-group dynamicHeight>
         
         <!-- ONGLET: DEPLACEMENTS -->
-        <mat-tab label="Ses déplacements">
+        <mat-tab label="Ses déplacements (Historique)">
           <div class="tab-content">
-            <h3>Historique des déplacements</h3>
+            <h3 class="tab-title">Historique des déplacements</h3>
             
-            <div class="table-container mat-elevation-z2" *ngIf="mouvements.length > 0; else noMouvements">
-              <table mat-table [dataSource]="mouvements" class="full-width-table">
+            <div class="table-container mat-elevation-z1" *ngIf="mouvements.length > 0; else noMouvements">
+              <table mat-table [dataSource]="mouvements" class="full-width-table modern-table">
                 <ng-container matColumnDef="dateDepart">
                   <th mat-header-cell *matHeaderCellDef> Date de départ </th>
                   <td mat-cell *matCellDef="let element"> {{element.stops?.[0]?.dateDepart | date:'short'}} </td>
@@ -89,8 +85,8 @@
           </div>
         </mat-tab>
 
-        <!-- ONGLET: PLANNING -->
-        <mat-tab label="Son planning">
+        <!-- ONGLET: FUTURS TRAJETS -->
+        <mat-tab label="Ses futurs trajets">
           <div class="tab-content">
             <h3>Planning à venir</h3>
             
@@ -182,9 +178,108 @@
           </div>
         </mat-tab>
 
+        <!-- ONGLET: DISPONIBILITES (SCHEDULE) -->
+        <mat-tab label="Disponibilités (Planning)">
+          <div class="tab-content schedule-layout">
+            
+            <!-- Gauche: Calendrier -->
+            <div class="calendar-section">
+              <div class="calendar-header">
+                <div class="cal-nav">
+                  <button mat-icon-button mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
+                    <mat-icon>chevron_left</mat-icon>
+                  </button>
+                  <button mat-button mwlCalendarToday [(viewDate)]="viewDate">Aujourd'hui</button>
+                  <button mat-icon-button mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                </div>
+                <h3 class="cal-title">{{ viewDate | date:'MMMM yyyy' | uppercase }}</h3>
+                <div class="cal-view-toggles">
+                  <button mat-stroked-button (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">Mois</button>
+                  <button mat-stroked-button (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">Semaine</button>
+                  <button mat-stroked-button (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">Jour</button>
+                </div>
+              </div>
+              
+              <div class="calendar-body mat-elevation-z1">
+                <mwl-calendar-month-view *ngIf="view === CalendarView.Month"
+                  [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+                  [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)">
+                </mwl-calendar-month-view>
+                <mwl-calendar-week-view *ngIf="view === CalendarView.Week"
+                  [viewDate]="viewDate" [events]="events" [refresh]="refresh">
+                </mwl-calendar-week-view>
+                <mwl-calendar-day-view *ngIf="view === CalendarView.Day"
+                  [viewDate]="viewDate" [events]="events" [refresh]="refresh">
+                </mwl-calendar-day-view>
+              </div>
+            </div>
+
+            <!-- Droite: Formulaire et Liste -->
+            <div class="form-list-section">
+              <div class="add-schedule-form mat-elevation-z1">
+                <h4 style="margin-top: 0;">Ajouter un horaire</h4>
+                
+                <div class="modern-form-group">
+                  <label>Statut *</label>
+                  <select class="modern-input" [(ngModel)]="newSchedule.status">
+                    <option value="On Duty">En Service (On Duty)</option>
+                    <option value="Off Duty">Repos (Off Duty)</option>
+                    <option value="Sick">Maladie</option>
+                    <option value="Vacation">Congés (Vacation)</option>
+                    <option value="Other">Autre</option>
+                  </select>
+                </div>
+                
+                <div class="modern-form-group">
+                  <label>Date / Heure de début *</label>
+                  <input type="datetime-local" class="modern-input" [(ngModel)]="newSchedule.startDate">
+                </div>
+                
+                <div class="modern-form-group">
+                  <label>Date / Heure de fin *</label>
+                  <input type="datetime-local" class="modern-input" [(ngModel)]="newSchedule.endDate">
+                </div>
+                
+                <div class="modern-form-group">
+                  <label>Notes</label>
+                  <input type="text" class="modern-input" [(ngModel)]="newSchedule.notes" placeholder="Ajouter une note">
+                </div>
+                
+                <button mat-flat-button color="primary" class="full-width-btn" (click)="addSchedule()">
+                  <mat-icon>save</mat-icon> Enregistrer
+                </button>
+              </div>
+
+              <div class="schedule-entries-list mat-elevation-z1">
+                <h4 style="margin-top: 0; padding: 16px 16px 0 16px;">Entrées planifiées</h4>
+                <div *ngIf="scheduleEntries.length === 0" class="empty-entries">
+                  <mat-icon>folder_open</mat-icon>
+                  <p>Aucune donnée trouvée</p>
+                </div>
+                <div class="schedule-entry-item" *ngFor="let sch of scheduleEntries; let i = index">
+                  <div class="entry-period">
+                    <strong>{{ sch.startDate | date:'dd/MM/yyyy HH:mm' }}</strong><br>
+                    <span style="color:#666;">au {{ sch.endDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                  <div class="entry-status">
+                    <span class="schedule-badge" [ngClass]="sch.status.replace(' ', '')">{{ sch.status }}</span>
+                  </div>
+                  <div class="entry-actions">
+                    <button mat-icon-button color="warn" (click)="deleteSchedule(i)" matTooltip="Supprimer">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </mat-tab>
+
       </mat-tab-group>
-    </mat-card-content>
-  </mat-card>
+    </div>
 </div>
 
 <div class="loading-shade" *ngIf="loading">
