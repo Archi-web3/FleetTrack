@@ -298,6 +298,87 @@
             <mat-tab label="Carte Fonctionnelle">
                 <app-functional-tree></app-functional-tree>
             </mat-tab>
+
+            <!-- Onglet 5 : Architecture & Technologies -->
+            <mat-tab label="Architecture & Technologies">
+                <div class="tab-content">
+                    <div class="intro-section">
+                        <p>
+                            Cette section s'adresse aux équipes techniques qui reprendront ou feront évoluer le projet.
+                            Elle détaille les choix architecturaux majeurs garantissant la maintenabilité et la scalabilité de FleetTrack.
+                        </p>
+                    </div>
+
+                    <div class="security-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
+
+                        <!-- Mutualisation de code -->
+                        <div class="timeline-card" style="border-left: 4px solid #ff5722;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">hub</mat-icon>
+                                    <span class="category-name">Architecture</span>
+                                </div>
+                                <span class="status-badge status-completed">Mutualisé</span>
+                            </div>
+                            <h3 class="card-title">Code partagé (Symlinks)</h3>
+                            <p class="card-description">
+                                Les services centraux (comme <strong>SettingsService</strong>) sont écrits une seule fois dans un dossier <code>/shared/</code>.
+                                Les applications Web et Mobile utilisent des liens symboliques pour y accéder, garantissant qu'une modification s'applique instantanément aux deux plateformes sans duplication de code.
+                            </p>
+                        </div>
+
+                        <!-- PWA & Hors ligne -->
+                        <div class="timeline-card" style="border-left: 4px solid #00bcd4;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">offline_bolt</mat-icon>
+                                    <span class="category-name">E-Logbook</span>
+                                </div>
+                                <span class="status-badge status-completed">PWA</span>
+                            </div>
+                            <h3 class="card-title">Service Worker & Hors-Ligne</h3>
+                            <p class="card-description">
+                                L'E-Logbook intègre <strong>@angular/pwa</strong> pour cacher dynamiquement l'API (logos, préférences).
+                                Combiné à <strong>Dexie.js</strong> (IndexedDB local), il permet aux chauffeurs de saisir des données en zone blanche et de les synchroniser au retour du réseau.
+                            </p>
+                        </div>
+
+                        <!-- Internationalisation -->
+                        <div class="timeline-card" style="border-left: 4px solid #8bc34a;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">language</mat-icon>
+                                    <span class="category-name">Localisation</span>
+                                </div>
+                                <span class="status-badge status-completed">i18n</span>
+                            </div>
+                            <h3 class="card-title">Support Multilingue</h3>
+                            <p class="card-description">
+                                Le système utilise <strong>ngx-translate</strong> pour gérer l'interface en plusieurs langues (Français/Anglais).
+                                Les fichiers de traduction sont séparés (<code>en.json</code>, <code>fr.json</code>) pour faciliter les futures traductions.
+                            </p>
+                        </div>
+
+                        <!-- Personnalisation Dynamique -->
+                        <div class="timeline-card" style="border-left: 4px solid #e91e63;">
+                            <div class="card-header">
+                                <div class="card-category">
+                                    <mat-icon class="category-icon">palette</mat-icon>
+                                    <span class="category-name">Design</span>
+                                </div>
+                                <span class="status-badge status-completed">Dynamique</span>
+                            </div>
+                            <h3 class="card-title">Branding Configurable</h3>
+                            <p class="card-description">
+                                Toute l'interface (logos, couleurs, polices) est pilotée par l'API (Brand Settings) via des <strong>Variables CSS</strong> (Custom Properties).
+                                L'administration permet de basculer en temps réel l'affichage sans devoir recompiler l'application.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </mat-tab>
         </mat-tab-group>
 
         <!-- MODAL STUDY -->
