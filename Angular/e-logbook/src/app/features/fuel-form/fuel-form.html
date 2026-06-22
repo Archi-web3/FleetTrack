@@ -29,17 +29,17 @@
                 <mat-form-field appearance="fill" class="full-width">
                     <mat-label>{{ 'FUEL_PAGE.TYPE' | translate }}</mat-label>
                     <mat-select formControlName="fuelType">
-                        <mat-option value="Diesel">Diesel</mat-option>
-                        <mat-option value="Essence">Essence</mat-option>
-                        <mat-option value="Électrique">Électrique</mat-option>
+                        <mat-option value="Diesel">{{ 'MOBILE.FUEL.DIESEL' | translate }}</mat-option>
+                        <mat-option value="Essence">{{ 'MOBILE.FUEL.PETROL' | translate }}</mat-option>
+                        <mat-option value="Électrique">{{ 'MOBILE.FUEL.ELECTRIC' | translate }}</mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" class="full-width">
                     <mat-label>{{ 'FUEL_PAGE.SOURCE' | translate }}</mat-label>
                     <mat-select formControlName="source">
-                        <mat-option value="Station Service">Station Service</mat-option>
-                        <mat-option value="Stock ACF">Stock ACF</mat-option>
+                        <mat-option value="Station Service">{{ 'MOBILE.FUEL.STATION' | translate }}</mat-option>
+                        <mat-option value="Stock Interne">{{ 'MOBILE.FUEL.INTERNAL_STOCK' | translate }}</mat-option>
                         <mat-option value="Autre">Autre</mat-option>
                     </mat-select>
                 </mat-form-field>

@@ -1,7 +1,7 @@
 <div class="settings-container">
   <!-- Sidebar -->
   <div class="settings-sidebar" *ngIf="activeTab !== 'types-vehicules' && activeTab !== 'facteurs-co2'">
-    <h2 class="sidebar-title">Paramètres</h2>
+    <h2 class="sidebar-title">{{ 'SETTINGS.SETTINGS' | translate }}</h2>
     <mat-nav-list>
       <a mat-list-item [class.active]="activeTab === 'brand'" (click)="setTab('brand')">
         <mat-icon matListItemIcon>palette</mat-icon>
@@ -33,11 +33,11 @@
     <!-- 1. BRAND & THEME -->
     <div *ngIf="activeTab === 'brand'" class="settings-section">
       <h2><mat-icon>palette</mat-icon> Brand & Theme Settings</h2>
-      <p class="section-desc">Personnalisez l'identité visuelle de l'application FleetTrack.</p>
+      <p class="section-desc">{{ 'SETTINGS.PERSONALIZE' | translate }}</p>
 
       <mat-card class="setting-card">
         <mat-card-header>
-          <mat-card-title>Couleur Principale (Theme Customizer)</mat-card-title>
+          <mat-card-title>{{ 'SETTINGS.PRIMARY_COLOR' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="color-picker-container">
@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="custom-color-input">
-              <label>Couleur personnalisée :</label>
+              <label>{{ 'SETTINGS.CUSTOM_COLOR' | translate }}</label>
               <input type="color" [(ngModel)]="brandSettings.primaryColor" (change)="setPrimaryColor(brandSettings.primaryColor)">
               <span>{{ brandSettings.primaryColor }}</span>
             </div>
@@ -60,13 +60,13 @@
 
       <mat-card class="setting-card">
         <mat-card-header>
-          <mat-card-title>Textes et Informations</mat-card-title>
+          <mat-card-title>{{ 'SETTINGS.TEXT_INFO' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="grid-2">
             
             <div class="modern-form-group" style="grid-column: 1 / -1;">
-              <label>Mode d'affichage (Page d'accueil)</label>
+              <label>{{ 'SETTINGS.DISPLAY_MODE' | translate }}</label>
               <mat-select class="modern-input" [(ngModel)]="brandSettings.heroDisplayMode">
                 <mat-option value="text">Afficher uniquement le nom de l'application (Texte)</mat-option>
                 <mat-option value="logo">Afficher uniquement le Logo</mat-option>
@@ -75,32 +75,32 @@
             </div>
             
             <div class="modern-form-group">
-              <label>Titre de l'application (Web)</label>
+              <label>{{ 'SETTINGS.APP_TITLE' | translate }} (Web)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.appName">
             </div>
             
             <div class="modern-form-group">
-              <label>Tagline / Sous-titre (Web)</label>
+              <label>{{ 'SETTINGS.APP_TAGLINE' | translate }} (Web)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.appTagline" placeholder="Votre phrase d'accroche...">
             </div>
 
             <div class="modern-form-group">
-              <label>Titre de l'application (Mobile)</label>
+              <label>{{ 'SETTINGS.APP_TITLE' | translate }} (Mobile)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.mobileAppName" placeholder="ex: e-Logbook">
             </div>
             
             <div class="modern-form-group">
-              <label>Tagline / Sous-titre (Mobile)</label>
+              <label>{{ 'SETTINGS.APP_TAGLINE' | translate }} (Mobile)</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.mobileAppTagline" placeholder="ex: Chauffeur">
             </div>
             
             <div class="modern-form-group" style="grid-column: 1 / -1;">
-              <label>Bandeau d'actualités (Accueil)</label>
+              <label>{{ 'SETTINGS.NEWS_BANNER' | translate }}</label>
               <textarea class="modern-input" [(ngModel)]="brandSettings.newsBanner" placeholder="Message important pour tous les utilisateurs..."></textarea>
             </div>
 
             <div class="modern-form-group">
-              <label>Texte du pied de page (Footer)</label>
+              <label>{{ 'SETTINGS.FOOTER_TEXT' | translate }}</label>
               <input type="text" class="modern-input" [(ngModel)]="brandSettings.footerText">
             </div>
             

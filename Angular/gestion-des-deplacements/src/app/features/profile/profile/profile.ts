@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { PersonalInfoComponent } from '../personal-info/personal-info';
 import { ChangePasswordComponent } from '../change-password/change-password';
@@ -10,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-profile',
   standalone: true,
   imports: [
+    TranslateModule,
     CommonModule, 
     PersonalInfoComponent, 
     ChangePasswordComponent,

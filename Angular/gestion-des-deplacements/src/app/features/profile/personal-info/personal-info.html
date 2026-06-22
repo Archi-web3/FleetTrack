@@ -1,8 +1,8 @@
 <div class="personal-info-container">
   <div class="header-section">
     <div class="title-wrap">
-      <h3>Informations Personnelles</h3>
-      <p>Détails de votre profil utilisateur</p>
+      <h3>{{ 'PROFILE.PERSONAL_INFO' | translate }}</h3>
+      <p>{{ 'PROFILE.DETAILS_DESC' | translate }}</p>
     </div>
     <span class="badge">{{ userProfileLabel | uppercase }}</span>
   </div>
@@ -12,13 +12,13 @@
       <div class="avatar-wrapper">
         <img src="assets/images/default-avatar.png" alt="Avatar" class="avatar-img" onerror="this.src='https://via.placeholder.com/150'">
       </div>
-      <button type="button" class="btn-upload">Changer la photo</button>
-      <p class="upload-note">Taille max: 2MB.</p>
+      <button type="button" class="btn-upload">{{ 'PROFILE.CHANGE_PHOTO' | translate }}</button>
+      <p class="upload-note">{{ 'PROFILE.MAX_SIZE' | translate }}</p>
     </div>
 
     <div class="right-col">
       <div class="form-group">
-        <label>Nom Complet</label>
+        <label>{{ 'PROFILE.FULL_NAME' | translate }}</label>
         <input type="text" formControlName="fullName">
       </div>
 

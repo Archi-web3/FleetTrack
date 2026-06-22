@@ -271,7 +271,25 @@
             "OPERATIONS": "Operations",
             "SECURITY": "Security"
         },
-        "SECURITY_MATRIX": "Security Matrix"
+        "SECURITY_MATRIX": "Security Matrix",
+        "FLEET_MAINTENANCE": "Fleet & Maintenance",
+        "MAINTENANCE_PLAN": "Maintenance Plan",
+        "ENERGY": "Energy",
+        "GENERATORS_LIST": "Generators List",
+        "GENERATOR_LOGBOOK": "Generator Logbook",
+        "SECURITY": "Security",
+        "FLEET_SETTINGS": "Fleet Settings",
+        "VEHICLE_TYPES": "Vehicle Types",
+        "CO2_FACTORS": "CO2 Factors",
+        "MAINTENANCE_MANAGEMENT": "Maintenance Management",
+        "INTERVAL_CONFIG": "Interval Configuration",
+        "SERVICE_TYPES": "Service Types",
+        "SYSTEM_SETTINGS": "System Settings",
+        "GENERAL_CONFIG": "General Configuration",
+        "WORKFLOW_VISUALIZATION": "Workflow Visualization",
+        "APP_ROADMAP_SECURITY": "App Roadmap & Security",
+        "ACTIVITY_LOG": "Activity Log",
+        "PROFILE_MATRIX": "Profile Matrix (RBAC)"
     },
     "LOGBOOK": {
         "DASHBOARD": {
@@ -804,7 +822,7 @@
     "SETTINGS": {
         "TITLE": "General Settings",
         "SUBTITLE": "Application Dropdown Management",
-        "BRAND_THEME": "Brand & Theme",
+        "BRAND_THEME": "Brand & Theme Settings",
         "SYSTEM_PREF": "System Preferences",
         "CURRENCIES": "Currencies",
         "MAINTENANCE": "Maintenance & Alerts",
@@ -828,7 +846,17 @@
             "LINK": "Info Link (URL)",
             "SAVE_BTN": "Save CO2 Settings",
             "SAVE_SUCCESS": "CO2 factors saved"
-        }
+        },
+        "SETTINGS": "Settings",
+        "PERSONALIZE": "Personalize the visual identity of the application",
+        "PRIMARY_COLOR": "Primary Color",
+        "CUSTOM_COLOR": "Custom color:",
+        "TEXT_INFO": "Texts and Information",
+        "DISPLAY_MODE": "Display Mode (Home Page)",
+        "APP_TITLE": "Application Title",
+        "APP_TAGLINE": "Tagline / Subtitle",
+        "NEWS_BANNER": "News Banner",
+        "FOOTER_TEXT": "Footer Text"
     },
     "STATISTICS": {
         "TITLE": "Statistics Dashboard",
@@ -951,10 +979,224 @@
             "MILEAGE_END": "End",
             "DEVIATIONS": "⚠️ Reported Deviations",
             "DRIVER_OBSERVATIONS": "💬 Driver Observations"
-        }
+        },
+        "FROM": "From:",
+        "TO": "To:",
+        "TIME": "Time:",
+        "MILEAGE": "Mileage:"
     },
     "NEW_REQUEST_EXTRA": {
         "START": "Start",
         "END": "End"
+    },
+    "USER_GUIDE": {
+        "TITLE": "FleetTrack User Guide",
+        "VERSION": "Version 2.14 - February 2026",
+        "TOC": {
+            "TITLE": "Table of Contents",
+            "INTRO": "Introduction",
+            "ACCESS": "Application Access",
+            "WEB": "Web Interface",
+            "MOBILE": "Mobile E-Logbook (PWA)",
+            "FAQ": "FAQ & Troubleshooting"
+        },
+        "INTRO": {
+            "TITLE": "Introduction",
+            "P1_1": "FleetTrack is the optimized fleet management solution for the organization. It uses a",
+            "P1_2": "strict multi-country architecture",
+            "BULLET1_1": "Data Isolation:",
+            "BULLET1_2": "A user assigned to a country can ONLY see that country's data.",
+            "BULLET2_1": "SuperAdmin Exception:",
+            "BULLET2_2": "Only the SuperAdmin role has a global view.",
+            "NOTE_TITLE": "Important:",
+            "NOTE_DESC": "The application is divided into two connected interfaces:",
+            "NOTE_BULLET1_1": "Web Interface (Admin):",
+            "NOTE_BULLET1_2": "Management, Planning, Validation by the office.",
+            "NOTE_BULLET2_1": "E-Logbook (Driver):",
+            "NOTE_BULLET2_2": "Mobile application (PWA) for the field."
+        },
+        "ROLES": {
+            "TITLE": "User Roles",
+            "COL1": "Role",
+            "COL2": "Access",
+            "COL3": "Scope",
+            "COL4": "Responsibilities",
+            "ROW1_1": "SuperAdmin",
+            "ROW1_2": "Web (Full)",
+            "ROW1_3": "🌍 Global",
+            "ROW1_4": "System configuration, global audit.",
+            "ROW2_1": "Admin (Country)",
+            "ROW2_2": "Web (Country)",
+            "ROW2_3": "🏳️ Country",
+            "ROW2_4": "Management of ALL bases in the mission.",
+            "ROW3_1": "Supervisor (Base)",
+            "ROW3_2": "Web (Base)",
+            "ROW3_3": "📍 Local Base",
+            "ROW3_4": "Hierarchical validation, maintenance tracking.",
+            "ROW4_1": "Security Supervisor",
+            "ROW4_2": "Web (Base/Country)",
+            "ROW4_3": "🛡️ Transverse",
+            "ROW4_4": "Security validation for movements.",
+            "ROW5_1": "Requester",
+            "ROW5_2": "Web (Restricted)",
+            "ROW5_3": "👤 Personal",
+            "ROW5_4": "Movement request creation.",
+            "ROW6_1": "Driver",
+            "ROW6_2": "Mobile PWA",
+            "ROW6_3": "🚙 Vehicle",
+            "ROW6_4": "Logbook entry."
+        },
+        "ACCESS": {
+            "TITLE": "Application Access",
+            "WEB_TITLE": "Web Interface",
+            "URL": "URL",
+            "BROWSERS": "Supported Browsers",
+            "BROWSERS_DESC": "Chrome (recommended), Firefox, Edge, Safari",
+            "MOBILE_TITLE": "Mobile E-Logbook (PWA)",
+            "MOBILE_DESC_1": "Open the URL on your phone and choose",
+            "MOBILE_DESC_2": "Add to Home Screen",
+            "MOBILE_DESC_3": "to use it as a native application."
+        },
+        "WEB": {
+            "TITLE": "Web Interface",
+            "PLANNING": {
+                "TITLE": "Global Planning",
+                "DESC": "The operational core. View all movements for the week at a glance.",
+                "FEAT1_1": "Drag & Drop:",
+                "FEAT1_2": "Assign a vehicle by dragging the request.",
+                "FEAT2_1": "Inbox Mode:",
+                "FEAT2_2": "Unread notifications take priority."
+            },
+            "NEW_FEATURES": "New features:",
+            "DRIVER_PLANNING": {
+                "TITLE": "Driver Availability",
+                "DESC": "A dedicated planning tool to manage drivers' working time.",
+                "BULLET1_1": "Planning:",
+                "BULLET1_2": "Add unavailability (Leave, Sick, Rest).",
+                "BULLET2_1": "Validation:",
+                "BULLET2_2": "An unavailable driver cannot be assigned."
+            },
+            "NEW_FEATURE_TAG": "New",
+            "ROADMAP": {
+                "TITLE": "Vision & Security (Roadmap)",
+                "DESC": "Full transparency on the evolution of the tool and its security.",
+                "BULLET1_1": "Roadmap:",
+                "BULLET1_2": "View upcoming features.",
+                "BULLET2_1": "Changelog:",
+                "BULLET2_2": "Update history.",
+                "BULLET3_1": "Security:",
+                "BULLET3_2": "Technical details (GDPR, Encryption)."
+            },
+            "NEW_MENU_TAG": "New Menu",
+            "ECO": {
+                "TITLE": "Environmental Goals",
+                "DESC": "Track the fleet's carbon footprint.",
+                "BULLET1_1": "IAP:",
+                "BULLET1_2": "Weighted Activity Indicator.",
+                "BULLET2_1": "Action Plan:",
+                "BULLET2_2": "Monitor CO2 reduction goals."
+            },
+            "ALERTS": {
+                "TITLE": "Security Alerts",
+                "DESC": "Send urgent notifications (Web Push).",
+                "BULLET1": "Target a specific vehicle or ENTIRE FLEET.",
+                "BULLET2": "The driver receives the alert even if the app is closed."
+            },
+            "VALIDATION": {
+                "TITLE": "Validation & Consolidation",
+                "DESC": "The validation workflow:",
+                "STEP1_1": "Logistics:",
+                "STEP1_2": "Checks availability.",
+                "STEP2_1": "Security:",
+                "STEP2_2": "Validates feasibility (Risk zones).",
+                "NEW1_1": "Parallel Validation:",
+                "NEW1_2": "Independent and simultaneous validation.",
+                "NEW2_1": "Cascade Validation:",
+                "NEW2_2": "Validation by lower security levels required.",
+                "CONSO1": "Use",
+                "CONSO2": "Consolidation",
+                "CONSO3": "to group multiple requests."
+            },
+            "NEW_PROCESS": "Process Updates:",
+            "MAINTENANCE": {
+                "TITLE": "Fleet Management & Maintenance",
+                "TIP_TITLE": "Notifications:",
+                "TIP_DESC": "Automated email to supervisor if maintenance is imminent.",
+                "BULLET1_1": "Weekly Tracking:",
+                "BULLET1_2": "Driver checklists.",
+                "BULLET2_1": "Configuration:",
+                "BULLET2_2": "Define your intervals."
+            },
+            "GENERATORS": {
+                "TITLE": "Generator Maintenance",
+                "DESC": "Management and tracking of the organization's generators.",
+                "BULLET1_1": "Logbook:",
+                "BULLET1_2": "Maintenance and breakdown logbook.",
+                "BULLET2_1": "Maintenance Plan:",
+                "BULLET2_2": "Tracking of run hours."
+            },
+            "REPORTS": {
+                "TITLE": "Reports & Analytics",
+                "DESC": "Export your monthly reports in one click."
+            }
+        },
+        "MOBILE": {
+            "TITLE": "Mobile E-Logbook (PWA)",
+            "OFFLINE_TITLE": "Offline Mode:",
+            "OFFLINE_DESC": "The application works COMPLETELY without a connection.",
+            "PUSH": {
+                "TITLE": "Web Push Notifications",
+                "DESC": "For security and responsiveness:",
+                "BULLET1_1": "App Closed:",
+                "BULLET1_2": "You receive alerts in the background.",
+                "BULLET2_1": "Activation:",
+                "BULLET2_2": "Allow notifications in the Inbox."
+            },
+            "DAILY": {
+                "TITLE": "Daily Use",
+                "BULLET1_1": "Vehicle Selection:",
+                "BULLET1_2": "Choose your vehicle at startup.",
+                "BULLET2_1": "Auto GPS:",
+                "BULLET2_2": "Position recording.",
+                "BULLET3_1": "Free Mode:",
+                "BULLET3_2": "Ad-Hoc trips without prior request."
+            },
+            "INCIDENTS": {
+                "TITLE": "Services & Incidents",
+                "BULLET1_1": "Maintenance:",
+                "BULLET1_2": "Check completed tasks.",
+                "BULLET2_1": "Incidents:",
+                "BULLET2_2": "Report accidents with photos."
+            }
+        },
+        "FAQ": {
+            "TITLE": "FAQ & Troubleshooting",
+            "Q1": "Q: The PDF manual doesn't open to the right page?",
+            "A1": "A: Check the Template configuration.",
+            "SUPPORT": "Technical Support:",
+            "SUPPORT_NO_EMAIL": "Please contact your local system administrator for assistance."
+        },
+        "FOOTER": "All rights reserved"
+    },
+    "PROFILE": {
+        "USER_PROFILE": "User Profile",
+        "PERSONAL_INFO": "Personal Information",
+        "PASSWORD": "Password",
+        "CHANGE_PASSWORD": "Change Password",
+        "CHANGE_PASSWORD_DESC": "Secure your account by changing your password",
+        "OLD_PASSWORD": "Old Password",
+        "NEW_PASSWORD": "New Password",
+        "CONFIRM_PASSWORD": "Confirm Password",
+        "DETAILS_DESC": "Details of your user profile",
+        "CHANGE_PHOTO": "Change Photo",
+        "MAX_SIZE": "Max size: 2MB.",
+        "FULL_NAME": "Full Name"
+    },
+    "COUNTRIES": {
+        "MANAGE": "Manage Countries",
+        "NEW": "NEW COUNTRY",
+        "COLUMNS": "Displayed Columns",
+        "NAME": "Name",
+        "CODE": "Code"
     }
 }

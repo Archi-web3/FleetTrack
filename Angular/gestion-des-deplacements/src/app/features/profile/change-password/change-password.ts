@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -7,7 +8,8 @@ import { UtilisateurService } from '../../../core/services/utilisateur.service';
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    TranslateModule,CommonModule, ReactiveFormsModule],
   templateUrl: './change-password.html',
   styleUrls: ['./change-password.scss']
 })

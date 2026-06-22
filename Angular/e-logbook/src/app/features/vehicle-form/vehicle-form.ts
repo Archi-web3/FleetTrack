@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -16,6 +17,7 @@ import { OfflineService, Vehicle } from '../../core/services/offline.service';
     selector: 'app-vehicle-form',
     standalone: true,
     imports: [
+    TranslateModule,
         CommonModule,
         ReactiveFormsModule,
         MatButtonModule,

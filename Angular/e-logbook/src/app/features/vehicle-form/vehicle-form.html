@@ -7,24 +7,24 @@
             <form [formGroup]="vehicleForm" (ngSubmit)="saveVehicle()">
 
                 <!-- Section: Identification -->
-                <h3>Identification</h3>
+                <h3>{{ 'MOBILE.VEHICLE.IDENTIFICATION' | translate }}</h3>
                 <div class="form-row">
                     <mat-form-field appearance="fill">
-                        <mat-label>Immatriculation</mat-label>
+                        <mat-label>{{ 'MOBILE.VEHICLE.PLATE' | translate }}</mat-label>
                         <input matInput formControlName="immatriculation" required>
                     </mat-form-field>
                     <mat-form-field appearance="fill">
-                        <mat-label>Marque</mat-label>
+                        <mat-label>{{ 'MOBILE.VEHICLE.BRAND' | translate }}</mat-label>
                         <input matInput formControlName="marque" required>
                     </mat-form-field>
                     <mat-form-field appearance="fill">
-                        <mat-label>Modèle</mat-label>
+                        <mat-label>{{ 'MOBILE.VEHICLE.MODEL' | translate }}</mat-label>
                         <input matInput formControlName="modele" required>
                     </mat-form-field>
                 </div>
                 <div class="form-row">
                     <mat-form-field appearance="fill">
-                        <mat-label>Code ACF</mat-label>
+                        <mat-label>{{ 'MOBILE.VEHICLE.FLEET_CODE' | translate }}</mat-label>
                         <input matInput formControlName="acfCode">
                     </mat-form-field>
                     <mat-form-field appearance="fill">

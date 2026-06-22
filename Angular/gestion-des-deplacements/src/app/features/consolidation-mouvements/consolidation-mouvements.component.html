@@ -44,8 +44,8 @@
       <li *ngFor="let suggestion of suggestedMouvements"
         style="border: 1px solid #e0f2f7; padding: 10px; margin-bottom: 5px; border-radius: 3px;">
         <strong>{{ 'CONSOLIDATION.WAITING_LIST.OBJECTIVE' | translate }}:</strong> {{ suggestion.objectif }}<br>
-        <strong>De:</strong> {{ getOrigin(suggestion) }}<br>
-        <strong>À:</strong> {{ getFinalDestination(suggestion) }}<br>
+        <strong>{{ 'CONSOLIDATION.FROM' | translate }}</strong> {{ getOrigin(suggestion) }}<br>
+        <strong>{{ 'CONSOLIDATION.TO' | translate }}</strong> {{ getFinalDestination(suggestion) }}<br>
         <strong>{{ 'CONSOLIDATION.WAITING_LIST.REQUESTER' | translate }}:</strong> {{ suggestion.demandeur?.nom }}
         <!-- Ajoutez ici un bouton ou une case à cocher pour ajouter à la sélection de regroupement -->
       </li>
@@ -293,7 +293,7 @@ font-size: 1em; font-weight: 500;">
           </h4>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div>
-              <span style="font-weight: bold; color: #2e7d32;">⏱️ Horaires:</span><br>
+              <span style="font-weight: bold; color: #2e7d32;">⏱️ {{ 'CONSOLIDATION.TIME' | translate }}</span><br>
               <div style="margin-left: 10px; font-size: 0.9em;">
                 {{ 'CONSOLIDATION.HISTORY.REAL_DEPARTURE' | translate }}: <strong>{{ mouvement.realDepartureTime |
                   date:'short' }}</strong><br>
@@ -303,7 +303,7 @@ font-size: 1em; font-weight: 500;">
               </div>
             </div>
             <div>
-              <span style="font-weight: bold; color: #2e7d32;">🚗 Kilométrage:</span><br>
+              <span style="font-weight: bold; color: #2e7d32;">🚗 {{ 'CONSOLIDATION.MILEAGE' | translate }}</span><br>
               <div style="margin-left: 10px; font-size: 0.9em;">
                 {{ 'CONSOLIDATION.HISTORY.MILEAGE_START' | translate }}: <strong>{{ mouvement.startMileage }}
                   km</strong><br>

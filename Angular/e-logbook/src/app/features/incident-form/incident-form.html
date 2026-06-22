@@ -25,20 +25,20 @@
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>{{ 'INCIDENT_PAGE.TYPE' | translate }}</mat-label>
                 <mat-select [(ngModel)]="incidentType">
-                    <mat-option value="Panne">Panne</mat-option>
-                    <mat-option value="Accident">Accident</mat-option>
-                    <mat-option value="Retard">Retard</mat-option>
-                    <mat-option value="Crevaison">Crevaison</mat-option>
-                    <mat-option value="Autre">Autre</mat-option>
+                    <mat-option value="Panne">{{ 'MOBILE.INCIDENT_TYPES.BREAKDOWN' | translate }}</mat-option>
+                    <mat-option value="Accident">{{ 'MOBILE.INCIDENT_TYPES.ACCIDENT' | translate }}</mat-option>
+                    <mat-option value="Retard">{{ 'MOBILE.INCIDENT_TYPES.DELAY' | translate }}</mat-option>
+                    <mat-option value="Crevaison">{{ 'MOBILE.INCIDENT_TYPES.PUNCTURE' | translate }}</mat-option>
+                    <mat-option value="Autre">{{ 'MOBILE.INCIDENT_TYPES.OTHER' | translate }}</mat-option>
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>{{ 'INCIDENT_PAGE.SEVERITY' | translate }}</mat-label>
                 <mat-select [(ngModel)]="severity">
-                    <mat-option value="Faible">Faible</mat-option>
-                    <mat-option value="Moyenne">Moyenne</mat-option>
-                    <mat-option value="Élevée">Élevée</mat-option>
+                    <mat-option value="Faible">{{ 'MOBILE.SEVERITY.LOW' | translate }}</mat-option>
+                    <mat-option value="Moyenne">{{ 'MOBILE.SEVERITY.MEDIUM' | translate }}</mat-option>
+                    <mat-option value="Élevée">{{ 'MOBILE.SEVERITY.HIGH' | translate }}</mat-option>
                 </mat-select>
             </mat-form-field>
 

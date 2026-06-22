@@ -271,7 +271,25 @@
                 "NOT_ASSIGNED": "Non assigné"
             }
         },
-        "LOGBOOK": "Logbook"
+        "LOGBOOK": "Logbook",
+        "FLEET_MAINTENANCE": "Flotte & Maintenance",
+        "MAINTENANCE_PLAN": "Plan de Maintenance",
+        "ENERGY": "Énergie",
+        "GENERATORS_LIST": "Liste des Générateurs",
+        "GENERATOR_LOGBOOK": "Logbook Générateur",
+        "SECURITY": "Sécurité",
+        "FLEET_SETTINGS": "Paramétrages Fleet",
+        "VEHICLE_TYPES": "Types de véhicules",
+        "CO2_FACTORS": "Facteurs CO2",
+        "MAINTENANCE_MANAGEMENT": "Gestion des Maintenances",
+        "INTERVAL_CONFIG": "Configuration Intervalles",
+        "SERVICE_TYPES": "Type de service",
+        "SYSTEM_SETTINGS": "Paramètres Système",
+        "GENERAL_CONFIG": "Configuration Générale",
+        "WORKFLOW_VISUALIZATION": "Workflow Visualisation",
+        "APP_ROADMAP_SECURITY": "Roadmap et sécurité de l'APP",
+        "ACTIVITY_LOG": "Journal d'activité",
+        "PROFILE_MATRIX": "Matrice des Profils (RBAC)"
     },
     "LOGBOOK": {
         "DASHBOARD": {
@@ -804,7 +822,7 @@
     "SETTINGS": {
         "TITLE": "Paramètres Généraux",
         "SUBTITLE": "Gestion des listes déroulantes de l'application",
-        "BRAND_THEME": "Marque & Thème",
+        "BRAND_THEME": "Brand & Theme Settings",
         "SYSTEM_PREF": "Préférences Système",
         "CURRENCIES": "Devises",
         "MAINTENANCE": "Maintenance & Alertes",
@@ -828,7 +846,17 @@
             "LINK": "Lien information (URL)",
             "SAVE_BTN": "Enregistrer Paramètres CO2",
             "SAVE_SUCCESS": "Facteurs CO2 enregistrés"
-        }
+        },
+        "SETTINGS": "Paramètres",
+        "PERSONALIZE": "Personnalisez l'identité visuelle de l'application",
+        "PRIMARY_COLOR": "Couleur Principale",
+        "CUSTOM_COLOR": "Couleur personnalisée :",
+        "TEXT_INFO": "Textes et Informations",
+        "DISPLAY_MODE": "Mode d'affichage (Page d'accueil)",
+        "APP_TITLE": "Titre de l'application",
+        "APP_TAGLINE": "Tagline / Sous-titre",
+        "NEWS_BANNER": "Bandeau d'actualités",
+        "FOOTER_TEXT": "Texte du pied de page"
     },
     "STATISTICS": {
         "TITLE": "Tableau de Bord Statistiques",
@@ -951,10 +979,224 @@
             "MILEAGE_END": "Arrivée",
             "DEVIATIONS": "⚠️ Écarts signalés",
             "DRIVER_OBSERVATIONS": "💬 Observations Chauffeur"
-        }
+        },
+        "FROM": "De:",
+        "TO": "À:",
+        "TIME": "Horaires:",
+        "MILEAGE": "Kilométrage:"
     },
     "NEW_REQUEST_EXTRA": {
         "END": "Fin",
         "START": "Début"
+    },
+    "USER_GUIDE": {
+        "TITLE": "Guide Utilisateur FleetTrack",
+        "VERSION": "Version 2.14 - Février 2026",
+        "TOC": {
+            "TITLE": "Table des Matières",
+            "INTRO": "Introduction",
+            "ACCESS": "Accès aux Applications",
+            "WEB": "Interface Web",
+            "MOBILE": "E-Logbook Mobile (PWA)",
+            "FAQ": "FAQ et Dépannage"
+        },
+        "INTRO": {
+            "TITLE": "Introduction",
+            "P1_1": "FleetTrack est la solution de gestion de flotte optimisée pour l'organisation. Elle repose sur une",
+            "P1_2": "architecture multi-pays stricte",
+            "BULLET1_1": "Cloisonnement des données :",
+            "BULLET1_2": "Un utilisateur affecté à un pays ne peut voir QUE les données de ce pays.",
+            "BULLET2_1": "Exception SuperAdmin :",
+            "BULLET2_2": "Seul le rôle SuperAdmin possède une vue globale.",
+            "NOTE_TITLE": "Important :",
+            "NOTE_DESC": "L'application est divisée en deux interfaces connectées :",
+            "NOTE_BULLET1_1": "Interface Web (Admin) :",
+            "NOTE_BULLET1_2": "Gestion, Planification, Validation par le bureau.",
+            "NOTE_BULLET2_1": "E-Logbook (Chauffeur) :",
+            "NOTE_BULLET2_2": "Application Mobile (PWA) pour le terrain."
+        },
+        "ROLES": {
+            "TITLE": "Rôles Utilisateurs",
+            "COL1": "Rôle",
+            "COL2": "Accès",
+            "COL3": "Portée (Scope)",
+            "COL4": "Responsabilités",
+            "ROW1_1": "SuperAdmin",
+            "ROW1_2": "Web (Complet)",
+            "ROW1_3": "🌍 Monde (Tous Pays)",
+            "ROW1_4": "Configuration système, audit global.",
+            "ROW2_1": "Admin (Pays)",
+            "ROW2_2": "Web (Pays)",
+            "ROW2_3": "🏳️ Pays (Mission)",
+            "ROW2_4": "Gestion de TOUTES les bases de sa mission.",
+            "ROW3_1": "Superviseur (Base)",
+            "ROW3_2": "Web (Base)",
+            "ROW3_3": "📍 Base Locale",
+            "ROW3_4": "Validation hiérarchique, suivi maintenance.",
+            "ROW4_1": "Superviseur Sécurité",
+            "ROW4_2": "Web (Base/Pays)",
+            "ROW4_3": "🛡️ Transverse",
+            "ROW4_4": "Validation sécuritaire des mouvements.",
+            "ROW5_1": "Demandeur",
+            "ROW5_2": "Web (Restreint)",
+            "ROW5_3": "👤 Personnel",
+            "ROW5_4": "Création de demandes de mouvements.",
+            "ROW6_1": "Chauffeur",
+            "ROW6_2": "Mobile PWA",
+            "ROW6_3": "🚙 Véhicule",
+            "ROW6_4": "Tenue du carnet de bord."
+        },
+        "ACCESS": {
+            "TITLE": "Accès aux Applications",
+            "WEB_TITLE": "Interface Web",
+            "URL": "URL",
+            "BROWSERS": "Navigateurs compatibles",
+            "BROWSERS_DESC": "Chrome (recommandé), Firefox, Edge, Safari",
+            "MOBILE_TITLE": "E-Logbook Mobile (PWA)",
+            "MOBILE_DESC_1": "Ouvrez l'URL sur votre téléphone et choisissez",
+            "MOBILE_DESC_2": "Ajouter à l'écran d'accueil",
+            "MOBILE_DESC_3": "pour l'utiliser comme une application native."
+        },
+        "WEB": {
+            "TITLE": "Interface Web",
+            "PLANNING": {
+                "TITLE": "Planning Global",
+                "DESC": "Le cœur opérationnel. Visualisez tous les mouvements de la semaine d'un coup d'œil.",
+                "FEAT1_1": "Drag & Drop :",
+                "FEAT1_2": "Assignez un véhicule en glissant la demande.",
+                "FEAT2_1": "Mode Inbox :",
+                "FEAT2_2": "Les notifications non lues en priorité."
+            },
+            "NEW_FEATURES": "Nouveautés :",
+            "DRIVER_PLANNING": {
+                "TITLE": "Disponibilité des Chauffeurs",
+                "DESC": "Un planning dédié pour gérer le temps de travail des chauffeurs.",
+                "BULLET1_1": "Planning :",
+                "BULLET1_2": "Ajout des indisponibilités (Congés, Maladie, Repos).",
+                "BULLET2_1": "Validation :",
+                "BULLET2_2": "Un chauffeur indisponible ne peut pas être assigné."
+            },
+            "NEW_FEATURE_TAG": "Nouveau",
+            "ROADMAP": {
+                "TITLE": "Vision & Sécurité (Roadmap)",
+                "DESC": "Une transparence totale sur l'évolution de l'outil et sa sécurité.",
+                "BULLET1_1": "Roadmap :",
+                "BULLET1_2": "Consultez les prochaines fonctionnalités.",
+                "BULLET2_1": "Changelog :",
+                "BULLET2_2": "Historique des mises à jour.",
+                "BULLET3_1": "Sécurité :",
+                "BULLET3_2": "Détails techniques (RGPD, Chiffrement)."
+            },
+            "NEW_MENU_TAG": "Nouveau Menu",
+            "ECO": {
+                "TITLE": "Objectifs Environnementaux",
+                "DESC": "Suivez l'empreinte carbone de la flotte.",
+                "BULLET1_1": "IAP :",
+                "BULLET1_2": "Indicateur d'Activité Pondéré.",
+                "BULLET2_1": "Plan d'Action :",
+                "BULLET2_2": "Suivi des objectifs de réduction CO2."
+            },
+            "ALERTS": {
+                "TITLE": "Alertes de Sécurité",
+                "DESC": "Permet d'envoyer des notifications urgentes (Web Push).",
+                "BULLET1": "Ciblez un véhicule précis ou TOUTE LA FLOTTE.",
+                "BULLET2": "Le chauffeur reçoit l'alerte même si l'App est fermée."
+            },
+            "VALIDATION": {
+                "TITLE": "Validation & Consolidation",
+                "DESC": "Le workflow de validation :",
+                "STEP1_1": "Logistique :",
+                "STEP1_2": "Vérifie la disponibilité.",
+                "STEP2_1": "Sécurité :",
+                "STEP2_2": "Valide la faisabilité (Zones à risques).",
+                "NEW1_1": "Validation Parallèle :",
+                "NEW1_2": "Validation indépendante et simultanée.",
+                "NEW2_1": "Validation en Cascade :",
+                "NEW2_2": "Validation par les niveaux de sécurité inférieurs requise.",
+                "CONSO1": "Utilisez la",
+                "CONSO2": "Consolidation",
+                "CONSO3": "pour grouper plusieurs demandes."
+            },
+            "NEW_PROCESS": "Nouveautés du processus :",
+            "MAINTENANCE": {
+                "TITLE": "Gestion de Flotte & Maintenance",
+                "TIP_TITLE": "Notifications :",
+                "TIP_DESC": "Email automatique au superviseur si maintenance imminente.",
+                "BULLET1_1": "Suivi Hebdo :",
+                "BULLET1_2": "Checklists chauffeurs.",
+                "BULLET2_1": "Configuration :",
+                "BULLET2_2": "Définissez vos intervalles."
+            },
+            "GENERATORS": {
+                "TITLE": "Maintenance des Générateurs",
+                "DESC": "Gestion et suivi des générateurs de l'organisation.",
+                "BULLET1_1": "Logbook :",
+                "BULLET1_2": "Carnet d'entretien et pannes.",
+                "BULLET2_1": "Plan de Maintenance :",
+                "BULLET2_2": "Suivi des heures de fonctionnement (Run Hours)."
+            },
+            "REPORTS": {
+                "TITLE": "Rapports & Analytics",
+                "DESC": "Exportez vos rapports mensuels en un clic."
+            }
+        },
+        "MOBILE": {
+            "TITLE": "E-Logbook Mobile (PWA)",
+            "OFFLINE_TITLE": "Mode Hors-Ligne :",
+            "OFFLINE_DESC": "L'application fonctionne ENTIÈREMENT sans connexion.",
+            "PUSH": {
+                "TITLE": "Notifications Web Push",
+                "DESC": "Pour la sécurité et la réactivité :",
+                "BULLET1_1": "App Fermée :",
+                "BULLET1_2": "Vous recevez les alertes en arrière-plan.",
+                "BULLET2_1": "Activation :",
+                "BULLET2_2": "Autorisez les notifications dans l'Inbox."
+            },
+            "DAILY": {
+                "TITLE": "Utilisation Quotidienne",
+                "BULLET1_1": "Sélection Véhicule :",
+                "BULLET1_2": "Choisissez votre véhicule au démarrage.",
+                "BULLET2_1": "GPS Automatique :",
+                "BULLET2_2": "Enregistrement de la position.",
+                "BULLET3_1": "Mode Libre :",
+                "BULLET3_2": "Trajets Ad-Hoc sans demande préalable."
+            },
+            "INCIDENTS": {
+                "TITLE": "Services & Incidents",
+                "BULLET1_1": "Maintenance :",
+                "BULLET1_2": "Cochez les tâches réalisées.",
+                "BULLET2_1": "Incidents :",
+                "BULLET2_2": "Déclarez accidents avec photos."
+            }
+        },
+        "FAQ": {
+            "TITLE": "FAQ et Dépannage",
+            "Q1": "Q : Le manuel PDF ne s'ouvre pas à la bonne page ?",
+            "A1": "R : Vérifiez la configuration du Template.",
+            "SUPPORT": "Support Technique :",
+            "SUPPORT_NO_EMAIL": "Veuillez contacter votre administrateur système local pour toute assistance."
+        },
+        "FOOTER": "Tous droits réservés"
+    },
+    "PROFILE": {
+        "USER_PROFILE": "Profil Utilisateur",
+        "PERSONAL_INFO": "Informations Personnelles",
+        "PASSWORD": "Mot de passe",
+        "CHANGE_PASSWORD": "Changer le mot de passe",
+        "CHANGE_PASSWORD_DESC": "Sécurisez votre compte en changeant de mot de passe",
+        "OLD_PASSWORD": "Ancien mot de passe",
+        "NEW_PASSWORD": "Nouveau mot de passe",
+        "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+        "DETAILS_DESC": "Détails de votre profil utilisateur",
+        "CHANGE_PHOTO": "Changer la photo",
+        "MAX_SIZE": "Taille max: 2MB.",
+        "FULL_NAME": "Nom Complet"
+    },
+    "COUNTRIES": {
+        "MANAGE": "Gestion des Pays",
+        "NEW": "NOUVEAU PAYS",
+        "COLUMNS": "Colonnes affichées",
+        "NAME": "Nom",
+        "CODE": "Code"
     }
 }

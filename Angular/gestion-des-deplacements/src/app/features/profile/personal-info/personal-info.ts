@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -6,7 +7,8 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-personal-info',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    TranslateModule,CommonModule, ReactiveFormsModule],
   templateUrl: './personal-info.html',
   styleUrls: ['./personal-info.scss']
 })

@@ -33,8 +33,8 @@
       </div>
       
       <div class="hero-welcome-card">
-        <h2>Bienvenue sur {{ brandSettings?.appName }}, {{ userName }} !</h2>
-        <p>Ceci est votre <strong>tableau de bord</strong> personnel. Vous y trouverez toutes les données importantes en un clin d'œil.</p>
+        <h2>{{ 'DASHBOARD.WELCOME' | translate : {appName: brandSettings?.appName, userName: userName} }}</h2>
+        <p [innerHTML]="'DASHBOARD.WELCOME_DESC' | translate"></p>
       </div>
     </div>
   </div>
@@ -44,19 +44,19 @@
       <div class="icon-circle">
         <mat-icon>list</mat-icon>
       </div>
-      <h2>Actions Rapides</h2>
+      <h2>{{ 'DASHBOARD.QUICK_ACTIONS' | translate }}</h2>
     </div>
 
     <mat-card class="full-width-card">
       <mat-card-content class="actions-row">
         <button mat-flat-button color="primary" routerLink="/demande-mouvement" class="action-btn">
-          <mat-icon>add_circle</mat-icon> Nouveau Mouvement
+          <mat-icon>add_circle</mat-icon> {{ 'DASHBOARD.NEW_MOVEMENT' | translate }}
         </button>
         <button mat-stroked-button color="primary" routerLink="/planning" class="action-btn">
-          <mat-icon>calendar_month</mat-icon> Mon Planning
+          <mat-icon>calendar_month</mat-icon> {{ 'DASHBOARD.MY_PLANNING' | translate }}
         </button>
         <button mat-stroked-button color="primary" routerLink="/map" class="action-btn">
-          <mat-icon>map</mat-icon> Carte Interactive
+          <mat-icon>map</mat-icon> {{ 'DASHBOARD.INTERACTIVE_MAP' | translate }}
         </button>
       </mat-card-content>
     </mat-card>
@@ -66,7 +66,7 @@
       <div class="icon-circle" style="background-color: #fee2e2; color: #dc2626;">
         <mat-icon>pending_actions</mat-icon>
       </div>
-      <h2>Demandes en attente de validation</h2>
+      <h2>{{ 'DASHBOARD.PENDING_VALIDATIONS' | translate }}</h2>
     </div>
 
     <mat-card class="full-width-card" *ngIf="userProfile !== 'Chauffeur' && userProfile !== 'Technicien' && userProfile !== 'Guest'">
@@ -77,18 +77,18 @@
         
         <div *ngIf="!loadingValidations && pendingValidations.length === 0" style="text-align: center; padding: 20px; color: #64748b;">
           <mat-icon style="font-size: 40px; height: 40px; width: 40px; color: #cbd5e1; margin-bottom: 10px;">done_all</mat-icon>
-          <p>Aucune demande en attente de votre validation.</p>
+          <p>{{ 'DASHBOARD.NO_PENDING_VALIDATIONS' | translate }}</p>
         </div>
 
         <div *ngIf="!loadingValidations && pendingValidations.length > 0" class="validations-list">
           <div *ngFor="let m of pendingValidations" class="validation-item" routerLink="/valider-mouvements">
             <div class="val-header">
-              <span class="val-objectif">{{ m.objectif || 'Mouvement sans objectif' }}</span>
+              <span class="val-objectif">{{ m.objectif || ('DASHBOARD.NO_OBJECTIVE' | translate) }}</span>
               <span class="val-date">{{ m.dateDepart | date:'short' }}</span>
             </div>
             <div class="val-body">
-              <span><strong>Demandeur:</strong> {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }}</span>
-              <span style="display: flex; align-items: center; gap: 5px;"><strong>Type de validation:</strong> 
+              <span><strong>{{ 'DASHBOARD.REQUESTER' | translate }}:</strong> {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }}</span>
+              <span style="display: flex; align-items: center; gap: 5px;"><strong>{{ 'DASHBOARD.VALIDATION_TYPE' | translate }}:</strong> 
                 <span *ngFor="let type of m.validationTypes" 
                       style="display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; font-weight: 500;"
                       [ngStyle]="{

@@ -1,90 +1,85 @@
 <div class="user-guide-container">
     <div class="guide-header">
-        <h1>📖 Guide Utilisateur FleetTrack</h1>
-        <p class="version">Version 2.14 - Février 2026</p>
+        <h1>📖 {{ 'USER_GUIDE.TITLE' | translate }}</h1>
+        <p class="version">{{ 'USER_GUIDE.VERSION' | translate }}</p>
     </div>
 
     <div class="guide-content">
         <!-- Table des matières -->
         <nav class="toc">
-            <h2>Table des Matières</h2>
+            <h2>{{ 'USER_GUIDE.TOC.TITLE' | translate }}</h2>
             <ul>
-                <li><a href="#introduction">Introduction</a></li>
-                <li><a href="#acces">Accès aux Applications</a></li>
-                <li><a href="#web">Interface Web</a></li>
-                <li><a href="#mobile">E-Logbook Mobile (PWA)</a></li>
-                <li><a href="#faq">FAQ et Dépannage</a></li>
+                <li><a href="#introduction">{{ 'USER_GUIDE.TOC.INTRO' | translate }}</a></li>
+                <li><a href="#acces">{{ 'USER_GUIDE.TOC.ACCESS' | translate }}</a></li>
+                <li><a href="#web">{{ 'USER_GUIDE.TOC.WEB' | translate }}</a></li>
+                <li><a href="#mobile">{{ 'USER_GUIDE.TOC.MOBILE' | translate }}</a></li>
+                <li><a href="#faq">{{ 'USER_GUIDE.TOC.FAQ' | translate }}</a></li>
             </ul>
         </nav>
 
         <!-- Introduction -->
         <section id="introduction">
-            <h2>1. Introduction</h2>
-            <p>FleetTrack est la solution de gestion de flotte optimisée pour votre organisation. Elle repose sur une
-                <strong>architecture multi-pays stricte</strong> :
-            </p>
+            <h2>1. {{ 'USER_GUIDE.INTRO.TITLE' | translate }}</h2>
+            <p>{{ 'USER_GUIDE.INTRO.P1_1' | translate }} <strong>{{ 'USER_GUIDE.INTRO.P1_2' | translate }}</strong> :</p>
             <ul>
-                <li><strong>Cloisonnement des données :</strong> Un utilisateur affecté à un pays (ex: Mali) ne peut
-                    voir QUE les données de ce pays.</li>
-                <li><strong>Exception SuperAdmin :</strong> Seul le rôle "SuperAdmin" possède une vue globale et peut
-                    naviguer entre tous les pays.</li>
+                <li><strong>{{ 'USER_GUIDE.INTRO.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.INTRO.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.INTRO.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.INTRO.BULLET2_2' | translate }}</li>
             </ul>
 
             <div class="note">
-                <strong>Important :</strong> L'application est divisée en deux interfaces connectées :
+                <strong>{{ 'USER_GUIDE.INTRO.NOTE_TITLE' | translate }}</strong> {{ 'USER_GUIDE.INTRO.NOTE_DESC' | translate }}
                 <ul>
-                    <li><strong>Interface Web (Admin) :</strong> Gestion, Planification, Validation par le bureau.</li>
-                    <li><strong>E-Logbook (Chauffeur) :</strong> Application Mobile (PWA) pour le terrain.</li>
+                    <li><strong>{{ 'USER_GUIDE.INTRO.NOTE_BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.INTRO.NOTE_BULLET1_2' | translate }}</li>
+                    <li><strong>{{ 'USER_GUIDE.INTRO.NOTE_BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.INTRO.NOTE_BULLET2_2' | translate }}</li>
                 </ul>
             </div>
 
-            <h3>Rôles Utilisateurs</h3>
+            <h3>{{ 'USER_GUIDE.ROLES.TITLE' | translate }}</h3>
             <table class="roles-table">
                 <thead>
                     <tr>
-                        <th>Rôle</th>
-                        <th>Accès</th>
-                        <th>Portée (Scope)</th>
-                        <th>Responsabilités</th>
+                        <th>{{ 'USER_GUIDE.ROLES.COL1' | translate }}</th>
+                        <th>{{ 'USER_GUIDE.ROLES.COL2' | translate }}</th>
+                        <th>{{ 'USER_GUIDE.ROLES.COL3' | translate }}</th>
+                        <th>{{ 'USER_GUIDE.ROLES.COL4' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>SuperAdmin</strong></td>
-                        <td>Web (Complet)</td>
-                        <td>🌍 Monde (Tous Pays)</td>
-                        <td>Configuration système, création des pays/bases, audit global, gestion des admins pays.</td>
+                        <td><strong>{{ 'USER_GUIDE.ROLES.ROW1_1' | translate }}</strong></td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW1_2' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW1_3' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW1_4' | translate }}</td>
                     </tr>
                     <tr>
-                        <td><strong>Admin (Pays)</strong></td>
-                        <td>Web (Pays)</td>
-                        <td>🏳️ Pays (Mission)</td>
-                        <td>Gestion de TOUTES les bases de sa mission. Création des utilisateurs, paramétrage local.
-                        </td>
+                        <td><strong>{{ 'USER_GUIDE.ROLES.ROW2_1' | translate }}</strong></td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW2_2' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW2_3' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW2_4' | translate }}</td>
                     </tr>
                     <tr>
-                        <td><strong>Superviseur (Base)</strong></td>
-                        <td>Web (Base)</td>
-                        <td>📍 Base Locale</td>
-                        <td>Validation hiérarchique des mouvements, suivi maintenance flotte locale.</td>
+                        <td><strong>{{ 'USER_GUIDE.ROLES.ROW3_1' | translate }}</strong></td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW3_2' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW3_3' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW3_4' | translate }}</td>
                     </tr>
                     <tr>
-                        <td><strong>Superviseur Sécurité</strong></td>
-                        <td>Web (Base/Pays)</td>
-                        <td>🛡️ Transverse</td>
-                        <td>Validation sécuritaire des mouvements, envoi des alertes push de sécurité.</td>
+                        <td><strong>{{ 'USER_GUIDE.ROLES.ROW4_1' | translate }}</strong></td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW4_2' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW4_3' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW4_4' | translate }}</td>
                     </tr>
                     <tr>
-                        <td><strong>Technicien (Demandeur)</strong></td>
-                        <td>Web (Restreint)</td>
-                        <td>👤 Personnel</td>
-                        <td>Création de demandes de mouvements pour soi ou son équipe.</td>
+                        <td><strong>{{ 'USER_GUIDE.ROLES.ROW5_1' | translate }}</strong></td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW5_2' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW5_3' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW5_4' | translate }}</td>
                     </tr>
                     <tr>
-                        <td><strong>Chauffeur</strong></td>
-                        <td>Mobile PWA</td>
-                        <td>🚙 Véhicule</td>
-                        <td>Tenue du carnet de bord, pleins carburant, checklist maintenance.</td>
+                        <td><strong>{{ 'USER_GUIDE.ROLES.ROW6_1' | translate }}</strong></td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW6_2' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW6_3' | translate }}</td>
+                        <td>{{ 'USER_GUIDE.ROLES.ROW6_4' | translate }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -92,147 +87,146 @@
 
         <!-- Accès -->
         <section id="acces">
-            <h2>2. Accès aux Applications</h2>
+            <h2>2. {{ 'USER_GUIDE.ACCESS.TITLE' | translate }}</h2>
 
             <div class="app-card">
-                <h3>🌐 Interface Web</h3>
-                <p><strong>URL :</strong> <a href="https://fleettrack-web.vercel.app"
-                        target="_blank">https://fleettrack-web.vercel.app</a></p>
-                <p><strong>Navigateurs compatibles :</strong> Chrome (recommandé), Firefox, Edge, Safari</p>
+                <h3>🌐 {{ 'USER_GUIDE.ACCESS.WEB_TITLE' | translate }}</h3>
+                <p><strong>{{ 'USER_GUIDE.ACCESS.URL' | translate }} :</strong> <a href="https://fleettrack-web.vercel.app" target="_blank">https://fleettrack-web.vercel.app</a></p>
+                <p><strong>{{ 'USER_GUIDE.ACCESS.BROWSERS' | translate }} :</strong> {{ 'USER_GUIDE.ACCESS.BROWSERS_DESC' | translate }}</p>
             </div>
 
             <div class="app-card">
-                <h3>📱 E-Logbook Mobile (PWA)</h3>
-                <p><strong>URL :</strong> <a href="https://fleettrack-mobile.vercel.app"
-                        target="_blank">https://fleettrack-mobile.vercel.app</a></p>
-                <p>Ouvrez l'URL sur votre téléphone et choisissez <strong>"Ajouter à l'écran d'accueil"</strong> pour
-                    l'utiliser comme une application native.</p>
+                <h3>📱 {{ 'USER_GUIDE.ACCESS.MOBILE_TITLE' | translate }}</h3>
+                <p><strong>{{ 'USER_GUIDE.ACCESS.URL' | translate }} :</strong> <a href="https://fleettrack-mobile.vercel.app" target="_blank">https://fleettrack-mobile.vercel.app</a></p>
+                <p>{{ 'USER_GUIDE.ACCESS.MOBILE_DESC_1' | translate }} <strong>{{ 'USER_GUIDE.ACCESS.MOBILE_DESC_2' | translate }}</strong> {{ 'USER_GUIDE.ACCESS.MOBILE_DESC_3' | translate }}</p>
             </div>
         </section>
 
         <!-- Interface Web -->
         <section id="web">
-            <h2>3. Interface Web</h2>
+            <h2>3. {{ 'USER_GUIDE.WEB.TITLE' | translate }}</h2>
 
-            <h3>3.1 Planning Global</h3>
-            <p>Le cœur operationnel. Visualisez tous les mouvements de la semaine d'un coup d'œil.</p>
+            <h3>3.1 {{ 'USER_GUIDE.WEB.PLANNING.TITLE' | translate }}</h3>
+            <p>{{ 'USER_GUIDE.WEB.PLANNING.DESC' | translate }}</p>
             <div class="features">
-                <h4>Nouveautés :</h4>
+                <h4>{{ 'USER_GUIDE.WEB.NEW_FEATURES' | translate }}</h4>
                 <ul>
-                    <li>✅ <strong>Drag & Drop :</strong> Assignez un véhicule en glissant la demande sur la ressource.
-                    </li>
-                    <li>✅ <strong>Mode "Inbox" Alertes :</strong> Les notifications non lues apparaissent en priorité.
-                    </li>
+                    <li>✅ <strong>{{ 'USER_GUIDE.WEB.PLANNING.FEAT1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.PLANNING.FEAT1_2' | translate }}</li>
+                    <li>✅ <strong>{{ 'USER_GUIDE.WEB.PLANNING.FEAT2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.PLANNING.FEAT2_2' | translate }}</li>
                 </ul>
             </div>
 
-            <h3>3.2 Vision & Sécurité (Roadmap)</h3>
-            <p><em>(Nouveau Menu)</em></p>
-            <p>Une transparence totale sur l'évolution de l'outil et sa sécurité.</p>
+            <h3>3.2 {{ 'USER_GUIDE.WEB.DRIVER_PLANNING.TITLE' | translate }}</h3>
+            <p><em>({{ 'USER_GUIDE.WEB.NEW_FEATURE_TAG' | translate }})</em></p>
+            <p>{{ 'USER_GUIDE.WEB.DRIVER_PLANNING.DESC' | translate }}</p>
             <ul>
-                <li><strong>Roadmap :</strong> Consultez les prochaines fonctionnalités prévues.</li>
-                <li><strong>Changelog :</strong> Historique complet des mises à jour.</li>
-                <li><strong>Sécurité :</strong> Détails techniques sur la protection des données (RGPD, Chiffrement,
-                    Audit).</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.DRIVER_PLANNING.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.DRIVER_PLANNING.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.DRIVER_PLANNING.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.DRIVER_PLANNING.BULLET2_2' | translate }}</li>
             </ul>
 
-            <h3>3.3 Objectifs Environnementaux</h3>
-            <p>Suivez l'empreinte carbone de la flotte.</p>
+            <h3>3.3 {{ 'USER_GUIDE.WEB.ROADMAP.TITLE' | translate }}</h3>
+            <p><em>({{ 'USER_GUIDE.WEB.NEW_MENU_TAG' | translate }})</em></p>
+            <p>{{ 'USER_GUIDE.WEB.ROADMAP.DESC' | translate }}</p>
             <ul>
-                <li><strong>IAP (Indicateur d'Activité Pondéré) :</strong> Mesure l'efficacité réelle des déplacements.
-                </li>
-                <li><strong>Plan d'Action :</strong> Suivi des objectifs de réduction CO2 (-5% / an).</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.ROADMAP.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.ROADMAP.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.ROADMAP.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.ROADMAP.BULLET2_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.ROADMAP.BULLET3_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.ROADMAP.BULLET3_2' | translate }}</li>
             </ul>
 
-            <h3>3.4 Alertes de Sécurité</h3>
-            <p>Permet d'envoyer des notifications urgentes à toute la flotte (via Web Push).</p>
+            <h3>3.4 {{ 'USER_GUIDE.WEB.ECO.TITLE' | translate }}</h3>
+            <p>{{ 'USER_GUIDE.WEB.ECO.DESC' | translate }}</p>
             <ul>
-                <li>Ciblez un véhicule précis ou "TOUTE LA FLOTTE".</li>
-                <li>Le chauffeur reçoit l'alerte même si son téléphone est verrouillé (App fermée).</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.ECO.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.ECO.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.ECO.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.ECO.BULLET2_2' | translate }}</li>
             </ul>
 
-            <h3>3.5 Validation & Consolidation</h3>
-            <p>Le workflow de validation à double niveau :</p>
+            <h3>3.5 {{ 'USER_GUIDE.WEB.ALERTS.TITLE' | translate }}</h3>
+            <p>{{ 'USER_GUIDE.WEB.ALERTS.DESC' | translate }}</p>
+            <ul>
+                <li>{{ 'USER_GUIDE.WEB.ALERTS.BULLET1' | translate }}</li>
+                <li>{{ 'USER_GUIDE.WEB.ALERTS.BULLET2' | translate }}</li>
+            </ul>
+
+            <h3>3.6 {{ 'USER_GUIDE.WEB.VALIDATION.TITLE' | translate }}</h3>
+            <p>{{ 'USER_GUIDE.WEB.VALIDATION.DESC' | translate }}</p>
             <ol>
-                <li><strong>Logistique :</strong> Vérifie la disponibilité véhicule.</li>
-                <li><strong>Sécurité :</strong> Valide la faisabilité du trajet (Zones à risques).</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.VALIDATION.STEP1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.VALIDATION.STEP1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.VALIDATION.STEP2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.VALIDATION.STEP2_2' | translate }}</li>
             </ol>
             <div class="features">
-                <h4>Nouveautés du processus :</h4>
+                <h4>{{ 'USER_GUIDE.WEB.NEW_PROCESS' | translate }}</h4>
                 <ul>
-                    <li>✅ <strong>Validation Parallèle :</strong> Les logisticiens et les responsables sécurité sont notifiés en même temps et peuvent valider de manière indépendante. Le mouvement est entièrement validé lorsque les deux branches sont approuvées.</li>
-                    <li>✅ <strong>Validation Sécurité en Cascade :</strong> Une option dans la Matrice de Sécurité permet d'inclure les validateurs des niveaux inférieurs pour une demande de haut niveau (ex: si niveau 5 requis, les niveaux 1 à 4 devront également valider par consensus). Le Super Admin, quant à lui, peut visualiser l'ensemble des demandes en attente depuis son tableau de bord.</li>
+                    <li>✅ <strong>{{ 'USER_GUIDE.WEB.VALIDATION.NEW1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.VALIDATION.NEW1_2' | translate }}</li>
+                    <li>✅ <strong>{{ 'USER_GUIDE.WEB.VALIDATION.NEW2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.VALIDATION.NEW2_2' | translate }}</li>
                 </ul>
             </div>
-            <p>Utilisez la <strong>Consolidation</strong> pour grouper plusieurs demandes dans un même véhicule
-                (Covoiturage).</p>
+            <p>{{ 'USER_GUIDE.WEB.VALIDATION.CONSO1' | translate }} <strong>{{ 'USER_GUIDE.WEB.VALIDATION.CONSO2' | translate }}</strong> {{ 'USER_GUIDE.WEB.VALIDATION.CONSO3' | translate }}</p>
 
-            <h3>3.6 Gestion de Flotte & Maintenance</h3>
+            <h3>3.7 {{ 'USER_GUIDE.WEB.MAINTENANCE.TITLE' | translate }}</h3>
             <div class="tip">
-                <strong>Notifications Maintenance :</strong>
-                FleetTrack surveille automatiquement les kilométrages.
-                Un email est envoyé au Superviseur (08h00) si un véhicule approche de son échéance de maintenance.
+                <strong>{{ 'USER_GUIDE.WEB.MAINTENANCE.TIP_TITLE' | translate }}</strong>
+                {{ 'USER_GUIDE.WEB.MAINTENANCE.TIP_DESC' | translate }}
             </div>
             <ul>
-                <li><strong>Suivi Hebdo :</strong> État des checklists chauffeurs.</li>
-                <li><strong>Configuration :</strong> Définissez vos propres intervalles (ex: Vidange LC tous les
-                    5000km).</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.MAINTENANCE.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.MAINTENANCE.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.MAINTENANCE.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.MAINTENANCE.BULLET2_2' | translate }}</li>
             </ul>
 
-            <h3>3.7 Rapports & Analytics</h3>
-            <p>Exportez vos rapports mensuels en un clic (Format standard Logbook).</p>
+            <h3>3.8 {{ 'USER_GUIDE.WEB.GENERATORS.TITLE' | translate }}</h3>
+            <p><em>({{ 'USER_GUIDE.WEB.NEW_FEATURE_TAG' | translate }})</em></p>
+            <p>{{ 'USER_GUIDE.WEB.GENERATORS.DESC' | translate }}</p>
+            <ul>
+                <li><strong>{{ 'USER_GUIDE.WEB.GENERATORS.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.GENERATORS.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.WEB.GENERATORS.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.WEB.GENERATORS.BULLET2_2' | translate }}</li>
+            </ul>
+
+            <h3>3.9 {{ 'USER_GUIDE.WEB.REPORTS.TITLE' | translate }}</h3>
+            <p>{{ 'USER_GUIDE.WEB.REPORTS.DESC' | translate }}</p>
         </section>
 
         <!-- E-Logbook Mobile -->
         <section id="mobile">
-            <h2>4. E-Logbook Mobile (PWA)</h2>
+            <h2>4. {{ 'USER_GUIDE.MOBILE.TITLE' | translate }}</h2>
             <div class="note">
-                <strong>Mode Hors-Ligne (Offline First) :</strong>
-                L'application fonctionne ENTIÈREMENT sans connexion internet.
-                Les données sont stockées dans le téléphone et synchronisées automatiquement dès que le réseau revient
-                (Icône 🔄 verte).
+                <strong>{{ 'USER_GUIDE.MOBILE.OFFLINE_TITLE' | translate }}</strong>
+                {{ 'USER_GUIDE.MOBILE.OFFLINE_DESC' | translate }}
             </div>
 
-            <h3>4.1 Notifications Web Push (NOUVEAU)</h3>
-            <p>Pour la sécurité et la réactivité :</p>
+            <h3>4.1 {{ 'USER_GUIDE.MOBILE.PUSH.TITLE' | translate }}</h3>
+            <p>{{ 'USER_GUIDE.MOBILE.PUSH.DESC' | translate }}</p>
             <ul>
-                <li><strong>App Fermée :</strong> Vous recevez les alertes de sécurité et les notifications de mission
-                    même si l'application est fermée.</li>
-                <li><strong>Activation :</strong> Cliquez sur le bouton "Activer Notifications" dans votre Inbox pour
-                    autoriser le mobile.</li>
+                <li><strong>{{ 'USER_GUIDE.MOBILE.PUSH.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.MOBILE.PUSH.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.MOBILE.PUSH.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.MOBILE.PUSH.BULLET2_2' | translate }}</li>
             </ul>
 
-            <h3>4.2 Utilisation Quotidienne</h3>
+            <h3>4.2 {{ 'USER_GUIDE.MOBILE.DAILY.TITLE' | translate }}</h3>
             <ul>
-                <li><strong>Sélection Véhicule :</strong> Choisissez votre véhicule au démarrage.</li>
-                <li><strong>GPS Automatique :</strong> Le départ de trajet enregistre votre position GPS précise.</li>
-                <li><strong>Mode Libre :</strong> Possibilité de démarrer un trajet imprévu ("Ad-Hoc") sans demande
-                    préalable.</li>
+                <li><strong>{{ 'USER_GUIDE.MOBILE.DAILY.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.MOBILE.DAILY.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.MOBILE.DAILY.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.MOBILE.DAILY.BULLET2_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.MOBILE.DAILY.BULLET3_1' | translate }}</strong> {{ 'USER_GUIDE.MOBILE.DAILY.BULLET3_2' | translate }}</li>
             </ul>
 
-            <h3>4.3 Services & Incidents</h3>
+            <h3>4.3 {{ 'USER_GUIDE.MOBILE.INCIDENTS.TITLE' | translate }}</h3>
             <ul>
-                <li><strong>Maintenance :</strong> Cochez les tâches réalisées (avec accès au Manuel Atelier PDF
-                    intégré).</li>
-                <li><strong>Incidents :</strong> Déclarez accidents ou pannes avec photos à l'appui.</li>
+                <li><strong>{{ 'USER_GUIDE.MOBILE.INCIDENTS.BULLET1_1' | translate }}</strong> {{ 'USER_GUIDE.MOBILE.INCIDENTS.BULLET1_2' | translate }}</li>
+                <li><strong>{{ 'USER_GUIDE.MOBILE.INCIDENTS.BULLET2_1' | translate }}</strong> {{ 'USER_GUIDE.MOBILE.INCIDENTS.BULLET2_2' | translate }}</li>
             </ul>
         </section>
 
         <!-- FAQ -->
         <section id="faq">
-            <h2>5. FAQ et Dépannage</h2>
+            <h2>5. {{ 'USER_GUIDE.FAQ.TITLE' | translate }}</h2>
             <div class="faq-item">
-                <h4>Q : Le manuel PDF ne s'ouvre pas à la bonne page ?</h4>
-                <p>R : Vérifiez la configuration du Template sur l'interface Web (N° Page manuel).</p>
+                <h4>{{ 'USER_GUIDE.FAQ.Q1' | translate }}</h4>
+                <p>{{ 'USER_GUIDE.FAQ.A1' | translate }}</p>
             </div>
             <div class="support-card">
-                <p><strong>Support Technique :</strong> <a
-                        href="mailto:kitlog@actioncontrelafaim.org">kitlog&#64;actioncontrelafaim.org</a></p>
+                <p><strong>{{ 'USER_GUIDE.FAQ.SUPPORT' | translate }}</strong> {{ 'USER_GUIDE.FAQ.SUPPORT_NO_EMAIL' | translate }}</p>
             </div>
         </section>
     </div>
 
     <footer class="guide-footer">
-        <p>© 2026 FleetTrack - Tous droits réservés</p>
+        <p>© 2026 FleetTrack - {{ 'USER_GUIDE.FOOTER' | translate }}</p>
     </footer>
 </div>

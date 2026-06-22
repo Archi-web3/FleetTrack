@@ -13,7 +13,7 @@
 <div class="table-container">
   <div class="table-header-container">
     <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px;">
-      <mat-label>Colonnes affichées</mat-label>
+      <mat-label>{{ 'COUNTRIES.COLUMNS' | translate }}</mat-label>
       <mat-select multiple [(ngModel)]="displayedColumns">
         <mat-option *ngFor="let col of allColumns" [value]="col.def">{{ col.label }}</mat-option>
       </mat-select>
@@ -100,7 +100,7 @@
       <button class="custom-modal-btn-cancel" (click)="closePaysModal()">
         <mat-icon>close</mat-icon> Annuler
       </button>
-      <button class="custom-modal-btn-submit" type="submit" attr.form="paysForm" [disabled]="!paysForm.form.valid">
+      <button class="custom-modal-btn-submit" type="submit" form="paysForm" [disabled]="!paysForm.form.valid">
         <mat-icon>check</mat-icon> {{ selectedPays ? 'Mettre à jour' : 'Ajouter' }}
       </button>
     </div>

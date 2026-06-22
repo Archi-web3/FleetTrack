@@ -338,5 +338,39 @@
     },
     "WAIVER_PAGE": {
         "BACK_MENU": "Retour au Menu"
+    },
+    "MOBILE": {
+        "INCIDENT_TYPES": {
+            "BREAKDOWN": "Panne",
+            "ACCIDENT": "Accident",
+            "DELAY": "Retard",
+            "PUNCTURE": "Crevaison",
+            "OTHER": "Autre"
+        },
+        "SEVERITY": {
+            "LOW": "Faible",
+            "MEDIUM": "Moyenne",
+            "HIGH": "Élevée"
+        },
+        "LOGIN": {
+            "IMPORTANT": "Important",
+            "CONNECT": "Connectez-vous avec Internet et",
+            "DONT_LOGOUT": "ne vous déconnectez pas",
+            "OFFLINE_MODE": "pour le mode hors-ligne."
+        },
+        "FUEL": {
+            "DIESEL": "Diesel",
+            "PETROL": "Essence",
+            "ELECTRIC": "Électrique",
+            "STATION": "Station Service",
+            "INTERNAL_STOCK": "Stock Interne"
+        },
+        "VEHICLE": {
+            "IDENTIFICATION": "Identification",
+            "PLATE": "Immatriculation",
+            "BRAND": "Marque",
+            "MODEL": "Modèle",
+            "FLEET_CODE": "Code Flotte"
+        }
     }
 }

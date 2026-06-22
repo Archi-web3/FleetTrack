@@ -338,5 +338,39 @@
     },
     "WAIVER_PAGE": {
         "BACK_MENU": "Back to Menu"
+    },
+    "MOBILE": {
+        "INCIDENT_TYPES": {
+            "BREAKDOWN": "Breakdown",
+            "ACCIDENT": "Accident",
+            "DELAY": "Delay",
+            "PUNCTURE": "Puncture",
+            "OTHER": "Other"
+        },
+        "SEVERITY": {
+            "LOW": "Low",
+            "MEDIUM": "Medium",
+            "HIGH": "High"
+        },
+        "LOGIN": {
+            "IMPORTANT": "Important",
+            "CONNECT": "Log in with Internet connection and",
+            "DONT_LOGOUT": "do not log out",
+            "OFFLINE_MODE": "for offline mode."
+        },
+        "FUEL": {
+            "DIESEL": "Diesel",
+            "PETROL": "Petrol",
+            "ELECTRIC": "Electric",
+            "STATION": "Gas Station",
+            "INTERNAL_STOCK": "Internal Stock"
+        },
+        "VEHICLE": {
+            "IDENTIFICATION": "Identification",
+            "PLATE": "License Plate",
+            "BRAND": "Brand",
+            "MODEL": "Model",
+            "FLEET_CODE": "Fleet Code"
+        }
     }
 }
