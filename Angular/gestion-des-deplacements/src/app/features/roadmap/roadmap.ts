@@ -111,7 +111,7 @@ export class RoadmapComponent {
             type: 'minor',
             changes: [
                 { category: 'Inventaire Véhicule', description: 'Module complet : Gestion des équipements de bord (Checklist standard 22 points) avec possibilité d\'Ajouter, Modifier et Supprimer des items personnalisés.' },
-                { category: 'Planning', description: 'Maintenance : Affichage clair des événements (Clé 🔧 + Code ACF) et prise en charge de la récurrence hebdomadaire pour les contrôles.' },
+                { category: 'Planning', description: 'Maintenance : Affichage clair des événements (Clé 🔧 + Code Interne) et prise en charge de la récurrence hebdomadaire pour les contrôles.' },
                 { category: 'UX / UI', description: 'Fiches Véhicules : Refonte des formulaires Création/Modification avec intégration directe de l\'inventaire dynamique.' },
                 { category: 'Expérience Utilisateur', description: 'Mes Mouvements : Refonte complète de la liste en grille de cartes (Grid) pour les trajets actifs et affichage compact en liste pour l\'historique.' }
             ]
@@ -132,7 +132,7 @@ export class RoadmapComponent {
                 { category: 'Dashboard', description: 'Nouveaux Indicateurs : Trajets Courts (Potentiel Piéton), Kilomètres Mutualisés et Taux d\'Utilisation.' },
                 { category: 'Dashboard', description: 'KPI Financier : Intégration du Volume Financier dans le calcul IAP pour le renouvellement.' },
                 { category: 'Planning', description: 'Nouveau Dashboard : Remplacement de la carte par un tableau de bord analytique dédié.' },
-                { category: 'Visualisation', description: 'Carte Interactive : Filtre rapide "Cette Semaine" et affichage des Codes ACF.' }
+                { category: 'Visualisation', description: 'Carte Interactive : Filtre rapide "Cette Semaine" et affichage des Codes Internes.' }
             ]
         },
         {
@@ -199,7 +199,7 @@ export class RoadmapComponent {
             changes: [
                 { category: 'Tour de Contrôle', description: 'Dashboard : Filtres avancés par date et sélection multiple interactive sur la carte.' },
                 { category: 'Tour de Contrôle', description: 'Validation : Gestion des trajets "Hors-Liste" (Imprévus) avec indicateurs visuels et validation Manager.' },
-                { category: 'Visualisation', description: 'Carte : Affichage du code véhicule (ACF) dans les infobulles.' },
+                { category: 'Visualisation', description: 'Carte : Affichage du code véhicule (Interne) dans les infobulles.' },
                 { category: 'e-logbook', description: 'Mode Libre : Possibilité de démarrer un trajet sans mission planifiée (avec GPS complet).' },
                 { category: 'Backend', description: 'Flagging automatique des trajets ad-hoc et intégration dans le flux de consolidation.' }
             ]

@@ -24,7 +24,7 @@
                 </div>
                 <div class="form-row">
                     <mat-form-field appearance="fill">
-                        <mat-label>Code ACF</mat-label>
+                        <mat-label>Code Flotte</mat-label>
                         <input matInput formControlName="acfCode">
                     </mat-form-field>
                     <mat-form-field appearance="fill">
@@ -39,7 +39,7 @@
                     <mat-form-field appearance="fill">
                         <mat-label>Propriétaire</mat-label>
                         <mat-select formControlName="owner">
-                            <mat-option value="ACF">ACF</mat-option>
+                            <mat-option value="Interne">Interne</mat-option>
                             <mat-option value="Location">Location</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -144,7 +144,7 @@
 
                 <!-- Section: Coûts (Conditionnel) -->
                 <h3>Coûts & Valeur</h3>
-                <div class="form-row" *ngIf="vehicleForm.get('owner')?.value === 'ACF'">
+                <div class="form-row" *ngIf="vehicleForm.get('owner')?.value === 'Interne'">
                     <mat-form-field appearance="fill">
                         <mat-label>Valeur Achat</mat-label>
                         <input matInput type="number" formControlName="purchaseValue">

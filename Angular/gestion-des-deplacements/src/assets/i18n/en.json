@@ -218,52 +218,60 @@
         "NEW_REQUEST": "New Request",
         "INTERACTIVE_MAP": "Interactive Map",
         "VALIDATION": "Validation",
-        "SECURITY_ALERTS": "Security Alerts (Push)",
-        "VALIDATE_TRIPS": "Validate Movements",
+        "SECURITY_ALERTS": "Security Alerts",
+        "VALIDATE_TRIPS": "Validate Trips",
         "CONSOLIDATION": "Consolidation",
         "ADMINISTRATION": "Administration",
         "USER_MANAGEMENT": "User Management",
         "COUNTRIES_BASES": "Countries & Bases",
         "PROJECT_MANAGEMENT": "Project Management",
         "AUDIT_LOGS": "Audit Logs",
-        "WAIVERS": "Visitor Waivers",
+        "WAIVERS": "Waivers",
         "USER_GUIDE": "User Guide",
-        "SECURITY_MATRIX": "Security Matrix",
-        "VISION_SECURITY": "Vision & Security",
-        "ENV_OBJECTIVES": "Environmental Objectives",
+        "VISION_SECURITY": "Security Vision",
+        "ENV_OBJECTIVES": "Env. Objectives",
         "DRIVER_MANAGEMENT": "Driver Management",
         "STATISTICS": "Statistics",
         "LOCATION_MANAGEMENT": "Location Management",
         "VEHICLE_MANAGEMENT": "Vehicle Management",
-        "FLEET_RECAP": "Fleet Overview",
+        "FLEET_RECAP": "Fleet Recap",
         "MAINTENANCE_TRACKING": "Maintenance Tracking",
         "GENERAL_SETTINGS": "General Settings",
         "MONTHLY_REPORTS": "Monthly Reports",
+        "LOGBOOK": "e-Logbook",
         "DASHBOARD": {
-            "TITLE": "Movements Analysis",
-            "KPI": {
-                "TOTAL": "Total Movements",
-                "VALIDATED": "Validated (Upcoming)",
-                "IN_PROGRESS": "In Progress",
-                "PENDING": "Pending"
-            },
+            "TITLE": "Dashboard",
             "FILTERS": {
+                "ALL": "All",
                 "SEARCH": "Search",
-                "SEARCH_PLACEHOLDER": "Objective, Requester...",
-                "STATUS": "Status",
-                "ALL": "All"
+                "SEARCH_PLACEHOLDER": "Search...",
+                "STATUS": "Status"
+            },
+            "KPI": {
+                "IN_PROGRESS": "In Progress",
+                "PENDING": "Pending",
+                "TOTAL": "Total",
+                "VALIDATED": "Validated"
             },
             "TABLE": {
-                "STATUS": "Status",
-                "OBJECTIVE": "Objective",
-                "DEPARTURE": "Planned Departure",
-                "VEHICLE": "Vehicle",
+                "DEPARTURE": "Departure",
                 "DRIVER": "Driver",
+                "NOT_ASSIGNED": "Not Assigned",
+                "OBJECTIVE": "Objective",
                 "REQUESTER": "Requester",
-                "NOT_ASSIGNED": "Not assigned"
+                "STATUS": "Status",
+                "VEHICLE": "Vehicle"
             }
         },
-        "LOGBOOK": "Logbook"
+        "GROUPS": {
+            "ADMIN": "Administration",
+            "DASHBOARD": "Dashboards",
+            "FLEET": "Fleet Management",
+            "MY_SPACE": "My Space",
+            "OPERATIONS": "Operations",
+            "SECURITY": "Security"
+        },
+        "SECURITY_MATRIX": "Security Matrix"
     },
     "LOGBOOK": {
         "DASHBOARD": {
@@ -347,7 +355,8 @@
         },
         "TABS": {
             "TRACKING": "Mileage Tracking & Deadlines",
-            "PLANNING": "Planned Interventions"
+            "PLANNING": "Planned Interventions",
+            "PREDICTIVE": "Predictive Maintenance"
         },
         "FILTERS": {
             "BASE": "Base",
@@ -445,7 +454,8 @@
             "COUNTRY": "Country",
             "BASE": "Assigned Base",
             "PROJECT": "Project/Program",
-            "PROJECT_HINT": "Select project code"
+            "PROJECT_HINT": "Select project code",
+            "AUTO_MANAGE_SECURITY": "Automatically manage security parameters based on locations"
         },
         "DRIVER_INFO": {
             "TITLE": "Driver Information",
@@ -478,55 +488,67 @@
         "TITLE": "Vehicle Management",
         "CREATE_TITLE": "Create New Vehicle",
         "EDIT_TITLE": "Edit Vehicle",
+        "LIST": {
+            "TITLE": "Existing Vehicles",
+            "NO_DATA": "No vehicles found."
+        },
+        "ACTIONS": {
+            "CREATE": "Create",
+            "EDIT": "Edit",
+            "ARCHIVE": "Archive",
+            "UNARCHIVE": "Unarchive",
+            "DELETE": "Delete",
+            "SHOW_MY_BASE": "Show My Base",
+            "SHOW_ALL_COUNTRY": "Show All Country",
+            "UPDATE": "Update"
+        },
         "FORM": {
             "BRAND": "Brand",
             "MODEL": "Model",
-            "PLATE": "License Plate",
-            "ACF_CODE": "ACF Vehicle Number",
-            "ACF_CODE_HINT": "Auto-generated (MOB-XXX)",
+            "PLATE": "Plate",
+            "ACF_CODE": "Fleet Code",
+            "ACF_CODE_HINT": "Automatically generated",
             "OWNERSHIP": "Ownership",
-            "RENTAL_NAME": "Rental Company",
+            "RENTAL_NAME": "Lessor Name",
             "RENTAL_START": "Rental Start",
             "RENTAL_END": "Rental End",
             "PURCHASE_DATE": "Purchase Date",
             "TYPE": "Type",
-            "CAPACITY": "Passenger Capacity",
+            "CAPACITY": "Capacity",
             "INITIAL_KM": "Initial Mileage",
-            "STATUS": "Status",
-            "GPS": "Enable GPS Tracking"
+            "GPS": "GPS Tracking",
+            "STATUS": "Status"
         },
         "ENV": {
             "TITLE": "Environmental Data",
-            "CO2": "CO2 Emissions (g/km)",
-            "SOURCE": "Data Source",
-            "CONSTRUCTOR": "Manufacturer",
-            "MANUAL": "Manual Test",
-            "CONSUMPTION": "Consumption (L/100km)",
+            "CO2": "CO2 Emissions",
+            "SOURCE": "Source",
+            "CONSUMPTION": "Consumption",
+            "CONSTRUCTOR": "Constructor",
+            "MANUAL": "Manual",
             "TEST_DATE": "Test Date"
         },
         "INSURANCE": {
             "TITLE": "Insurance",
             "INSURER": "Insurer",
-            "END_DATE": "Insurance End Date",
-            "CERTIFICATE": "Certificate Link"
+            "END_DATE": "End Date",
+            "CERTIFICATE": "Certificate"
         },
         "EQUIPMENT": {
-            "TITLE": "Inventory & Onboard Equipment",
-            "NAME": "Equipment (Editable)",
+            "TITLE": "Equipment",
+            "NAME": "Name",
             "PRESENT": "Present",
             "LAST_CHECK": "Last Check"
         },
-        "ACTIONS": {
-            "CREATE": "Create Vehicle",
-            "UPDATE": "Update",
-            "ARCHIVE": "Archive",
-            "UNARCHIVE": "Unarchive",
-            "SHOW_ALL_COUNTRY": "Show All Country",
-            "SHOW_MY_BASE": "Show My Base Only"
-        },
-        "LIST": {
-            "TITLE": "Existing Vehicles",
-            "NO_DATA": "No vehicles registered."
+        "STATUS": {
+            "En Service": "In Service",
+            "Archivé": "Archived",
+            "Maintenance": "Maintenance",
+            "Panne": "Breakdown",
+            "Hors Service": "Out of Service",
+            "Inactif": "Inactive",
+            "Restitué": "Returned",
+            "Vendu": "Sold"
         }
     },
     "ADMIN_DASHBOARD": {
@@ -705,7 +727,7 @@
         "MONTHLY_REPORT_BTN": "Monthly Report",
         "ADD_VEHICLE_BTN": "Add Vehicle",
         "HEADERS": {
-            "ACF_CODE": "ACF Code",
+            "ACF_CODE": "Fleet Code",
             "BASE": "Base",
             "OWNER": "Owner",
             "CATEGORY": "Category",
@@ -739,7 +761,7 @@
         },
         "HEADERS": {
             "MONTH": "Month",
-            "ACF_CODE": "ACF Code",
+            "ACF_CODE": "Fleet Code",
             "BASE": "Base",
             "OWNER": "Owner",
             "CATEGORY": "Category",
@@ -931,101 +953,8 @@
             "DRIVER_OBSERVATIONS": "💬 Driver Observations"
         }
     },
-    "MENU": {
-        "MY_TRIPS": "My Movements",
-        "GLOBAL_PLANNING": "Global Planning",
-        "NEW_REQUEST": "New Request",
-        "INTERACTIVE_MAP": "Interactive Map",
-        "VALIDATION": "Validation",
-        "SECURITY_ALERTS": "Security Alerts",
-        "VALIDATE_TRIPS": "Validate Trips",
-        "CONSOLIDATION": "Consolidation",
-        "ADMINISTRATION": "Administration",
-        "USER_MANAGEMENT": "User Management",
-        "COUNTRIES_BASES": "Countries & Bases",
-        "PROJECT_MANAGEMENT": "Project Management",
-        "AUDIT_LOGS": "Audit Logs",
-        "WAIVERS": "Waivers",
-        "USER_GUIDE": "User Guide",
-        "VISION_SECURITY": "Security Vision",
-        "ENV_OBJECTIVES": "Env. Objectives",
-        "DRIVER_MANAGEMENT": "Driver Management",
-        "STATISTICS": "Statistics",
-        "LOCATION_MANAGEMENT": "Location Management",
-        "VEHICLE_MANAGEMENT": "Vehicle Management",
-        "FLEET_RECAP": "Fleet Recap",
-        "MAINTENANCE_TRACKING": "Maintenance Tracking",
-        "GENERAL_SETTINGS": "General Settings",
-        "MONTHLY_REPORTS": "Monthly Reports",
-        "LOGBOOK": "e-Logbook",
-        "DASHBOARD": {
-            "TITLE": "Dashboard"
-        }
-    },
     "NEW_REQUEST_EXTRA": {
         "START": "Start",
         "END": "End"
-    },
-    "VEHICLES": {
-        "TITLE": "Vehicle Management",
-        "CREATE_TITLE": "Create New Vehicle",
-        "EDIT_TITLE": "Edit Vehicle",
-        "LIST": {
-            "TITLE": "Existing Vehicles",
-            "NO_DATA": "No vehicles found."
-        },
-        "ACTIONS": {
-            "CREATE": "Create",
-            "EDIT": "Edit",
-            "ARCHIVE": "Archive",
-            "UNARCHIVE": "Unarchive",
-            "DELETE": "Delete",
-            "SHOW_MY_BASE": "Show My Base",
-            "SHOW_ALL_COUNTRY": "Show All Country"
-        },
-        "FORM": {
-            "BRAND": "Brand",
-            "MODEL": "Model",
-            "PLATE": "Plate",
-            "ACF_CODE": "ACF Code",
-            "ACF_CODE_HINT": "Automatically generated",
-            "OWNERSHIP": "Ownership",
-            "RENTAL_NAME": "Lessor Name",
-            "RENTAL_START": "Rental Start",
-            "RENTAL_END": "Rental End",
-            "PURCHASE_DATE": "Purchase Date",
-            "TYPE": "Type",
-            "CAPACITY": "Capacity",
-            "INITIAL_KM": "Initial Mileage",
-            "GPS": "GPS Tracking",
-            "STATUS": "Status"
-        },
-        "ENV": {
-            "TITLE": "Environmental Data",
-            "CO2": "CO2 Emissions",
-            "SOURCE": "Source",
-            "CONSUMPTION": "Consumption",
-            "CONSTRUCTOR": "Constructor",
-            "MANUAL": "Manual",
-            "TEST_DATE": "Test Date"
-        },
-        "INSURANCE": {
-            "TITLE": "Insurance",
-            "INSURER": "Insurer",
-            "END_DATE": "End Date",
-            "CERTIFICATE": "Certificate"
-        },
-        "EQUIPMENT": {
-            "TITLE": "Equipment",
-            "NAME": "Name",
-            "PRESENT": "Present",
-            "LAST_CHECK": "Last Check"
-        },
-        "STATUS": {
-            "En Service": "In Service",
-            "Archivé": "Archived",
-            "Maintenance": "Maintenance",
-            "Panne": "Breakdown"
-        }
     }
 }

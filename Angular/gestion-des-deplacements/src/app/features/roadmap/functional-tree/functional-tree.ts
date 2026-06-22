@@ -167,7 +167,7 @@ export class FunctionalTreeComponent implements OnInit {
                         description: "Authentification locale (Email/Mot de passe crypté Bcrypt). Gestion fine des droits via le champ 'Profil' (RBAC) : SuperAdmin, Admin, Superviseur, Technicien, Guest, incluant un profil 'Superviseur Sécurité' spécifique."
                     },
                     {
-                        id: 'f1-3', name: 'Gestion de la structure ACF : BP, bases...', type: 'function', isImplemented: true, isExclusive: true, lot: 1,
+                        id: 'f1-3', name: 'Gestion de la structure Organisation : BP, bases...', type: 'function', isImplemented: true, isExclusive: true, lot: 1,
                         description: "Modélisation complète : Collections 'Pays', 'Base', 'Lieux', 'Nom de projet'. Le système permet de créer des admins pays et gérer les affectations globales (Bases, Lieux, Utilisateurs, Véhicules)."
                     },
                     {

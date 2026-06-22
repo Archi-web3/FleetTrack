@@ -492,7 +492,7 @@
             "BRAND": "Marque",
             "MODEL": "Modèle",
             "PLATE": "Immatriculation",
-            "ACF_CODE": "Numéro de véhicule ACF",
+            "ACF_CODE": "Numéro de véhicule",
             "ACF_CODE_HINT": "Généré automatiquement (MOB-XXX)",
             "OWNERSHIP": "Propriété",
             "RENTAL_NAME": "Nom du Loueur",
@@ -542,7 +542,9 @@
             "Vendu": "Vendu",
             "Archivé": "Archivé",
             "Restitué": "Restitué",
-            "Inactif": "Inactif"
+            "Inactif": "Inactif",
+            "Maintenance": "Maintenance",
+            "Panne": "En Panne"
         },
         "LIST": {
             "TITLE": "Véhicules existants",
@@ -725,7 +727,7 @@
         "MONTHLY_REPORT_BTN": "Rapport Mensuel",
         "ADD_VEHICLE_BTN": "Ajouter Véhicule",
         "HEADERS": {
-            "ACF_CODE": "Code ACF",
+            "ACF_CODE": "Code Flotte",
             "BASE": "Base",
             "OWNER": "Propriétaire",
             "CATEGORY": "Catégorie",
@@ -759,7 +761,7 @@
         },
         "HEADERS": {
             "MONTH": "Mois",
-            "ACF_CODE": "Code ACF",
+            "ACF_CODE": "Code Flotte",
             "BASE": "Base",
             "OWNER": "Propriétaire",
             "CATEGORY": "Catégorie",
@@ -950,5 +952,9 @@
             "DEVIATIONS": "⚠️ Écarts signalés",
             "DRIVER_OBSERVATIONS": "💬 Observations Chauffeur"
         }
+    },
+    "NEW_REQUEST_EXTRA": {
+        "END": "Fin",
+        "START": "Début"
     }
 }

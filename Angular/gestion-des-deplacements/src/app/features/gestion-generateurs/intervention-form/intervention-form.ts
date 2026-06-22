@@ -60,7 +60,7 @@ export class InterventionFormComponent implements OnInit {
 
   frequences = [250, 500, 1000, 3000];
 
-  // Définition de la checklist complète ACF basée sur les heures
+  // Définition de la checklist complète basée sur les heures
   tasks250 = [
     { id: 'nettoyerMoteur', label: 'Nettoyer le moteur (poussière/huile/échappement)' },
     { id: 'ajusterCosses', label: 'Ajuster les cosses batterie et fixation batterie' },

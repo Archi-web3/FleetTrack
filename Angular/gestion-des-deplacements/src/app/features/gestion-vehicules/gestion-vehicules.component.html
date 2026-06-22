@@ -41,7 +41,7 @@
         </ng-container>
 
         <ng-container matColumnDef="acfCode">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Code ACF </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Code Flotte </th>
           <td mat-cell *matCellDef="let element"> {{element.acfCode || '-'}} </td>
         </ng-container>
 
@@ -181,7 +181,7 @@
         </div>
       </div>
 
-      <div *ngIf="newVehicule.typePropriete === 'ACF'"
+      <div *ngIf="newVehicule.typePropriete === 'Interne'"
         style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
         <label>{{ 'VEHICLES.FORM.PURCHASE_DATE' | translate }}:</label>
         <input type="date" name="newDateAchat" [(ngModel)]="newVehicule.achatDetails.dateAchat" class="form-control"
@@ -417,7 +417,7 @@
           [(ngModel)]="selectedVehicule.immatriculation" required style="width: 100%; padding: 8px;">
       </div>
       <div style="margin-bottom: 10px;">
-        <label for="editVehiculeAcfCode">Numéro de véhicule ACF:</label>
+        <label for="editVehiculeAcfCode">Code Interne / Flotte:</label>
         <input type="text" id="editVehiculeAcfCode" name="editVehiculeAcfCode" [(ngModel)]="selectedVehicule.acfCode"
           style="width: 100%; padding: 8px; background-color: #e9ecef;" readonly disabled>
       </div>
@@ -477,7 +477,7 @@
         </div>
       </div>
 
-      <div *ngIf="selectedVehicule.typePropriete === 'ACF'"
+      <div *ngIf="selectedVehicule.typePropriete === 'Interne'"
         style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
         <label>Date d'achat:</label>
         <input type="date" name="editDateAchat" [ngModel]="selectedVehicule.achatDetails.dateAchat | date:'yyyy-MM-dd'"

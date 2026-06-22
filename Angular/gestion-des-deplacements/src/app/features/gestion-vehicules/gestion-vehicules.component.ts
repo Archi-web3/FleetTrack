@@ -39,7 +39,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
     modele: '',
     immatriculation: '',
     acfCode: '',
-    typePropriete: 'ACF',
+    typePropriete: 'Interne',
     locationDetails: { nomLoueur: '', dateDebut: null, dateFin: null },
     achatDetails: { dateAchat: null, valeurAchat: null },
     type: 'Voiture',
@@ -63,7 +63,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   };
   selectedVehicule: any = null;
   vehicleTypes: string[] = [];
-  ownershipTypes: string[] = ['ACF', 'Location'];
+  ownershipTypes: string[] = ['Interne', 'Location'];
   chauffeurs: any[] = [];
   statuses: string[] = ['En Service', 'Hors Service', 'Vendu', 'Archivé', 'Restitué'];
   userProfile: string | null = null;
@@ -79,7 +79,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   allColumns = [
     { def: 'immatriculation', label: 'Immatriculation' },
     { def: 'marque', label: 'Marque/Modèle' },
-    { def: 'acfCode', label: 'Code ACF' },
+    { def: 'acfCode', label: 'Code Flotte' },
     { def: 'typePropriete', label: 'Propriété' },
     { def: 'statut', label: 'Statut' },
     { def: 'actions', label: 'Actions' }
@@ -135,18 +135,18 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
 
   // LISTE STANDARD DES ÉQUIPEMENTS (Numéro / Nom)
   readonly STANDARD_EQUIPMENTS = [
-    { code: 1, name: 'Manuel d’instructions véhicule et manuel chauffeur ACF' },
+    { code: 1, name: 'Manuel d’instructions véhicule et manuel chauffeur interne' },
     { code: 2, name: 'Carnet d’entretien (Logbook)' },
     { code: 3, name: 'Carnet de bord (Tripbook)' },
     { code: 4, name: 'Carnet de carburant (Fuelbook)' },
     { code: 5, name: 'Document enregistrement véhicule' },
     { code: 6, name: 'Contrat d’assurance' },
-    { code: 7, name: 'Liste de contacts ACF' },
+    { code: 7, name: 'Liste de contacts de l\'organisation' },
     { code: 8, name: 'Boite d’outils standard' },
     { code: 9, name: 'Équipement de tractage (corde, crochet…)' },
     { code: 10, name: 'Kit standard de premier secours' },
     { code: 11, name: 'Extincteur' },
-    { code: 12, name: 'Drapeau et visibilité ACF' },
+    { code: 12, name: 'Drapeau et visibilité organisation' },
     { code: 13, name: 'Torche / batteries' },
     { code: 14, name: 'Boite médicale d’urgence' },
     { code: 15, name: 'Triangle d’urgence' },
@@ -187,7 +187,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
       this.selectedVehicule = null;
       // Reset form
       this.newVehicule = {
-        marque: '', modele: '', immatriculation: '', acfCode: '', typePropriete: 'ACF',
+        marque: '', modele: '', immatriculation: '', acfCode: '', typePropriete: 'Interne',
         locationDetails: { nomLoueur: '', dateDebut: null, dateFin: null },
         achatDetails: { dateAchat: null, valeurAchat: null },
         type: 'Voiture', capacitePassagers: 1, kilometrageInitial: 0,
@@ -270,7 +270,7 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
           modele: '',
           immatriculation: '',
           acfCode: '',
-          typePropriete: 'ACF',
+          typePropriete: 'Interne',
           locationDetails: { nomLoueur: '', dateDebut: null, dateFin: null },
           achatDetails: { dateAchat: null, valeurAchat: null },
           type: 'Voiture',
@@ -304,8 +304,8 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
     this.selectedVehicule = { ...vehicule };
     // Initialiser les champs manquants (migration ou anciennes données)
     if (!this.selectedVehicule.typePropriete) {
-      // Fallback: si 'owner' existe (ancien champ), l'utiliser, sinon 'ACF'
-      this.selectedVehicule.typePropriete = this.selectedVehicule.owner || 'ACF';
+      // Fallback: si 'owner' existe (ancien champ), l'utiliser, sinon 'Interne'
+      this.selectedVehicule.typePropriete = this.selectedVehicule.owner || 'Interne';
     }
     if (!this.selectedVehicule.locationDetails) {
       this.selectedVehicule.locationDetails = { nomLoueur: '', dateDebut: null, dateFin: null };

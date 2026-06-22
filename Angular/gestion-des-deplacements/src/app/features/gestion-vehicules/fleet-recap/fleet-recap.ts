@@ -20,7 +20,7 @@ export interface Vehicle {
     // New Fields
     acfCode?: string;
     base?: string;
-    owner?: 'ACF' | 'Location';
+    owner?: 'Interne' | 'Location';
     category?: 'Voiture' | 'Camion' | 'Moto';
     year?: number;
     startDate?: Date;

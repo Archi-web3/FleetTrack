@@ -57,7 +57,7 @@ export class VehicleFormComponent implements OnInit {
             base: [''],
 
             // Classification
-            owner: ['ACF', Validators.required],
+            owner: ['Interne', Validators.required],
             category: ['Voiture', Validators.required],
             type: [''],
             fuelType: ['Diesel', Validators.required],
@@ -79,7 +79,7 @@ export class VehicleFormComponent implements OnInit {
                 dateTest: [null]
             }),
 
-            // Costs (ACF)
+            // Costs (Interne)
             purchaseValue: [null],
             depreciationMonths: [null],
             insuranceCost: [null],

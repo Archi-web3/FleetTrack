@@ -60,7 +60,7 @@ export class WaiverListComponent implements OnInit {
                     </head>
                     <body>
                         <div class="header">
-                            <h1>ACF - Décharge de Responsabilité</h1>
+                            <h1>Décharge de Responsabilité</h1>
                             <p>Visiteur: <strong>${waiver.visitorName}</strong></p>
                         </div>
                         <div class="content">
@@ -68,13 +68,13 @@ export class WaiverListComponent implements OnInit {
                             <p><strong>Véhicule :</strong> ${waiver.vehicleId?.immatriculation} (${waiver.vehicleId?.marque})</p>
                             <hr>
                             <p>
-                                Je soussigné(e), reconnais monter à bord d'un véhicule d'Action Contre la Faim (ACF) de mon plein gré.
-                                J'atteste avoir pris connaissance des risques inhérents à ce déplacement et dégage ACF de toute
+                                Je soussigné(e), reconnais monter à bord d'un véhicule de l'organisation de mon plein gré.
+                                J'atteste avoir pris connaissance des risques inhérents à ce déplacement et dégage l'organisation de toute
                                 responsabilité en cas de vol, perte d'effets personnels, accident ou incident survenant durant le trajet, sauf en cas de
-                                faute lourde avérée d'ACF.
+                                faute lourde avérée de l'organisation.
                             </p>
                             <p>
-                                Je m'engage à respecter les consignes de sécurité données par le chauffeur et le personnel d'ACF.
+                                Je m'engage à respecter les consignes de sécurité données par le chauffeur et le personnel de l'organisation.
                                 Je certifie ne transporter aucune substance illicite ou dangereuse.
                             </p>
                         </div>
