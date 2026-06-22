@@ -18,7 +18,7 @@
                 <div mat-card-avatar class="icon-avatar">
                     <mat-icon>euro</mat-icon>
                 </div>
-                <mat-card-title>Coût Total</mat-card-title>
+                <mat-card-title>{{ 'SMART_COST.TOTAL_COST' | translate }}</mat-card-title>
                 <mat-card-subtitle>30 derniers jours</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
@@ -52,7 +52,7 @@
                     style="position: absolute; right: 16px; top: 16px; color: #888;">
                     <mat-icon>settings</mat-icon>
                 </button>
-                <mat-card-title>Prévision (IA)</mat-card-title>
+                <mat-card-title>{{ 'SMART_COST.FORECAST_AI' | translate }}</mat-card-title>
                 <mat-card-subtitle>
                     <button mat-button [color]="forecastMonths === 1 ? 'primary' : ''"
                         (click)="loadForecast(1)">1M</button>
@@ -83,7 +83,7 @@
         <!-- 3. RELIABILITY RANKING -->
         <mat-card class="kpi-card reliability-card">
             <mat-card-header>
-                <mat-card-title>Fiabilité par Modèle</mat-card-title>
+                <mat-card-title>{{ 'SMART_COST.RELIABILITY' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
                 <div class="ranking-list">

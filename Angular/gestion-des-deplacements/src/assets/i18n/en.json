@@ -97,7 +97,8 @@
             "PENDING": "Pending",
             "CANCELLED": "Cancelled/Refused"
         },
-        "NO_EVENTS": "No validated or in-progress movements for this week."
+        "NO_EVENTS": "No validated or in-progress movements for this week.",
+        "SHOW_PENDING": "Show Pending"
     },
     "MAP": {
         "FILTERS": "Filters",
@@ -118,7 +119,8 @@
         "FILTERED_TRIPS": "filtered trips",
         "SELECT_ALL": "Select All",
         "DISPLAYED": "displayed",
-        "REQUESTER": "Requester"
+        "REQUESTER": "Requester",
+        "UNKNOWN_VEHICLE": "Unknown Vehicle"
     },
     "VALIDATION": {
         "TITLE": "Movement Validation",
@@ -452,7 +454,20 @@
                 "HISTORY": "History"
             },
             "NO_VEHICLES": "No vehicles found."
-        }
+        },
+        "TRACKING_INFO": "This tab allows you to visualize the health status of each vehicle in your fleet relative to its maintenance obligations. It compares current mileage with configured services (A, B, C...) to determine the exact gap. Vehicles requiring immediate attention appear with a Critical or Overdue status.",
+        "HOW_IT_WORKS_KM": "How Mileage Tracking Works",
+        "STATUS": {
+            "UP_TO_DATE": "Up to date",
+            "CLOSE": "Close",
+            "OVERDUE": "Overdue",
+            "CRITICAL": "Critical"
+        },
+        "HOW_IT_WORKS_PLANNED": "How Planned Maintenance Works",
+        "HOW_IT_WORKS_SMART": "How Smart Cost & Analytics Works",
+        "HOW_IT_WORKS_PREDICTIVE": "How Predictions Work",
+        "GLOBAL_TRACKING": "Global Tracking",
+        "WEEKLY_TRACKING": "Weekly Tracking"
     },
     "USERS": {
         "TITLE": "User Management",
@@ -500,7 +515,16 @@
         "TITLE": "Driver Management",
         "EDIT_TITLE": "Edit Driver",
         "LIST_TITLE": "Driver List",
-        "NO_DATA": "No drivers registered."
+        "NO_DATA": "No drivers registered.",
+        "DISPLAYED_COLUMNS": "Displayed Columns",
+        "COLUMNS_HINT": "Name, Email, Country, Base, Vehic...",
+        "COL_NAME": "NAME",
+        "COL_EMAIL": "EMAIL / TEL",
+        "COL_COUNTRY": "COUNTRY",
+        "COL_BASE": "BASE",
+        "COL_VEHICLE": "ASSIGNED VEHICLE",
+        "COL_ACTIONS": "ACTIONS",
+        "SEARCH": "Search..."
     },
     "VEHICLES": {
         "TITLE": "Vehicle Management",
@@ -1198,5 +1222,49 @@
         "COLUMNS": "Displayed Columns",
         "NAME": "Name",
         "CODE": "Code"
+    },
+    "DASHBOARD": {
+        "WELCOME": "Welcome to",
+        "WELCOME_DESC": "This is your personal <strong>dashboard</strong>. Here you will find all important data at a glance.",
+        "QUICK_ACTIONS": "Quick Actions",
+        "NEW_MOVEMENT": "New Movement",
+        "MY_PLANNING": "My Planning",
+        "INTERACTIVE_MAP": "Interactive Map",
+        "PENDING_VALIDATIONS": "Pending Validation Requests",
+        "NO_PENDING_VALIDATIONS": "No requests pending your validation.",
+        "NO_OBJECTIVE": "Movement without objective",
+        "REQUESTER": "Requester",
+        "VALIDATION_TYPE": "Validation Type"
+    },
+    "MOVEMENT": {
+        "SELECT_DEPARTURE": "Select a departure location...",
+        "SELECT_ARRIVAL": "Select an arrival location...",
+        "RECURRENCE": "Recurrence (Up to 3 months)"
+    },
+    "STATUS": {
+        "PENDING_SECURITY": "Pending Security",
+        "ALL_STATUSES": "All Statuses",
+        "IN_PROGRESS": "In Progress",
+        "VALIDATED_PENDING": "Validated (Pending)",
+        "COMPLETED": "Completed"
+    },
+    "FILTERS": {
+        "TYPE_TO_FILTER": "Type to filter...",
+        "ALL_VEHICLES": "All Vehicles",
+        "SEARCH_HINT": "Search objective, driver, location..."
+    },
+    "SMART_COST": {
+        "TITLE": "Smart Cost & Analytics",
+        "TOTAL_COST": "Total Cost",
+        "FORECAST_AI": "Forecast (AI)",
+        "RELIABILITY": "Reliability by Model"
+    },
+    "PAGINATOR": {
+        "ITEMS_PER_PAGE": "Items per page:",
+        "NEXT_PAGE": "Next page",
+        "PREVIOUS_PAGE": "Previous page",
+        "FIRST_PAGE": "First page",
+        "LAST_PAGE": "Last page",
+        "OF": "of"
     }
 }

@@ -7,6 +7,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { countryInterceptor } from './core/interceptors/country.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { CustomPaginatorIntl } from './core/services/custom-paginator-intl';
 
 // Imports spécifiques pour angular-calendar
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -62,5 +64,6 @@ export const appConfig: ApplicationConfig = {
       provide: CalendarDateFormatter,
       useClass: CustomDateFormatter
     },
+    { provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }
   ]
 };

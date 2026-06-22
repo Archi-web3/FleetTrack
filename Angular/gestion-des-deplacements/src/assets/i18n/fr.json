@@ -97,7 +97,8 @@
             "PENDING": "En attente",
             "CANCELLED": "Annulé/Refusé"
         },
-        "NO_EVENTS": "Aucun mouvement validé ou en cours pour cette semaine."
+        "NO_EVENTS": "Aucun mouvement validé ou en cours pour cette semaine.",
+        "SHOW_PENDING": "Afficher En Attente"
     },
     "MAP": {
         "FILTERS": "Filtres",
@@ -115,10 +116,11 @@
         "END": "Fin",
         "THIS_WEEK": "Cette semaine",
         "CLEAR": "Effacer",
-        "FILTERED_TRIPS": "trajets filtrés",
+        "FILTERED_TRIPS": "voyages filtrés",
         "SELECT_ALL": "Tout sélectionner",
         "DISPLAYED": "affichés",
-        "REQUESTER": "Demandeur"
+        "REQUESTER": "Demandeur",
+        "UNKNOWN_VEHICLE": "Véhicule Inconnu"
     },
     "VALIDATION": {
         "TITLE": "Validation des Mouvements",
@@ -452,7 +454,20 @@
                 "HISTORY": "Historique"
             },
             "NO_VEHICLES": "Aucun véhicule trouvé."
-        }
+        },
+        "TRACKING_INFO": "Cet onglet vous permet de visualiser l'état de santé de chaque véhicule de votre flotte par rapport à ses obligations de maintenance. Il compare le kilométrage actuel avec les services configurés (A, B, C...) pour déterminer l'écart exact. Les véhicules nécessitant une attention immédiate apparaissent avec un statut Critique ou En retard.",
+        "HOW_IT_WORKS_KM": "Fonctionnement du Suivi Kilométrique",
+        "STATUS": {
+            "UP_TO_DATE": "À jour",
+            "CLOSE": "Proche",
+            "OVERDUE": "En retard",
+            "CRITICAL": "Critique"
+        },
+        "HOW_IT_WORKS_PLANNED": "Fonctionnement des Maintenances Planifiées",
+        "HOW_IT_WORKS_SMART": "Fonctionnement du Smart Cost & Analytics",
+        "HOW_IT_WORKS_PREDICTIVE": "Fonctionnement des Prédictions",
+        "GLOBAL_TRACKING": "Suivi Global",
+        "WEEKLY_TRACKING": "Suivi Hebdo"
     },
     "USERS": {
         "TITLE": "Gestion des Utilisateurs",
@@ -500,7 +515,16 @@
         "TITLE": "Gestion des Chauffeurs",
         "EDIT_TITLE": "Modifier chauffeur",
         "LIST_TITLE": "Liste des Chauffeurs",
-        "NO_DATA": "Aucun chauffeur enregistré."
+        "NO_DATA": "Aucun chauffeur enregistré.",
+        "DISPLAYED_COLUMNS": "Colonnes affichées",
+        "COLUMNS_HINT": "Nom, Email, Pays, Base, Véhic...",
+        "COL_NAME": "NOM",
+        "COL_EMAIL": "EMAIL / TÉL",
+        "COL_COUNTRY": "PAYS",
+        "COL_BASE": "BASE",
+        "COL_VEHICLE": "VÉHICULE ATTITRÉ",
+        "COL_ACTIONS": "ACTIONS",
+        "SEARCH": "Rechercher..."
     },
     "VEHICLES": {
         "TITLE": "Gestion des Véhicules",
@@ -1198,5 +1222,49 @@
         "COLUMNS": "Colonnes affichées",
         "NAME": "Nom",
         "CODE": "Code"
+    },
+    "DASHBOARD": {
+        "WELCOME": "Bienvenue sur",
+        "WELCOME_DESC": "Ceci est votre <strong>tableau de bord</strong> personnel. Vous y trouverez toutes les données importantes en un clin d'œil.",
+        "QUICK_ACTIONS": "Actions Rapides",
+        "NEW_MOVEMENT": "Nouveau Mouvement",
+        "MY_PLANNING": "Mon Planning",
+        "INTERACTIVE_MAP": "Carte Interactive",
+        "PENDING_VALIDATIONS": "Demandes en attente de validation",
+        "NO_PENDING_VALIDATIONS": "Aucune demande en attente de votre validation.",
+        "NO_OBJECTIVE": "Mouvement sans objectif",
+        "REQUESTER": "Demandeur",
+        "VALIDATION_TYPE": "Type de validation"
+    },
+    "MOVEMENT": {
+        "SELECT_DEPARTURE": "Sélectionnez un lieu de départ...",
+        "SELECT_ARRIVAL": "Sélectionnez un lieu d'arrivée...",
+        "RECURRENCE": "Récurrence (Jusqu'à 3 mois)"
+    },
+    "STATUS": {
+        "PENDING_SECURITY": "En Attente Sécurité",
+        "ALL_STATUSES": "Tous les statuts",
+        "IN_PROGRESS": "En cours",
+        "VALIDATED_PENDING": "Validé (En attente)",
+        "COMPLETED": "Terminé"
+    },
+    "FILTERS": {
+        "TYPE_TO_FILTER": "Tapez pour filtrer...",
+        "ALL_VEHICLES": "Tous les véhicules",
+        "SEARCH_HINT": "Rechercher objectif, chauffeur, lieu..."
+    },
+    "SMART_COST": {
+        "TITLE": "Smart Cost & Analytics",
+        "TOTAL_COST": "Coût Total",
+        "FORECAST_AI": "Prévision (IA)",
+        "RELIABILITY": "Fiabilité par Modèle"
+    },
+    "PAGINATOR": {
+        "ITEMS_PER_PAGE": "Éléments par page :",
+        "NEXT_PAGE": "Page suivante",
+        "PREVIOUS_PAGE": "Page précédente",
+        "FIRST_PAGE": "Première page",
+        "LAST_PAGE": "Dernière page",
+        "OF": "sur"
     }
 }

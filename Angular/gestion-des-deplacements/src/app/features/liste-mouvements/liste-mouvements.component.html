@@ -23,14 +23,14 @@
   <div style="display: flex; gap: 16px; margin-bottom: 20px; align-items: baseline; flex-wrap: wrap; background: white; padding: 16px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
     <mat-form-field appearance="outline" style="flex: 1; min-width: 250px; margin-bottom: -1.25em;">
       <mat-label>Rechercher (objectif, chauffeur, lieu...)</mat-label>
-      <input matInput [(ngModel)]="searchQuery" (keyup)="applyFilter()" placeholder="Tapez pour filtrer...">
+      <input matInput [(ngModel)]="searchQuery" (keyup)="applyFilter()" [placeholder]="'FILTERS.TYPE_TO_FILTER' | translate">
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
     <mat-form-field appearance="outline" style="min-width: 250px; margin-bottom: -1.25em;">
       <mat-label>Filtrer par véhicule</mat-label>
       <mat-select [(ngModel)]="selectedVehicleId" (selectionChange)="applyFilter()">
-        <mat-option value="">Tous les véhicules</mat-option>
+        <mat-option value="">{{ 'FILTERS.ALL_VEHICLES' | translate }}</mat-option>
         <mat-option *ngFor="let veh of uniqueVehicles" [value]="veh._id">
           {{ veh.immatriculation }} - {{ veh.marque }} {{ veh.modele }}
         </mat-option>

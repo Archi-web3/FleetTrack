@@ -11,7 +11,7 @@
 <div class="table-container">
   <div class="table-header-container">
     <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px;">
-      <mat-label>Colonnes affichées</mat-label>
+      <mat-label>{{ 'DRIVERS.DISPLAYED_COLUMNS' | translate }}</mat-label>
       <mat-select multiple [(ngModel)]="displayedColumns">
         <mat-option *ngFor="let col of allColumns" [value]="col.def">{{ col.label }}</mat-option>
       </mat-select>
@@ -19,7 +19,7 @@
 
     <div class="custom-search-input">
       <mat-icon>search</mat-icon>
-      <input type="text" (keyup)="applyFilter($event)" placeholder="Rechercher...">
+      <input type="text" (keyup)="applyFilter($event)" [placeholder]="'DRIVERS.SEARCH' | translate">
     </div>
   </div>
 

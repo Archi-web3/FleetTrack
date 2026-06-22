@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SettingsService } from '../../../core/services/settings.service'; // Import SettingsService
 import { ServiceCostDialogComponent } from './service-cost-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-smart-cost-dashboard',
@@ -18,7 +19,8 @@ import { ServiceCostDialogComponent } from './service-cost-dialog.component';
         MatIconModule,
         MatProgressSpinnerModule,
         MatButtonModule,
-        MatDialogModule
+        MatDialogModule,
+        TranslateModule
     ],
     templateUrl: './smart-cost-dashboard.component.html',
     styleUrls: ['./smart-cost-dashboard.component.scss']

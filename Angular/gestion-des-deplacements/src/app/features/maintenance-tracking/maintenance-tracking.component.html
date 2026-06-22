@@ -36,11 +36,10 @@
       <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
         <mat-icon style="color: #4caf50;">info</mat-icon>
         <div>
-          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement du Suivi Kilométrique</h4>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">{{ 'MAINTENANCE.HOW_IT_WORKS_KM' | translate }}</h4>
           <p style="margin: 0; font-size: 0.95rem;">
             Cet onglet vous permet de visualiser l'état de santé de chaque véhicule de votre flotte par rapport à ses obligations de maintenance.
-            Il compare le kilométrage actuel avec les services configurés (A, B, C...) pour déterminer l'écart exact. 
-            Les véhicules nécessitant une attention immédiate apparaissent avec un statut Critique ou En retard.
+            
           </p>
         </div>
       </div>
@@ -59,10 +58,10 @@
             <mat-label>{{ 'MAINTENANCE.FILTERS.STATUS' | translate }}</mat-label>
             <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
               <mat-option value="">{{ 'MAINTENANCE.FILTERS.ALL_STATUS' | translate }}</mat-option>
-              <mat-option value="ok">À jour</mat-option>
-              <mat-option value="proche">Proche</mat-option>
-              <mat-option value="retard">En retard</mat-option>
-              <mat-option value="critique">Critique</mat-option>
+              <mat-option value="ok">{{ 'MAINTENANCE.STATUS.UP_TO_DATE' | translate }}</mat-option>
+              <mat-option value="proche">{{ 'MAINTENANCE.STATUS.CLOSE' | translate }}</mat-option>
+              <mat-option value="retard">{{ 'MAINTENANCE.STATUS.OVERDUE' | translate }}</mat-option>
+              <mat-option value="critique">{{ 'MAINTENANCE.STATUS.CRITICAL' | translate }}</mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -173,7 +172,7 @@
       <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
         <mat-icon style="color: #4caf50;">info</mat-icon>
         <div>
-          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement des Maintenances Planifiées</h4>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">{{ 'MAINTENANCE.HOW_IT_WORKS_PLANNED' | translate }}</h4>
           <p style="margin: 0; font-size: 0.95rem;">
             Ici sont recensées toutes les interventions manuelles et demandes spécifiques d'indisponibilité pour réparation ou vérification. 
             Vous pouvez créer, modifier ou supprimer ces événements. Les statuts "Terminé" indiquent que l'intervention est clôturée et que le véhicule est de nouveau disponible.
@@ -267,7 +266,7 @@
       <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
         <mat-icon style="color: #4caf50;">info</mat-icon>
         <div>
-          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement du Smart Cost & Analytics</h4>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">{{ 'MAINTENANCE.HOW_IT_WORKS_SMART' | translate }}</h4>
           <p style="margin: 0; font-size: 0.95rem;">
             Cette section analyse financièrement votre flotte. Elle consolide les coûts de carburant, de réparation, d'assurance et d'acquisition pour calculer le coût global et unitaire par véhicule et par kilomètre.
             Les graphiques vous aident à identifier les véhicules les plus coûteux à l'entretien.
@@ -287,7 +286,7 @@
       <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
         <mat-icon style="color: #4caf50;">info</mat-icon>
         <div>
-          <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement des Prédictions</h4>
+          <h4 style="margin: 0 0 5px 0; font-weight: bold;">{{ 'MAINTENANCE.HOW_IT_WORKS_PREDICTIVE' | translate }}</h4>
           <p style="margin: 0; font-size: 0.95rem;">
             L'outil analyse automatiquement la <strong>moyenne réelle de kilomètres parcourus</strong> par chaque véhicule entre ses anciens services pour prédire la date exacte de son prochain service.
             <br>Il surveille également en arrière-plan la consommation d'essence réelle via le logbook, et génère une <strong>alerte de surconsommation</strong> (en violet ou rouge) si la moyenne réelle dépasse de 20% la valeur théorique du constructeur.
