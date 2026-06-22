@@ -14,7 +14,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { MaintenanceTrackingService } from './maintenance-tracking.service';
 import { AdminService } from '../../core/services/admin.service';
@@ -81,7 +81,8 @@ export class MaintenanceTrackingComponent implements OnInit {
     private adminService: AdminService,
     private mouvementService: MouvementService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -181,11 +182,11 @@ export class MaintenanceTrackingComponent implements OnInit {
 
   getStatusLabel(statusCode: string): string {
     switch (statusCode) {
-      case 'ok': return 'À jour';
-      case 'proche': return 'Proche';
-      case 'retard': return 'En retard';
-      case 'critique': return 'Critique';
-      default: return 'Inconnu';
+      case 'ok': return this.translate.instant('MAINTENANCE.STATUS.UP_TO_DATE');
+      case 'proche': return this.translate.instant('MAINTENANCE.STATUS.CLOSE');
+      case 'retard': return this.translate.instant('MAINTENANCE.STATUS.OVERDUE');
+      case 'critique': return this.translate.instant('MAINTENANCE.STATUS.CRITICAL');
+      default: return this.translate.instant('COMMON.UNKNOWN') || 'Inconnu';
     }
   }
 
@@ -206,8 +207,8 @@ export class MaintenanceTrackingComponent implements OnInit {
 
   formatEcart(ecartKm: number | null): string {
     if (ecartKm === null) return '-';
-    if (ecartKm > 0) return `Dans ${ecartKm} km`;
-    return `Retard de ${Math.abs(ecartKm)} km`;
+    if (ecartKm > 0) return `${this.translate.instant('MAINTENANCE.IN')} ${ecartKm} ${this.translate.instant('MAINTENANCE.KM')}`;
+    return `${this.translate.instant('MAINTENANCE.DELAY_OF')} ${Math.abs(ecartKm)} ${this.translate.instant('MAINTENANCE.KM')}`;
   }
 
   viewVehiculeDetail(vehicule: any) {

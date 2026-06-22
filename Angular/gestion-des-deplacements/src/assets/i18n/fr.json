@@ -24,7 +24,8 @@
         "YES": "Oui",
         "NO": "Non",
         "NONE": "Aucun",
-        "LEVEL": "Niveau"
+        "LEVEL": "Niveau",
+        "UNKNOWN": "Inconnu"
     },
     "PROFILES": {
         "SuperAdmin": "Super Admin",
@@ -467,7 +468,11 @@
         "HOW_IT_WORKS_SMART": "Fonctionnement du Smart Cost & Analytics",
         "HOW_IT_WORKS_PREDICTIVE": "Fonctionnement des Prédictions",
         "GLOBAL_TRACKING": "Suivi Global",
-        "WEEKLY_TRACKING": "Suivi Hebdo"
+        "WEEKLY_TRACKING": "Suivi Hebdo",
+        "IN": "Dans",
+        "KM": "km",
+        "EST": "Est:",
+        "DELAY_OF": "Retard de"
     },
     "USERS": {
         "TITLE": "Gestion des Utilisateurs",
@@ -591,7 +596,17 @@
         "LIST": {
             "TITLE": "Véhicules existants",
             "NO_DATA": "Aucun véhicule enregistré."
-        }
+        },
+        "NEW_VEHICLE": "NOUVEAU VÉHICULE",
+        "COL_LICENSE": "IMMATRICULATION",
+        "COL_BRAND_MODEL": "MARQUE/MODÈLE",
+        "COL_FLEET_CODE": "CODE FLOTTE",
+        "COL_OWNERSHIP": "PROPRIÉTÉ",
+        "COL_STATUS": "STATUT",
+        "COL_ACTIONS": "ACTIONS",
+        "COLUMNS_HINT": "Immatriculation, Marque/Modèle...",
+        "DISPLAYED_COLUMNS": "Colonnes affichées",
+        "SEARCH": "Rechercher..."
     },
     "ADMIN_DASHBOARD": {
         "TITLE": "Tableau de Bord - Statistiques",
@@ -1266,5 +1281,11 @@
         "FIRST_PAGE": "Première page",
         "LAST_PAGE": "Dernière page",
         "OF": "sur"
+    },
+    "VEHICLE_STATUS": {
+        "IN_SERVICE": "En Service",
+        "ARCHIVED": "Archivé",
+        "BROKEN_DOWN": "En Panne",
+        "ACCIDENT": "Accidenté"
     }
 }

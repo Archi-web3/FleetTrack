@@ -24,7 +24,8 @@
         "YES": "Yes",
         "NO": "No",
         "NONE": "None",
-        "LEVEL": "Level"
+        "LEVEL": "Level",
+        "UNKNOWN": "Unknown"
     },
     "PROFILES": {
         "SuperAdmin": "Super Admin",
@@ -467,7 +468,11 @@
         "HOW_IT_WORKS_SMART": "How Smart Cost & Analytics Works",
         "HOW_IT_WORKS_PREDICTIVE": "How Predictions Work",
         "GLOBAL_TRACKING": "Global Tracking",
-        "WEEKLY_TRACKING": "Weekly Tracking"
+        "WEEKLY_TRACKING": "Weekly Tracking",
+        "IN": "In",
+        "KM": "km",
+        "EST": "Est:",
+        "DELAY_OF": "Overdue by"
     },
     "USERS": {
         "TITLE": "User Management",
@@ -591,7 +596,17 @@
             "Inactif": "Inactive",
             "Restitué": "Returned",
             "Vendu": "Sold"
-        }
+        },
+        "NEW_VEHICLE": "NEW VEHICLE",
+        "COL_LICENSE": "LICENSE PLATE",
+        "COL_BRAND_MODEL": "BRAND/MODEL",
+        "COL_FLEET_CODE": "FLEET CODE",
+        "COL_OWNERSHIP": "OWNERSHIP",
+        "COL_STATUS": "STATUS",
+        "COL_ACTIONS": "ACTIONS",
+        "COLUMNS_HINT": "License Plate, Brand/Model...",
+        "DISPLAYED_COLUMNS": "Displayed Columns",
+        "SEARCH": "Search..."
     },
     "ADMIN_DASHBOARD": {
         "TITLE": "Dashboard - Statistics",
@@ -1266,5 +1281,11 @@
         "FIRST_PAGE": "First page",
         "LAST_PAGE": "Last page",
         "OF": "of"
+    },
+    "VEHICLE_STATUS": {
+        "IN_SERVICE": "In Service",
+        "ARCHIVED": "Archived",
+        "BROKEN_DOWN": "Broken Down",
+        "ACCIDENT": "Accident"
     }
 }
