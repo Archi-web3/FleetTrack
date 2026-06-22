@@ -13,6 +13,7 @@ import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-plan-maintenance',
@@ -26,7 +27,8 @@ import { environment } from '../../../../environments/environment';
     MatButtonToggleModule,
     MatCardModule,
     MatTooltipModule,
-    CalendarModule
+    CalendarModule,
+    TranslateModule
   ],
   templateUrl: './plan-maintenance.component.html',
   styleUrls: ['./plan-maintenance.component.scss']

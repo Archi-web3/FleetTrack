@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MaintenanceService } from '../../../core/services/maintenance.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-weekly-checklist-tracker',
@@ -31,7 +31,10 @@ export class WeeklyChecklistTracker implements OnInit {
   displayedColumns: string[] = ['vehicule', 'lastDate', 'status', 'actions'];
   loading = true;
 
-  constructor(private maintenanceService: MaintenanceService) { }
+  constructor(
+    private maintenanceService: MaintenanceService,
+    private translate: TranslateService
+  ) { }
 
   ngOnInit() {
     this.loadData();
@@ -73,10 +76,10 @@ export class WeeklyChecklistTracker implements OnInit {
 
   getStatusLabel(status: string): string {
     switch (status) {
-      case 'ok': return 'À Jour';
-      case 'late': return 'En Retard';
-      case 'never': return 'Jamais Fait';
-      default: return 'Inconnu';
+      case 'ok': return this.translate.instant('WEEKLY_CHECKLIST.STATUS_OK');
+      case 'late': return this.translate.instant('WEEKLY_CHECKLIST.STATUS_LATE');
+      case 'never': return this.translate.instant('WEEKLY_CHECKLIST.STATUS_NEVER');
+      default: return this.translate.instant('COMMON.UNKNOWN') || 'Inconnu';
     }
   }
 

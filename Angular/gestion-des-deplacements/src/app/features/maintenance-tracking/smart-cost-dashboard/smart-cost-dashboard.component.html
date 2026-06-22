@@ -3,7 +3,7 @@
     <!-- HEADER -->
     <div class="header-section">
         <h2><mat-icon>analytics</mat-icon> Smart Cost & Analytics</h2>
-        <p class="subtitle">Analyse financière et prédictive de votre flotte (Derniers 30 Jours)</p>
+        <p class="subtitle">{{ 'SMART_COST_TAB.SUBTITLE' | translate }}</p>
     </div>
 
     <div *ngIf="loading" class="loading-container">
@@ -19,7 +19,7 @@
                     <mat-icon>euro</mat-icon>
                 </div>
                 <mat-card-title>{{ 'SMART_COST.TOTAL_COST' | translate }}</mat-card-title>
-                <mat-card-subtitle>30 derniers jours</mat-card-subtitle>
+                <mat-card-subtitle>{{ 'SMART_COST_TAB.LAST_30_DAYS' | translate }}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
                 <div class="kpi-value">{{ tcoData.totalCost | currency:'EUR':'symbol':'1.0-0' }}</div>
@@ -72,7 +72,7 @@
                 <p class="insight" style="font-size: 0.85em; color: #666; margin-top: 8px;">
                     <mat-icon
                         style="font-size: 14px; height: 14px; width: 14px; vertical-align: middle;">info</mat-icon>
-                    Basé sur vos futurs services planifiés (Km) et coûts historiques (Services A/B/C).
+                    {{ 'SMART_COST_TAB.BASED_ON' | translate }}
                 </p>
                 <p *ngIf="forecastMonths > 3" class="insight" style="color: #ff9800; font-size: 0.8em;">
                     ⚠️ Fiabilité optimale requiert > 6 mois d'historique.

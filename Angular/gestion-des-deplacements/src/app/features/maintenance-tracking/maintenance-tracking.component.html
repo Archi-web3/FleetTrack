@@ -189,7 +189,7 @@
           </button>
           <div class="custom-search-input">
             <mat-icon>search</mat-icon>
-            <input type="text" (keyup)="applySlotsFilter($event)" placeholder="Rechercher une maintenance...">
+            <input type="text" (keyup)="applySlotsFilter($event)" [placeholder]="'PLANNED_INTERVENTIONS.SEARCH' | translate">
           </div>
         </div>
       </div>
