@@ -2,31 +2,29 @@
     <h2>{{ 'SECURITY_MATRIX.TITLE' | translate }}</h2>
     <p class="subtitle">{{ 'SECURITY_MATRIX.SUBTITLE' | translate }}</p>
 
-    <app-info-banner bannerId="security-matrix" title="Matrice de Sécurité">
-      <p style="margin-bottom: 8px;">Définissez les règles de validation requises pour chaque niveau de sécurité (de 1 à 5). Seuls les utilisateurs ayant un niveau suffisant sont affichés pour chaque palier.</p>
+    <app-info-banner bannerId="security-matrix" [title]="'SECURITY_MATRIX.INFO.TITLE' | translate">
+      <p style="margin-bottom: 8px;">{{ 'SECURITY_MATRIX.INFO.DESC' | translate }}</p>
       <ul style="margin: 0; padding-left: 20px;">
-        <li><strong>Niveau 5</strong> : Personne du siège (HQ)</li>
-        <li><strong>Niveau 4</strong> : Coordination</li>
-        <li><strong>Niveau 2 et 3</strong> : Base</li>
+        <li>{{ 'SECURITY_MATRIX.INFO.LEVEL_5' | translate }}</li>
+        <li>{{ 'SECURITY_MATRIX.INFO.LEVEL_4' | translate }}</li>
+        <li>{{ 'SECURITY_MATRIX.INFO.LEVEL_2_3' | translate }}</li>
       </ul>
       <div style="margin-top: 15px; padding: 10px; background-color: rgba(255, 255, 255, 0.5); border-left: 4px solid #0056b3; border-radius: 4px;">
-        <strong>Logique de validation :</strong> Lors d'un mouvement, le système vérifie d'abord la matrice spécifique à la Base de départ. Si celle-ci n'a pas de validateur défini pour le niveau de risque requis, le système se rabat automatiquement sur la matrice globale (Bureau Pays).
+        <strong>{{ 'SECURITY_MATRIX.INFO.LOGIC_TITLE' | translate }}</strong> {{ 'SECURITY_MATRIX.INFO.LOGIC_DESC' | translate }}
       </div>
     </app-info-banner>
 
     <div class="base-selector-container" *ngIf="bases && bases.length > 0" style="margin: 20px 0; display: flex; align-items: center; gap: 15px; background-color: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
       <label for="baseSelector" style="font-weight: 600; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 8px;">
-        <mat-icon style="color: #3b82f6;">location_city</mat-icon> Configuration par Base :
+        <mat-icon style="color: #3b82f6;">location_city</mat-icon> {{ 'SECURITY_MATRIX.BASE_CONFIG' | translate }}
       </label>
       <select id="baseSelector" [(ngModel)]="selectedBaseId" (change)="onBaseChange()" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #cbd5e1; background-color: white; font-size: 14px; min-width: 250px; outline: none; transition: border-color 0.2s;">
-        <option [ngValue]="null">🌍 Bureau Pays (Matrice Globale & Fallback)</option>
-        <option *ngFor="let base of bases" [ngValue]="base._id">🏢 Base : {{ base.nom }}</option>
+        <option [ngValue]="null">🌍 {{ 'SECURITY_MATRIX.BASE_FALLBACK' | translate }}</option>
+        <option *ngFor="let base of bases" [ngValue]="base._id">🏢 {{ 'SECURITY_MATRIX.BASE_PREFIX' | translate }} {{ base.nom }}</option>
       </select>
     </div>
 
-    <div *ngIf="isLoading" class="loading">
-        Chargement...
-    </div>
+    <div *ngIf="isLoading" class="loading"> {{ 'SECURITY_MATRIX.LOADING' | translate }} </div>
 
     <div *ngIf="errorMessage" class="error-message" style="background-color: #fee2e2; color: #dc2626; padding: 16px; border-radius: 6px; margin: 20px 0; border: 1px solid #fca5a5; display: flex; align-items: center;">
         <mat-icon style="margin-right: 12px;">error_outline</mat-icon>
@@ -53,8 +51,7 @@
                         {{ 'SECURITY_MATRIX.QUORUM' | translate }} <mat-icon
                             style="font-size: 16px; vertical-align: middle;">info</mat-icon>
                     </th>
-                    <th style="width: 150px;" matTooltip="Si coché, les validateurs des niveaux inférieurs seront également requis">
-                        Validation en Cascade <mat-icon
+                    <th style="width: 150px;" [matTooltip]="'SECURITY_MATRIX.CASCADE_TOOLTIP' | translate"> {{ 'SECURITY_MATRIX.CASCADE_VALIDATION' | translate }} <mat-icon
                             style="font-size: 16px; vertical-align: middle;">info</mat-icon>
                     </th>
                 </tr>
@@ -72,11 +69,11 @@
                                     (change)="toggleValidator(rule, supervisor._id, $event)"
                                     [disabled]="!canManageMatrix">
                                 <label [for]="'val-' + rule.level + '-' + supervisor._id">
-                                    {{ supervisor.nom }} {{ supervisor.prenom }} <span style="color: #64748b; font-size: 11px;">(Niveau {{ supervisor.niveauValidationSecu }})</span>
+                                    {{ supervisor.nom }} {{ supervisor.prenom }} <span style="color: #64748b; font-size: 11px;">({{ 'SECURITY_MATRIX.USER_LEVEL' | translate }} {{ supervisor.niveauValidationSecu }})</span>
                                 </label>
                             </div>
                             <div *ngIf="getEligibleValidators(rule.level).length === 0" class="no-supervisors">
-                                Aucun utilisateur éligible pour ce niveau.
+                                {{ 'SECURITY_MATRIX.NO_VALIDATORS' | translate }}
                             </div>
                         </div>
                     </td>
@@ -89,14 +86,14 @@
                     </td>
                     <td class="center-cell">
                         <input type="checkbox" [(ngModel)]="rule.includeLowerLevels" [disabled]="!canManageMatrix">
-                        <span style="display: block; font-size: 11px; color: #64748b; margin-top: 4px;">Inclure niv. &lt; {{rule.level}}</span>
+                        <span style="display: block; font-size: 11px; color: #64748b; margin-top: 4px;">{{ 'SECURITY_MATRIX.INCLUDE_LOWER' | translate }} {{rule.level}}</span>
                     </td>
                 </tr>
             </tbody>
         </table>
 
         <div class="actions" *ngIf="canManageMatrix">
-            <button class="btn-save" (click)="save()">Enregistrer la Configuration</button>
+            <button class="btn-save" (click)="save()">{{ 'SECURITY_MATRIX.SAVE_BTN' | translate }}</button>
         </div>
     </div>
 </div>

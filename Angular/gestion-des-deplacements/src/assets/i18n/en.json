@@ -11,7 +11,26 @@
             "REQUIRED_VALIDATORS": "Select supervisors who must validate movements of this risk.",
             "UNANIMITY": "If checked, ALL selected validators must approve.",
             "QUORUM": "Minimum number of approvals required (if unanimity unchecked)."
-        }
+        },
+        "INFO": {
+            "TITLE": "Security Matrix",
+            "DESC": "Define the required validation rules for each security level (from 1 to 5). Only users with a sufficient level are displayed for each tier.",
+            "LEVEL_5": "Level 5: Headquarters (HQ)",
+            "LEVEL_4": "Level 4: Coordination",
+            "LEVEL_2_3": "Level 2 and 3: Base",
+            "LOGIC_TITLE": "Validation logic:",
+            "LOGIC_DESC": "During a movement, the system first checks the specific matrix of the departure Base. If no validator is defined for the required risk level, the system automatically falls back to the global matrix (Country Office)."
+        },
+        "BASE_CONFIG": "Base Configuration:",
+        "BASE_FALLBACK": "Country Office (Global Matrix & Fallback)",
+        "BASE_PREFIX": "Base:",
+        "LOADING": "Loading...",
+        "NO_VALIDATORS": "No eligible users for this level.",
+        "CASCADE_VALIDATION": "Cascade Validation",
+        "CASCADE_TOOLTIP": "If checked, validators from lower levels will also be required",
+        "INCLUDE_LOWER": "Include lvl. <",
+        "SAVE_BTN": "Save Configuration",
+        "USER_LEVEL": "Level"
     },
     "COMMON": {
         "WELCOME": "Welcome",

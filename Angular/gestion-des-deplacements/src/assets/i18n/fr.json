@@ -11,7 +11,26 @@
             "REQUIRED_VALIDATORS": "Sélectionnez les superviseurs qui doivent valider les mouvements de ce risque.",
             "UNANIMITY": "Si coché, TOUS les validateurs sélectionnés doivent approuver.",
             "QUORUM": "Nombre minimum de validations requises (si unanimité décochée)."
-        }
+        },
+        "INFO": {
+            "TITLE": "Matrice de Sécurité",
+            "DESC": "Définissez les règles de validation requises pour chaque niveau de sécurité (de 1 à 5). Seuls les utilisateurs ayant un niveau suffisant sont affichés pour chaque palier.",
+            "LEVEL_5": "Niveau 5 : Personne du siège (HQ)",
+            "LEVEL_4": "Niveau 4 : Coordination",
+            "LEVEL_2_3": "Niveau 2 et 3 : Base",
+            "LOGIC_TITLE": "Logique de validation :",
+            "LOGIC_DESC": "Lors d'un mouvement, le système vérifie d'abord la matrice spécifique à la Base de départ. Si celle-ci n'a pas de validateur défini pour le niveau de risque requis, le système se rabat automatiquement sur la matrice globale (Bureau Pays)."
+        },
+        "BASE_CONFIG": "Configuration par Base :",
+        "BASE_FALLBACK": "Bureau Pays (Matrice Globale & Fallback)",
+        "BASE_PREFIX": "Base :",
+        "LOADING": "Chargement...",
+        "NO_VALIDATORS": "Aucun utilisateur éligible pour ce niveau.",
+        "CASCADE_VALIDATION": "Validation en Cascade",
+        "CASCADE_TOOLTIP": "Si coché, les validateurs des niveaux inférieurs seront également requis",
+        "INCLUDE_LOWER": "Inclure niv. <",
+        "SAVE_BTN": "Enregistrer la Configuration",
+        "USER_LEVEL": "Niveau"
     },
     "COMMON": {
         "WELCOME": "Bienvenue",
