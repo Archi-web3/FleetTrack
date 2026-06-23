@@ -77,12 +77,12 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   @ViewChild('vehiculeFormDialog') vehiculeFormDialog!: TemplateRef<any>;
 
   allColumns = [
-    { def: 'immatriculation', label: 'Immatriculation' },
-    { def: 'marque', label: 'Marque/Modèle' },
-    { def: 'acfCode', label: 'Code Flotte' },
-    { def: 'typePropriete', label: 'Propriété' },
-    { def: 'statut', label: 'Statut' },
-    { def: 'actions', label: 'Actions' }
+    { def: 'immatriculation', label: 'VEHICLES.COL_LICENSE' },
+    { def: 'marque', label: 'VEHICLES.COL_BRAND_MODEL' },
+    { def: 'acfCode', label: 'VEHICLES.COL_FLEET_CODE' },
+    { def: 'typePropriete', label: 'VEHICLES.COL_OWNERSHIP' },
+    { def: 'statut', label: 'VEHICLES.COL_STATUS' },
+    { def: 'actions', label: 'VEHICLES.COL_ACTIONS' }
   ];
   displayedColumns: string[] = ['immatriculation', 'marque', 'acfCode', 'typePropriete', 'statut', 'actions'];
 

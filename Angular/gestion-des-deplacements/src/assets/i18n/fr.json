@@ -25,7 +25,9 @@
         "NO": "Non",
         "NONE": "Aucun",
         "LEVEL": "Niveau",
-        "UNKNOWN": "Inconnu"
+        "UNKNOWN": "Inconnu",
+        "ADD": "Ajouter",
+        "UPDATE": "Mettre à jour"
     },
     "PROFILES": {
         "SuperAdmin": "Super Admin",
@@ -557,7 +559,10 @@
             "CAPACITY": "Capacité Passagers",
             "INITIAL_KM": "Kilométrage Initial",
             "STATUS": "Statut",
-            "GPS": "Activer le Tracking GPS"
+            "GPS": "Activer le Tracking GPS",
+            "PERMANENT_DRIVER": "Chauffeur assigné en permanence",
+            "TOTAL_KM_SO_FAR": "Total kilomètres parcourus jusqu'à présent",
+            "TOTAL_KM_AUTO": "Calcul auto : Kilométrage initial + Logbooks"
         },
         "ENV": {
             "TITLE": "Données Environnementales",
@@ -598,22 +603,32 @@
             "Restitué": "Restitué",
             "Inactif": "Inactif",
             "Maintenance": "Maintenance",
-            "Panne": "En Panne"
+            "Panne": "En Panne",
+            "EN SERVICE": "En Service",
+            "HORS SERVICE": "Hors Service",
+            "VENDU": "Vendu",
+            "ARCHIVÉ": "Archivé",
+            "RESTITUÉ": "Restitué"
         },
         "LIST": {
             "TITLE": "Véhicules existants",
             "NO_DATA": "Aucun véhicule enregistré."
         },
-        "NEW_VEHICLE": "NOUVEAU VÉHICULE",
-        "COL_LICENSE": "IMMATRICULATION",
-        "COL_BRAND_MODEL": "MARQUE/MODÈLE",
-        "COL_FLEET_CODE": "CODE FLOTTE",
-        "COL_OWNERSHIP": "PROPRIÉTÉ",
-        "COL_STATUS": "STATUT",
-        "COL_ACTIONS": "ACTIONS",
+        "NEW_VEHICLE": "Nouveau Véhicule",
+        "COL_LICENSE": "Immatriculation",
+        "COL_BRAND_MODEL": "Marque/Modèle",
+        "COL_FLEET_CODE": "Code Flotte",
+        "COL_OWNERSHIP": "Propriété",
+        "COL_STATUS": "Statut",
+        "COL_ACTIONS": "Actions",
         "COLUMNS_HINT": "Immatriculation, Marque/Modèle...",
         "DISPLAYED_COLUMNS": "Colonnes affichées",
-        "SEARCH": "Rechercher..."
+        "SEARCH": "Rechercher...",
+        "CATEGORY": {
+            "VOITURE": "Voiture",
+            "CAMION": "Camion",
+            "MOTO": "Moto"
+        }
     },
     "ADMIN_DASHBOARD": {
         "TITLE": "Tableau de Bord - Statistiques",

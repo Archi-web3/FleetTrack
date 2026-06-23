@@ -25,7 +25,9 @@
         "NO": "No",
         "NONE": "None",
         "LEVEL": "Level",
-        "UNKNOWN": "Unknown"
+        "UNKNOWN": "Unknown",
+        "ADD": "Add",
+        "UPDATE": "Update"
     },
     "PROFILES": {
         "SuperAdmin": "Super Admin",
@@ -571,7 +573,10 @@
             "CAPACITY": "Capacity",
             "INITIAL_KM": "Initial Mileage",
             "GPS": "GPS Tracking",
-            "STATUS": "Status"
+            "STATUS": "Status",
+            "PERMANENT_DRIVER": "Permanently assigned driver",
+            "TOTAL_KM_SO_FAR": "Total kilometers driven so far",
+            "TOTAL_KM_AUTO": "Auto calc: Initial Mileage + Logbooks"
         },
         "ENV": {
             "TITLE": "Environmental Data",
@@ -602,18 +607,28 @@
             "Hors Service": "Out of Service",
             "Inactif": "Inactive",
             "Restitué": "Returned",
-            "Vendu": "Sold"
+            "Vendu": "Sold",
+            "EN SERVICE": "In Service",
+            "HORS SERVICE": "Out of Service",
+            "VENDU": "Sold",
+            "ARCHIVÉ": "Archived",
+            "RESTITUÉ": "Returned"
         },
-        "NEW_VEHICLE": "NEW VEHICLE",
-        "COL_LICENSE": "LICENSE PLATE",
-        "COL_BRAND_MODEL": "BRAND/MODEL",
-        "COL_FLEET_CODE": "FLEET CODE",
-        "COL_OWNERSHIP": "OWNERSHIP",
-        "COL_STATUS": "STATUS",
-        "COL_ACTIONS": "ACTIONS",
+        "NEW_VEHICLE": "New Vehicle",
+        "COL_LICENSE": "License Plate",
+        "COL_BRAND_MODEL": "Brand/Model",
+        "COL_FLEET_CODE": "Fleet Code",
+        "COL_OWNERSHIP": "Ownership",
+        "COL_STATUS": "Status",
+        "COL_ACTIONS": "Actions",
         "COLUMNS_HINT": "License Plate, Brand/Model...",
         "DISPLAYED_COLUMNS": "Displayed Columns",
-        "SEARCH": "Search..."
+        "SEARCH": "Search...",
+        "CATEGORY": {
+            "VOITURE": "Car",
+            "CAMION": "Truck",
+            "MOTO": "Motorcycle"
+        }
     },
     "ADMIN_DASHBOARD": {
         "TITLE": "Dashboard - Statistics",
