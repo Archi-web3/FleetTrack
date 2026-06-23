@@ -55,7 +55,7 @@
           <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.LIST.COL_STATUS' | translate }} </th>
           <td mat-cell *matCellDef="let element"> 
             <mat-chip-set>
-              <mat-chip [color]="getStatutColor(element.statut)" selected>{{element.statut}}</mat-chip>
+              <mat-chip [color]="getStatutColor(element.statut)" selected>{{ ('GENERATORS.STATUS.' + getStatutKey(element.statut)) | translate }}</mat-chip>
             </mat-chip-set>
           </td>
         </ng-container>

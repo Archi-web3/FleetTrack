@@ -32,7 +32,7 @@
     <mat-card class="stat-card">
       <mat-card-content>
         <div class="stat-title">{{ 'GENERATORS.DETAIL.STATUS' | translate }}</div>
-        <div class="stat-value" [ngClass]="{'text-green': generateur.statut === 'Actif', 'text-red': generateur.statut !== 'Actif'}">{{generateur.statut}}</div>
+        <div class="stat-value" [ngClass]="{'text-green': generateur.statut === 'Actif', 'text-red': generateur.statut !== 'Actif'}">{{ ('GENERATORS.STATUS.' + getStatutKey(generateur.statut)) | translate }}</div>
       </mat-card-content>
     </mat-card>
   </div>
@@ -156,7 +156,7 @@
 
           <ng-container matColumnDef="statut">
             <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_STATUS' | translate }} </th>
-            <td mat-cell *matCellDef="let element"> {{element.statut}} </td>
+            <td mat-cell *matCellDef="let element"> {{ ('GENERATORS.STATUS.' + getStatutKey(element.statut)) | translate }} </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedInterventionColumns"></tr>

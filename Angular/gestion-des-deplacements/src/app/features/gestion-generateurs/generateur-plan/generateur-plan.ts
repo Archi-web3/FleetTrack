@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { RouterModule } from '@angular/router';
 import { GenerateursService } from '../../../core/services/generateurs.service';
 import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-generateur-plan',
@@ -20,7 +21,8 @@ import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
     MatIconModule,
     MatChipsModule,
     RouterModule,
-    InfoBannerComponent
+    InfoBannerComponent,
+    TranslateModule
   ],
   templateUrl: './generateur-plan.html',
   styleUrls: ['./generateur-plan.css']
@@ -57,5 +59,19 @@ export class GenerateurPlanComponent implements OnInit {
       case 'En retard': return 'warn';
       default: return '';
     }
+  }
+
+  getStatutKey(statut: string): string {
+    if (!statut) return '';
+    const map: any = {
+      'Actif': 'ACTIVE',
+      'En maintenance': 'MAINTENANCE',
+      'En panne': 'BROKEN',
+      'Hors service': 'OUT_OF_SERVICE',
+      'À jour': 'UP_TO_DATE',
+      'Dû bientôt': 'DUE',
+      'En retard': 'OVERDUE'
+    };
+    return map[statut] || statut.toUpperCase().replace(/\s+/g, '_');
   }
 }

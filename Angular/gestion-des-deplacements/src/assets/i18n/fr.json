@@ -1495,7 +1495,9 @@
             "COL_TYPE": "Type",
             "COL_FREQUENCY": "Fréquence",
             "COL_TECHNICIAN": "Intervenant",
-            "LOADING": "Chargement des données du générateur..."
+            "LOADING": "Chargement des données du générateur...",
+            "COL_HOURS": "Heures",
+            "COL_STATUS": "Statut"
         },
         "FORM": {
             "TITLE_EDIT": "Modifier le générateur",
@@ -1603,6 +1605,27 @@
                     "2": "Ouvrir et nettoyer les chambres de combustion"
                 }
             }
+        },
+        "STATUS": {
+            "ACTIVE": "Actif",
+            "MAINTENANCE": "En maintenance",
+            "BROKEN": "En panne",
+            "OUT_OF_SERVICE": "Hors service",
+            "UP_TO_DATE": "À jour",
+            "DUE": "Dû bientôt",
+            "OVERDUE": "En retard"
+        },
+        "PLAN": {
+            "TITLE": "Plan de Maintenance Prévisionnel (Générateurs)",
+            "BANNER_TITLE": "Planification de la Maintenance (Heures)",
+            "COL_GENERATOR": "Générateur",
+            "COL_CURRENT_HOURS": "Heures Actuelles",
+            "COL_NEXT_SERVICE": "Prochain Service",
+            "COL_REMAINING_HOURS": "Heures Restantes",
+            "COL_STATUS": "Statut",
+            "COL_ACTIONS": "Actions",
+            "BTN_PLAN": "Planifier / Effectuer",
+            "LOADING": "Chargement du plan de maintenance..."
         }
     }
 }

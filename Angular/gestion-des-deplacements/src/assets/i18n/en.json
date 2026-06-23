@@ -1495,7 +1495,9 @@
             "COL_TYPE": "Type",
             "COL_FREQUENCY": "Frequency",
             "COL_TECHNICIAN": "Technician",
-            "LOADING": "Loading generator data..."
+            "LOADING": "Loading generator data...",
+            "COL_HOURS": "Hours",
+            "COL_STATUS": "Status"
         },
         "FORM": {
             "TITLE_EDIT": "Edit generator",
@@ -1603,6 +1605,27 @@
                     "2": "Open and clean combustion chambers"
                 }
             }
+        },
+        "STATUS": {
+            "ACTIVE": "Active",
+            "MAINTENANCE": "In Maintenance",
+            "BROKEN": "Broken down",
+            "OUT_OF_SERVICE": "Out of service",
+            "UP_TO_DATE": "Up to date",
+            "DUE": "Due soon",
+            "OVERDUE": "Overdue"
+        },
+        "PLAN": {
+            "TITLE": "Predictive Maintenance Plan (Generators)",
+            "BANNER_TITLE": "Maintenance Planning (Hours)",
+            "COL_GENERATOR": "Generator",
+            "COL_CURRENT_HOURS": "Current Hours",
+            "COL_NEXT_SERVICE": "Next Service",
+            "COL_REMAINING_HOURS": "Remaining Hours",
+            "COL_STATUS": "Status",
+            "COL_ACTIONS": "Actions",
+            "BTN_PLAN": "Plan / Perform",
+            "LOADING": "Loading maintenance plan..."
         }
     }
 }

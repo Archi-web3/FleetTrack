@@ -89,4 +89,18 @@ export class GenerateursListComponent implements OnInit {
       });
     }
   }
+
+  getStatutKey(statut: string): string {
+    if (!statut) return '';
+    const map: any = {
+      'Actif': 'ACTIVE',
+      'En maintenance': 'MAINTENANCE',
+      'En panne': 'BROKEN',
+      'Hors service': 'OUT_OF_SERVICE',
+      'À jour': 'UP_TO_DATE',
+      'Dû bientôt': 'DUE',
+      'En retard': 'OVERDUE'
+    };
+    return map[statut] || statut.toUpperCase().replace(/\s+/g, '_');
+  }
 }
