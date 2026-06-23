@@ -71,12 +71,12 @@ export class GestionChauffeursComponent implements OnInit, AfterViewInit {
   @ViewChild('chauffeurFormDialog') chauffeurFormDialog!: TemplateRef<any>;
 
   allColumns = [
-    { def: 'nom', label: 'Nom' },
-    { def: 'email', label: 'Email' },
-    { def: 'pays', label: 'Pays' },
-    { def: 'base', label: 'Base' },
-    { def: 'vehiculeAttitre', label: 'Véhicule Attitré' },
-    { def: 'actions', label: 'Actions' }
+    { def: 'nom', label: 'DRIVERS.COL_NAME' },
+    { def: 'email', label: 'DRIVERS.COL_EMAIL' },
+    { def: 'pays', label: 'DRIVERS.COL_COUNTRY' },
+    { def: 'base', label: 'DRIVERS.COL_BASE' },
+    { def: 'vehiculeAttitre', label: 'DRIVERS.COL_ASSIGNED_VEHICLE' },
+    { def: 'actions', label: 'DRIVERS.COL_ACTIONS' }
   ];
   displayedColumns: string[] = ['nom', 'email', 'pays', 'base', 'vehiculeAttitre', 'actions'];
 

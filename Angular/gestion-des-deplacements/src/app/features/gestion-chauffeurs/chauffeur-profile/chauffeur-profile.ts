@@ -18,6 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CalendarModule, CalendarView, CalendarEvent } from 'angular-calendar';
 import { isSameMonth, isSameDay } from 'date-fns';
 import { Subject } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chauffeur-profile',
@@ -26,7 +27,7 @@ import { Subject } from 'rxjs';
     CommonModule, RouterModule, MatTabsModule, MatCardModule, 
     MatIconModule, MatButtonModule, MatTableModule, 
     MatFormFieldModule, MatInputModule, FormsModule, MatTooltipModule,
-    CalendarModule
+    CalendarModule, TranslateModule
   ],
   templateUrl: './chauffeur-profile.html',
   styleUrls: ['./chauffeur-profile.scss']

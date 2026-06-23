@@ -5,7 +5,7 @@
       <mat-icon>arrow_back</mat-icon>
     </button>
     <mat-icon style="color: var(--primary-color);">account_circle</mat-icon>
-    Profil Chauffeur: {{ chauffeur.prenom }} {{ chauffeur.nom }}
+    {{ 'DRIVERS.PROFILE.TITLE' | translate }}: {{ chauffeur.prenom }} {{ chauffeur.nom }}
   </h2>
   <div class="header-actions">
     <!-- Add actions here if needed -->
@@ -14,21 +14,21 @@
 
   <div class="profile-info-container">
     <div class="info-group">
-      <label>Statut</label>
+      <label>{{ 'DRIVERS.PROFILE.STATUS' | translate }}</label>
       <div class="value">
         <mat-icon [style.color]="chauffeur.disponible ? 'green' : 'red'" style="vertical-align: middle; font-size: 16px; width: 16px; height: 16px;">
           {{ chauffeur.disponible ? 'check_circle' : 'cancel' }}
         </mat-icon>
-        {{ chauffeur.disponible ? 'Disponible' : 'Indisponible' }}
+        {{ chauffeur.disponible ? ('DRIVERS.PROFILE.STATUS_AVAILABLE' | translate) : ('DRIVERS.PROFILE.STATUS_UNAVAILABLE' | translate) }}
       </div>
     </div>
     <div class="info-group">
       <label>Téléphone</label>
-      <div class="value">{{ chauffeur.telephone || 'Non renseigné' }}</div>
+      <div class="value">{{ chauffeur.telephone || ('DRIVERS.PROFILE.NOT_PROVIDED' | translate) }}</div>
     </div>
     <div class="info-group">
       <label>Permis</label>
-      <div class="value">{{ chauffeur.permis || 'Non renseigné' }}</div>
+      <div class="value">{{ chauffeur.permis || ('DRIVERS.PROFILE.NOT_PROVIDED' | translate) }}</div>
     </div>
     <div class="info-group" *ngIf="chauffeur.base?.nom">
       <label>Base</label>
@@ -40,31 +40,31 @@
     <mat-tab-group dynamicHeight>
         
         <!-- ONGLET: DEPLACEMENTS -->
-        <mat-tab label="Ses déplacements (Historique)">
+        <mat-tab label="{{ 'DRIVERS.PROFILE.TABS.HISTORY' | translate }}">
           <div class="tab-content">
-            <h3 class="tab-title">Historique des déplacements</h3>
+            <h3 class="tab-title">{{ 'DRIVERS.PROFILE.HISTORY_TITLE' | translate }}</h3>
             
             <div class="table-container mat-elevation-z1" *ngIf="mouvements.length > 0; else noMouvements">
               <table mat-table [dataSource]="mouvements" class="full-width-table modern-table">
                 <ng-container matColumnDef="dateDepart">
-                  <th mat-header-cell *matHeaderCellDef> Date de départ </th>
+                  <th mat-header-cell *matHeaderCellDef> {{ 'DRIVERS.PROFILE.COL_DEPARTURE' | translate }} </th>
                   <td mat-cell *matCellDef="let element"> {{element.stops?.[0]?.dateDepart | date:'short'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="vehicule">
-                  <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                  <th mat-header-cell *matHeaderCellDef> {{ 'DRIVERS.PROFILE.COL_VEHICLE' | translate }} </th>
                   <td mat-cell *matCellDef="let element"> 
-                    {{ element.vehicule?.immatriculation || 'Non assigné' }}
+                    {{ element.vehicule?.immatriculation || ('DRIVERS.PROFILE.NOT_ASSIGNED' | translate) }}
                   </td>
                 </ng-container>
 
                 <ng-container matColumnDef="objectif">
-                  <th mat-header-cell *matHeaderCellDef> Objectif </th>
+                  <th mat-header-cell *matHeaderCellDef> {{ 'DRIVERS.PROFILE.COL_OBJECTIVE' | translate }} </th>
                   <td mat-cell *matCellDef="let element"> {{element.objectif}} </td>
                 </ng-container>
                 
                 <ng-container matColumnDef="statut">
-                  <th mat-header-cell *matHeaderCellDef> Statut </th>
+                  <th mat-header-cell *matHeaderCellDef> {{ 'DRIVERS.PROFILE.COL_STATUS' | translate }} </th>
                   <td mat-cell *matCellDef="let element"> 
                     <span class="status-badge" [ngClass]="'status-' + (element.statut | lowercase | slice:0:10)">
                       {{element.statut | uppercase}}
@@ -79,33 +79,33 @@
             <ng-template #noMouvements>
               <div class="empty-state">
                 <mat-icon>history_toggle_off</mat-icon>
-                <p>Aucun déplacement enregistré pour ce chauffeur.</p>
+                <p>{{ 'DRIVERS.PROFILE.NO_HISTORY' | translate }}</p>
               </div>
             </ng-template>
           </div>
         </mat-tab>
 
         <!-- ONGLET: FUTURS TRAJETS -->
-        <mat-tab label="Ses futurs trajets">
+        <mat-tab label="{{ 'DRIVERS.PROFILE.TABS.FUTURE' | translate }}">
           <div class="tab-content">
-            <h3>Planning à venir</h3>
+            <h3>{{ 'DRIVERS.PROFILE.FUTURE_TITLE' | translate }}</h3>
             
             <div class="table-container mat-elevation-z2" *ngIf="planning.length > 0; else noPlanning">
               <table mat-table [dataSource]="planning" class="full-width-table">
                 <ng-container matColumnDef="dateDepart">
-                  <th mat-header-cell *matHeaderCellDef> Date </th>
+                  <th mat-header-cell *matHeaderCellDef> {{ 'DRIVERS.PROFILE.COL_DATE' | translate }} </th>
                   <td mat-cell *matCellDef="let element"> {{element.stops?.[0]?.dateDepart | date:'short'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="vehicule">
-                  <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                  <th mat-header-cell *matHeaderCellDef> {{ 'DRIVERS.PROFILE.COL_VEHICLE' | translate }} </th>
                   <td mat-cell *matCellDef="let element"> 
-                    {{ element.vehicule?.immatriculation || 'Non assigné' }}
+                    {{ element.vehicule?.immatriculation || ('DRIVERS.PROFILE.NOT_ASSIGNED' | translate) }}
                   </td>
                 </ng-container>
 
                 <ng-container matColumnDef="objectif">
-                  <th mat-header-cell *matHeaderCellDef> Objectif </th>
+                  <th mat-header-cell *matHeaderCellDef> {{ 'DRIVERS.PROFILE.COL_OBJECTIVE' | translate }} </th>
                   <td mat-cell *matCellDef="let element"> {{element.objectif}} </td>
                 </ng-container>
 
@@ -116,36 +116,36 @@
             <ng-template #noPlanning>
               <div class="empty-state">
                 <mat-icon>event_busy</mat-icon>
-                <p>Aucun trajet planifié pour ce chauffeur.</p>
+                <p>{{ 'DRIVERS.PROFILE.NO_FUTURE' | translate }}</p>
               </div>
             </ng-template>
           </div>
         </mat-tab>
 
         <!-- ONGLET: PIECES JOINTES -->
-        <mat-tab label="Pièces jointes">
+        <mat-tab label="{{ 'DRIVERS.PROFILE.TABS.ATTACHMENTS' | translate }}">
           <div class="tab-content attachments-section">
-            <h3>Documents du chauffeur</h3>
+            <h3>{{ 'DRIVERS.PROFILE.ATTACHMENTS_TITLE' | translate }}</h3>
             
             <div class="add-attachment">
               <mat-form-field appearance="outline">
-                <mat-label>Nom du document (ex: Permis de conduire)</mat-label>
+                <mat-label>{{ 'DRIVERS.PROFILE.DOC_NAME' | translate }}</mat-label>
                 <input matInput [(ngModel)]="newDocName" placeholder="Titre...">
               </mat-form-field>
               
               <mat-form-field appearance="outline">
-                <mat-label>Lien Sharepoint / Drive</mat-label>
+                <mat-label>{{ 'DRIVERS.PROFILE.DOC_URL' | translate }}</mat-label>
                 <input matInput [(ngModel)]="newDocUrl" placeholder="https://...">
               </mat-form-field>
 
               <button mat-flat-button color="primary" [disabled]="!newDocName || !newDocUrl" (click)="addLinkDocument()">
-                <mat-icon>add_link</mat-icon> Ajouter
+                <mat-icon>add_link</mat-icon> {{ 'COMMON.ADD' | translate }}
               </button>
               
-              <span style="margin: 0 8px; color: #999;">OU</span>
+              <span style="margin: 0 8px; color: #999;">{{ 'DRIVERS.PROFILE.OR' | translate }}</span>
               
               <button mat-stroked-button color="primary" (click)="fileInput.click()">
-                <mat-icon>cloud_upload</mat-icon> Uploader
+                <mat-icon>cloud_upload</mat-icon> {{ 'DRIVERS.PROFILE.UPLOAD' | translate }}
               </button>
               <input type="file" #fileInput style="display: none" (change)="uploadDocument($event)">
             </div>
@@ -155,7 +155,7 @@
                 <mat-icon>{{ doc.typeSource === 'Upload' ? 'description' : 'link' }}</mat-icon>
                 <div class="attachment-details">
                   <p class="attachment-name" [title]="doc.nom">{{ doc.nom }}</p>
-                  <p class="attachment-date">Ajouté le {{ doc.dateAjout | date:'dd/MM/yyyy' }}</p>
+                  <p class="attachment-date">{{ 'DRIVERS.PROFILE.ADDED_ON' | translate }} {{ doc.dateAjout | date:'dd/MM/yyyy' }}</p>
                 </div>
                 <div class="attachment-actions">
                   <a mat-icon-button color="primary" [href]="doc.url" target="_blank" matTooltip="Ouvrir">
@@ -171,7 +171,7 @@
             <ng-template #noDocuments>
               <div class="empty-state">
                 <mat-icon>folder_open</mat-icon>
-                <p>Aucune pièce jointe pour le moment.</p>
+                <p>{{ 'DRIVERS.PROFILE.NO_ATTACHMENTS' | translate }}</p>
               </div>
             </ng-template>
 
@@ -179,7 +179,7 @@
         </mat-tab>
 
         <!-- ONGLET: DISPONIBILITES (SCHEDULE) -->
-        <mat-tab label="Disponibilités (Planning)">
+        <mat-tab label="{{ 'DRIVERS.PROFILE.TABS.SCHEDULE' | translate }}">
           <div class="tab-content schedule-layout">
             
             <!-- Gauche: Calendrier -->
@@ -189,16 +189,16 @@
                   <button mat-icon-button mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
                     <mat-icon>chevron_left</mat-icon>
                   </button>
-                  <button mat-button mwlCalendarToday [(viewDate)]="viewDate">Aujourd'hui</button>
+                  <button mat-button mwlCalendarToday [(viewDate)]="viewDate">{{ 'DRIVERS.PROFILE.TODAY' | translate }}</button>
                   <button mat-icon-button mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
                     <mat-icon>chevron_right</mat-icon>
                   </button>
                 </div>
                 <h3 class="cal-title">{{ viewDate | date:'MMMM yyyy' | uppercase }}</h3>
                 <div class="cal-view-toggles">
-                  <button mat-stroked-button (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">Mois</button>
-                  <button mat-stroked-button (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">Semaine</button>
-                  <button mat-stroked-button (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">Jour</button>
+                  <button mat-stroked-button (click)="setView(CalendarView.Month)" [class.active]="view === CalendarView.Month">{{ 'DRIVERS.PROFILE.MONTH' | translate }}</button>
+                  <button mat-stroked-button (click)="setView(CalendarView.Week)" [class.active]="view === CalendarView.Week">{{ 'DRIVERS.PROFILE.WEEK' | translate }}</button>
+                  <button mat-stroked-button (click)="setView(CalendarView.Day)" [class.active]="view === CalendarView.Day">{{ 'DRIVERS.PROFILE.DAY' | translate }}</button>
                 </div>
               </div>
               
@@ -219,44 +219,44 @@
             <!-- Droite: Formulaire et Liste -->
             <div class="form-list-section">
               <div class="add-schedule-form mat-elevation-z1">
-                <h4 style="margin-top: 0;">Ajouter un horaire</h4>
+                <h4 style="margin-top: 0;">{{ 'DRIVERS.PROFILE.SCHEDULE_TITLE' | translate }}</h4>
                 
                 <div class="modern-form-group">
-                  <label>Statut *</label>
+                  <label>{{ 'DRIVERS.PROFILE.SCHEDULE_STATUS' | translate }}</label>
                   <select class="modern-input" [(ngModel)]="newSchedule.status">
-                    <option value="On Duty">En Service (On Duty)</option>
-                    <option value="Off Duty">Repos (Off Duty)</option>
-                    <option value="Sick">Maladie</option>
-                    <option value="Vacation">Congés (Vacation)</option>
-                    <option value="Other">Autre</option>
+                    <option value="On Duty">{{ 'DRIVERS.PROFILE.SCHEDULE_ON_DUTY' | translate }}</option>
+                    <option value="Off Duty">{{ 'DRIVERS.PROFILE.SCHEDULE_OFF_DUTY' | translate }}</option>
+                    <option value="Sick">{{ 'DRIVERS.PROFILE.SCHEDULE_SICK' | translate }}</option>
+                    <option value="Vacation">{{ 'DRIVERS.PROFILE.SCHEDULE_VACATION' | translate }}</option>
+                    <option value="Other">{{ 'DRIVERS.PROFILE.SCHEDULE_OTHER' | translate }}</option>
                   </select>
                 </div>
                 
                 <div class="modern-form-group">
-                  <label>Date / Heure de début *</label>
+                  <label>{{ 'DRIVERS.PROFILE.START_DATE' | translate }}</label>
                   <input type="datetime-local" class="modern-input" [(ngModel)]="newSchedule.startDate">
                 </div>
                 
                 <div class="modern-form-group">
-                  <label>Date / Heure de fin *</label>
+                  <label>{{ 'DRIVERS.PROFILE.END_DATE' | translate }}</label>
                   <input type="datetime-local" class="modern-input" [(ngModel)]="newSchedule.endDate">
                 </div>
                 
                 <div class="modern-form-group">
-                  <label>Notes</label>
-                  <input type="text" class="modern-input" [(ngModel)]="newSchedule.notes" placeholder="Ajouter une note">
+                  <label>{{ 'DRIVERS.PROFILE.NOTES' | translate }}</label>
+                  <input type="text" class="modern-input" [(ngModel)]="newSchedule.notes" [placeholder]="'DRIVERS.PROFILE.ADD_NOTE' | translate">
                 </div>
                 
                 <button mat-flat-button color="primary" class="full-width-btn" (click)="addSchedule()">
-                  <mat-icon>save</mat-icon> Enregistrer
+                  <mat-icon>save</mat-icon> {{ 'DRIVERS.PROFILE.SAVE' | translate }}
                 </button>
               </div>
 
               <div class="schedule-entries-list mat-elevation-z1">
-                <h4 style="margin-top: 0; padding: 16px 16px 0 16px;">Entrées planifiées</h4>
+                <h4 style="margin-top: 0; padding: 16px 16px 0 16px;">{{ 'DRIVERS.PROFILE.PLANNED_ENTRIES' | translate }}</h4>
                 <div *ngIf="scheduleEntries.length === 0" class="empty-entries">
                   <mat-icon>folder_open</mat-icon>
-                  <p>Aucune donnée trouvée</p>
+                  <p>{{ 'DRIVERS.PROFILE.NO_DATA' | translate }}</p>
                 </div>
                 <div class="schedule-entry-item" *ngFor="let sch of scheduleEntries; let i = index">
                   <div class="entry-period">
@@ -285,6 +285,6 @@
 <div class="loading-shade" *ngIf="loading">
   <div class="spinner-container">
     <mat-icon class="spinning-icon">refresh</mat-icon>
-    <p>Chargement du profil...</p>
+    <p>{{ 'DRIVERS.PROFILE.LOADING' | translate }}</p>
   </div>
 </div>
