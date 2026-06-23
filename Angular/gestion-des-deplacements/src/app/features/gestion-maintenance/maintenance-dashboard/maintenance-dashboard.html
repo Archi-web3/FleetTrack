@@ -5,7 +5,7 @@
         <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="tab-icon" style="margin-right: 8px;">dashboard</mat-icon>
-                Suivi Global
+                {{ 'MAINTENANCE.TABS.GLOBAL' | translate }}
             </ng-template>
             <div class="tab-content" style="padding-top: 20px;">
                 <app-maintenance-tracking></app-maintenance-tracking>
@@ -16,17 +16,16 @@
         <mat-tab>
             <ng-template mat-tab-label>
                 <mat-icon class="tab-icon" style="margin-right: 8px;">playlist_add_check</mat-icon>
-                Suivi Hebdo
+                {{ 'MAINTENANCE.TABS.WEEKLY' | translate }}
             </ng-template>
             <div class="tab-content" style="padding-top: 20px;">
                 <!-- ENCART D'EXPLICATION (VERT) -->
                 <div style="background-color: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; border-left: 5px solid #4caf50; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;">
                     <mat-icon style="color: #4caf50;">info</mat-icon>
                     <div>
-                        <h4 style="margin: 0 0 5px 0; font-weight: bold;">Fonctionnement du Suivi Hebdomadaire</h4>
+                        <h4 style="margin: 0 0 5px 0; font-weight: bold;">{{ 'WEEKLY_CHECKLIST.HOW_IT_WORKS' | translate }}</h4>
                         <p style="margin: 0; font-size: 0.95rem;">
-                            Cet onglet centralise les inspections hebdomadaires de sécurité réalisées par les chauffeurs depuis leur application mobile.
-                            Vous pouvez vérifier que chaque véhicule a été contrôlé en temps et en heure. Les anomalies (problèmes de freins, pneus, fuites...) remontées par les chauffeurs y sont directement visibles pour déclencher une action de maintenance.
+                            {{ 'WEEKLY_CHECKLIST.DESCRIPTION' | translate }}
                         </p>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
+import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MaintenanceTrackingComponent } from '../../maintenance-tracking/maintenance-tracking.component';
 import { WeeklyChecklistTracker } from '../weekly-checklist-tracker/weekly-checklist-tracker';
@@ -12,6 +13,7 @@ import { WeeklyChecklistTracker } from '../weekly-checklist-tracker/weekly-check
         CommonModule,
         MatTabsModule,
         MatIconModule,
+        TranslateModule,
         MaintenanceTrackingComponent,
         WeeklyChecklistTracker
     ],

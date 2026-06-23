@@ -377,7 +377,10 @@
         "TABS": {
             "TRACKING": "Suivi Kilométrique",
             "PLANNING": "Maintenance Planifiée",
-            "PREDICTIVE": "Prédictions (IA)"
+            "PREDICTIVE": "Prédictions (IA)",
+            "GLOBAL": "Suivi Global",
+            "WEEKLY": "Suivi Hebdo",
+            "SMART_COST": "Smart Cost & Analytics"
         },
         "FILTERS": {
             "BASE": "Base",
@@ -472,7 +475,11 @@
         "IN": "Dans",
         "KM": "km",
         "EST": "Est:",
-        "DELAY_OF": "Retard de"
+        "DELAY_OF": "Retard de",
+        "CHECK_HEBDO": "Check Hebdo",
+        "SERVICE": "Service",
+        "STATUS_VALIDATED": "Validé",
+        "HOW_IT_WORKS_PREDICTIVE_TEXT": "L'outil analyse automatiquement la <strong>moyenne réelle de kilomètres parcourus</strong> par chaque véhicule entre ses anciens services pour prédire la date exacte de son prochain service.<br>Il surveille également en arrière-plan la consommation d'essence réelle via le logbook, et génère une <strong>alerte de surconsommation</strong> (en violet ou rouge) si la moyenne réelle dépasse de 20% la valeur théorique du constructeur."
     },
     "USERS": {
         "TITLE": "Gestion des Utilisateurs",
@@ -1352,5 +1359,26 @@
         "BASED_ON": "Basé sur vos futurs services planifiés (Km) et coûts historiques (Services A/B/C).",
         "RELIABILITY": "Reliability by Model",
         "BREAKDOWNS": "pannes"
+    },
+    "PREDICTIVE_DASHBOARD": {
+        "HOW_PREDICTIONS_WORK": "Fonctionnement des Prédictions",
+        "PARK_HEALTH": "Santé du Parc",
+        "GLOBAL_SCORE": "Score Global",
+        "CRITICAL_ALERTS": "Alertes Critiques",
+        "IMMINENT_MAINTENANCE": "Maintenance Imminente",
+        "VEHICLES_NEEDING_ATTENTION": "Véhicules nécessitant attention",
+        "TRACKED_VEHICLES": "Véhicules Suivis",
+        "TOTAL_FLEET": "Total Flotte",
+        "ANALYZED_BY_ALGO": "Analysés par l'algorithme",
+        "PRIORITY_ALERTS": "Alertes Prioritaires",
+        "MAINTENANCE_FORECASTS": "Prévisions de Maintenance",
+        "COL_VEHICLE": "VÉHICULE",
+        "COL_CURRENT_KM": "KM ACTUEL",
+        "COL_NEXT_SERVICE": "PROCHAIN SERVICE",
+        "COL_ESTIMATED_DATE": "DATE ESTIMÉE",
+        "COL_HEALTH": "SANTÉ",
+        "COL_STATUS": "STATUT",
+        "STATUS_GOOD": "Bon",
+        "STATUS_WARNING": "Attention"
     }
 }

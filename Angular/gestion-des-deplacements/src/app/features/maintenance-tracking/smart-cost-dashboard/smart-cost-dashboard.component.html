@@ -91,7 +91,7 @@
                         <div class="model-info">
                             <span class="model-name">{{ stat.model }}</span>
                             <span class="incident-count" [class.bad]="stat.totalIncidents > 0">
-                                {{ stat.totalIncidents }} pannes
+                                {{ stat.totalIncidents }} {{ 'SMART_COST_TAB.BREAKDOWNS' | translate }}
                             </span>
                         </div>
                         <div class="score-bar-container">

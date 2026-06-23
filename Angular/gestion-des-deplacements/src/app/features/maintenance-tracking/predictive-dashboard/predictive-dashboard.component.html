@@ -6,9 +6,9 @@
             [ngClass]="{'good': stats.globalHealth >= 80, 'medium': stats.globalHealth < 80 && stats.globalHealth >= 50, 'bad': stats.globalHealth < 50}">
             <mat-card-header>
                 <mat-icon mat-card-avatar>health_and_safety</mat-icon>
-                <mat-card-title>Santé du Parc</mat-card-title>
+                <mat-card-title>{{ 'PREDICTIVE_DASHBOARD.PARK_HEALTH' | translate }}</mat-card-title>
                 <mat-card-subtitle>
-                    Score Global
+                    {{ 'PREDICTIVE_DASHBOARD.GLOBAL_SCORE' | translate }}
                     <mat-icon class="info-icon" matTooltip="Le score de santé (0-100%) diminue à l'approche des révisions. 
 - Calcul basé sur l'usage moyen journalier
 - Alerte si < 1000km restants
@@ -25,9 +25,9 @@
         <mat-card class="kpi-card alert-card">
             <mat-card-header>
                 <mat-icon mat-card-avatar color="warn">warning</mat-icon>
-                <mat-card-title>Alertes Critiques</mat-card-title>
+                <mat-card-title>{{ 'PREDICTIVE_DASHBOARD.CRITICAL_ALERTS' | translate }}</mat-card-title>
                 <mat-card-subtitle>
-                    Maintenance Imminente
+                    {{ 'PREDICTIVE_DASHBOARD.IMMINENT_MAINTENANCE' | translate }}
                     <mat-icon class="info-icon"
                         matTooltip="Véhicules nécessitant une intervention immédiate (Retard ou < 500km restants) ou présentant une anomalie critique."
                         matTooltipClass="custom-tooltip-white">info</mat-icon>
@@ -35,16 +35,16 @@
             </mat-card-header>
             <mat-card-content>
                 <div class="kpi-value">{{ stats.alertsCount }}</div>
-                <p>Véhicules nécessitant attention</p>
+                <p>{{ 'PREDICTIVE_DASHBOARD.VEHICLES_NEEDING_ATTENTION' | translate }}</p>
             </mat-card-content>
         </mat-card>
 
         <mat-card class="kpi-card vehicle-card">
             <mat-card-header>
                 <mat-icon mat-card-avatar>directions_car</mat-icon>
-                <mat-card-title>Véhicules Suivis</mat-card-title>
+                <mat-card-title>{{ 'PREDICTIVE_DASHBOARD.TRACKED_VEHICLES' | translate }}</mat-card-title>
                 <mat-card-subtitle>
-                    Total Flotte
+                    {{ 'PREDICTIVE_DASHBOARD.TOTAL_FLEET' | translate }}
                     <mat-icon class="info-icon"
                         matTooltip="Nombre total de véhicules actifs éligibles au programme de maintenance prédictive (hors 'Vendu' ou 'Rebut')."
                         matTooltipClass="custom-tooltip-white">info</mat-icon>
@@ -52,14 +52,14 @@
             </mat-card-header>
             <mat-card-content>
                 <div class="kpi-value">{{ stats.totalVehicles }}</div>
-                <p>Analysés par l'algorithme</p>
+                <p>{{ 'PREDICTIVE_DASHBOARD.ANALYZED_BY_ALGO' | translate }}</p>
             </mat-card-content>
         </mat-card>
     </div>
 
     <!-- Alerts Section -->
     <div *ngIf="alerts.length > 0" class="alerts-section">
-        <h3>🚨 Alertes Prioritaires</h3>
+        <h3>🚨 {{ 'PREDICTIVE_DASHBOARD.PRIORITY_ALERTS' | translate }}</h3>
         <div class="alert-list">
             <mat-card *ngFor="let alert of alerts" class="alert-item" [class.high-severity]="alert.severity === 'high'">
                 <div class="alert-content">
@@ -69,7 +69,7 @@
                         <p>{{ alert.message }}</p>
                     </div>
                     <mat-chip-listbox>
-                        <mat-chip-option color="warn" selected>Urgent</mat-chip-option>
+                        <mat-chip-option color="warn" selected>{{ 'PLAN_MAINTENANCE.STATUS_URGENT' | translate }}</mat-chip-option>
                     </mat-chip-listbox>
                 </div>
             </mat-card>
@@ -78,30 +78,30 @@
 
     <!-- Predictions Table -->
     <div class="predictions-table">
-        <h3>📅 Prévisions de Maintenance</h3>
+        <h3>📅 {{ 'PREDICTIVE_DASHBOARD.MAINTENANCE_FORECASTS' | translate }}</h3>
         <table mat-table [dataSource]="predictions" class="mat-elevation-z2">
 
             <!-- Vehicule Column -->
             <ng-container matColumnDef="vehicule">
-                <th mat-header-cell *matHeaderCellDef> Véhicule </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'PREDICTIVE_DASHBOARD.COL_VEHICLE' | translate }} </th>
                 <td mat-cell *matCellDef="let element"> {{element.immatriculation}} </td>
             </ng-container>
 
             <!-- Current Km Column -->
             <ng-container matColumnDef="currentKm">
-                <th mat-header-cell *matHeaderCellDef> Km Actuel </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'PREDICTIVE_DASHBOARD.COL_CURRENT_KM' | translate }} </th>
                 <td mat-cell *matCellDef="let element"> {{element.currentKm | number}} km </td>
             </ng-container>
 
             <!-- Next Service Column -->
             <ng-container matColumnDef="nextService">
-                <th mat-header-cell *matHeaderCellDef> Prochain Service </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'PREDICTIVE_DASHBOARD.COL_NEXT_SERVICE' | translate }} </th>
                 <td mat-cell *matCellDef="let element"> {{element.nextServiceKm | number}} km </td>
             </ng-container>
 
             <!-- Estimated Date Column -->
             <ng-container matColumnDef="estimatedDate">
-                <th mat-header-cell *matHeaderCellDef> Date Estimée </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'PREDICTIVE_DASHBOARD.COL_ESTIMATED_DATE' | translate }} </th>
                 <td mat-cell *matCellDef="let element">
                     <strong>{{ formatDate(element.estimatedDate) }}</strong>
                 </td>
@@ -109,7 +109,7 @@
 
             <!-- Health Score Column -->
             <ng-container matColumnDef="health">
-                <th mat-header-cell *matHeaderCellDef> Santé </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'PREDICTIVE_DASHBOARD.COL_HEALTH' | translate }} </th>
                 <td mat-cell *matCellDef="let element">
                     <div class="health-indicator">
                         <mat-progress-bar mode="determinate" [value]="element.healthScore"
@@ -121,12 +121,12 @@
 
             <!-- Status Column -->
             <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Statut </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'PREDICTIVE_DASHBOARD.COL_STATUS' | translate }} </th>
                 <td mat-cell *matCellDef="let element">
-                    <span *ngIf="element.healthScore < 50" class="status-badge critical">Critique</span>
+                    <span *ngIf="element.healthScore < 50" class="status-badge critical">{{ 'MAINTENANCE.STATUS.CRITICAL' | translate }}</span>
                     <span *ngIf="element.healthScore >= 50 && element.healthScore < 80"
-                        class="status-badge warning">Attention</span>
-                    <span *ngIf="element.healthScore >= 80" class="status-badge ok">Bon</span>
+                        class="status-badge warning">{{ 'PREDICTIVE_DASHBOARD.STATUS_WARNING' | translate }}</span>
+                    <span *ngIf="element.healthScore >= 80" class="status-badge ok">{{ 'PREDICTIVE_DASHBOARD.STATUS_GOOD' | translate }}</span>
                 </td>
             </ng-container>
 

@@ -377,7 +377,10 @@
         "TABS": {
             "TRACKING": "Mileage Tracking & Deadlines",
             "PLANNING": "Planned Interventions",
-            "PREDICTIVE": "Predictive Maintenance"
+            "PREDICTIVE": "Predictive Maintenance",
+            "GLOBAL": "Global Tracking",
+            "WEEKLY": "Weekly Checklist",
+            "SMART_COST": "Smart Cost & Analytics"
         },
         "FILTERS": {
             "BASE": "Base",
@@ -472,7 +475,11 @@
         "IN": "In",
         "KM": "km",
         "EST": "Est:",
-        "DELAY_OF": "Overdue by"
+        "DELAY_OF": "Overdue by",
+        "CHECK_HEBDO": "Weekly Check",
+        "SERVICE": "Service",
+        "STATUS_VALIDATED": "Validated",
+        "HOW_IT_WORKS_PREDICTIVE_TEXT": "The tool automatically analyzes the <strong>actual average kilometers driven</strong> by each vehicle between previous services to predict the exact date of its next service.<br>It also monitors real fuel consumption via the logbook in the background, and generates an <strong>overconsumption alert</strong> (in purple or red) if the actual average exceeds the manufacturer's theoretical value by 20%."
     },
     "USERS": {
         "TITLE": "User Management",
@@ -1319,7 +1326,7 @@
     },
     "WEEKLY_CHECKLIST": {
         "HOW_IT_WORKS": "How Weekly Tracking Works",
-        "DESCRIPTION": "This tab centralizes the weekly safety inspections carried out by drivers from their mobile app. You can verify that each vehicle has been checked on time. Anomalies (brake problems, tires, leaks...) reported by drivers are directly visible to trigger a maintenance action.",
+        "DESCRIPTION": "This tab centralizes the weekly safety inspections carried out by drivers from their mobile app. You can verify that each vehicle has been checked on time. Anomalies (brakes, tires, leaks...) reported by drivers are directly visible to trigger a maintenance action.",
         "TITLE": "Weekly Checklist Tracking",
         "COL_VEHICLE": "VEHICLE",
         "COL_LAST_CHECK": "LAST CHECK",
@@ -1331,7 +1338,7 @@
     },
     "PLANNED_INTERVENTIONS": {
         "HOW_IT_WORKS": "How Planned Maintenance Works",
-        "DESCRIPTION": "This section lists all manual interventions and specific requests for unavailability for repair or verification. You can create, edit or delete these events. \"Completed\" statuses indicate that the intervention is closed and the vehicle is available again.",
+        "DESCRIPTION": "This section lists all manual interventions and specific requests for downtime for repair or verification. You can create, edit, or delete these events. \"Completed\" statuses indicate that the intervention is closed and the vehicle is available again.",
         "TITLE": "Maintenance History and Forecasts",
         "SEARCH": "Search for maintenance...",
         "COL_DATE": "DATE",
@@ -1343,7 +1350,7 @@
     },
     "SMART_COST_TAB": {
         "HOW_IT_WORKS": "How Smart Cost & Analytics Works",
-        "DESCRIPTION": "This section analyzes your fleet financially. It consolidates fuel, repair, insurance and acquisition costs to calculate the overall and unit cost per vehicle and per kilometer. Graphs help you identify the most expensive vehicles to maintain.",
+        "DESCRIPTION": "This section financially analyzes your fleet. It consolidates fuel, repair, insurance, and acquisition costs to calculate the overall and unit cost per vehicle and per kilometer. Charts help you identify the most expensive vehicles to maintain.",
         "SUBTITLE": "Financial and predictive analysis of your fleet (Last 30 Days)",
         "TOTAL_COST": "Total Cost",
         "LAST_30_DAYS": "Last 30 days",
@@ -1352,5 +1359,26 @@
         "BASED_ON": "Based on your future planned services (Km) and historical costs (Services A/B/C).",
         "RELIABILITY": "Reliability by Model",
         "BREAKDOWNS": "breakdowns"
+    },
+    "PREDICTIVE_DASHBOARD": {
+        "HOW_PREDICTIONS_WORK": "How Predictions Work",
+        "PARK_HEALTH": "Fleet Health",
+        "GLOBAL_SCORE": "Global Score",
+        "CRITICAL_ALERTS": "Critical Alerts",
+        "IMMINENT_MAINTENANCE": "Imminent Maintenance",
+        "VEHICLES_NEEDING_ATTENTION": "Vehicles needing attention",
+        "TRACKED_VEHICLES": "Tracked Vehicles",
+        "TOTAL_FLEET": "Total Fleet",
+        "ANALYZED_BY_ALGO": "Analyzed by algorithm",
+        "PRIORITY_ALERTS": "Priority Alerts",
+        "MAINTENANCE_FORECASTS": "Maintenance Forecasts",
+        "COL_VEHICLE": "VEHICLE",
+        "COL_CURRENT_KM": "CURRENT KM",
+        "COL_NEXT_SERVICE": "NEXT SERVICE",
+        "COL_ESTIMATED_DATE": "ESTIMATED DATE",
+        "COL_HEALTH": "HEALTH",
+        "COL_STATUS": "STATUS",
+        "STATUS_GOOD": "Good",
+        "STATUS_WARNING": "Warning"
     }
 }
