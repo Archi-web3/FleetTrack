@@ -435,30 +435,30 @@
             "NO_DATA": "Aucune maintenance planifiée."
         },
         "CONFIG": {
-            "TITLE": "Configuration de la Maintenance",
-            "EDIT_TITLE": "Modifier Configuration",
+            "TITLE": "Types de Service de Maintenance",
+            "EDIT_TITLE": "Modifier la Configuration",
             "NEW_TITLE": "Nouvelle Configuration",
             "FIELDS": {
                 "VEHICLE_TYPE": "Type de Véhicule",
-                "ROAD_CONDITIONS": "Conditions de Route",
-                "SERVICE_INTERVAL": "Intervalle Service Général",
-                "FUEL_QUALITY": "Qualité Carburant Attendue"
+                "ROAD_CONDITIONS": "Conditions Routières",
+                "SERVICE_INTERVAL": "Intervalle de Service Initial (Km)",
+                "FUEL_QUALITY": "Qualité du Carburant"
             },
             "TABLE": {
-                "TYPE": "Type",
+                "TYPE": "Type Véhicule",
                 "CONDITIONS": "Conditions",
-                "INTERVAL": "Intervalle",
+                "INTERVAL": "Intervalle Init.",
                 "ACTIONS": "Actions"
             },
-            "LIST_TITLE": "Configurations Existantes",
-            "INTERVALS": "Intervalles (km)",
-            "SEQUENCE_LABEL": "Séquence des services",
-            "SEQ_PREDEFINED": "Mode Prédéfini (A-B-A-C)",
-            "SEQ_CUSTOM": "Mode Personnalisé",
-            "CUSTOM_SEQ_TITLE": "Séquence Personnalisée",
-            "ADD_SERVICE": "Ajouter un service (ex: A, B, C...)",
-            "REPEAT_ORDER": "Ordre de répétition:",
-            "REPEAT_END": "➔ (Répéter)",
+            "LIST_TITLE": "Configurations Actuelles",
+            "INTERVALS": "Définition des Intervalles & Séquence",
+            "SEQUENCE_LABEL": "Type de Séquence",
+            "SEQ_PREDEFINED": "Séquence Standard (A ➔ B ➔ A ➔ C)",
+            "SEQ_CUSTOM": "Séquence Personnalisée",
+            "CUSTOM_SEQ_TITLE": "Séquence de Services",
+            "ADD_SERVICE": "Ajouter un service (ex: A, B, C)",
+            "REPEAT_ORDER": "Ordre de répétition :",
+            "REPEAT_END": "(Répétition)",
             "FUEL_QUALITY": "Qualité du carburant",
             "ROAD_MIXTE_URBAINE": "Route mixte/urbaine",
             "ROAD_GOUDRONNEE": "Route goudronnée",
@@ -469,23 +469,31 @@
             "FUEL_UNKNOWN": "Inconnue"
         },
         "TEMPLATES": {
-            "TITLE": "Types de Services & Templates",
-            "NEW_BTN": "Nouveau Type de Service",
-            "LIST_TITLE": "Services créés",
-            "EDIT_TITLE": "Modifier",
-            "NEW_TITLE": "Nouveau",
+            "TITLE": "Gestion des Modèles de Checklists",
+            "NEW_BTN": "Nouveau Modèle",
+            "LIST_TITLE": "Modèles Disponibles",
+            "EDIT_TITLE": "Modifier le Modèle",
+            "NEW_TITLE": "Nouveau Modèle",
             "FIELDS": {
-                "NAME": "Nom du Service (ex: Service A)",
+                "NAME": "Nom du Modèle",
                 "TYPE": "Type",
+                "ESTIMATED_COST": "Coût estimé",
+                "TASKS": "Tâches",
                 "ACTIVE": "Actif"
             },
             "TASKS": {
-                "TITLE": "Tâches",
+                "TITLE": "TÂCHES",
+                "ADD": "Ajouter une tâche",
                 "CATEGORY": "Catégorie",
-                "DESCRIPTION": "Description",
-                "MANUAL_PAGE": "N° Page Manuel"
+                "DESCRIPTION": "Description de la tâche",
+                "REF_PAGE": "Page Réf.",
+                "DELETE": "Supprimer cette tâche",
+                "EMPTY": "Aucune tâche pour le moment."
             },
-            "ADD_TASK": "Ajouter Tâche"
+            "ADD_TASK": "Ajouter Tâche",
+            "MODAL": {
+                "GENERAL_INFO": "INFORMATIONS GÉNÉRALES"
+            }
         },
         "WEEKLY": {
             "TITLE": "Suivi des Checklists Hebdomadaires",
@@ -571,6 +579,31 @@
             "CHAUFFEUR": "Chauffeur",
             "TECHNICIEN": "Technicien",
             "UTILISATEUR": "Utilisateur"
+        },
+        "FORM": {
+            "NAME": "Nom",
+            "FIRSTNAME": "Prénom",
+            "EMPLOYEE_ID": "ID Employé",
+            "PHONE": "Téléphone",
+            "EMAIL": "Email",
+            "PASSWORD": "Mot de passe",
+            "NEW_PASSWORD": "Nouveau mot de passe",
+            "PROFILE": "Profil",
+            "AUTO_MANAGE_SECURITY": "Gérer automatiquement le niveau de sécurité",
+            "SECURITY_LEVEL": "Niveau de sécurité",
+            "SECURITY_HINT": "Niveau requis pour valider les déplacements",
+            "COUNTRY": "Pays",
+            "BASE": "Base",
+            "PROJECT": "Projet",
+            "PROJECT_HINT": "Optionnel: Assigner l'utilisateur à un projet spécifique"
+        },
+        "DRIVER_INFO": {
+            "TITLE": "Informations Chauffeur",
+            "LICENSE": "Numéro de Permis",
+            "ECO_DRIVING": "Formation Eco-Conduite",
+            "DATE": "Date de formation",
+            "ASSIGNED_VEHICLE": "Véhicule Attitré",
+            "AVAILABLE": "Disponible"
         }
     },
     "DRIVERS": {

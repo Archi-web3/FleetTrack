@@ -435,35 +435,35 @@
             "NO_DATA": "No planned maintenance."
         },
         "CONFIG": {
-            "TITLE": "Maintenance Configuration",
+            "TITLE": "Maintenance Service Types",
             "EDIT_TITLE": "Edit Configuration",
             "NEW_TITLE": "New Configuration",
             "FIELDS": {
                 "VEHICLE_TYPE": "Vehicle Type",
                 "ROAD_CONDITIONS": "Road Conditions",
-                "SERVICE_INTERVAL": "General Service Interval",
-                "FUEL_QUALITY": "Expected Fuel Quality"
+                "SERVICE_INTERVAL": "Initial Service Interval (Km)",
+                "FUEL_QUALITY": "Fuel Quality"
             },
             "TABLE": {
-                "TYPE": "Type",
+                "TYPE": "Vehicle Type",
                 "CONDITIONS": "Conditions",
-                "INTERVAL": "Interval",
+                "INTERVAL": "Init. Interval",
                 "ACTIONS": "Actions"
             },
-            "LIST_TITLE": "Existing Configurations",
-            "INTERVALS": "Intervals (km)",
-            "SEQUENCE_LABEL": "Service Sequence",
-            "SEQ_PREDEFINED": "Predefined Mode (A-B-A-C)",
-            "SEQ_CUSTOM": "Custom Mode",
-            "CUSTOM_SEQ_TITLE": "Custom Sequence",
-            "ADD_SERVICE": "Add a service (e.g., A, B, C...)",
-            "REPEAT_ORDER": "Repeat order:",
-            "REPEAT_END": "➔ (Repeat)",
+            "LIST_TITLE": "Current Configurations",
+            "INTERVALS": "Interval Definition & Sequence",
+            "SEQUENCE_LABEL": "Sequence Type",
+            "SEQ_PREDEFINED": "Standard Sequence (A ➔ B ➔ A ➔ C)",
+            "SEQ_CUSTOM": "Custom Sequence",
+            "CUSTOM_SEQ_TITLE": "Service Sequence",
+            "ADD_SERVICE": "Add service (e.g. A, B, C)",
+            "REPEAT_ORDER": "Repetition order:",
+            "REPEAT_END": "(Repeat)",
             "FUEL_QUALITY": "Fuel Quality",
-            "ROAD_MIXTE_URBAINE": "Mixed/Urban road",
-            "ROAD_GOUDRONNEE": "Paved road",
-            "ROAD_MIXTE_PISTE": "Mixed road + dirt",
-            "ROAD_PISTE_DIFFICILE": "100% difficult dirt road",
+            "ROAD_MIXTE_URBAINE": "Mixed/Urban Road",
+            "ROAD_GOUDRONNEE": "Paved Road",
+            "ROAD_MIXTE_PISTE": "Mixed Paved + Dirt",
+            "ROAD_PISTE_DIFFICILE": "100% Difficult Dirt",
             "FUEL_GOOD": "Good",
             "FUEL_BAD": "Bad",
             "FUEL_UNKNOWN": "Unknown"
@@ -477,15 +477,23 @@
             "FIELDS": {
                 "NAME": "Template Name",
                 "TYPE": "Type",
+                "ESTIMATED_COST": "Estimated Cost",
+                "TASKS": "Tasks",
                 "ACTIVE": "Active"
             },
             "TASKS": {
-                "TITLE": "Tasks",
+                "TITLE": "TASKS",
+                "ADD": "Add a task",
                 "CATEGORY": "Category",
-                "DESCRIPTION": "Description",
-                "MANUAL_PAGE": "Manual Page No."
+                "DESCRIPTION": "Task description",
+                "REF_PAGE": "Ref. Page",
+                "DELETE": "Delete this task",
+                "EMPTY": "No task for the moment."
             },
-            "ADD_TASK": "Add Task"
+            "ADD_TASK": "Add Task",
+            "MODAL": {
+                "GENERAL_INFO": "GENERAL INFORMATION"
+            }
         },
         "WEEKLY": {
             "TITLE": "Weekly Checklist Tracking",
@@ -571,6 +579,31 @@
             "CHAUFFEUR": "Driver",
             "TECHNICIEN": "Technician",
             "UTILISATEUR": "User"
+        },
+        "FORM": {
+            "NAME": "Last Name",
+            "FIRSTNAME": "First Name",
+            "EMPLOYEE_ID": "Employee ID",
+            "PHONE": "Phone",
+            "EMAIL": "Email",
+            "PASSWORD": "Password",
+            "NEW_PASSWORD": "New Password",
+            "PROFILE": "Profile",
+            "AUTO_MANAGE_SECURITY": "Auto-manage security level",
+            "SECURITY_LEVEL": "Security Level",
+            "SECURITY_HINT": "Required level to validate movements",
+            "COUNTRY": "Country",
+            "BASE": "Base",
+            "PROJECT": "Project",
+            "PROJECT_HINT": "Optional: Assign user to a specific project"
+        },
+        "DRIVER_INFO": {
+            "TITLE": "Driver Information",
+            "LICENSE": "License Number",
+            "ECO_DRIVING": "Eco-Driving Training",
+            "DATE": "Training Date",
+            "ASSIGNED_VEHICLE": "Assigned Vehicle",
+            "AVAILABLE": "Available"
         }
     },
     "DRIVERS": {

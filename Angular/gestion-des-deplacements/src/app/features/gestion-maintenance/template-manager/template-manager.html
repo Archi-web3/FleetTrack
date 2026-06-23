@@ -43,7 +43,7 @@
 
                 <!-- Cost Column -->
                 <ng-container matColumnDef="coutParDefaut">
-                    <th mat-header-cell *matHeaderCellDef>Coût estimé</th>
+                    <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TEMPLATES.FIELDS.ESTIMATED_COST' | translate }}</th>
                     <td mat-cell *matCellDef="let tmpl">
                         <span class="tmpl-badge cost-badge" *ngIf="tmpl.coutParDefaut">{{ tmpl.coutParDefaut }} €</span>
                     </td>
@@ -51,15 +51,15 @@
 
                 <!-- Tasks Column -->
                 <ng-container matColumnDef="taches">
-                    <th mat-header-cell *matHeaderCellDef>Tâches</th>
+                    <th mat-header-cell *matHeaderCellDef>{{ 'MAINTENANCE.TEMPLATES.FIELDS.TASKS' | translate }}</th>
                     <td mat-cell *matCellDef="let tmpl">
-                        <span class="tmpl-badge task-badge">{{ tmpl.taches.length }} tâches</span>
+                        <span class="tmpl-badge task-badge">{{ tmpl.taches.length }} {{ 'MAINTENANCE.TEMPLATES.FIELDS.TASKS' | translate | lowercase }}</span>
                     </td>
                 </ng-container>
 
                 <!-- Actions Column -->
                 <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Actions</th>
+                    <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
                     <td mat-cell *matCellDef="let tmpl">
                         <button mat-icon-button color="primary" (click)="selectTemplate(tmpl)" style="margin-right: 8px;">
                             <mat-icon>edit</mat-icon>
@@ -86,7 +86,7 @@
         <mat-dialog-content class="custom-scrollbar">
             <form [formGroup]="templateForm" class="modern-form">
                 <div class="form-section">
-                    <div class="section-title">Informations Générales</div>
+                    <div class="section-title">{{ 'MAINTENANCE.TEMPLATES.MODAL.GENERAL_INFO' | translate }}</div>
                     <div class="form-row flex-wrap">
                         <mat-form-field appearance="outline" class="flex-2">
                             <mat-label>{{ 'MAINTENANCE.TEMPLATES.FIELDS.NAME' | translate }}</mat-label>
@@ -104,7 +104,7 @@
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="flex-1" style="max-width: 150px;">
-                            <mat-label>Coût estimé</mat-label>
+                            <mat-label>{{ 'MAINTENANCE.TEMPLATES.FIELDS.ESTIMATED_COST' | translate }}</mat-label>
                             <input matInput type="number" formControlName="coutParDefaut">
                             <span matTextSuffix>€</span>
                         </mat-form-field>
@@ -119,7 +119,7 @@
                     <div class="section-header-flex">
                         <div class="section-title" style="margin: 0;">{{ 'MAINTENANCE.TEMPLATES.TASKS.TITLE' | translate }} <span class="badge">{{ taches.length }}</span></div>
                         <button mat-stroked-button color="primary" type="button" (click)="addTask()">
-                            <mat-icon>add</mat-icon> Ajouter une tâche
+                            <mat-icon>add</mat-icon> {{ 'MAINTENANCE.TEMPLATES.TASKS.ADD' | translate }}
                         </button>
                     </div>
 
@@ -142,17 +142,17 @@
                             </mat-form-field>
 
                             <mat-form-field appearance="outline" class="task-page dense-field">
-                                <mat-label>Page Réf.</mat-label>
+                                <mat-label>{{ 'MAINTENANCE.TEMPLATES.TASKS.REF_PAGE' | translate }}</mat-label>
                                 <input matInput formControlName="numeroTacheManuel">
                             </mat-form-field>
 
-                            <button mat-icon-button color="warn" type="button" (click)="removeTask(i)" class="task-delete" matTooltip="Supprimer cette tâche">
+                            <button mat-icon-button color="warn" type="button" (click)="removeTask(i)" class="task-delete" [matTooltip]="'MAINTENANCE.TEMPLATES.TASKS.DELETE' | translate">
                                 <mat-icon>delete_outline</mat-icon>
                             </button>
                         </div>
                         
                         <div *ngIf="taches.length === 0" class="empty-tasks">
-                            Aucune tâche pour le moment.
+                            {{ 'MAINTENANCE.TEMPLATES.TASKS.EMPTY' | translate }}
                         </div>
                     </div>
                 </div>

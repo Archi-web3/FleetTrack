@@ -11,6 +11,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MaintenanceService } from '../../../core/services/maintenance.service';
@@ -35,6 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
         MatDialogModule,
         MatTableModule,
         MatAutocompleteModule,
+        MatTooltipModule,
         TranslateModule
     ],
     templateUrl: './template-manager.html',
