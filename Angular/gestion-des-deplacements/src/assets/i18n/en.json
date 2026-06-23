@@ -46,7 +46,8 @@
         "LEVEL": "Level",
         "UNKNOWN": "Unknown",
         "ADD": "Add",
-        "UPDATE": "Update"
+        "UPDATE": "Update",
+        "SEARCH": "Search"
     },
     "PROFILES": {
         "SuperAdmin": "Super Admin",
@@ -1392,7 +1393,7 @@
         "COLUMNS": "Displayed columns",
         "NAME": "Name",
         "CODE": "Code",
-        "TITLE": "Country Management",
+        "TITLE": "Countries Management",
         "NEW_BTN": "NEW COUNTRY",
         "SEARCH": "Search...",
         "TABLE": {
@@ -1402,10 +1403,10 @@
             "COL_ACTIONS": "Actions"
         },
         "MODAL": {
-            "EDIT_TITLE": "Edit Country",
-            "NEW_TITLE": "Add a Country",
+            "EDIT_TITLE": "Edit country",
+            "NEW_TITLE": "Add country",
             "NAME": "Country Name",
-            "CODE": "Code (e.g. USA, UK)",
+            "CODE": "Code (ex: RDC, RCA)",
             "CURRENCY": "Main Currency",
             "BTN_UPDATE": "Update",
             "BTN_ADD": "Add"
@@ -1725,6 +1726,42 @@
             "COL_ACTIONS": "Actions",
             "BTN_PLAN": "Plan / Perform",
             "LOADING": "Loading maintenance plan..."
+        }
+    },
+    "ADMIN_PAYS_BASES": {
+        "TITLE": "Countries & Bases Management",
+        "DESC": "Manage the platform's geographical structure here. You can add new countries and define the operational bases attached to them.",
+        "PAYS_TITLE": "Countries (Missions)",
+        "BTN_PAYS": "COUNTRY",
+        "SEARCH_PAYS": "Search a country...",
+        "TABLE_PAYS": {
+            "NOM": "Name",
+            "CODE": "Code",
+            "DEVISE": "Currency",
+            "ACTIONS": "Actions"
+        },
+        "BASES_TITLE": "Bases for",
+        "BTN_BASE": "BASE",
+        "SEARCH_BASE": "Search a base...",
+        "TABLE_BASES": {
+            "NOM": "Base Name",
+            "CODE": "Internal Code",
+            "ACTIONS": "Actions"
+        },
+        "NO_PAYS_TITLE": "No Country Selected",
+        "NO_PAYS_DESC": "Select a country from the table on the left to view and manage its bases.",
+        "MODAL_PAYS": {
+            "EDIT": "Edit Country",
+            "NEW": "New Country",
+            "NAME": "Country Name",
+            "CODE": "Code (ex: RDC)",
+            "CURRENCY": "Currency"
+        },
+        "MODAL_BASE": {
+            "EDIT": "Edit Base",
+            "NEW": "New Base",
+            "NAME": "Base Name",
+            "CODE": "Internal Code (Optional)"
         }
     }
 }

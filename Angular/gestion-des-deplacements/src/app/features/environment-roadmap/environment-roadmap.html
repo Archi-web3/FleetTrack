@@ -1,7 +1,14 @@
 <div class="env-container">
-    <div class="header">
+    <app-info-banner bannerId="env-roadmap" [title]="'ENVIRONMENT.TITLE' | translate">
+        Suivez ici les indicateurs environnementaux et la trajectoire de réduction des émissions pour cette base. Vous pouvez consulter le guide méthodologique pour comprendre le calcul de l'Indice d'Activité Pondéré (IAP).
+    </app-info-banner>
+
+    <div class="header" style="margin-top: 15px;">
         <div class="header-left">
-            <h1><mat-icon>eco</mat-icon> {{ 'ENVIRONMENT.TITLE' | translate }}</h1>
+            <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                <mat-icon style="color: var(--primary-color);">eco</mat-icon>
+                {{ 'ENVIRONMENT.TITLE' | translate }}
+            </h2>
             <!-- GUIDE BUTTON -->
             <button mat-stroked-button color="primary" (click)="showGuide = !showGuide">
                 <mat-icon>menu_book</mat-icon> {{ 'ENVIRONMENT.GUIDE_BTN' | translate }}

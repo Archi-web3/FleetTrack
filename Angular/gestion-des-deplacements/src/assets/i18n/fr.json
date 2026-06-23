@@ -46,7 +46,8 @@
         "LEVEL": "Niveau",
         "UNKNOWN": "Inconnu",
         "ADD": "Ajouter",
-        "UPDATE": "Mettre à jour"
+        "UPDATE": "Mettre à jour",
+        "SEARCH": "Rechercher"
     },
     "PROFILES": {
         "SuperAdmin": "Super Admin",
@@ -1725,6 +1726,42 @@
             "COL_ACTIONS": "Actions",
             "BTN_PLAN": "Planifier / Effectuer",
             "LOADING": "Chargement du plan de maintenance..."
+        }
+    },
+    "ADMIN_PAYS_BASES": {
+        "TITLE": "Gestion des Pays & Bases",
+        "DESC": "Gérez ici l'arborescence géographique de la plateforme. Vous pouvez ajouter de nouveaux pays et définir les bases opérationnelles qui y sont rattachées.",
+        "PAYS_TITLE": "Pays (Missions)",
+        "BTN_PAYS": "PAYS",
+        "SEARCH_PAYS": "Rechercher un pays...",
+        "TABLE_PAYS": {
+            "NOM": "Nom",
+            "CODE": "Code",
+            "DEVISE": "Devise",
+            "ACTIONS": "Actions"
+        },
+        "BASES_TITLE": "Bases pour",
+        "BTN_BASE": "BASE",
+        "SEARCH_BASE": "Rechercher une base...",
+        "TABLE_BASES": {
+            "NOM": "Nom de la Base",
+            "CODE": "Code Interne",
+            "ACTIONS": "Actions"
+        },
+        "NO_PAYS_TITLE": "Aucun Pays Sélectionné",
+        "NO_PAYS_DESC": "Sélectionnez un pays dans le tableau de gauche pour voir et gérer ses bases.",
+        "MODAL_PAYS": {
+            "EDIT": "Modifier le pays",
+            "NEW": "Nouveau pays",
+            "NAME": "Nom du pays",
+            "CODE": "Code (ex: RDC)",
+            "CURRENCY": "Devise"
+        },
+        "MODAL_BASE": {
+            "EDIT": "Modifier la base",
+            "NEW": "Nouvelle base",
+            "NAME": "Nom de la base",
+            "CODE": "Code Interne (Optionnel)"
         }
     }
 }

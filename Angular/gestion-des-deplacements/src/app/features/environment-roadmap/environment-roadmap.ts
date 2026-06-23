@@ -13,6 +13,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EnvironmentService } from '../../core/services/environment.service';
+import { InfoBannerComponent } from '../../core/info-banner/info-banner';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { TranslateModule } from '@ngx-translate/core';
@@ -26,7 +27,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule, MatButtonModule, MatIconModule, MatTableModule,
     MatExpansionModule, MatSnackBarModule, MatTooltipModule,
     BaseChartDirective,
-    TranslateModule
+    TranslateModule,
+    InfoBannerComponent
   ],
   templateUrl: './environment-roadmap.html',
   styleUrls: ['./environment-roadmap.scss']

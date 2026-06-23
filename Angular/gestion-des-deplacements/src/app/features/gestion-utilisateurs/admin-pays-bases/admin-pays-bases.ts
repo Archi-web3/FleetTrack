@@ -16,6 +16,7 @@ import { AdminService } from '../../../core/services/admin.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { PermissionsService } from '../../../core/services/permissions.service';
 import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admin-pays-bases',
@@ -34,7 +35,8 @@ import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
     MatDialogModule,
     MatTooltipModule,
     MatCardModule,
-    InfoBannerComponent
+    InfoBannerComponent,
+    TranslateModule
   ],
   templateUrl: './admin-pays-bases.html',
   styleUrls: ['./admin-pays-bases.scss']

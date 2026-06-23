@@ -1,11 +1,11 @@
-<app-info-banner bannerId="pays-bases" title="Gestion des Pays & Bases">
-  Gérez ici l'arborescence géographique de la plateforme. Vous pouvez ajouter de nouveaux pays et définir les bases opérationnelles qui y sont rattachées. L'accès à ces options dépend de vos droits d'administration.
+<app-info-banner bannerId="pays-bases" [title]="'ADMIN_PAYS_BASES.TITLE' | translate">
+  {{ 'ADMIN_PAYS_BASES.DESC' | translate }}
 </app-info-banner>
 
 <div class="page-header-actions" style="margin-bottom: 20px;">
   <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
     <mat-icon style="color: var(--primary-color);">public</mat-icon>
-    Gestion des Pays et Bases
+    {{ 'ADMIN_PAYS_BASES.TITLE' | translate }}
   </h2>
 </div>
 
@@ -14,39 +14,39 @@
   <!-- TABLE PAYS -->
   <div class="table-container" style="flex: 1; min-width: 400px; padding: 15px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-      <h3 style="margin: 0; color: #4b5563; font-weight: 600;">Pays (Missions)</h3>
+      <h3 style="margin: 0; color: #4b5563; font-weight: 600;">{{ 'ADMIN_PAYS_BASES.PAYS_TITLE' | translate }}</h3>
       <button mat-flat-button color="primary" (click)="openPaysModal()" *ngIf="perms.hasPermission('admin_geo', 'manage_countries')">
-        <mat-icon>add</mat-icon> PAYS
+        <mat-icon>add</mat-icon> {{ 'ADMIN_PAYS_BASES.BTN_PAYS' | translate }}
       </button>
     </div>
 
     <div class="custom-search-input" style="width: 100%; margin-bottom: 15px;">
       <mat-icon>search</mat-icon>
-      <input type="text" (keyup)="applyPaysFilter($event)" placeholder="Rechercher un pays...">
+      <input type="text" (keyup)="applyPaysFilter($event)" [placeholder]="'ADMIN_PAYS_BASES.SEARCH_PAYS' | translate">
     </div>
 
     <div class="table-responsive">
       <table mat-table [dataSource]="paysDataSource" style="width: 100%;">
         
         <ng-container matColumnDef="nom">
-          <th mat-header-cell *matHeaderCellDef> Nom </th>
+          <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN_PAYS_BASES.TABLE_PAYS.NOM' | translate }} </th>
           <td mat-cell *matCellDef="let element" (click)="onPaysSelect(element)" style="cursor: pointer;"> 
             <strong [style.color]="selectedPays?._id === element._id ? 'var(--primary-color)' : 'inherit'">{{element.nom}}</strong> 
           </td>
         </ng-container>
 
         <ng-container matColumnDef="code">
-          <th mat-header-cell *matHeaderCellDef> Code </th>
+          <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN_PAYS_BASES.TABLE_PAYS.CODE' | translate }} </th>
           <td mat-cell *matCellDef="let element" (click)="onPaysSelect(element)" style="cursor: pointer;"> {{element.code}} </td>
         </ng-container>
 
         <ng-container matColumnDef="devise">
-          <th mat-header-cell *matHeaderCellDef> Devise </th>
+          <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN_PAYS_BASES.TABLE_PAYS.DEVISE' | translate }} </th>
           <td mat-cell *matCellDef="let element" (click)="onPaysSelect(element)" style="cursor: pointer;"> {{element.devise}} </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef style="width: 100px;"> Actions </th>
+          <th mat-header-cell *matHeaderCellDef style="width: 100px;"> {{ 'ADMIN_PAYS_BASES.TABLE_PAYS.ACTIONS' | translate }} </th>
           <td mat-cell *matCellDef="let element">
             <div class="action-buttons" *ngIf="perms.hasPermission('admin_geo', 'manage_countries')">
               <button mat-icon-button color="primary" (click)="openPaysModal(element); $event.stopPropagation()">
@@ -71,32 +71,32 @@
   <div class="table-container" style="flex: 1; min-width: 400px; padding: 15px;">
     <ng-container *ngIf="selectedPays; else noPaysSelected">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 style="margin: 0; color: #4b5563; font-weight: 600;">Bases pour {{ selectedPays.nom }}</h3>
+        <h3 style="margin: 0; color: #4b5563; font-weight: 600;">{{ 'ADMIN_PAYS_BASES.BASES_TITLE' | translate }} {{ selectedPays.nom }}</h3>
         <button mat-flat-button color="accent" (click)="openBaseModal()" *ngIf="perms.hasPermission('admin_geo', 'manage_bases')">
-          <mat-icon>add</mat-icon> BASE
+          <mat-icon>add</mat-icon> {{ 'ADMIN_PAYS_BASES.BTN_BASE' | translate }}
         </button>
       </div>
 
       <div class="custom-search-input" style="width: 100%; margin-bottom: 15px;">
         <mat-icon>search</mat-icon>
-        <input type="text" (keyup)="applyBasesFilter($event)" placeholder="Rechercher une base...">
+        <input type="text" (keyup)="applyBasesFilter($event)" [placeholder]="'ADMIN_PAYS_BASES.SEARCH_BASE' | translate">
       </div>
 
       <div class="table-responsive">
         <table mat-table [dataSource]="basesDataSource" style="width: 100%;">
           
           <ng-container matColumnDef="nom">
-            <th mat-header-cell *matHeaderCellDef> Nom de la Base </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN_PAYS_BASES.TABLE_BASES.NOM' | translate }} </th>
             <td mat-cell *matCellDef="let element"> <strong>{{element.nom}}</strong> </td>
           </ng-container>
 
           <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef> Code Interne </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN_PAYS_BASES.TABLE_BASES.CODE' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.code || '-'}} </td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef style="width: 100px;"> Actions </th>
+            <th mat-header-cell *matHeaderCellDef style="width: 100px;"> {{ 'ADMIN_PAYS_BASES.TABLE_BASES.ACTIONS' | translate }} </th>
             <td mat-cell *matCellDef="let element">
               <div class="action-buttons" *ngIf="perms.hasPermission('admin_geo', 'manage_bases')">
                 <button mat-icon-button color="primary" (click)="openBaseModal(element)">
@@ -119,8 +119,8 @@
     <ng-template #noPaysSelected>
       <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
         <mat-icon style="font-size: 64px; width: 64px; height: 64px; margin-bottom: 20px;">domain</mat-icon>
-        <h3>Aucun Pays Sélectionné</h3>
-        <p>Sélectionnez un pays dans le tableau de gauche pour voir et gérer ses bases.</p>
+        <h3>{{ 'ADMIN_PAYS_BASES.NO_PAYS_TITLE' | translate }}</h3>
+        <p>{{ 'ADMIN_PAYS_BASES.NO_PAYS_DESC' | translate }}</p>
       </div>
     </ng-template>
   </div>
@@ -134,7 +134,7 @@
     <div class="custom-modal-header">
       <h2>
         <mat-icon>public</mat-icon>
-        {{ editingPays ? 'Modifier le pays' : 'Nouveau pays' }}
+        {{ editingPays ? ('ADMIN_PAYS_BASES.MODAL_PAYS.EDIT' | translate) : ('ADMIN_PAYS_BASES.MODAL_PAYS.NEW' | translate) }}
       </h2>
       <button class="custom-modal-close-btn" (click)="closePaysModal()">
         <mat-icon>close</mat-icon>
@@ -144,16 +144,16 @@
     <div class="custom-modal-body">
       <form (ngSubmit)="savePays()" #paysForm="ngForm" id="paysForm">
         <div class="modern-form-group">
-          <label>Nom du pays</label>
+          <label>{{ 'ADMIN_PAYS_BASES.MODAL_PAYS.NAME' | translate }}</label>
           <input class="modern-input" type="text" name="paysNom" [(ngModel)]="newPays.nom" required>
         </div>
         <div class="modal-grid-2">
           <div class="modern-form-group">
-            <label>Code (ex: RDC)</label>
+            <label>{{ 'ADMIN_PAYS_BASES.MODAL_PAYS.CODE' | translate }}</label>
             <input class="modern-input" type="text" name="paysCode" [(ngModel)]="newPays.code" required>
           </div>
           <div class="modern-form-group">
-            <label>Devise</label>
+            <label>{{ 'ADMIN_PAYS_BASES.MODAL_PAYS.CURRENCY' | translate }}</label>
             <input class="modern-input" type="text" name="paysDevise" [(ngModel)]="newPays.devise" required>
           </div>
         </div>
@@ -162,10 +162,10 @@
     
     <div class="custom-modal-footer">
       <button class="custom-modal-btn-cancel" (click)="closePaysModal()">
-        <mat-icon>close</mat-icon> Annuler
+        <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
       </button>
       <button class="custom-modal-btn-submit" type="submit" form="paysForm" [disabled]="!paysForm.form.valid">
-        <mat-icon>check</mat-icon> {{ editingPays ? 'Mettre à jour' : 'Ajouter' }}
+        <mat-icon>check</mat-icon> {{ editingPays ? ('COMMON.SAVE' | translate) : ('COMMON.ADD' | translate) }}
       </button>
     </div>
   </div>
@@ -177,7 +177,7 @@
     <div class="custom-modal-header">
       <h2>
         <mat-icon>domain</mat-icon>
-        {{ editingBase ? 'Modifier la base' : 'Nouvelle base' }}
+        {{ editingBase ? ('ADMIN_PAYS_BASES.MODAL_BASE.EDIT' | translate) : ('ADMIN_PAYS_BASES.MODAL_BASE.NEW' | translate) }}
       </h2>
       <button class="custom-modal-close-btn" (click)="closeBaseModal()">
         <mat-icon>close</mat-icon>
@@ -187,11 +187,11 @@
     <div class="custom-modal-body">
       <form (ngSubmit)="saveBase()" #baseForm="ngForm" id="baseForm">
         <div class="modern-form-group">
-          <label>Nom de la base</label>
+          <label>{{ 'ADMIN_PAYS_BASES.MODAL_BASE.NAME' | translate }}</label>
           <input class="modern-input" type="text" name="baseNom" [(ngModel)]="newBase.nom" required>
         </div>
         <div class="modern-form-group">
-          <label>Code Interne (Optionnel)</label>
+          <label>{{ 'ADMIN_PAYS_BASES.MODAL_BASE.CODE' | translate }}</label>
           <input class="modern-input" type="text" name="baseCode" [(ngModel)]="newBase.code">
         </div>
       </form>
@@ -199,10 +199,10 @@
     
     <div class="custom-modal-footer">
       <button class="custom-modal-btn-cancel" (click)="closeBaseModal()">
-        <mat-icon>close</mat-icon> Annuler
+        <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
       </button>
       <button class="custom-modal-btn-submit" type="submit" form="baseForm" [disabled]="!baseForm.form.valid">
-        <mat-icon>check</mat-icon> {{ editingBase ? 'Mettre à jour' : 'Ajouter' }}
+        <mat-icon>check</mat-icon> {{ editingBase ? ('COMMON.SAVE' | translate) : ('COMMON.ADD' | translate) }}
       </button>
     </div>
   </div>

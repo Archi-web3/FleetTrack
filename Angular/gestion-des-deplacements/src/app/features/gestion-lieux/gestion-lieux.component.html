@@ -22,7 +22,7 @@
     <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px;">
       <mat-label>{{ 'PROJECTS.COLUMNS_LABEL' | translate }}</mat-label>
       <mat-select multiple [(ngModel)]="displayedColumns">
-        <mat-option *ngFor="let col of allColumns" [value]="col.def">{{ col.label }}</mat-option>
+        <mat-option *ngFor="let col of allColumns" [value]="col.def">{{ ('LOCATIONS.TABLE.COL_' + col.def.toUpperCase()) | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
 

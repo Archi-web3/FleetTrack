@@ -5,7 +5,7 @@
 
   <!-- En-tête avec titre, filtres et actions -->
   <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
-    <h2 style="margin: 0; font-size: 24px; color: #1e293b;">{{ 'USERS.TITLE' | translate }}</h2>
+    <h2 style="margin: 0; font-size: 24px; color: #1e293b;">{{ 'USERS.INFO.TITLE' | translate }}</h2>
     
     <div style="display: flex; gap: 15px; align-items: flex-end;">
       <!-- Toggle Views -->
@@ -24,9 +24,9 @@
       
       <!-- Filtre par profil -->
       <mat-form-field appearance="outline" style="width: 200px; margin-bottom: -22px;">
-        <mat-label>{{ 'USERS.ACTIONS.FILTER_PROFILE' | translate }}</mat-label>
+        <mat-label>{{ 'USERS.FILTER.PROFILE_LABEL' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedProfileFilter" (selectionChange)="filterByProfile()">
-          <mat-option value="">{{ 'USERS.ACTIONS.ALL_PROFILES' | translate }}</mat-option>
+          <mat-option value="">{{ 'USERS.FILTER.ALL_PROFILES' | translate }}</mat-option>
           <mat-option *ngFor="let profile of profiles" [value]="profile">
             {{ getProfileLabel(profile) }}
           </mat-option>
@@ -48,7 +48,7 @@
       <div class="custom-modal-header">
         <h2>
           <mat-icon>edit</mat-icon>
-          {{ selectedUser ? ('USERS.EDIT_TITLE' | translate) + ': ' + selectedUser.nom : ('USERS.CREATE_TITLE' | translate) }}
+          {{ selectedUser ? ('USERS.MODAL.EDIT_TITLE' | translate) + ': ' + selectedUser.nom : ('USERS.MODAL.NEW_TITLE' | translate) }}
         </h2>
         <button class="custom-modal-close-btn" (click)="closeUserModal()">
           <mat-icon>close</mat-icon>
@@ -60,12 +60,12 @@
         <!-- Formulaire de création d'utilisateur -->
       <form [hidden]="!!selectedUser" (ngSubmit)="addUser()" #userForm="ngForm">
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
-          <mat-label>{{ 'USERS.FORM.NAME' | translate }}</mat-label>
+          <mat-label>{{ 'USERS.MODAL.NAME' | translate }}</mat-label>
           <input matInput type="text" name="newUserName" [(ngModel)]="newUser.nom" [required]="!selectedUser">
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
-          <mat-label>{{ 'USERS.FORM.FIRSTNAME' | translate }}</mat-label>
+          <mat-label>{{ 'USERS.MODAL.SURNAME' | translate }}</mat-label>
           <input matInput type="text" name="newUserPrenom" [(ngModel)]="newUser.prenom"
             [required]="!selectedUser && newUser.profil === 'Chauffeur'">
         </mat-form-field>
@@ -82,17 +82,17 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
-          <mat-label>{{ 'USERS.FORM.EMAIL' | translate }}</mat-label>
+          <mat-label>{{ 'USERS.MODAL.EMAIL' | translate }}</mat-label>
           <input matInput type="email" name="newUserEmail" [(ngModel)]="newUser.email" [required]="!selectedUser" email>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
-          <mat-label>{{ 'USERS.FORM.PASSWORD' | translate }}</mat-label>
+          <mat-label>{{ 'USERS.MODAL.PASSWORD' | translate }}</mat-label>
           <input matInput type="password" name="newUserPassword" [(ngModel)]="newUser.motDePasse" [required]="!selectedUser">
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
-          <mat-label>{{ 'USERS.FORM.PROFILE' | translate }}</mat-label>
+          <mat-label>{{ 'USERS.MODAL.PROFILE' | translate }}</mat-label>
           <mat-select name="newUserProfile" [(ngModel)]="newUser.profil" (selectionChange)="onProfilChange()" [required]="!selectedUser">
             <mat-option *ngFor="let profile of profiles" [value]="profile">
               {{ getProfileLabel(profile) }}
