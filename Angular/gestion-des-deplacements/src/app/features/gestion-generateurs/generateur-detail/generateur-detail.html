@@ -2,36 +2,36 @@
   <div class="header-actions">
     <div style="display: flex; align-items: center; gap: 16px;">
       <button mat-icon-button routerLink="/gestion-generateurs"><mat-icon>arrow_back</mat-icon></button>
-      <h2>Détails du Générateur : {{generateur.marque}} {{generateur.modele}} ({{generateur.numeroSerie}})</h2>
+      <h2>{{ 'GENERATORS.DETAIL.TITLE' | translate }} {{generateur.marque}} {{generateur.modele}} ({{generateur.numeroSerie}})</h2>
     </div>
     <div style="display: flex; gap: 8px;">
       <button mat-flat-button color="primary" [routerLink]="['/gestion-generateurs/edit', generateur._id]">
-        <mat-icon>edit</mat-icon> Modifier
+        <mat-icon>edit</mat-icon> {{ 'GENERATORS.DETAIL.EDIT_BTN' | translate }}
       </button>
       <button mat-flat-button color="accent" [routerLink]="['/gestion-generateurs/intervention', generateur._id]">
-        <mat-icon>build</mat-icon> Nouvelle Intervention
+        <mat-icon>build</mat-icon> {{ 'GENERATORS.DETAIL.INTERVENTION_BTN' | translate }}
       </button>
     </div>
   </div>
 
-  <app-info-banner bannerId="generateur_detail" title="Détails et Historique du Générateur"></app-info-banner>
+  <app-info-banner bannerId="generateur_detail" [title]="'GENERATORS.DETAIL.BANNER_TITLE' | translate"></app-info-banner>
 
   <div class="stats-row">
     <mat-card class="stat-card">
       <mat-card-content>
-        <div class="stat-title">Heures de fonctionnement</div>
+        <div class="stat-title">{{ 'GENERATORS.DETAIL.HOURS' | translate }}</div>
         <div class="stat-value">{{generateur.heuresFonctionnement}} h</div>
       </mat-card-content>
     </mat-card>
     <mat-card class="stat-card">
       <mat-card-content>
-        <div class="stat-title">Consommation Théorique Moyenne</div>
+        <div class="stat-title">{{ 'GENERATORS.DETAIL.AVG_CONSUMPTION' | translate }}</div>
         <div class="stat-value">{{generateur.consommationTheorique | number:'1.1-2'}} L/h</div>
       </mat-card-content>
     </mat-card>
     <mat-card class="stat-card">
       <mat-card-content>
-        <div class="stat-title">Statut</div>
+        <div class="stat-title">{{ 'GENERATORS.DETAIL.STATUS' | translate }}</div>
         <div class="stat-value" [ngClass]="{'text-green': generateur.statut === 'Actif', 'text-red': generateur.statut !== 'Actif'}">{{generateur.statut}}</div>
       </mat-card-content>
     </mat-card>
@@ -45,34 +45,34 @@
         <!-- Formulaire d'ajout rapide de relevé -->
         <mat-card class="add-log-card">
           <mat-card-header>
-            <mat-card-title>Nouveau relevé Logbook</mat-card-title>
+            <mat-card-title>{{ 'GENERATORS.DETAIL.LOGBOOK_NEW_TITLE' | translate }}</mat-card-title>
           </mat-card-header>
           <mat-card-content style="padding-top: 16px;">
             <div style="display: flex; gap: 16px; align-items: center;">
               <mat-form-field appearance="outline" style="width: 150px;">
-                <mat-label>Date Relevé</mat-label>
+                <mat-label>{{ 'GENERATORS.DETAIL.LOGBOOK_DATE' | translate }}</mat-label>
                 <input matInput [matDatepicker]="picker" [(ngModel)]="newLogbook.dateReleve">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
               
               <mat-form-field appearance="outline" style="width: 120px;">
-                <mat-label>Heure Début</mat-label>
+                <mat-label>{{ 'GENERATORS.DETAIL.LOGBOOK_START' | translate }}</mat-label>
                 <input matInput type="number" [(ngModel)]="newLogbook.heureDebut">
               </mat-form-field>
               
               <mat-form-field appearance="outline" style="width: 120px;">
-                <mat-label>Heure Fin</mat-label>
+                <mat-label>{{ 'GENERATORS.DETAIL.LOGBOOK_END' | translate }}</mat-label>
                 <input matInput type="number" [(ngModel)]="newLogbook.heureFin">
               </mat-form-field>
 
               <mat-form-field appearance="outline" style="width: 150px;">
-                <mat-label>Carburant Ajouté (L)</mat-label>
+                <mat-label>{{ 'GENERATORS.DETAIL.LOGBOOK_FUEL' | translate }}</mat-label>
                 <input matInput type="number" [(ngModel)]="newLogbook.carburantAjoute">
               </mat-form-field>
 
               <button mat-flat-button color="primary" (click)="addLogbook()" style="height: 56px; margin-bottom: 22px;">
-                <mat-icon>save</mat-icon> Enregistrer
+                <mat-icon>save</mat-icon> {{ 'GENERATORS.DETAIL.LOGBOOK_SAVE' | translate }}
               </button>
             </div>
           </mat-card-content>
@@ -81,37 +81,37 @@
         <!-- Tableau Historique Logbook -->
         <table mat-table [dataSource]="logbooks" class="mat-elevation-z1" style="width: 100%; margin-top: 24px;">
           <ng-container matColumnDef="dateReleve">
-            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_DATE' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.dateReleve | date:'dd/MM/yyyy'}} </td>
           </ng-container>
 
           <ng-container matColumnDef="heureDebut">
-            <th mat-header-cell *matHeaderCellDef> Hr Début </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_START' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.heureDebut}} </td>
           </ng-container>
 
           <ng-container matColumnDef="heureFin">
-            <th mat-header-cell *matHeaderCellDef> Hr Fin </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_END' | translate }} </th>
             <td mat-cell *matCellDef="let element"> <strong>{{element.heureFin}}</strong> </td>
           </ng-container>
 
           <ng-container matColumnDef="dureeSession">
-            <th mat-header-cell *matHeaderCellDef> Durée (h) </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_DURATION' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.dureeSession}} h </td>
           </ng-container>
 
           <ng-container matColumnDef="carburantAjoute">
-            <th mat-header-cell *matHeaderCellDef> Ajout (L) </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_ADDED' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.carburantAjoute}} L </td>
           </ng-container>
 
           <ng-container matColumnDef="consommationLpH">
-            <th mat-header-cell *matHeaderCellDef> Conso (L/h) </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_CONSUMPTION' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.consommationLpH | number:'1.1-2'}} </td>
           </ng-container>
 
           <ng-container matColumnDef="utilisateur">
-            <th mat-header-cell *matHeaderCellDef> Par </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_BY' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.utilisateur?.nom}} {{element.utilisateur?.prenom}} </td>
           </ng-container>
 
@@ -122,16 +122,16 @@
     </mat-tab>
 
     <!-- ONGLET INTERVENTIONS -->
-    <mat-tab label="Historique des Interventions">
+    <mat-tab [label]="'GENERATORS.DETAIL.TAB_INTERVENTIONS' | translate">
       <div class="tab-content">
         <table mat-table [dataSource]="interventions" class="mat-elevation-z1" style="width: 100%;">
           <ng-container matColumnDef="dateIntervention">
-            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_DATE' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.dateIntervention | date:'dd/MM/yyyy'}} </td>
           </ng-container>
 
           <ng-container matColumnDef="typeIntervention">
-            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_TYPE' | translate }} </th>
             <td mat-cell *matCellDef="let element"> 
               <span [ngClass]="{'preventive-badge': element.typeIntervention === 'Préventive', 'curative-badge': element.typeIntervention === 'Curative'}">
                 {{element.typeIntervention}}
@@ -140,22 +140,22 @@
           </ng-container>
 
           <ng-container matColumnDef="frequence">
-            <th mat-header-cell *matHeaderCellDef> Fréquence </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_FREQUENCY' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.frequence ? element.frequence + ' Hrs' : 'N/A'}} </td>
           </ng-container>
 
           <ng-container matColumnDef="heuresActuelles">
-            <th mat-header-cell *matHeaderCellDef> Heures </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_HOURS' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.heuresActuelles}} h </td>
           </ng-container>
 
           <ng-container matColumnDef="nomIntervenant">
-            <th mat-header-cell *matHeaderCellDef> Intervenant </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_TECHNICIAN' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.nomIntervenant}} </td>
           </ng-container>
 
           <ng-container matColumnDef="statut">
-            <th mat-header-cell *matHeaderCellDef> Statut </th>
+            <th mat-header-cell *matHeaderCellDef> {{ 'GENERATORS.DETAIL.COL_STATUS' | translate }} </th>
             <td mat-cell *matCellDef="let element"> {{element.statut}} </td>
           </ng-container>
 
@@ -169,5 +169,5 @@
 </div>
 
 <div *ngIf="loading" style="text-align: center; padding: 40px;">
-  <p>Chargement des données du générateur...</p>
+  <p>{{ 'GENERATORS.DETAIL.LOADING' | translate }}</p>
 </div>

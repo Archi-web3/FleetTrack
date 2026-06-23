@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,7 +34,8 @@ import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
     MatDatepickerModule,
     MatNativeDateModule,
     RouterModule,
-    InfoBannerComponent
+    InfoBannerComponent,
+    TranslateModule
   ],
   templateUrl: './generateur-form.html',
   styleUrls: ['./generateur-form.css']

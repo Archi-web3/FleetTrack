@@ -2,16 +2,13 @@
   <div class="header-actions">
     <div style="display: flex; align-items: center; gap: 16px;">
       <button mat-icon-button routerLink="/gestion-generateurs"><mat-icon>arrow_back</mat-icon></button>
-      <h2>Guide de Maintenance Interne des Générateurs</h2>
+      <h2>{{ 'GENERATORS.GUIDE.TITLE' | translate }}</h2>
     </div>
   </div>
 
   <mat-card class="info-card">
     <mat-card-content>
-      <p>
-        Ce guide liste l'ensemble des tâches de maintenance à effectuer sur les générateurs et moteurs en fonction de leurs heures de fonctionnement. 
-        Lors de la création d'une intervention préventive, ces tâches seront automatiquement proposées sous forme de checklist à valider par le technicien.
-      </p>
+      <p>{{ 'GENERATORS.GUIDE.INFO' | translate }}</p>
     </mat-card-content>
   </mat-card>
 

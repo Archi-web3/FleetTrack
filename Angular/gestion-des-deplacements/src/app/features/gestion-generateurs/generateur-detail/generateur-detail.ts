@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -31,7 +32,8 @@ import { GenerateursService, Generateur } from '../../../core/services/generateu
     MatNativeDateModule,
     MatTabsModule,
     RouterModule,
-    InfoBannerComponent
+    InfoBannerComponent,
+    TranslateModule
   ],
   templateUrl: './generateur-detail.html',
   styleUrls: ['./generateur-detail.css']

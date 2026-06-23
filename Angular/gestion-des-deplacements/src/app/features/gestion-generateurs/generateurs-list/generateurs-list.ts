@@ -11,6 +11,7 @@ import { GenerateursService, Generateur } from '../../../core/services/generateu
 import { AuthService } from '../../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-generateurs-list',
@@ -24,7 +25,8 @@ import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
     MatChipsModule,
     MatTooltipModule,
     RouterModule,
-    InfoBannerComponent
+    InfoBannerComponent,
+    TranslateModule
   ],
   templateUrl: './generateurs-list.html',
   styleUrls: ['./generateurs-list.css']

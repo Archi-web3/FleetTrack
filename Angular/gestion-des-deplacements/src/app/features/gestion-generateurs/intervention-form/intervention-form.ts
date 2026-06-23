@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,7 +30,8 @@ import { GenerateursService, Generateur } from '../../../core/services/generateu
     MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ],
   templateUrl: './intervention-form.html',
   styleUrls: ['./intervention-form.css']
