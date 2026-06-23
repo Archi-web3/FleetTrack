@@ -449,7 +449,23 @@
                 "INTERVAL": "Intervalle",
                 "ACTIONS": "Actions"
             },
-            "LIST_TITLE": "Configurations Existantes"
+            "LIST_TITLE": "Configurations Existantes",
+            "INTERVALS": "Intervalles (km)",
+            "SEQUENCE_LABEL": "Séquence des services",
+            "SEQ_PREDEFINED": "Mode Prédéfini (A-B-A-C)",
+            "SEQ_CUSTOM": "Mode Personnalisé",
+            "CUSTOM_SEQ_TITLE": "Séquence Personnalisée",
+            "ADD_SERVICE": "Ajouter un service (ex: A, B, C...)",
+            "REPEAT_ORDER": "Ordre de répétition:",
+            "REPEAT_END": "➔ (Répéter)",
+            "FUEL_QUALITY": "Qualité du carburant",
+            "ROAD_MIXTE_URBAINE": "Route mixte/urbaine",
+            "ROAD_GOUDRONNEE": "Route goudronnée",
+            "ROAD_MIXTE_PISTE": "Mixte route + piste",
+            "ROAD_PISTE_DIFFICILE": "100% piste difficile",
+            "FUEL_GOOD": "Bonne",
+            "FUEL_BAD": "Mauvaise",
+            "FUEL_UNKNOWN": "Inconnue"
         },
         "TEMPLATES": {
             "TITLE": "Types de Services & Templates",
@@ -503,45 +519,57 @@
         "HOW_IT_WORKS_PREDICTIVE_TEXT": "L'outil analyse automatiquement la <strong>moyenne réelle de kilomètres parcourus</strong> par chaque véhicule entre ses anciens services pour prédire la date exacte de son prochain service.<br>Il surveille également en arrière-plan la consommation d'essence réelle via le logbook, et génère une <strong>alerte de surconsommation</strong> (en violet ou rouge) si la moyenne réelle dépasse de 20% la valeur théorique du constructeur."
     },
     "USERS": {
-        "TITLE": "Gestion des Utilisateurs",
-        "CREATE_TITLE": "Créer un nouvel utilisateur",
-        "EDIT_TITLE": "Modifier utilisateur",
-        "FORM": {
-            "NAME": "Nom",
-            "FIRSTNAME": "Prénom",
-            "EMPLOYEE_ID": "Numéro Employé",
-            "PHONE": "Numéro de téléphone",
-            "EMAIL": "Email",
-            "PASSWORD": "Mot de passe",
-            "NEW_PASSWORD": "Nouveau mot de passe (laisser vide si inchangé)",
-            "PROFILE": "Profil",
-            "SECURITY_LEVEL": "Niveau Validation Sécurité",
-            "SECURITY_HINT": "Niveau maximum que cet utilisateur peut valider",
-            "AUTO_MANAGE_SECURITY": "Lier automatiquement au niveau du profil",
-            "COUNTRY": "Pays",
-            "BASE": "Base d'affectation",
-            "PROJECT": "Projet/Programme",
-            "PROJECT_HINT": "Sélectionnez le code du projet"
+        "INFO": {
+            "TITLE": "Gestion des Utilisateurs",
+            "DESC": "Cette page vous permet de gérer les accès au système. Vous pouvez créer de nouveaux utilisateurs, leur affecter un rôle défini dans la Matrice, et leur attribuer un niveau de validation sécurité. Note: la liste des rôles disponibles dépend de vos propres droits."
         },
-        "DRIVER_INFO": {
-            "TITLE": "Informations Chauffeur",
-            "LICENSE": "Numéro de permis",
-            "ECO_DRIVING": "Formation éco-conduite",
-            "DATE": "Date de la formation",
-            "ASSIGNED_VEHICLE": "Véhicule attitré (optionnel)",
-            "AVAILABLE": "Disponible"
-        },
-        "ACTIONS": {
-            "CREATE": "Créer Utilisateur",
-            "UPDATE": "Mettre à jour",
-            "CANCEL": "Annuler",
-            "DELETE": "Supprimer",
-            "FILTER_PROFILE": "Filtrer par profil",
+        "FILTER": {
+            "PROFILE_LABEL": "Filtrer par profil",
             "ALL_PROFILES": "Tous les profils"
+        },
+        "NEW_BTN": "Nouveau",
+        "TABLE": {
+            "COL_NAME": "NOM & PRÉNOM",
+            "COL_PROFILE": "PROFIL",
+            "COL_LOCATION": "PAYS & BASE",
+            "COL_SECURITY": "SÉCURITÉ",
+            "COL_ACTIONS": "ACTIONS"
+        },
+        "LEVEL": "Niveau",
+        "ACTIONS": {
+            "UPDATE": "Modifier",
+            "DELETE": "Supprimer",
+            "LOGIN_AS": "Se connecter en tant que",
+            "LOG_HISTORY": "Historique",
+            "RESET_PASSWORD": "Réinitialiser mot de passe",
+            "DISABLE_LOGIN": "Désactiver l'accès"
         },
         "LIST": {
             "TITLE": "Utilisateurs existants",
-            "NO_DATA": "Aucun utilisateur enregistré."
+            "NO_DATA": "Aucun utilisateur trouvé"
+        },
+        "MODAL": {
+            "EDIT_TITLE": "Modifier l'utilisateur",
+            "NEW_TITLE": "Ajouter un utilisateur",
+            "NAME": "Nom",
+            "SURNAME": "Prénom",
+            "EMAIL": "Email",
+            "PASSWORD": "Mot de passe",
+            "PASSWORD_HINT": "Laissez vide pour conserver l'actuel",
+            "PROFILE": "Profil",
+            "SECURITY_LEVEL": "Niveau de Sécurité",
+            "COUNTRY": "Pays",
+            "BASE": "Base",
+            "GLOBAL_ACCESS": "Accès global (tous les pays)"
+        },
+        "PROFILES": {
+            "SUPERADMIN": "Super Admin",
+            "ADMIN": "Admin",
+            "SUPERVISEUR SÉCURITÉ": "Superviseur Sécurité",
+            "SUPERVISEUR": "Superviseur",
+            "CHAUFFEUR": "Chauffeur",
+            "TECHNICIEN": "Technicien",
+            "UTILISATEUR": "Utilisateur"
         }
     },
     "DRIVERS": {
@@ -836,40 +864,63 @@
         }
     },
     "LOCATIONS": {
-        "TITLE": "Gestion des Lieux",
-        "CREATE_TITLE": "Créer un nouveau lieu",
-        "EDIT_TITLE": "Modifier lieu",
-        "CREATE_BTN": "Créer Lieu",
-        "LIST_TITLE": "Lieux existants",
-        "NO_DATA": "Aucun lieu enregistré.",
-        "FIELDS": {
-            "NAME": "Nom",
-            "ADDRESS": "Adresse",
-            "LAT": "Latitude",
-            "LNG": "Longitude",
+        "INFO": {
+            "TITLE": "Gestion des Lieux (Waypoints)",
+            "DESC": "Créez et gérez ici la liste des lieux géographiques, villes ou points d'intérêts. Ces lieux serviront aux utilisateurs et aux chauffeurs pour définir le point de départ, de passage et d'arrivée de leurs mouvements."
+        },
+        "TOGGLE_MY_BASE": "Ne voir que ma base",
+        "TOGGLE_ALL_BASES": "Voir toutes les bases de mon pays",
+        "NEW_BTN": "NOUVEAU LIEU",
+        "TABLE": {
+            "COL_NOM": "Nom du Lieu",
+            "COL_ADRESSE": "Adresse",
+            "COL_COORDONNEES": "Coordonnées GPS",
+            "COL_SECURITE": "Sécurité",
+            "COL_SENSIBLE": "Sensible",
+            "COL_PAYS": "Pays",
+            "COL_BASE": "Base",
+            "COL_ACTIONS": "Actions"
+        },
+        "SENSITIVE": "Oui",
+        "NOT_SENSITIVE": "Non",
+        "SENSITIVE_TOOLTIP": "Lieu Sensible",
+        "MODAL": {
+            "EDIT_TITLE": "Modifier le lieu",
+            "NEW_TITLE": "Nouveau lieu",
+            "NAME": "Nom du lieu *",
+            "ADDRESS": "Adresse *",
+            "LATITUDE": "Latitude *",
+            "LONGITUDE": "Longitude *",
+            "SECURITY": "Niveau de sécurité *",
+            "IS_SENSITIVE": "Zone Sensible / Dangereuse",
             "COUNTRY": "Pays",
             "BASE": "Base",
-            "ASSIGNED_BASE": "Base d'affectation",
-            "SECURITY_LEVEL": "Niveau de sécurité"
+            "NONE": "-- Aucun --",
+            "NONE_FEM": "-- Aucune --"
         }
     },
     "PROJECTS": {
-        "TITLE": "Gestion des Projets/Programmes",
-        "CREATE_TITLE": "Nouveau Projet",
-        "CREATE_BTN": "Créer le projet",
-        "LIST_TITLE": "Liste des Projets",
-        "NO_DATA": "Aucun projet enregistré",
-        "FIELDS": {
-            "CODE": "Code du projet",
-            "NAME": "Nom du projet",
-            "DESCRIPTION": "Description",
-            "ACTIVE": "Projet actif"
+        "INFO": {
+            "TITLE": "Gestion des Projets",
+            "DESC": "Cette page vous permet de définir les différents projets en cours. Vous pourrez ensuite imputer les déplacements à ces projets pour un meilleur suivi analytique."
         },
+        "NEW_BTN": "NOUVEAU PROJET",
+        "COLUMNS_LABEL": "Colonnes affichées",
+        "SEARCH_PLACEHOLDER": "Rechercher...",
         "TABLE": {
-            "NAME": "Nom",
-            "CODE": "Code",
-            "STATUS": "Statut",
-            "ACTIONS": "Actions"
+            "COL_NOM": "NOM",
+            "COL_CODE": "CODE",
+            "COL_DESCRIPTION": "DESCRIPTION",
+            "COL_ACTIF": "STATUT",
+            "COL_ACTIONS": "ACTIONS"
+        },
+        "MODAL": {
+            "EDIT_TITLE": "Modifier le projet",
+            "NEW_TITLE": "Nouveau projet",
+            "NAME": "Nom du projet",
+            "CODE": "Code analytique",
+            "DESC": "Description",
+            "STATUS": "Actif"
         }
     },
     "FLEET_RECAP": {
@@ -988,7 +1039,18 @@
         "APP_TITLE": "Titre de l'application",
         "APP_TAGLINE": "Tagline / Sous-titre",
         "NEWS_BANNER": "Bandeau d'actualités",
-        "FOOTER_TEXT": "Texte du pied de page"
+        "FOOTER_TEXT": "Texte du pied de page",
+        "VEHICLE_TYPES_TAB": "Types de véhicules",
+        "VEHICLE_TYPES_DESC": "Gérez les types de véhicules disponibles pour la flotte.",
+        "NEW_TYPE": "Nouveau type...",
+        "CO2_TAB": "Facteurs CO2",
+        "CO2_DESC": "Gérez les paramètres d'émission CO2 pour les différents types de trajets.",
+        "CO2_FACTORS_LABEL": "Facteurs CO2 (g/km)",
+        "SHORT_TRIP": "Trajet court",
+        "MEDIUM_TRIP": "Trajet moyen",
+        "LONG_TRIP": "Trajet long",
+        "SOURCE": "Source",
+        "SAVE_CO2": "Sauvegarder CO2"
     },
     "STATISTICS": {
         "TITLE": "Tableau de Bord Statistiques",
@@ -1329,7 +1391,25 @@
         "NEW": "NOUVEAU PAYS",
         "COLUMNS": "Colonnes affichées",
         "NAME": "Nom",
-        "CODE": "Code"
+        "CODE": "Code",
+        "TITLE": "Gestion des Pays",
+        "NEW_BTN": "NOUVEAU PAYS",
+        "SEARCH": "Rechercher...",
+        "TABLE": {
+            "COL_NOM": "Nom",
+            "COL_CODE": "Code",
+            "COL_DEVISE": "Devise",
+            "COL_ACTIONS": "Actions"
+        },
+        "MODAL": {
+            "EDIT_TITLE": "Modifier le pays",
+            "NEW_TITLE": "Ajouter un pays",
+            "NAME": "Nom du pays",
+            "CODE": "Code (ex: RDC, RCA)",
+            "CURRENCY": "Devise principale",
+            "BTN_UPDATE": "Mettre à jour",
+            "BTN_ADD": "Ajouter"
+        }
     },
     "DASHBOARD": {
         "WELCOME": "Bienvenue sur",

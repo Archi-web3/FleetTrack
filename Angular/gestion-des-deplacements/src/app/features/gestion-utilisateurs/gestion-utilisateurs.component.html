@@ -1,6 +1,6 @@
 <div style="padding: 20px;">
-  <app-info-banner bannerId="utilisateurs" title="Gestion des Utilisateurs">
-    Cette page vous permet de gérer les accès au système. Vous pouvez créer de nouveaux utilisateurs, leur affecter un rôle défini dans la Matrice, et leur attribuer un niveau de validation sécurité. Note: la liste des rôles disponibles dépend de vos propres droits.
+  <app-info-banner bannerId="utilisateurs" [title]="'USERS.INFO.TITLE' | translate">
+    {{ 'USERS.INFO.DESC' | translate }}
   </app-info-banner>
 
   <!-- En-tête avec titre, filtres et actions -->
@@ -19,7 +19,7 @@
       <!-- Bouton Nouveau -->
       <button mat-flat-button color="primary" *ngIf="perms.hasPermission('admin_users', 'create')" 
               (click)="openUserModal()" style="background-color: var(--primary-color); height: 42px;">
-        <mat-icon>add</mat-icon> Nouveau
+        <mat-icon>add</mat-icon> {{ 'USERS.NEW_BTN' | translate }}
       </button>
       
       <!-- Filtre par profil -->
@@ -35,7 +35,7 @@
 
       <!-- Recherche globale -->
       <mat-form-field appearance="outline" style="width: 250px; margin-bottom: -22px;">
-        <mat-label>Rechercher...</mat-label>
+        <mat-label>{{ 'COMMON.SEARCH' | translate }}...</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Nom, Email, ID...">
         <mat-icon matSuffix style="color: #94a3b8;">search</mat-icon>
       </mat-form-field>
@@ -354,7 +354,7 @@
       
       <!-- Name Column -->
       <ng-container matColumnDef="nom">
-        <th mat-header-cell *matHeaderCellDef> NOM & PRÉNOM </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'USERS.TABLE.COL_NAME' | translate }} </th>
         <td mat-cell *matCellDef="let user">
           <div style="font-weight: 600; color: #1e293b;">{{ user.nom }} {{ user.prenom }}</div>
           <div style="font-size: 12px; color: #64748b;">{{ user.email }}</div>
@@ -363,15 +363,15 @@
 
       <!-- Profile Column -->
       <ng-container matColumnDef="profil">
-        <th mat-header-cell *matHeaderCellDef> PROFIL </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'USERS.TABLE.COL_PROFILE' | translate }} </th>
         <td mat-cell *matCellDef="let user">
-          <span class="status-badge draft">{{ user.profil }}</span>
+          <span class="status-badge draft">{{ getProfileKey(user.profil) | translate }}</span>
         </td>
       </ng-container>
 
       <!-- Base Column -->
       <ng-container matColumnDef="base">
-        <th mat-header-cell *matHeaderCellDef> PAYS & BASE </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'USERS.TABLE.COL_LOCATION' | translate }} </th>
         <td mat-cell *matCellDef="let user">
            <div style="font-weight: 500;">{{ user.pays?.nom || '-' }}</div>
            <div style="font-size: 12px; color: #64748b;">{{ user.base?.nom || 'Global' }}</div>
@@ -380,17 +380,17 @@
 
       <!-- Security Level Column -->
       <ng-container matColumnDef="security">
-        <th mat-header-cell *matHeaderCellDef> SÉCURITÉ </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'USERS.TABLE.COL_SECURITY' | translate }} </th>
         <td mat-cell *matCellDef="let user">
           <span class="status-badge" [ngClass]="user.niveauValidationSecu >= 3 ? 'rejected' : 'validated'">
-            Niveau {{ user.niveauValidationSecu || 1 }}
+            {{ 'USERS.LEVEL' | translate }} {{ user.niveauValidationSecu || 1 }}
           </span>
         </td>
       </ng-container>
 
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef style="text-align: right; padding-right: 24px;"> ACTIONS </th>
+        <th mat-header-cell *matHeaderCellDef style="text-align: right; padding-right: 24px;"> {{ 'USERS.TABLE.COL_ACTIONS' | translate }} </th>
         <td mat-cell *matCellDef="let user" style="text-align: right; padding-right: 24px;">
           <button mat-icon-button color="primary" [matMenuTriggerFor]="actionMenu" [matMenuTriggerData]="{user: user}" title="Actions">
             <mat-icon>more_vert</mat-icon>
@@ -425,7 +425,7 @@
             </div>
             <div>
               <div style="font-weight: 600; font-size: 16px; color: #1e293b; margin-bottom: 2px;">{{ user.prenom }} {{ user.nom }}</div>
-              <span class="status-badge draft" style="font-size: 11px; padding: 2px 8px;">{{ user.profil }}</span>
+              <span class="status-badge draft" style="font-size: 11px; padding: 2px 8px;">{{ getProfileKey(user.profil) | translate }}</span>
             </div>
           </div>
           <button mat-icon-button [matMenuTriggerFor]="actionMenu" [matMenuTriggerData]="{user: user}" style="color: #94a3b8; margin-top: -8px; margin-right: -8px;">
@@ -447,7 +447,7 @@
             <div style="display: flex; align-items: center; gap: 8px;">
               <mat-icon style="font-size: 18px; width: 18px; height: 18px; color: #94a3b8;">security</mat-icon>
               <span class="status-badge" [ngClass]="user.niveauValidationSecu >= 3 ? 'rejected' : 'validated'" style="font-size: 11px;">
-                Niveau {{ user.niveauValidationSecu || 1 }}
+                {{ 'USERS.LEVEL' | translate }} {{ user.niveauValidationSecu || 1 }}
               </span>
             </div>
           </div>
@@ -464,20 +464,20 @@
       </button>
       <button mat-menu-item disabled>
         <mat-icon>person</mat-icon>
-        <span>Login as User</span>
+        <span>{{ 'USERS.ACTIONS.LOGIN_AS' | translate }}</span>
       </button>
       <button mat-menu-item disabled>
         <mat-icon>history</mat-icon>
-        <span>Log History</span>
+        <span>{{ 'USERS.ACTIONS.LOG_HISTORY' | translate }}</span>
       </button>
       <hr style="margin: 8px 0; border: none; border-top: 1px solid #e2e8f0;">
       <button mat-menu-item disabled>
         <mat-icon>lock_reset</mat-icon>
-        <span>Reset Password</span>
+        <span>{{ 'USERS.ACTIONS.RESET_PASSWORD' | translate }}</span>
       </button>
       <button mat-menu-item disabled>
         <mat-icon>block</mat-icon>
-        <span>Disable Login</span>
+        <span>{{ 'USERS.ACTIONS.DISABLE_LOGIN' | translate }}</span>
       </button>
       <button mat-menu-item (click)="deleteUser(user._id)" 
         [disabled]="!perms.hasPermission('admin_users', 'delete') || authService.getUserId() === user._id">

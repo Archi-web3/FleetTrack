@@ -1,18 +1,18 @@
-<app-info-banner bannerId="lieux" title="Gestion des Lieux (Waypoints)">
-  Créez et gérez ici la liste des lieux géographiques, villes ou points d'intérêts. Ces lieux serviront aux utilisateurs et aux chauffeurs pour définir le point de départ, de passage et d'arrivée de leurs mouvements.
+<app-info-banner bannerId="lieux" [title]="'LOCATIONS.INFO.TITLE' | translate">
+  {{ 'LOCATIONS.INFO.DESC' | translate }}
 </app-info-banner>
 
 <div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px;">
   <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
     <mat-icon style="color: var(--primary-color);">location_on</mat-icon>
-    Gestion des Lieux (Waypoints)
+    {{ 'LOCATIONS.INFO.TITLE' | translate }}
   </h2>
   <div style="display: flex; gap: 15px; align-items: center;">
     <button mat-stroked-button *ngIf="userProfile !== 'SuperAdmin'" (click)="toggleShowAllBasesInPays()">
-      {{ showAllBasesInPays ? 'Ne voir que ma base' : 'Voir toutes les bases de mon pays' }}
+      {{ showAllBasesInPays ? ('LOCATIONS.TOGGLE_MY_BASE' | translate) : ('LOCATIONS.TOGGLE_ALL_BASES' | translate) }}
     </button>
     <button *ngIf="perms.hasPermission('admin_geo', 'manage_bases')" mat-flat-button color="primary" (click)="openLieuModal()">
-      <mat-icon>add</mat-icon> NOUVEAU LIEU
+      <mat-icon>add</mat-icon> {{ 'LOCATIONS.NEW_BTN' | translate }}
     </button>
   </div>
 </div>
@@ -20,7 +20,7 @@
 <div class="table-container">
   <div class="table-header-container">
     <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px;">
-      <mat-label>Colonnes affichées</mat-label>
+      <mat-label>{{ 'PROJECTS.COLUMNS_LABEL' | translate }}</mat-label>
       <mat-select multiple [(ngModel)]="displayedColumns">
         <mat-option *ngFor="let col of allColumns" [value]="col.def">{{ col.label }}</mat-option>
       </mat-select>
@@ -28,7 +28,7 @@
 
     <div class="custom-search-input">
       <mat-icon>search</mat-icon>
-      <input type="text" (keyup)="applyFilter($event)" placeholder="Rechercher...">
+      <input type="text" (keyup)="applyFilter($event)" [placeholder]="'PROJECTS.SEARCH_PLACEHOLDER' | translate">
     </div>
   </div>
 
@@ -36,25 +36,25 @@
     <table mat-table [dataSource]="dataSource" matSort style="width: 100%;">
       
       <ng-container matColumnDef="nom">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom du Lieu </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'LOCATIONS.TABLE.COL_NOM' | translate }} </th>
         <td mat-cell *matCellDef="let element"> 
           <strong>{{element.nom}}</strong>
-          <mat-icon *ngIf="element.estSensible" style="color: #F44336; font-size: 16px; margin-left: 5px; vertical-align: middle;" matTooltip="Lieu Sensible">warning</mat-icon>
+          <mat-icon *ngIf="element.estSensible" style="color: #F44336; font-size: 16px; margin-left: 5px; vertical-align: middle;" [matTooltip]="'LOCATIONS.SENSITIVE_TOOLTIP' | translate">warning</mat-icon>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="adresse">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Adresse </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'LOCATIONS.TABLE.COL_ADRESSE' | translate }} </th>
         <td mat-cell *matCellDef="let element"> {{element.adresse}} </td>
       </ng-container>
 
       <ng-container matColumnDef="coordonnees">
-        <th mat-header-cell *matHeaderCellDef> Coordonnées GPS </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'LOCATIONS.TABLE.COL_COORDONNEES' | translate }} </th>
         <td mat-cell *matCellDef="let element"> {{element.coordonnees?.latitude}}, {{element.coordonnees?.longitude}} </td>
       </ng-container>
 
       <ng-container matColumnDef="securite">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sécurité </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'LOCATIONS.TABLE.COL_SECURITE' | translate }} </th>
         <td mat-cell *matCellDef="let element"> 
           <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px;" [style.background]="getSecurityColor(element.niveauSecurite)"></span>
           {{getSecurityLabel(element.niveauSecurite)}}
@@ -62,22 +62,22 @@
       </ng-container>
 
       <ng-container matColumnDef="sensible">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sensible </th>
-        <td mat-cell *matCellDef="let element"> {{element.estSensible ? 'Oui' : 'Non'}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'LOCATIONS.TABLE.COL_SENSIBLE' | translate }} </th>
+        <td mat-cell *matCellDef="let element"> {{ element.estSensible ? ('LOCATIONS.SENSITIVE' | translate) : ('LOCATIONS.NOT_SENSITIVE' | translate) }} </td>
       </ng-container>
 
       <ng-container matColumnDef="pays">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pays </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'LOCATIONS.TABLE.COL_PAYS' | translate }} </th>
         <td mat-cell *matCellDef="let element"> {{element.pays?.nom || '-'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="base">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Base </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'LOCATIONS.TABLE.COL_BASE' | translate }} </th>
         <td mat-cell *matCellDef="let element"> {{element.base?.nom || '-'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'LOCATIONS.TABLE.COL_ACTIONS' | translate }} </th>
         <td mat-cell *matCellDef="let element">
           <div class="action-buttons">
             <button *ngIf="perms.hasPermission('admin_geo', 'manage_bases')" mat-icon-button color="primary" (click)="openLieuModal(element)" matTooltip="Modifier">
@@ -103,7 +103,7 @@
     <div class="custom-modal-header">
       <h2>
         <mat-icon>location_on</mat-icon>
-        {{ selectedLieu ? 'Modifier le lieu' : 'Nouveau lieu' }}
+        {{ selectedLieu ? ('LOCATIONS.MODAL.EDIT_TITLE' | translate) : ('LOCATIONS.MODAL.NEW_TITLE' | translate) }}
       </h2>
       <button class="custom-modal-close-btn" (click)="closeLieuModal()">
         <mat-icon>close</mat-icon>
@@ -115,29 +115,29 @@
         
         <div class="modal-grid-2">
           <div class="modern-form-group">
-            <label>Nom du lieu *</label>
+            <label>{{ 'LOCATIONS.MODAL.NAME' | translate }}</label>
             <input class="modern-input" type="text" name="lieuNom" [(ngModel)]="newLieu.nom" required>
           </div>
           <div class="modern-form-group">
-            <label>Adresse *</label>
+            <label>{{ 'LOCATIONS.MODAL.ADDRESS' | translate }}</label>
             <input class="modern-input" type="text" name="lieuAdresse" [(ngModel)]="newLieu.adresse" required>
           </div>
         </div>
 
         <div class="modal-grid-2">
           <div class="modern-form-group">
-            <label>Latitude *</label>
+            <label>{{ 'LOCATIONS.MODAL.LATITUDE' | translate }}</label>
             <input class="modern-input" type="number" step="any" name="lieuLat" [(ngModel)]="newLieu.coordonnees.latitude" required>
           </div>
           <div class="modern-form-group">
-            <label>Longitude *</label>
+            <label>{{ 'LOCATIONS.MODAL.LONGITUDE' | translate }}</label>
             <input class="modern-input" type="number" step="any" name="lieuLng" [(ngModel)]="newLieu.coordonnees.longitude" required>
           </div>
         </div>
 
         <div class="modal-grid-2" style="align-items: center;">
           <div class="modern-form-group">
-            <label>Niveau de sécurité *</label>
+            <label>{{ 'LOCATIONS.MODAL.SECURITY' | translate }}</label>
             <select class="modern-input" name="lieuSecurite" [(ngModel)]="newLieu.niveauSecurite" required>
               <option *ngFor="let sec of securityLevels" [value]="sec.level">{{ sec.label }}</option>
             </select>
@@ -145,7 +145,7 @@
           <div style="margin-top: 15px;">
             <label style="display: flex; align-items: center; cursor: pointer; font-weight: 500;">
               <input type="checkbox" name="lieuSensible" [(ngModel)]="newLieu.estSensible" style="width: auto; margin-right: 10px; transform: scale(1.5);">
-              Zone Sensible / Dangereuse
+              {{ 'LOCATIONS.MODAL.IS_SENSITIVE' | translate }}
             </label>
           </div>
         </div>
@@ -153,16 +153,16 @@
         <!-- SuperAdmin uniquement -->
         <div class="modal-grid-2" *ngIf="userProfile === 'SuperAdmin'">
           <div class="modern-form-group">
-            <label>Pays</label>
+            <label>{{ 'LOCATIONS.MODAL.COUNTRY' | translate }}</label>
             <select class="modern-input" name="lieuPays" [(ngModel)]="newLieu.pays" (change)="onPaysChange()">
-              <option value="">-- Aucun --</option>
+              <option value="">{{ 'LOCATIONS.MODAL.NONE' | translate }}</option>
               <option *ngFor="let p of paysList" [value]="p._id">{{ p.nom }}</option>
             </select>
           </div>
           <div class="modern-form-group">
-            <label>Base</label>
+            <label>{{ 'LOCATIONS.MODAL.BASE' | translate }}</label>
             <select class="modern-input" name="lieuBase" [(ngModel)]="newLieu.base">
-              <option value="">-- Aucune --</option>
+              <option value="">{{ 'LOCATIONS.MODAL.NONE_FEM' | translate }}</option>
               <option *ngFor="let b of basesList" [value]="b._id">{{ b.nom }}</option>
             </select>
           </div>
@@ -173,10 +173,10 @@
     
     <div class="custom-modal-footer">
       <button class="custom-modal-btn-cancel" (click)="closeLieuModal()">
-        <mat-icon>close</mat-icon> Annuler
+        <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
       </button>
       <button class="custom-modal-btn-submit" type="submit" form="lieuForm" [disabled]="!lieuForm.form.valid">
-        <mat-icon>check</mat-icon> {{ selectedLieu ? 'Mettre à jour' : 'Enregistrer' }}
+        <mat-icon>check</mat-icon> {{ selectedLieu ? ('COMMON.UPDATE' | translate) : ('COMMON.SAVE' | translate) }}
       </button>
     </div>
   </div>

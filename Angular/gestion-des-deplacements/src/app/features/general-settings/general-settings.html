@@ -305,17 +305,17 @@
 
     <!-- 3A. TYPES DE VEHICULES -->
     <div *ngIf="activeTab === 'types-vehicules'" class="settings-section">
-      <h2><mat-icon>directions_car</mat-icon> Types de véhicules</h2>
-      <p class="section-desc">Gérez les types de véhicules disponibles pour la flotte.</p>
+      <h2><mat-icon>directions_car</mat-icon> {{ 'SETTINGS.VEHICLE_TYPES_TAB' | translate }}</h2>
+      <p class="section-desc">{{ 'SETTINGS.VEHICLE_TYPES_DESC' | translate }}</p>
 
       <mat-card class="setting-card">
         <mat-card-header>
-          <mat-card-title>Types de Véhicules</mat-card-title>
+          <mat-card-title>{{ 'SETTINGS.VEHICLE_TYPES_TAB' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="add-type-form">
-            <input type="text" class="modern-input" [(ngModel)]="newType" placeholder="Nouveau type...">
-            <button mat-flat-button color="primary" (click)="addType()">Ajouter</button>
+            <input type="text" class="modern-input" [(ngModel)]="newType" [placeholder]="'SETTINGS.NEW_TYPE' | translate">
+            <button mat-flat-button color="primary" (click)="addType()">{{ 'COMMON.ADD' | translate }}</button>
           </div>
           <mat-list>
             <mat-list-item *ngFor="let type of vehicleTypes">
@@ -331,31 +331,31 @@
 
     <!-- 3B. FACTEURS CO2 -->
     <div *ngIf="activeTab === 'facteurs-co2'" class="settings-section">
-      <h2><mat-icon>co2</mat-icon> Facteurs CO2</h2>
-      <p class="section-desc">Gérez les paramètres d'émission CO2 pour les différents types de trajets.</p>
+      <h2><mat-icon>co2</mat-icon> {{ 'SETTINGS.CO2_TAB' | translate }}</h2>
+      <p class="section-desc">{{ 'SETTINGS.CO2_DESC' | translate }}</p>
 
       <mat-card class="setting-card">
         <mat-card-header>
-          <mat-card-title>Facteurs CO2 (g/km)</mat-card-title>
+          <mat-card-title>{{ 'SETTINGS.CO2_FACTORS_LABEL' | translate }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div class="modern-form-group">
-            <label>Trajet court</label>
+            <label>{{ 'SETTINGS.SHORT_TRIP' | translate }}</label>
             <input type="number" class="modern-input" [(ngModel)]="co2Factors.short">
           </div>
           <div class="modern-form-group">
-            <label>Trajet moyen</label>
+            <label>{{ 'SETTINGS.MEDIUM_TRIP' | translate }}</label>
             <input type="number" class="modern-input" [(ngModel)]="co2Factors.medium">
           </div>
           <div class="modern-form-group">
-            <label>Trajet long</label>
+            <label>{{ 'SETTINGS.LONG_TRIP' | translate }}</label>
             <input type="number" class="modern-input" [(ngModel)]="co2Factors.long">
           </div>
           <div class="modern-form-group">
-            <label>Source</label>
+            <label>{{ 'SETTINGS.SOURCE' | translate }}</label>
             <input type="text" class="modern-input" [(ngModel)]="co2Factors.source">
           </div>
-          <button mat-flat-button color="primary" style="margin-top: 15px;" (click)="saveCO2()">Save CO2</button>
+          <button mat-flat-button color="primary" style="margin-top: 15px;" (click)="saveCO2()">{{ 'SETTINGS.SAVE_CO2' | translate }}</button>
         </mat-card-content>
       </mat-card>
     </div>

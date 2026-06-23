@@ -449,7 +449,23 @@
                 "INTERVAL": "Interval",
                 "ACTIONS": "Actions"
             },
-            "LIST_TITLE": "Existing Configurations"
+            "LIST_TITLE": "Existing Configurations",
+            "INTERVALS": "Intervals (km)",
+            "SEQUENCE_LABEL": "Service Sequence",
+            "SEQ_PREDEFINED": "Predefined Mode (A-B-A-C)",
+            "SEQ_CUSTOM": "Custom Mode",
+            "CUSTOM_SEQ_TITLE": "Custom Sequence",
+            "ADD_SERVICE": "Add a service (e.g., A, B, C...)",
+            "REPEAT_ORDER": "Repeat order:",
+            "REPEAT_END": "➔ (Repeat)",
+            "FUEL_QUALITY": "Fuel Quality",
+            "ROAD_MIXTE_URBAINE": "Mixed/Urban road",
+            "ROAD_GOUDRONNEE": "Paved road",
+            "ROAD_MIXTE_PISTE": "Mixed road + dirt",
+            "ROAD_PISTE_DIFFICILE": "100% difficult dirt road",
+            "FUEL_GOOD": "Good",
+            "FUEL_BAD": "Bad",
+            "FUEL_UNKNOWN": "Unknown"
         },
         "TEMPLATES": {
             "TITLE": "Checklist Template Management",
@@ -503,45 +519,57 @@
         "HOW_IT_WORKS_PREDICTIVE_TEXT": "The tool automatically analyzes the <strong>actual average kilometers driven</strong> by each vehicle between previous services to predict the exact date of its next service.<br>It also monitors real fuel consumption via the logbook in the background, and generates an <strong>overconsumption alert</strong> (in purple or red) if the actual average exceeds the manufacturer's theoretical value by 20%."
     },
     "USERS": {
-        "TITLE": "User Management",
-        "CREATE_TITLE": "Create New User",
-        "EDIT_TITLE": "Edit User",
-        "FORM": {
-            "NAME": "Last Name",
-            "FIRSTNAME": "First Name",
-            "EMPLOYEE_ID": "Employee ID",
-            "PHONE": "Phone Number",
-            "EMAIL": "Email",
-            "PASSWORD": "Password",
-            "NEW_PASSWORD": "New Password (leave empty if unchanged)",
-            "PROFILE": "Profile",
-            "SECURITY_LEVEL": "Security Validation Level",
-            "SECURITY_HINT": "Maximum level this user can validate",
-            "COUNTRY": "Country",
-            "BASE": "Assigned Base",
-            "PROJECT": "Project/Program",
-            "PROJECT_HINT": "Select project code",
-            "AUTO_MANAGE_SECURITY": "Automatically manage security parameters based on locations"
+        "INFO": {
+            "TITLE": "User Management",
+            "DESC": "This page allows you to manage system access. You can create new users, assign them a role defined in the Matrix, and assign them a security validation level. Note: the list of available roles depends on your own permissions."
         },
-        "DRIVER_INFO": {
-            "TITLE": "Driver Information",
-            "LICENSE": "License Number",
-            "ECO_DRIVING": "Eco-driving Training",
-            "DATE": "Training Date",
-            "ASSIGNED_VEHICLE": "Assigned Vehicle (optional)",
-            "AVAILABLE": "Available"
-        },
-        "ACTIONS": {
-            "CREATE": "Create User",
-            "UPDATE": "Update",
-            "CANCEL": "Cancel",
-            "DELETE": "Delete",
-            "FILTER_PROFILE": "Filter by Profile",
+        "FILTER": {
+            "PROFILE_LABEL": "Filter by Profile",
             "ALL_PROFILES": "All Profiles"
+        },
+        "NEW_BTN": "New",
+        "TABLE": {
+            "COL_NAME": "NAME & SURNAME",
+            "COL_PROFILE": "PROFILE",
+            "COL_LOCATION": "COUNTRY & BASE",
+            "COL_SECURITY": "SECURITY",
+            "COL_ACTIONS": "ACTIONS"
+        },
+        "LEVEL": "Level",
+        "ACTIONS": {
+            "UPDATE": "Update",
+            "DELETE": "Delete",
+            "LOGIN_AS": "Login as User",
+            "LOG_HISTORY": "Log History",
+            "RESET_PASSWORD": "Reset Password",
+            "DISABLE_LOGIN": "Disable Login"
         },
         "LIST": {
             "TITLE": "Existing Users",
-            "NO_DATA": "No users registered."
+            "NO_DATA": "No users found"
+        },
+        "MODAL": {
+            "EDIT_TITLE": "Edit User",
+            "NEW_TITLE": "Add a User",
+            "NAME": "Name",
+            "SURNAME": "Surname",
+            "EMAIL": "Email",
+            "PASSWORD": "Password",
+            "PASSWORD_HINT": "Leave blank to keep current",
+            "PROFILE": "Profile",
+            "SECURITY_LEVEL": "Security Level",
+            "COUNTRY": "Country",
+            "BASE": "Base",
+            "GLOBAL_ACCESS": "Global Access (all countries)"
+        },
+        "PROFILES": {
+            "SUPERADMIN": "Super Admin",
+            "ADMIN": "Admin",
+            "SUPERVISEUR SÉCURITÉ": "Security Supervisor",
+            "SUPERVISEUR": "Supervisor",
+            "CHAUFFEUR": "Driver",
+            "TECHNICIEN": "Technician",
+            "UTILISATEUR": "User"
         }
     },
     "DRIVERS": {
@@ -836,40 +864,63 @@
         }
     },
     "LOCATIONS": {
-        "TITLE": "Location Management",
-        "CREATE_TITLE": "Create New Location",
-        "EDIT_TITLE": "Edit Location",
-        "CREATE_BTN": "Create Location",
-        "LIST_TITLE": "Existing Locations",
-        "NO_DATA": "No locations recorded.",
-        "FIELDS": {
-            "NAME": "Name",
-            "ADDRESS": "Address",
-            "LAT": "Latitude",
-            "LNG": "Longitude",
+        "INFO": {
+            "TITLE": "Location Management (Waypoints)",
+            "DESC": "Create and manage the list of geographical locations, cities, or points of interest here. These locations will be used by users and drivers to set the departure, waypoint, and arrival for their movements."
+        },
+        "TOGGLE_MY_BASE": "View only my base",
+        "TOGGLE_ALL_BASES": "View all bases in my country",
+        "NEW_BTN": "NEW LOCATION",
+        "TABLE": {
+            "COL_NOM": "Location Name",
+            "COL_ADRESSE": "Address",
+            "COL_COORDONNEES": "GPS Coordinates",
+            "COL_SECURITE": "Security",
+            "COL_SENSIBLE": "Sensitive",
+            "COL_PAYS": "Country",
+            "COL_BASE": "Base",
+            "COL_ACTIONS": "Actions"
+        },
+        "SENSITIVE": "Yes",
+        "NOT_SENSITIVE": "No",
+        "SENSITIVE_TOOLTIP": "Sensitive Location",
+        "MODAL": {
+            "EDIT_TITLE": "Edit Location",
+            "NEW_TITLE": "New Location",
+            "NAME": "Location Name *",
+            "ADDRESS": "Address *",
+            "LATITUDE": "Latitude *",
+            "LONGITUDE": "Longitude *",
+            "SECURITY": "Security Level *",
+            "IS_SENSITIVE": "Sensitive / Dangerous Area",
             "COUNTRY": "Country",
             "BASE": "Base",
-            "ASSIGNED_BASE": "Assigned Base",
-            "SECURITY_LEVEL": "Security Level"
+            "NONE": "-- None --",
+            "NONE_FEM": "-- None --"
         }
     },
     "PROJECTS": {
-        "TITLE": "Project/Program Management",
-        "CREATE_TITLE": "New Project",
-        "CREATE_BTN": "Create Project",
-        "LIST_TITLE": "Project List",
-        "NO_DATA": "No projects recorded",
-        "FIELDS": {
-            "CODE": "Project Code",
-            "NAME": "Project Name",
-            "DESCRIPTION": "Description",
-            "ACTIVE": "Project Active"
+        "INFO": {
+            "TITLE": "Project Management",
+            "DESC": "This page allows you to define the various ongoing projects. You can then allocate movements to these projects for better analytical tracking."
         },
+        "NEW_BTN": "NEW PROJECT",
+        "COLUMNS_LABEL": "Displayed Columns",
+        "SEARCH_PLACEHOLDER": "Search...",
         "TABLE": {
-            "NAME": "Name",
-            "CODE": "Code",
-            "STATUS": "Status",
-            "ACTIONS": "Actions"
+            "COL_NOM": "NAME",
+            "COL_CODE": "CODE",
+            "COL_DESCRIPTION": "DESCRIPTION",
+            "COL_ACTIF": "STATUS",
+            "COL_ACTIONS": "ACTIONS"
+        },
+        "MODAL": {
+            "EDIT_TITLE": "Edit Project",
+            "NEW_TITLE": "New Project",
+            "NAME": "Project Name",
+            "CODE": "Analytical Code",
+            "DESC": "Description",
+            "STATUS": "Active"
         }
     },
     "FLEET_RECAP": {
@@ -988,7 +1039,18 @@
         "APP_TITLE": "Application Title",
         "APP_TAGLINE": "Tagline / Subtitle",
         "NEWS_BANNER": "News Banner",
-        "FOOTER_TEXT": "Footer Text"
+        "FOOTER_TEXT": "Footer Text",
+        "VEHICLE_TYPES_TAB": "Vehicle Types",
+        "VEHICLE_TYPES_DESC": "Manage the available vehicle types for the fleet.",
+        "NEW_TYPE": "New type...",
+        "CO2_TAB": "CO2 Factors",
+        "CO2_DESC": "Manage the CO2 emission parameters for different trip types.",
+        "CO2_FACTORS_LABEL": "CO2 Factors (g/km)",
+        "SHORT_TRIP": "Short trip",
+        "MEDIUM_TRIP": "Medium trip",
+        "LONG_TRIP": "Long trip",
+        "SOURCE": "Source",
+        "SAVE_CO2": "Save CO2"
     },
     "STATISTICS": {
         "TITLE": "Statistics Dashboard",
@@ -1327,9 +1389,27 @@
     "COUNTRIES": {
         "MANAGE": "Manage Countries",
         "NEW": "NEW COUNTRY",
-        "COLUMNS": "Displayed Columns",
+        "COLUMNS": "Displayed columns",
         "NAME": "Name",
-        "CODE": "Code"
+        "CODE": "Code",
+        "TITLE": "Country Management",
+        "NEW_BTN": "NEW COUNTRY",
+        "SEARCH": "Search...",
+        "TABLE": {
+            "COL_NOM": "Name",
+            "COL_CODE": "Code",
+            "COL_DEVISE": "Currency",
+            "COL_ACTIONS": "Actions"
+        },
+        "MODAL": {
+            "EDIT_TITLE": "Edit Country",
+            "NEW_TITLE": "Add a Country",
+            "NAME": "Country Name",
+            "CODE": "Code (e.g. USA, UK)",
+            "CURRENCY": "Main Currency",
+            "BTN_UPDATE": "Update",
+            "BTN_ADD": "Add"
+        }
     },
     "DASHBOARD": {
         "WELCOME": "Welcome to",

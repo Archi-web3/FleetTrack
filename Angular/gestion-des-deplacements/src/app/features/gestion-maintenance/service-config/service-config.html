@@ -2,7 +2,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0;">{{ 'MAINTENANCE.CONFIG.TITLE' | translate }}</h2>
         <button mat-raised-button color="primary" (click)="openConfigModal()">
-            <mat-icon>add</mat-icon> Ajout interval
+            <mat-icon>add</mat-icon> {{ 'COMMON.ADD' | translate }}
         </button>
     </div>
 
@@ -34,14 +34,14 @@
                     <mat-form-field appearance="outline">
                         <mat-label>{{ 'MAINTENANCE.CONFIG.FIELDS.ROAD_CONDITIONS' | translate }}</mat-label>
                         <mat-select formControlName="conditionsRoute">
-                            <mat-option value="Route mixte/urbaine">Route mixte/urbaine</mat-option>
-                            <mat-option value="Route goudronnée">Route goudronnée</mat-option>
-                            <mat-option value="Mixte route + piste">Mixte route + piste</mat-option>
-                            <mat-option value="100% piste difficile">100% piste difficile</mat-option>
+                            <mat-option value="Route mixte/urbaine">{{ 'MAINTENANCE.CONFIG.ROAD_MIXTE_URBAINE' | translate }}</mat-option>
+                            <mat-option value="Route goudronnée">{{ 'MAINTENANCE.CONFIG.ROAD_GOUDRONNEE' | translate }}</mat-option>
+                            <mat-option value="Mixte route + piste">{{ 'MAINTENANCE.CONFIG.ROAD_MIXTE_PISTE' | translate }}</mat-option>
+                            <mat-option value="100% piste difficile">{{ 'MAINTENANCE.CONFIG.ROAD_PISTE_DIFFICILE' | translate }}</mat-option>
                         </mat-select>
                     </mat-form-field>
 
-                    <h3>Intervalles (km)</h3>
+                    <h3>{{ 'MAINTENANCE.CONFIG.INTERVALS' | translate }}</h3>
 
                     <mat-form-field appearance="outline">
                         <mat-label>{{ 'MAINTENANCE.CONFIG.FIELDS.SERVICE_INTERVAL' | translate }}</mat-label>
@@ -51,16 +51,16 @@
 
                     <div class="row">
                         <mat-form-field appearance="outline" style="flex: 1;">
-                            <mat-label>Séquence des services</mat-label>
+                            <mat-label>{{ 'MAINTENANCE.CONFIG.SEQUENCE_LABEL' | translate }}</mat-label>
                             <mat-select formControlName="sequenceMode">
-                                <mat-option value="Predefined">Mode Prédéfini (A-B-A-C)</mat-option>
-                                <mat-option value="Custom">Mode Personnalisé</mat-option>
+                                <mat-option value="Predefined">{{ 'MAINTENANCE.CONFIG.SEQ_PREDEFINED' | translate }}</mat-option>
+                                <mat-option value="Custom">{{ 'MAINTENANCE.CONFIG.SEQ_CUSTOM' | translate }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
 
                     <div *ngIf="configForm.get('sequenceMode')?.value === 'Custom'" style="padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
-                        <h4 style="margin-top: 0;">Séquence Personnalisée</h4>
+                        <h4 style="margin-top: 0;">{{ 'MAINTENANCE.CONFIG.CUSTOM_SEQ_TITLE' | translate }}</h4>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
                             <div *ngFor="let step of customSequenceControls; let i = index" style="background: #e0e7ff; color: #3730a3; padding: 4px 12px; border-radius: 16px; display: flex; align-items: center; gap: 8px;">
                                 <span>{{ i + 1 }}. {{ step }}</span>
@@ -69,20 +69,20 @@
                         </div>
                         <div style="display: flex; gap: 8px;">
                             <mat-form-field appearance="outline" style="flex: 1; margin-bottom: -1.25em;">
-                                <mat-label>Ajouter un service (ex: A, B, C...)</mat-label>
+                                <mat-label>{{ 'MAINTENANCE.CONFIG.ADD_SERVICE' | translate }}</mat-label>
                                 <input matInput #newStepInput (keyup.enter)="addSequenceStep(newStepInput.value); newStepInput.value = ''">
                             </mat-form-field>
-                            <button mat-raised-button color="primary" type="button" (click)="addSequenceStep(newStepInput.value); newStepInput.value = ''" style="height: 56px;">Ajouter</button>
+                            <button mat-raised-button color="primary" type="button" (click)="addSequenceStep(newStepInput.value); newStepInput.value = ''" style="height: 56px;">{{ 'COMMON.ADD' | translate }}</button>
                         </div>
-                        <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">Ordre de répétition: <span *ngFor="let s of customSequenceControls; let last = last">{{ s }}{{ !last ? ' ➔ ' : ' ➔ (Répéter)' }}</span></p>
+                        <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">{{ 'MAINTENANCE.CONFIG.REPEAT_ORDER' | translate }} <span *ngFor="let s of customSequenceControls; let last = last">{{ s }}{{ !last ? ' ➔ ' : ' ' + ('MAINTENANCE.CONFIG.REPEAT_END' | translate) }}</span></p>
                     </div>
 
                     <mat-form-field appearance="outline">
                         <mat-label>{{ 'MAINTENANCE.CONFIG.FIELDS.FUEL_QUALITY' | translate }}</mat-label>
                         <mat-select formControlName="qualiteCarburant">
-                            <mat-option value="Bonne">Bonne</mat-option>
-                            <mat-option value="Mauvaise">Mauvaise</mat-option>
-                            <mat-option value="Inconnue">Inconnue</mat-option>
+                            <mat-option value="Bonne">{{ 'MAINTENANCE.CONFIG.FUEL_GOOD' | translate }}</mat-option>
+                            <mat-option value="Mauvaise">{{ 'MAINTENANCE.CONFIG.FUEL_BAD' | translate }}</mat-option>
+                            <mat-option value="Inconnue">{{ 'MAINTENANCE.CONFIG.FUEL_UNKNOWN' | translate }}</mat-option>
                         </mat-select>
                     </mat-form-field>
 

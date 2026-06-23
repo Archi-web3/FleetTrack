@@ -1,15 +1,15 @@
-<app-info-banner bannerId="projets" title="Gestion des Projets">
-  Cette page vous permet de définir les différents projets en cours. Vous pourrez ensuite imputer les déplacements à ces projets pour un meilleur suivi analytique.
+<app-info-banner bannerId="projets" [title]="'PROJECTS.INFO.TITLE' | translate">
+  {{ 'PROJECTS.INFO.DESC' | translate }}
 </app-info-banner>
 
 <div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px;">
   <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
     <mat-icon style="color: var(--primary-color);">assignment</mat-icon>
-    Gestion des Projets
+    {{ 'PROJECTS.INFO.TITLE' | translate }}
   </h2>
   <div style="display: flex; gap: 15px; align-items: center;">
     <button mat-flat-button color="primary" (click)="openProjetModal()" *ngIf="userProfile === 'SuperAdmin'">
-      <mat-icon>add</mat-icon> NOUVEAU PROJET
+      <mat-icon>add</mat-icon> {{ 'PROJECTS.NEW_BTN' | translate }}
     </button>
   </div>
 </div>
@@ -17,7 +17,7 @@
 <div class="table-container">
   <div class="table-header-container">
     <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px;">
-      <mat-label>Colonnes affichées</mat-label>
+      <mat-label>{{ 'PROJECTS.COLUMNS_LABEL' | translate }}</mat-label>
       <mat-select multiple [(ngModel)]="displayedColumns">
         <mat-option *ngFor="let col of allColumns" [value]="col.def">{{ col.label }}</mat-option>
       </mat-select>
@@ -25,7 +25,7 @@
 
     <div class="custom-search-input">
       <mat-icon>search</mat-icon>
-      <input type="text" (keyup)="applyFilter($event)" placeholder="Rechercher...">
+      <input type="text" (keyup)="applyFilter($event)" [placeholder]="'PROJECTS.SEARCH_PLACEHOLDER' | translate">
     </div>
   </div>
 
@@ -33,22 +33,22 @@
     <table mat-table [dataSource]="dataSource" matSort style="width: 100%;">
       
       <ng-container matColumnDef="nom">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nom </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PROJECTS.TABLE.COL_NOM' | translate }} </th>
         <td mat-cell *matCellDef="let element"> <strong>{{element.nom}}</strong> </td>
       </ng-container>
 
       <ng-container matColumnDef="code">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PROJECTS.TABLE.COL_CODE' | translate }} </th>
         <td mat-cell *matCellDef="let element"> {{element.code}} </td>
       </ng-container>
 
       <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'PROJECTS.TABLE.COL_DESCRIPTION' | translate }} </th>
         <td mat-cell *matCellDef="let element"> {{element.description || '-'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="actif">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PROJECTS.TABLE.COL_ACTIF' | translate }} </th>
         <td mat-cell *matCellDef="let element"> 
           <mat-icon [style.color]="element.actif ? '#4caf50' : '#f44336'">
             {{ element.actif ? 'check_circle' : 'cancel' }}
@@ -57,7 +57,7 @@
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <th mat-header-cell *matHeaderCellDef> {{ 'PROJECTS.TABLE.COL_ACTIONS' | translate }} </th>
         <td mat-cell *matCellDef="let element">
           <div class="action-buttons" *ngIf="userProfile === 'SuperAdmin'">
             <button mat-icon-button color="primary" (click)="openProjetModal(element)" matTooltip="Modifier">
@@ -83,7 +83,7 @@
     <div class="custom-modal-header">
       <h2>
         <mat-icon>assignment</mat-icon>
-        {{ selectedProjet ? 'Modifier le projet' : 'Nouveau projet' }}
+        {{ selectedProjet ? ('PROJECTS.MODAL.EDIT_TITLE' | translate) : ('PROJECTS.MODAL.NEW_TITLE' | translate) }}
       </h2>
       <button class="custom-modal-close-btn" (click)="closeProjetModal()">
         <mat-icon>close</mat-icon>
@@ -94,24 +94,24 @@
       <form (ngSubmit)="saveProjet()" #projetForm="ngForm" id="projetForm">
         
         <div class="modern-form-group">
-          <label>Nom du projet *</label>
+          <label>{{ 'PROJECTS.MODAL.NAME' | translate }} *</label>
           <input class="modern-input" type="text" name="projetNom" [(ngModel)]="newProjet.nom" required>
         </div>
         
         <div class="modern-form-group">
-          <label>Code du projet *</label>
+          <label>{{ 'PROJECTS.MODAL.CODE' | translate }} *</label>
           <input class="modern-input" type="text" name="projetCode" [(ngModel)]="newProjet.code" required>
         </div>
 
         <div class="modern-form-group">
-          <label>Description</label>
+          <label>{{ 'PROJECTS.MODAL.DESC' | translate }}</label>
           <textarea class="modern-input" name="projetDesc" [(ngModel)]="newProjet.description" rows="3"></textarea>
         </div>
 
         <div style="margin-top: 15px;">
           <label style="display: flex; align-items: center; cursor: pointer; font-weight: 500;">
             <input type="checkbox" name="projetActif" [(ngModel)]="newProjet.actif" style="width: auto; margin-right: 10px; transform: scale(1.5);">
-            Projet Actif
+            {{ 'PROJECTS.MODAL.STATUS' | translate }}
           </label>
         </div>
 
@@ -120,10 +120,10 @@
     
     <div class="custom-modal-footer">
       <button class="custom-modal-btn-cancel" (click)="closeProjetModal()">
-        <mat-icon>close</mat-icon> Annuler
+        <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
       </button>
       <button class="custom-modal-btn-submit" type="submit" form="projetForm" [disabled]="!projetForm.form.valid">
-        <mat-icon>check</mat-icon> {{ selectedProjet ? 'Mettre à jour' : 'Enregistrer' }}
+        <mat-icon>check</mat-icon> {{ selectedProjet ? ('COMMON.UPDATE' | translate) : ('COMMON.SAVE' | translate) }}
       </button>
     </div>
   </div>

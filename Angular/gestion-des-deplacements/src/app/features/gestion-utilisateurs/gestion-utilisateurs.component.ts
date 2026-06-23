@@ -127,10 +127,15 @@ export class GestionUtilisateursComponent implements OnInit {
 
   getProfileLabel(profile: string): string {
     if (!profile) return '';
-    const translationKey = 'PROFILES.' + profile;
+    const translationKey = 'USERS.PROFILES.' + profile.toUpperCase();
     const translated = this.translate.instant(translationKey);
     // Si la traduction n'existe pas, ngx-translate retourne la clé
     return translated === translationKey ? profile : translated;
+  }
+
+  getProfileKey(profile: string): string {
+    if (!profile) return '';
+    return 'USERS.PROFILES.' + profile.toUpperCase();
   }
 
   openUserModal(user?: any) {
