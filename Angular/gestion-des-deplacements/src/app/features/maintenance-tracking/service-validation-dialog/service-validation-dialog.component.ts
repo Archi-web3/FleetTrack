@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-service-validation-dialog',
@@ -38,7 +39,8 @@ export class ServiceValidationDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ServiceValidationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private trackingService: MaintenanceTrackingService
+    private trackingService: MaintenanceTrackingService,
+    private translate: TranslateService
   ) {
     this.vehicule = data.vehicule;
   }
@@ -98,5 +100,13 @@ export class ServiceValidationDialogComponent implements OnInit {
     if (this.service && this.service.taches) {
       this.service.taches.forEach((t: any) => t.validee = checked);
     }
+  }
+
+  getLocalizedTask(tache: any): string {
+    const lang = this.translate.currentLang || 'fr';
+    if (lang === 'en' && tache.description_en) {
+        return tache.description_en;
+    }
+    return tache.description || '';
   }
 }

@@ -479,7 +479,9 @@
                 "TYPE": "Type",
                 "ESTIMATED_COST": "Coût estimé",
                 "TASKS": "Tâches",
-                "ACTIVE": "Actif"
+                "ACTIVE": "Actif",
+                "NAME_FR": "Nom du Modèle (Français)",
+                "NAME_EN": "Nom du Modèle (Anglais)"
             },
             "TASKS": {
                 "TITLE": "TÂCHES",
@@ -488,7 +490,9 @@
                 "DESCRIPTION": "Description de la tâche",
                 "REF_PAGE": "Page Réf.",
                 "DELETE": "Supprimer cette tâche",
-                "EMPTY": "Aucune tâche pour le moment."
+                "EMPTY": "Aucune tâche pour le moment.",
+                "DESCRIPTION_FR": "Description (Français)",
+                "DESCRIPTION_EN": "Description (Anglaise)"
             },
             "ADD_TASK": "Ajouter Tâche",
             "MODAL": {

@@ -45,7 +45,7 @@
           <div class="task-item" *ngFor="let tache of service.taches; let i = index">
             <mat-checkbox [(ngModel)]="tache.validee" color="primary">
               <span class="task-number" *ngIf="tache.numeroTacheManuel">[{{ tache.numeroTacheManuel }}]</span>
-              {{ tache.description }}
+              {{ getLocalizedTask(tache) }}
             </mat-checkbox>
             <mat-form-field appearance="outline" class="task-comment">
               <mat-label>Commentaire (optionnel)</mat-label>

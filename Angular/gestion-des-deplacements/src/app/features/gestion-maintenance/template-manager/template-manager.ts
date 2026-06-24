@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MaintenanceService } from '../../../core/services/maintenance.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-template-manager',
@@ -88,10 +88,12 @@ export class TemplateManagerComponent implements OnInit {
         private maintenanceService: MaintenanceService,
         private fb: FormBuilder,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private translate: TranslateService
     ) {
         this.templateForm = this.fb.group({
             nom: ['', Validators.required],
+            nom_en: [''],
             type: ['Hebdomadaire', Validators.required],
             coutParDefaut: [0, [Validators.min(0)]],
             actif: [true],
@@ -127,6 +129,7 @@ export class TemplateManagerComponent implements OnInit {
             this.taches.push(this.fb.group({
                 categorie: [t.categorie, Validators.required],
                 description: [t.description, Validators.required],
+                description_en: [t.description_en || ''],
                 numeroTacheManuel: [t.numeroTacheManuel || ''],
                 numero: [t.numero]
             }));
@@ -134,6 +137,7 @@ export class TemplateManagerComponent implements OnInit {
 
         this.templateForm.patchValue({
             nom: template.nom,
+            nom_en: template.nom_en || '',
             type: template.type,
             coutParDefaut: template.coutParDefaut || 0,
             actif: template.actif
@@ -151,6 +155,7 @@ export class TemplateManagerComponent implements OnInit {
         this.selectedTemplate = null;
         this.templateForm.reset({
             nom: 'Nouvelle Checklist',
+            nom_en: '',
             type: 'Hebdomadaire',
             coutParDefaut: 0,
             actif: true
@@ -175,6 +180,7 @@ export class TemplateManagerComponent implements OnInit {
         this.taches.push(this.fb.group({
             categorie: [this.categories[0], Validators.required],
             description: ['', Validators.required],
+            description_en: [''],
             numeroTacheManuel: [''],
             numero: [this.taches.length + 1]
         }));
@@ -223,5 +229,13 @@ export class TemplateManagerComponent implements OnInit {
                 error: (err) => console.error('Erreur suppression:', err)
             });
         }
+    }
+
+    getLocalizedName(tmpl: any): string {
+        const lang = this.translate.currentLang || 'fr';
+        if (lang === 'en' && tmpl.nom_en) {
+            return tmpl.nom_en;
+        }
+        return tmpl.nom || '';
     }
 }

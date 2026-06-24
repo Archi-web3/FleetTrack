@@ -479,7 +479,9 @@
                 "TYPE": "Type",
                 "ESTIMATED_COST": "Estimated Cost",
                 "TASKS": "Tasks",
-                "ACTIVE": "Active"
+                "ACTIVE": "Active",
+                "NAME_FR": "Template Name (French)",
+                "NAME_EN": "Template Name (English)"
             },
             "TASKS": {
                 "TITLE": "TASKS",
@@ -488,7 +490,9 @@
                 "DESCRIPTION": "Task description",
                 "REF_PAGE": "Ref. Page",
                 "DELETE": "Delete this task",
-                "EMPTY": "No task for the moment."
+                "EMPTY": "No task for the moment.",
+                "DESCRIPTION_FR": "Description (French)",
+                "DESCRIPTION_EN": "Description (English)"
             },
             "ADD_TASK": "Add Task",
             "MODAL": {
