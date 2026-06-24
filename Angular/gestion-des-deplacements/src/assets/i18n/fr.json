@@ -1043,8 +1043,8 @@
     "SETTINGS": {
         "TITLE": "Paramètres Généraux",
         "SUBTITLE": "Gestion des listes déroulantes de l'application",
-        "BRAND_THEME": "Brand & Theme Settings",
-        "SYSTEM_PREF": "Préférences Système",
+        "BRAND_THEME": "Design & Thèmes",
+        "SYSTEM_PREF": "Modules optionnels",
         "CURRENCIES": "Devises",
         "MAINTENANCE": "Maintenance & Alertes",
         "EMAILS": "Paramètres Emails",

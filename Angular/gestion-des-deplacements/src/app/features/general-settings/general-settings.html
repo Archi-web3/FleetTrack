@@ -16,10 +16,6 @@
         <mat-icon matListItemIcon>monetization_on</mat-icon>
         <span matListItemTitle>{{ 'SETTINGS.CURRENCIES' | translate }}</span>
       </a>
-      <a mat-list-item [class.active]="activeTab === 'maintenance'" (click)="setTab('maintenance')">
-        <mat-icon matListItemIcon>build</mat-icon>
-        <span matListItemTitle>{{ 'SETTINGS.MAINTENANCE' | translate }}</span>
-      </a>
       <a mat-list-item [class.active]="activeTab === 'emails'" (click)="setTab('emails')">
         <mat-icon matListItemIcon>email</mat-icon>
         <span matListItemTitle>{{ 'SETTINGS.EMAILS' | translate }}</span>
@@ -32,7 +28,7 @@
     
     <!-- 1. BRAND & THEME -->
     <div *ngIf="activeTab === 'brand'" class="settings-section">
-      <h2><mat-icon>palette</mat-icon> Brand & Theme Settings</h2>
+      <h2><mat-icon>palette</mat-icon> {{ 'SETTINGS.BRAND_THEME' | translate }}</h2>
       <p class="section-desc">{{ 'SETTINGS.PERSONALIZE' | translate }}</p>
 
       <mat-card class="setting-card">
@@ -362,7 +358,7 @@
 
     <!-- 4. CURRENCIES -->
     <div *ngIf="activeTab === 'currencies'" class="settings-section">
-      <h2><mat-icon>monetization_on</mat-icon> Configuration des Devises</h2>
+      <h2><mat-icon>monetization_on</mat-icon> {{ 'SETTINGS.CURRENCIES' | translate }}</h2>
       <p class="section-desc">Gérez les devises supportées par l'application et leurs taux de change par défaut.</p>
 
       <mat-card class="setting-card">
@@ -431,7 +427,7 @@
 
     <!-- 5. EMAILS SETTINGS -->
     <div *ngIf="activeTab === 'emails'" class="settings-section">
-      <h2><mat-icon>email</mat-icon> Configuration des Emails & Notifications</h2>
+      <h2><mat-icon>email</mat-icon> {{ 'SETTINGS.EMAILS' | translate }}</h2>
       <p class="section-desc">Gérez les notifications automatiques envoyées par le système. Activez ou désactivez les envois selon les étapes du processus.</p>
 
       <!-- AIDE CONTEXTUELLE SUPER ADMIN -->
@@ -586,7 +582,7 @@
 
     <!-- 2. SYSTEM PREFERENCES -->
     <div *ngIf="activeTab === 'system'" class="settings-section">
-      <h2><mat-icon>settings</mat-icon> System Preferences</h2>
+      <h2><mat-icon>settings</mat-icon> {{ 'SETTINGS.SYSTEM_PREF' | translate }}</h2>
       <p class="section-desc">Gérez les modules optionnels et les fonctionnalités globales de l'application.</p>
 
       <mat-card class="setting-card">
@@ -612,13 +608,6 @@
     </div>
 
     <!-- PLACEHOLDERS FOR OTHERS -->
-    <div *ngIf="activeTab === 'maintenance'" class="settings-section">
-      <div class="placeholder-content">
-        <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #cbd5e1; margin-bottom: 20px;">construction</mat-icon>
-        <h2>Module en construction</h2>
-        <p>Ce module ({{ activeTab }}) sera implémenté dans les prochaines étapes du développement.</p>
-      </div>
-    </div>
 
   </div>
 </div>

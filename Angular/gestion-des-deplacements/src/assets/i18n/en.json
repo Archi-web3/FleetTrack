@@ -1043,8 +1043,8 @@
     "SETTINGS": {
         "TITLE": "General Settings",
         "SUBTITLE": "Application Dropdown Management",
-        "BRAND_THEME": "Brand & Theme Settings",
-        "SYSTEM_PREF": "System Preferences",
+        "BRAND_THEME": "Brand & Themes",
+        "SYSTEM_PREF": "Optional Modules",
         "CURRENCIES": "Currencies",
         "MAINTENANCE": "Maintenance & Alerts",
         "EMAILS": "Email Settings",
