@@ -1446,7 +1446,7 @@
         }
     },
     "DASHBOARD": {
-        "WELCOME": "Bienvenue sur",
+        "WELCOME": "Bienvenue {{userName}}",
         "WELCOME_DESC": "Ceci est votre <strong>tableau de bord</strong> personnel. Vous y trouverez toutes les données importantes en un clin d'œil.",
         "QUICK_ACTIONS": "Actions Rapides",
         "NEW_MOVEMENT": "Nouveau Mouvement",
@@ -1456,7 +1456,14 @@
         "NO_PENDING_VALIDATIONS": "Aucune demande en attente de votre validation.",
         "NO_OBJECTIVE": "Mouvement sans objectif",
         "REQUESTER": "Demandeur",
-        "VALIDATION_TYPE": "Type de validation"
+        "VALIDATION_TYPE": "Type de validation",
+        "TYPE_LOGISTICS": "Logistique",
+        "TYPE_SECURITY": "Sécurité",
+        "LIST_MODE": "Vue Liste",
+        "CARD_MODE": "Vue Cartes",
+        "SECURITY_LEVEL": "Niveau de sécurité",
+        "EXPECTED_VALIDATOR": "Attendu",
+        "BACKUP_VALIDATORS": "Backups autorisés"
     },
     "MOVEMENT": {
         "SELECT_DEPARTURE": "Sélectionnez un lieu de départ...",

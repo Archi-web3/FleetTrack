@@ -13,11 +13,27 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MouvementService } from '../../core/services/mouvement.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PermissionsService } from '../../core/services/permissions.service';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslateModule],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    MatCardModule, 
+    MatIconModule, 
+    MatButtonModule, 
+    MatProgressSpinnerModule, 
+    TranslateModule,
+    MatButtonToggleModule,
+    MatTableModule,
+    MatTooltipModule,
+    FormsModule
+  ],
   templateUrl: './home-dashboard.html',
   styleUrls: ['./home-dashboard.scss']
 })
@@ -34,6 +50,9 @@ export class HomeDashboardComponent implements OnInit {
   loadingValidations = true;
   userId: string = '';
   userProfile: string = '';
+  
+  viewMode: 'cards' | 'list' = 'cards';
+  displayedColumns: string[] = ['date', 'objectif', 'demandeur', 'types', 'security'];
 
   constructor(
     private settingsService: SettingsService, 
@@ -184,5 +203,15 @@ export class HomeDashboardComponent implements OnInit {
         this.weatherLoading = false;
       }
     });
+  }
+
+  getPrimaryValidators(mouvement: any) {
+    if (!mouvement.securityApprovals) return [];
+    return mouvement.securityApprovals.filter((a: any) => !a.isBackup);
+  }
+
+  getBackupValidators(mouvement: any) {
+    if (!mouvement.securityApprovals) return [];
+    return mouvement.securityApprovals.filter((a: any) => a.isBackup);
   }
 }

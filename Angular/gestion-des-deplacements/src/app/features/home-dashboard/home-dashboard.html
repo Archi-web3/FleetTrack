@@ -80,26 +80,101 @@
           <p>{{ 'DASHBOARD.NO_PENDING_VALIDATIONS' | translate }}</p>
         </div>
 
-        <div *ngIf="!loadingValidations && pendingValidations.length > 0" class="validations-list">
-          <div *ngFor="let m of pendingValidations" class="validation-item" routerLink="/valider-mouvements">
-            <div class="val-header">
-              <span class="val-objectif">{{ m.objectif || ('DASHBOARD.NO_OBJECTIVE' | translate) }}</span>
-              <span class="val-date">{{ m.dateDepart | date:'short' }}</span>
-            </div>
-            <div class="val-body">
-              <span><strong>{{ 'DASHBOARD.REQUESTER' | translate }}:</strong> {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }}</span>
-              <span style="display: flex; align-items: center; gap: 5px;"><strong>{{ 'DASHBOARD.VALIDATION_TYPE' | translate }}:</strong> 
-                <span *ngFor="let type of m.validationTypes" 
-                      style="display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; font-weight: 500;"
-                      [ngStyle]="{
-                        'background-color': type === 'Sécurité' ? '#fdecea' : '#e3f2fd',
-                        'color': type === 'Sécurité' ? '#d32f2f' : '#1976d2',
-                        'border': type === 'Sécurité' ? '1px solid #f8bbd0' : '1px solid #bbdefb'
-                      }">
-                  {{ type }}
+        <div *ngIf="!loadingValidations && pendingValidations.length > 0">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <mat-button-toggle-group [(ngModel)]="viewMode" aria-label="View Mode">
+              <mat-button-toggle value="cards" [matTooltip]="'DASHBOARD.CARD_MODE' | translate"><mat-icon>grid_view</mat-icon></mat-button-toggle>
+              <mat-button-toggle value="list" [matTooltip]="'DASHBOARD.LIST_MODE' | translate"><mat-icon>view_list</mat-icon></mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+
+          <!-- CARD VIEW -->
+          <div *ngIf="viewMode === 'cards'" class="validations-list">
+            <div *ngFor="let m of pendingValidations" class="validation-item" routerLink="/valider-mouvements">
+              <div class="val-header">
+                <span class="val-objectif">{{ m.objectif || ('DASHBOARD.NO_OBJECTIVE' | translate) }}</span>
+                <span class="val-date">{{ m.dateDepart | date:'short' }}</span>
+              </div>
+              <div class="val-body">
+                <span><strong>{{ 'DASHBOARD.REQUESTER' | translate }}:</strong> {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }}</span>
+                <span style="display: flex; align-items: center; gap: 5px;"><strong>{{ 'DASHBOARD.VALIDATION_TYPE' | translate }}:</strong> 
+                  <span *ngFor="let type of m.validationTypes" 
+                        style="display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; font-weight: 500;"
+                        [ngStyle]="{
+                          'background-color': type === 'Sécurité' ? '#fdecea' : '#e3f2fd',
+                          'color': type === 'Sécurité' ? '#d32f2f' : '#1976d2',
+                          'border': type === 'Sécurité' ? '1px solid #f8bbd0' : '1px solid #bbdefb'
+                        }">
+                    {{ type === 'Sécurité' ? ('DASHBOARD.TYPE_SECURITY' | translate) : ('DASHBOARD.TYPE_LOGISTICS' | translate) }}
+                  </span>
                 </span>
-              </span>
+              </div>
             </div>
+          </div>
+
+          <!-- LIST VIEW -->
+          <div *ngIf="viewMode === 'list'" style="overflow-x: auto;">
+            <table mat-table [dataSource]="pendingValidations" class="mat-elevation-z1" style="width: 100%; border-radius: 8px; overflow: hidden;">
+              
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef> Date </th>
+                <td mat-cell *matCellDef="let m" style="cursor: pointer;" routerLink="/valider-mouvements"> {{ m.dateDepart | date:'short' }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="objectif">
+                <th mat-header-cell *matHeaderCellDef> Objectif </th>
+                <td mat-cell *matCellDef="let m" style="cursor: pointer;" routerLink="/valider-mouvements"> {{ m.objectif || ('DASHBOARD.NO_OBJECTIVE' | translate) }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="demandeur">
+                <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.REQUESTER' | translate }} </th>
+                <td mat-cell *matCellDef="let m" style="cursor: pointer;" routerLink="/valider-mouvements"> {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="types">
+                <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.VALIDATION_TYPE' | translate }} </th>
+                <td mat-cell *matCellDef="let m" style="cursor: pointer;" routerLink="/valider-mouvements">
+                  <span *ngFor="let type of m.validationTypes" 
+                        style="display: inline-block; padding: 2px 8px; margin-right: 5px; border-radius: 12px; font-size: 0.85em; font-weight: 500;"
+                        [ngStyle]="{
+                          'background-color': type === 'Sécurité' ? '#fdecea' : '#e3f2fd',
+                          'color': type === 'Sécurité' ? '#d32f2f' : '#1976d2',
+                          'border': type === 'Sécurité' ? '1px solid #f8bbd0' : '1px solid #bbdefb'
+                        }">
+                    {{ type === 'Sécurité' ? ('DASHBOARD.TYPE_SECURITY' | translate) : ('DASHBOARD.TYPE_LOGISTICS' | translate) }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="security">
+                <th mat-header-cell *matHeaderCellDef> Info Sécurité </th>
+                <td mat-cell *matCellDef="let m" style="font-size: 0.85em;">
+                  <div *ngIf="m.validationTypes.includes('Sécurité')">
+                    <div><strong>{{ 'DASHBOARD.SECURITY_LEVEL' | translate }}:</strong> <span [ngStyle]="{'color': m.validationLevelRequired >= 3 ? '#d32f2f' : '#388e3c', 'font-weight': 'bold'}">{{ m.validationLevelRequired || 1 }}</span></div>
+                    
+                    <div style="margin-top: 4px;" *ngIf="getPrimaryValidators(m).length > 0">
+                      <strong>{{ 'DASHBOARD.EXPECTED_VALIDATOR' | translate }}:</strong>
+                      <span *ngFor="let v of getPrimaryValidators(m); let last = last">
+                        {{ v.validator?.nom }} {{ v.validator?.prenom }} ({{ v.status === 'approved' ? '✓' : '...' }}){{ !last ? ', ' : '' }}
+                      </span>
+                    </div>
+
+                    <div style="margin-top: 4px; color: #6c757d;" *ngIf="getBackupValidators(m).length > 0">
+                      <strong>{{ 'DASHBOARD.BACKUP_VALIDATORS' | translate }}:</strong>
+                      <span *ngFor="let v of getBackupValidators(m); let last = last">
+                        {{ v.validator?.nom }} {{ v.validator?.prenom }}{{ !last ? ', ' : '' }}
+                      </span>
+                    </div>
+                  </div>
+                  <div *ngIf="!m.validationTypes.includes('Sécurité')" style="color: #94a3b8;">
+                    -
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row-hover"></tr>
+            </table>
           </div>
         </div>
       </mat-card-content>
