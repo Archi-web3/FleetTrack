@@ -9,6 +9,22 @@
 
 ---
 
+> **Built for Humanitarian Logistics 🚑**
+> FleetTrack is a comprehensive open-source web and mobile progressive web app (PWA) designed specifically to manage vehicle fleets, logbooks, and predictive maintenance for Humanitarian NGOs operating in challenging environments. It is a 100% non-profit and open-source project aiming to provide NGOs with a modern, free, and robust tool.
+
+## 📸 Screenshots
+
+<div align="center">
+  <img src="docs/images/dashboard.png" width="800" alt="Home Dashboard">
+  <br><br>
+  <p float="left">
+    <img src="docs/images/settings_system.png" width="400" alt="System Settings">
+    <img src="docs/images/settings_brand.png" width="400" alt="Brand Settings">
+  </p>
+</div>
+
+---
+
 ## 👀 Looking for Contributors & Reviewers
 
 I am currently looking for feedback on:
