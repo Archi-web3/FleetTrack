@@ -8,7 +8,11 @@ export interface VehicleTypeSetting {
     vehicleTypes: string[];
 }
 
-import { BrandSettings } from '../models/api.types';
+export interface BrandSettings {
+  primaryColor?: string;
+  newsBanner?: string;
+  [key: string]: any;
+}
 
 export interface CO2Factors {
   diesel?: number;

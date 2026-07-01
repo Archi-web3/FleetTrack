@@ -40,9 +40,9 @@ export class InfoBannerComponent implements OnInit {
     this.isSuperAdmin = this.authService.getUserProfile() === 'SuperAdmin';
 
     if (this.bannerId) {
-      this.settingsService.getInfoBanners().subscribe((banners) => {
+      this.settingsService.getInfoBanners().subscribe((banners: any) => {
         if (banners && banners[this.bannerId]) {
-          this.customContent = banners[this.bannerId];
+          this.customContent = banners[this.bannerId] as string;
         }
       });
     }

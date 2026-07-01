@@ -266,6 +266,9 @@ export class GestionUtilisateursComponent implements OnInit {
       userData.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(userData.profil);
     }
 
+    this.utilisateurService.addUser(userData).subscribe(
+      (response: any) => {
+        alert('Utilisateur créé avec succès !');
         // Reset form, keeping context if Admin
         const currentPays = this.userProfile === 'Admin' ? this.userPaysId : '';
         const currentBase = this.userProfile === 'Admin' ? this.newUser.base : '';
@@ -297,7 +300,7 @@ export class GestionUtilisateursComponent implements OnInit {
         this.loadUtilisateurs();
         this.closeUserModal();
       },
-      (error) => {
+      (error: any) => {
         console.error('Erreur création utilisateur:', error);
         console.error('Détails erreur:', error.error); // DEBUG
         if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à créer des utilisateurs.');
@@ -318,10 +321,10 @@ export class GestionUtilisateursComponent implements OnInit {
     }
 
     // Si pays est un objet peuplé, extraire l'ID
-    let paysId = this.selectedUser.pays;
-    if (this.selectedUser.pays && this.selectedUser.pays._id) {
+    let paysId = this.selectedUser?.pays;
+    if (this.selectedUser?.pays && this.selectedUser.pays._id) {
       paysId = this.selectedUser.pays._id;
-      this.selectedUser.pays = paysId; // Garder l'ID pour le select
+      if (this.selectedUser) this.selectedUser.pays = paysId; // Garder l'ID pour le select
     }
 
     // Charger les bases pour ce pays (pour SuperAdmin et Admin)
@@ -365,13 +368,13 @@ export class GestionUtilisateursComponent implements OnInit {
     if (userData.vehiculeAttitre === '') userData.vehiculeAttitre = null;
 
     this.utilisateurService.updateUser(this.selectedUser._id, userData).subscribe(
-      (response) => {
+      (response: any) => {
         alert('Utilisateur mis à jour avec succès !');
         this.selectedUser = null;
         this.loadUtilisateurs();
         this.closeUserModal();
       },
-      (error) => {
+      (error: any) => {
         console.error('Erreur mise à jour utilisateur:', error);
         if (error.status === 403) alert('Accès refusé.');
         else alert('Erreur lors de la mise à jour: ' + (error.error?.message || error.message));
@@ -382,11 +385,11 @@ export class GestionUtilisateursComponent implements OnInit {
   deleteUser(id: string): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       this.utilisateurService.deleteUser(id).subscribe(
-        (response) => {
+        (response: any) => {
           alert('Utilisateur supprimé avec succès !');
           this.loadUtilisateurs();
         },
-        (error) => {
+        (error: any) => {
           console.error('Erreur suppression utilisateur:', error);
           if (error.status === 403) alert('Accès refusé. Vous n\'êtes pas autorisé à supprimer des utilisateurs.');
           else alert('Erreur lors de la suppression de l\'utilisateur.');

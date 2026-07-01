@@ -222,21 +222,19 @@ export class ModifierMouvementComponent implements OnInit {
 
 
   async onSubmit(): Promise<void> {
-        return;
-      }
+    if (this.isRecurring) {
       const startDate = new Date(this.mouvement.dateDepart);
       const endDate = new Date(this.recurrenceEndDate);
       if (endDate <= startDate) {
         alert('La date de fin de récurrence doit être postérieure à la date de départ.');
         return;
       }
-
-      // D'abord, on met à jour le mouvement courant (le "parent" ou le premier de la série)
-      this.mouvement.recurrenceGroupId = 'REC_MAINT_' + Date.now(); // On initie un groupe si pas présent
+      this.mouvement.recurrenceGroupId = 'REC_MAINT_' + Date.now();
     }
 
     try {
-      await firstValueFrom(this.mouvementService.updateMouvement(this.mouvementId, this.mouvement));
+      await firstValueFrom(this.mouvementService.updateMouvement(this.mouvementId!, this.mouvement));
+      await firstValueFrom(this.mouvementService.updateMouvement(this.mouvementId!, this.mouvement));
 
       // Si récurrence activée pour maintenance, on crée les NOUVEAUX créneaux futurs
       if (this.mouvement.type === 'maintenance' && this.isRecurring) {
