@@ -14,9 +14,9 @@ import { UsersModule } from '../users/users.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
+        secret: configService.get<string>('JWT_SECRET') || 'defaultSecret',
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRATION'),
+          expiresIn: configService.get<string>('JWT_EXPIRATION') || '1d',
         } as import('@nestjs/jwt').JwtSignOptions,
       }),
     }),
