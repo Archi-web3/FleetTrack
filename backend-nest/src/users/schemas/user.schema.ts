@@ -87,16 +87,12 @@ export class Utilisateur {
 export const UtilisateurSchema = SchemaFactory.createForClass(Utilisateur);
 
 // Hook pour hacher le mot de passe avant sauvegarde
-UtilisateurSchema.pre(
-  'save',
-  async function (next: (err?: import('mongoose').CallbackError) => void) {
-    if (this.isModified('motDePasse')) {
-      const salt = await bcrypt.genSalt(10);
-      this.motDePasse = await bcrypt.hash(this.motDePasse, salt);
-    }
-    next();
-  },
-);
+UtilisateurSchema.pre('save', async function () {
+  if (this.isModified('motDePasse')) {
+    const salt = await bcrypt.genSalt(10);
+    this.motDePasse = await bcrypt.hash(this.motDePasse, salt);
+  }
+});
 
 // Méthode de comparaison
 UtilisateurSchema.methods.comparePassword = async function (
