@@ -7,7 +7,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('jwtToken');
 
   if (token) {
     const selectedCountry = localStorage.getItem('selectedCountry');
@@ -25,7 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(cloned).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          localStorage.removeItem('token');
+          localStorage.removeItem('jwtToken');
           localStorage.removeItem('userProfile');
           window.location.href = '/login';
         }
@@ -37,7 +37,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        localStorage.removeItem('token');
+        localStorage.removeItem('jwtToken');
         localStorage.removeItem('userProfile');
         window.location.href = '/login';
       }
