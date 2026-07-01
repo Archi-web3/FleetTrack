@@ -27,6 +27,12 @@ export class SettingsController {
     return value;
   }
 
+  @Get(':key')
+  async getSetting(@Param('key') key: string) {
+    const value = await this.settingsService.getSetting(key);
+    return value || {};
+  }
+
   @Post(':key')
   async setSetting(@Param('key') key: string, @Body() body: any) {
     return this.settingsService.setSetting(key, body.value || body);
