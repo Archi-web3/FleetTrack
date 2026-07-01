@@ -121,7 +121,11 @@ export class CountrySelectorComponent implements OnInit {
           // Load selected country from localStorage
           const stored = this.paysService.getSelectedCountry();
           // Default to 'all' if nothing stored (Global View)
-          this.selectedCountryId = stored ? stored : 'all';
+          this.selectedCountryId = stored && stored !== 'undefined' && stored !== 'null' ? stored : 'all';
+          // Ensure it's saved so requests don't fail with undefined header
+          if (!stored || stored === 'undefined' || stored === 'null') {
+             this.paysService.setSelectedCountry('all');
+          }
         } else {
           // For non-SuperAdmin, get their assigned country
           const user = this.authService.getUser();

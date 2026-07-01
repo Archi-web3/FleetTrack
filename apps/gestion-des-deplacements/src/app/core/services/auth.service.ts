@@ -281,8 +281,8 @@ export class AuthService {
       tap((res: any) => {
         if (res.token) {
           localStorage.setItem(this.tokenKey, res.token);
-          this._isAuthenticated.next(true);
-          this.setProfileAndNameAndIdFromToken(res.token);
+          this.setProfileAndNameAndIdFromToken(res.token); // Decode token FIRST
+          this._isAuthenticated.next(true); // Then show the UI
           this.startTokenExpirationCheck();
         }
       }),
@@ -295,8 +295,8 @@ export class AuthService {
       tap((res: any) => {
         if (res.token) {
           localStorage.setItem(this.tokenKey, res.token);
-          this._isAuthenticated.next(true);
-          this.setProfileAndNameAndIdFromToken(res.token);
+          this.setProfileAndNameAndIdFromToken(res.token); // Decode token FIRST
+          this._isAuthenticated.next(true); // Then show the UI
           this.startTokenExpirationCheck();
         }
       }),
