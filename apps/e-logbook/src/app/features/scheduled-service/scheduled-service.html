@@ -1,0 +1,153 @@
+<div class="service-container">
+  <!-- En-tête -->
+  <mat-card class="header-card">
+    <mat-card-header class="header-with-back">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <mat-card-title>
+        <mat-icon>build</mat-icon>
+        {{ 'SERVICE.TITLE' | translate }} <span style="font-size: 0.6em; opacity: 0.7">[v2.2]</span>
+      </mat-card-title>
+      @if (nextService) {
+        <mat-card-subtitle>
+          {{ 'SERVICE.NEXT_AT' | translate }} {{ nextService.kilometragePrevu }} km
+        </mat-card-subtitle>
+      }
+    </mat-card-header>
+  </mat-card>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <p>{{ 'SERVICE.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Prochain Service -->
+  @if (!loading && nextService) {
+    <div class="service-content">
+      <!-- Carte Info Service -->
+      <mat-card class="service-info-card">
+        <mat-card-content>
+          <div class="service-header">
+            <div class="service-type" [style.background-color]="getServiceTypeColor()">
+              <mat-icon>build_circle</mat-icon>
+              <span>{{ getServiceTypeLabel() }}</span>
+            </div>
+            <mat-chip-set>
+              <mat-chip [color]="getStatusColor()">
+                <mat-icon>{{ getStatusIcon() }}</mat-icon>
+                {{ nextService.statut }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+          <!-- Progression Kilométrage -->
+          <div class="km-progress">
+            <div class="km-info">
+              <div class="km-item">
+                <span class="label">{{ 'SERVICE.CURRENT_KM' | translate }}</span>
+                <span class="value">{{ nextService.kilometrageActuel }} km</span>
+              </div>
+              <div class="km-item">
+                <span class="label">{{ 'SERVICE.EXPECTED_KM' | translate }}</span>
+                <span class="value">{{ nextService.kilometragePrevu }} km</span>
+              </div>
+              <div class="km-item highlight">
+                <span class="label">{{ 'SERVICE.REMAINING_KM' | translate }}</span>
+                <span class="value">{{ getKmRemaining() }} km</span>
+              </div>
+            </div>
+            <mat-progress-bar
+              mode="determinate"
+              [value]="getProgressPercentage()"
+              [color]="getStatusColor()"
+            >
+            </mat-progress-bar>
+          </div>
+          <!-- Prochain Service -->
+          @if (nextService.prochainService) {
+            <div class="next-service-info">
+              <mat-icon>info</mat-icon>
+              <span
+                >{{ 'SERVICE.NEXT_INFO' | translate }}
+                <strong>Service {{ nextService.prochainService.type }}</strong> à
+                {{ nextService.prochainService.kilometrage }} km</span
+              >
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+      <!-- Tâches du Service -->
+      <mat-card class="tasks-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>checklist</mat-icon>
+            {{ 'SERVICE.TASKS_TITLE' | translate }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ getValidatedTasksCount() }}/{{ getTotalTasksCount() }}
+            {{ 'SERVICE.COMPLETED_TASKS' | translate }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="tasks-list">
+            @for (tache of nextService.taches; track tache; let i = $index) {
+              <div class="task-item" [class.completed]="tache.validee">
+                <mat-checkbox
+                  [(ngModel)]="tache.validee"
+                  (change)="toggleTask(tache)"
+                  [color]="'primary'"
+                >
+                  <span class="task-number">{{ i + 1 }}.</span>
+                  <span class="task-description">{{ tache.description }}</span>
+                </mat-checkbox>
+                <!-- Bouton voir manuel -->
+                @if (tache.numeroTacheManuel) {
+                  <button
+                    mat-icon-button
+                    (click)="openManual(tache.numeroTacheManuel)"
+                    [matTooltip]="'CHECKLIST.MANUAL_BTN' | translate"
+                    class="manual-button"
+                  >
+                    <mat-icon>menu_book</mat-icon>
+                  </button>
+                }
+                <!-- Date de validation -->
+                @if (tache.validee && tache.dateValidation) {
+                  <span class="validation-date">
+                    ✓ {{ tache.dateValidation | date: 'dd/MM HH:mm' }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+          <!-- Bouton Compléter Service -->
+          <div class="actions">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="completeService()"
+              [disabled]="getValidatedTasksCount() < getTotalTasksCount()"
+            >
+              <mat-icon>check_circle</mat-icon>
+              {{ 'SERVICE.COMPLETE_BTN' | translate }}
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  <!-- Pas de Service -->
+  @if (!loading && !nextService) {
+    <mat-card class="no-service">
+      <mat-card-content>
+        <mat-icon>check_circle</mat-icon>
+        <p>{{ 'SERVICE.NO_SERVICE' | translate }}</p>
+        <p class="subtitle">{{ 'SERVICE.AUTO_CALC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

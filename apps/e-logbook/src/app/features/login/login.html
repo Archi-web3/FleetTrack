@@ -1,0 +1,115 @@
+<div class="login-wrapper">
+  <!-- Language selector absolutely positioned -->
+  <div class="top-right-actions">
+    <app-language-selector></app-language-selector>
+  </div>
+
+  <div class="login-container">
+    <mat-card class="login-card glass-panel">
+      <!-- Logo et titre À L'INTÉRIEUR de la carte -->
+      <div class="login-branding">
+        @if (brandSettings?.mobileLoginLogo || brandSettings?.mobileAppLogo) {
+          <div style="position: relative; display: inline-block; margin: 0 auto 10px auto">
+            <img
+              [src]="brandSettings?.mobileLoginLogo || brandSettings?.mobileAppLogo"
+              style="
+                visibility: hidden;
+                max-height: 40px;
+                max-width: 100px;
+                width: auto;
+                display: block;
+              "
+            />
+            @if (brandSettings?.mobileLoginLogoColor) {
+              <div
+                [style.background-color]="brandSettings.mobileLoginLogoColor"
+                [style.-webkit-mask]="
+                  'url(' +
+                  (brandSettings.mobileLoginLogo || brandSettings.mobileAppLogo) +
+                  ') no-repeat center / contain'
+                "
+                [style.mask]="
+                  'url(' +
+                  (brandSettings.mobileLoginLogo || brandSettings.mobileAppLogo) +
+                  ') no-repeat center / contain'
+                "
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"
+              ></div>
+            }
+            @if (!brandSettings?.mobileLoginLogoColor) {
+              <img
+                [src]="brandSettings?.mobileLoginLogo || brandSettings?.mobileAppLogo"
+                alt="Logo"
+                class="acf-logo"
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  max-height: 40px;
+                  max-width: 100px;
+                  width: auto;
+                  object-fit: contain;
+                  height: 100%;
+                  margin: 0;
+                "
+              />
+            }
+          </div>
+        }
+        <h2 class="app-title">
+          {{ brandSettings?.mobileAppName || brandSettings?.appName || 'e-Logbook' }}
+        </h2>
+        <p class="subtitle">{{ brandSettings?.mobileAppTagline || 'Chauffeur' }}</p>
+      </div>
+
+      <!-- Warning Offline -->
+      <div class="offline-warning">
+        <mat-icon>wifi_off</mat-icon>
+        <div class="warning-text">
+          <strong>{{ 'MOBILE.LOGIN.IMPORTANT' | translate }}</strong>
+          Connectez-vous avec Internet et
+          <strong>{{ 'MOBILE.LOGIN.DONT_LOGOUT' | translate }}</strong> pour le mode hors-ligne.
+        </div>
+      </div>
+
+      <mat-card-content class="login-form">
+        <mat-form-field appearance="outline" class="full-width custom-input">
+          <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
+          <mat-icon matPrefix>email</mat-icon>
+          <input matInput type="email" [(ngModel)]="email" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width custom-input">
+          <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input matInput type="password" [(ngModel)]="password" required (keyup.enter)="login()" />
+        </mat-form-field>
+
+        @if (errorMessage) {
+          <div class="error-message">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="full-width login-btn"
+          (click)="login()"
+          [disabled]="isLoading || !email || !password"
+        >
+          @if (!isLoading) {
+            <mat-icon>login</mat-icon>
+          }
+          @if (isLoading) {
+            <mat-icon class="spinner">autorenew</mat-icon>
+          }
+          <span>{{
+            isLoading ? ('LOGIN.BUTTON' | translate) + '...' : ('LOGIN.BUTTON' | translate)
+          }}</span>
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

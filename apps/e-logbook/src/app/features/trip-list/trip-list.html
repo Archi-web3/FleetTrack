@@ -1,0 +1,135 @@
+<div class="trips-container">
+  <!-- Header -->
+  <div class="trips-header">
+    <h1>
+      <mat-icon>directions_car</mat-icon>
+      {{ 'TRIPS.TITLE' | translate }}
+    </h1>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="startNewTrip()">
+        <mat-icon>add</mat-icon>
+        {{ 'TRIPS.NEW_BTN' | translate }}
+      </button>
+      <button
+        mat-icon-button
+        (click)="router.navigate(['/dashboard'])"
+        matTooltip="Retour au tableau de bord"
+      >
+        <mat-icon>dashboard</mat-icon>
+      </button>
+      <button mat-icon-button [disabled]="isSyncing" (click)="syncData()" matTooltip="Synchroniser">
+        <mat-icon [class.spinning]="isSyncing">sync</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Trips Table -->
+  <div class="table-container">
+    <table mat-table [dataSource]="trips" class="trips-table">
+      <!-- Sync Status Column -->
+      <ng-container matColumnDef="syncStatus">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-icon>cloud_queue</mat-icon>
+        </th>
+        <td mat-cell *matCellDef="let trip">
+          <mat-icon
+            [class.synced]="trip.synced"
+            [class.pending]="!trip.synced"
+            [matTooltip]="trip.synced ? 'Synchronisé' : 'En attente de synchro'"
+          >
+            {{ trip.synced ? 'cloud_done' : 'cloud_upload' }}
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.DATE' | translate }}</th>
+        <td mat-cell *matCellDef="let trip">
+          <span class="mobile-date">{{ trip.startDateTime | date: 'dd/MM' }}</span>
+          <span class="desktop-date">{{ trip.startDateTime | date: 'dd/MM/yyyy' }}</span>
+          <div class="mobile-time">{{ trip.startDateTime | date: 'HH:mm' }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Time Column (Desktop only) -->
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.TIME' | translate }}</th>
+        <td mat-cell *matCellDef="let trip">
+          {{ trip.startDateTime | date: 'HH:mm' }} - {{ trip.endDateTime | date: 'HH:mm' }}
+        </td>
+      </ng-container>
+
+      <!-- Departure Column -->
+      <ng-container matColumnDef="departure">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.DEPARTURE' | translate }}</th>
+        <td mat-cell *matCellDef="let trip">
+          {{ getDepartureName(trip) }}
+          <div class="mobile-arrival-hint">⬇ {{ getArrivalName(trip) }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Arrival Column (Desktop only) -->
+      <ng-container matColumnDef="arrival">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.ARRIVAL' | translate }}</th>
+        <td mat-cell *matCellDef="let trip">{{ getArrivalName(trip) }}</td>
+      </ng-container>
+
+      <!-- Passengers Column (Desktop only) -->
+      <ng-container matColumnDef="passengers">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.PASSENGERS' | translate }}</th>
+        <td mat-cell *matCellDef="let trip">
+          <div class="passenger-count" [matTooltip]="getPassengerNames(trip)">
+            <mat-icon class="small-icon">people</mat-icon>
+            {{ trip.passengerIds?.length || 0 }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Purpose Column (Desktop only) -->
+      <ng-container matColumnDef="purpose">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.PURPOSE' | translate }}</th>
+        <td mat-cell *matCellDef="let trip">{{ trip.purpose }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TRIPS.TABLE.ACTIONS' | translate }}</th>
+        <td mat-cell *matCellDef="let trip">
+          <button
+            mat-icon-button
+            color="primary"
+            [matTooltip]="'ID: ' + trip._id + ' (Voir détails)'"
+            (click)="openDetails(trip)"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          @if (isAdmin) {
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteTrip(trip, $event)"
+              [matTooltip]="'COMMON.DELETE' | translate"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Table Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="trip-row"></tr>
+
+      <!-- No Data Row -->
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <div class="no-data">
+            <mat-icon>inbox</mat-icon>
+            <p>{{ 'TRIPS.TABLE.EMPTY' | translate }}</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Quick Stats -->
+</div>

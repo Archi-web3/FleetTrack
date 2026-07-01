@@ -1,6 +1,23 @@
 {
+  "name": "fleettrack-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "backend-nest"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:gestion\" \"npm run start:elogbook\"",
+    "start:elogbook": "npm run start --workspace=apps/e-logbook",
+    "start:gestion": "npm run start --workspace=apps/gestion-des-deplacements",
+    "start:backend": "npm run start:dev --workspace=backend-nest"
+  },
   "dependencies": {
     "dotenv": "^17.2.3",
     "mongoose": "^9.1.2"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3",
+    "playwright": "^1.61.1"
   }
 }

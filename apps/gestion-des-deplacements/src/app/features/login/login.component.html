@@ -1,0 +1,473 @@
+<div
+  class="login-page-wrapper"
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(
+      --login-bg,
+      radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.4), transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(217, 70, 239, 0.3), transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.2), transparent 100%),
+      #1e1b4b
+    );
+    background-size: cover;
+    background-position: center;
+    backdrop-filter: blur(40px);
+    flex-direction: column;
+  "
+>
+  <mat-card
+    class="login-card"
+    style="
+      width: 420px;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      background: white;
+    "
+  >
+    <!-- Language Selector -->
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px">
+      <app-language-selector></app-language-selector>
+    </div>
+
+    <div
+      class="login-logo-container"
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 24px;
+      "
+    >
+      @if (brandSettings.webLoginLogo || brandSettings.logoDark) {
+        <div style="position: relative; display: inline-block">
+          <img
+            [src]="brandSettings.webLoginLogo || brandSettings.logoDark"
+            style="
+              visibility: hidden;
+              max-height: 60px;
+              max-width: 150px;
+              width: auto;
+              display: block;
+            "
+          />
+          @if (brandSettings.webLoginLogoColor) {
+            <div
+              [style.background-color]="brandSettings.webLoginLogoColor"
+              [style.-webkit-mask]="
+                'url(' +
+                (brandSettings.webLoginLogo || brandSettings.logoDark) +
+                ') no-repeat center / contain'
+              "
+              [style.mask]="
+                'url(' +
+                (brandSettings.webLoginLogo || brandSettings.logoDark) +
+                ') no-repeat center / contain'
+              "
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%"
+            ></div>
+          }
+          @if (!brandSettings.webLoginLogoColor) {
+            <img
+              [src]="brandSettings.webLoginLogo || brandSettings.logoDark"
+              alt="Logo"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                max-height: 60px;
+                max-width: 150px;
+                width: auto;
+                object-fit: contain;
+                height: 100%;
+              "
+            />
+          }
+        </div>
+      }
+      @if (
+        brandSettings.displayMode === 'text' ||
+        brandSettings.displayMode === 'both' ||
+        !brandSettings.displayMode
+      ) {
+        <h2
+          class="app-title"
+          style="margin: 0; color: var(--text-main); font-size: 28px; font-weight: 600"
+        >
+          {{ brandSettings.appName }}
+        </h2>
+      }
+    </div>
+
+    <div class="login-title-text" style="text-align: center; margin-bottom: 30px">
+      <h3 style="margin: 0 0 8px 0; font-size: 18px; color: var(--text-main); font-weight: 500">
+        Welcome to {{ brandSettings.appName }} !
+      </h3>
+      <p style="margin: 0; font-size: 14px; color: var(--text-muted)">
+        Please log in to access the platform.
+      </p>
+    </div>
+
+    <mat-card-content>
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 15px">
+          <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
+          <input
+            matInput
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="credentials.email"
+            required
+            email
+            [disabled]="isLoading"
+          />
+          @if (loginForm.controls['email']?.invalid && loginForm.controls['email']?.touched) {
+            <mat-error>
+              {{ 'LOGIN.EMAIL_REQUIRED' | translate }}
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px">
+          <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
+          <input
+            matInput
+            type="password"
+            id="motDePasse"
+            name="motDePasse"
+            autocomplete="current-password"
+            [(ngModel)]="credentials.motDePasse"
+            required
+            [disabled]="isLoading"
+          />
+          @if (
+            loginForm.controls['motDePasse']?.invalid && loginForm.controls['motDePasse']?.touched
+          ) {
+            <mat-error>
+              {{ 'LOGIN.PASSWORD_REQUIRED' | translate }}
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Message d'erreur global -->
+        @if (errorMessage) {
+          <div
+            style="
+              color: #f44336;
+              margin-bottom: 15px;
+              text-align: center;
+              font-size: 0.9em;
+              padding: 10px;
+              background: #ffebee;
+              border-radius: 4px;
+            "
+          >
+            <mat-icon
+              style="
+                vertical-align: middle;
+                font-size: 18px;
+                margin-right: 5px;
+                height: 18px;
+                width: 18px;
+              "
+              >error</mat-icon
+            >
+            {{ errorMessage }}
+          </div>
+        }
+
+        <!-- Indicateur de chargement Véhicules SVG -->
+        @if (isLoading) {
+          <div style="text-align: center; margin-bottom: 15px">
+            <div class="loading-road">
+              <!-- Speed lines behind everything -->
+              <svg
+                class="speed-lines-container"
+                style="position: absolute; width: 100%; height: 100%; left: 0; top: 0"
+              >
+                <g
+                  class="speed-lines"
+                  stroke="var(--primary-color)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  opacity="0.3"
+                >
+                  <line x1="100%" y1="30" x2="80%" y2="30" class="line1" />
+                  <line x1="90%" y1="60" x2="70%" y2="60" class="line2" />
+                  <line x1="95%" y1="90" x2="60%" y2="90" class="line3" />
+                  <line x1="85%" y1="110" x2="75%" y2="110" class="line4" />
+                </g>
+              </svg>
+              <!-- Wrapper for the convoy -->
+              <div class="convoy-wrapper">
+                <!-- Train SVG -->
+                <svg viewBox="0 0 250 150" class="train-svg vehicle-item">
+                  <g class="bike-body">
+                    <!-- Wheels -->
+                    <g class="wheel" transform="translate(40, 100)">
+                      <circle r="15" fill="none" stroke="#005FB6" stroke-width="5" />
+                      <circle r="5" fill="#005FB6" />
+                      <g stroke="#005FB6" stroke-width="2" class="spokes">
+                        <line y1="-15" y2="15" />
+                        <line x1="-15" x2="15" />
+                        <line x1="-10.6" y1="-10.6" x2="10.6" y2="10.6" />
+                        <line x1="10.6" y1="-10.6" x2="-10.6" y2="10.6" />
+                      </g>
+                    </g>
+                    <g class="wheel" transform="translate(100, 100)">
+                      <circle r="15" fill="none" stroke="#005FB6" stroke-width="5" />
+                      <circle r="5" fill="#005FB6" />
+                      <g stroke="#005FB6" stroke-width="2" class="spokes">
+                        <line y1="-15" y2="15" />
+                        <line x1="-15" x2="15" />
+                        <line x1="-10.6" y1="-10.6" x2="10.6" y2="10.6" />
+                        <line x1="10.6" y1="-10.6" x2="-10.6" y2="10.6" />
+                      </g>
+                    </g>
+                    <g class="wheel" transform="translate(160, 100)">
+                      <circle r="15" fill="none" stroke="#005FB6" stroke-width="5" />
+                      <circle r="5" fill="#005FB6" />
+                      <g stroke="#005FB6" stroke-width="2" class="spokes">
+                        <line y1="-15" y2="15" />
+                        <line x1="-15" x2="15" />
+                        <line x1="-10.6" y1="-10.6" x2="10.6" y2="10.6" />
+                        <line x1="10.6" y1="-10.6" x2="-10.6" y2="10.6" />
+                      </g>
+                    </g>
+                    <!-- Locomotive Base -->
+                    <path
+                      d="M15,100 L210,100"
+                      stroke="#005FB6"
+                      stroke-width="8"
+                      stroke-linecap="round"
+                    />
+                    <!-- Cabin -->
+                    <rect
+                      x="20"
+                      y="30"
+                      width="60"
+                      height="70"
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="6"
+                    />
+                    <rect
+                      x="35"
+                      y="45"
+                      width="30"
+                      height="30"
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="4"
+                    />
+                    <!-- Boiler -->
+                    <path
+                      d="M80,60 L180,60 L180,100 L80,100 Z"
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="6"
+                    />
+                    <!-- Chimney -->
+                    <path
+                      d="M150,60 L150,30 L140,20 L170,20 L160,30 L160,60 Z"
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="5"
+                      stroke-linejoin="round"
+                    />
+                    <!-- Pilot -->
+                    <polygon points="210,100 210,80 190,100" fill="#005FB6" />
+                  </g>
+                </svg>
+                <!-- Car SVG -->
+                <svg viewBox="0 0 250 150" class="car-svg vehicle-item">
+                  <g class="bike-body">
+                    <!-- Back Wheel -->
+                    <g class="wheel" transform="translate(60, 100)">
+                      <circle r="22" fill="none" stroke="#005FB6" stroke-width="6" />
+                      <circle r="6" fill="#005FB6" />
+                      <g stroke="#005FB6" stroke-width="3" class="spokes">
+                        <line y1="-22" y2="22" />
+                        <line x1="-22" x2="22" />
+                        <line x1="-15.5" y1="-15.5" x2="15.5" y2="15.5" />
+                        <line x1="15.5" y1="-15.5" x2="-15.5" y2="15.5" />
+                      </g>
+                    </g>
+                    <!-- Front Wheel -->
+                    <g class="wheel" transform="translate(190, 100)">
+                      <circle r="22" fill="none" stroke="#005FB6" stroke-width="6" />
+                      <circle r="6" fill="#005FB6" />
+                      <g stroke="#005FB6" stroke-width="3" class="spokes">
+                        <line y1="-22" y2="22" />
+                        <line x1="-22" x2="22" />
+                        <line x1="-15.5" y1="-15.5" x2="15.5" y2="15.5" />
+                        <line x1="15.5" y1="-15.5" x2="-15.5" y2="15.5" />
+                      </g>
+                    </g>
+                    <!-- Car Frame -->
+                    <path
+                      d="M38,100 L20,100 Q10,100 10,90 L10,70 Q10,60 20,60 L50,60 L80,30 Q90,20 100,20 L160,20 Q170,20 180,30 L210,60 L230,60 Q240,60 240,70 L240,90 Q240,100 212,100 M82,100 L168,100"
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <!-- Windows -->
+                    <path
+                      d="M85,30 L55,60 L120,60 L120,30 Z"
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="5"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M130,30 L130,60 L205,60 L175,30 Z"
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="5"
+                      stroke-linejoin="round"
+                    />
+                  </g>
+                </svg>
+                <!-- Bike SVG -->
+                <svg viewBox="0 0 250 150" class="bike-svg vehicle-item">
+                  <g class="bike-body">
+                    <g class="wheel" transform="translate(50, 100)">
+                      <circle r="25" fill="none" stroke="#005FB6" stroke-width="4" />
+                      <circle r="5" fill="#005FB6" />
+                      <g stroke="#005FB6" stroke-width="2" class="spokes">
+                        <line y1="-25" y2="25" />
+                        <line x1="-25" x2="25" />
+                        <line x1="-17.6" y1="-17.6" x2="17.6" y2="17.6" />
+                        <line x1="17.6" y1="-17.6" x2="-17.6" y2="17.6" />
+                      </g>
+                    </g>
+                    <g class="wheel" transform="translate(150, 100)">
+                      <circle r="25" fill="none" stroke="#005FB6" stroke-width="4" />
+                      <circle r="5" fill="#005FB6" />
+                      <g stroke="#005FB6" stroke-width="2" class="spokes">
+                        <line y1="-25" y2="25" />
+                        <line x1="-25" x2="25" />
+                        <line x1="-17.6" y1="-17.6" x2="17.6" y2="17.6" />
+                        <line x1="17.6" y1="-17.6" x2="-17.6" y2="17.6" />
+                      </g>
+                    </g>
+                    <g
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="50" y1="100" x2="100" y2="100" />
+                      <line x1="50" y1="100" x2="80" y2="40" />
+                      <line x1="80" y1="40" x2="100" y2="100" />
+                      <line x1="80" y1="40" x2="130" y2="40" />
+                      <line x1="130" y1="40" x2="100" y2="100" />
+                      <line x1="130" y1="40" x2="150" y2="100" />
+                      <line x1="80" y1="40" x2="75" y2="25" />
+                      <line x1="130" y1="40" x2="135" y2="20" />
+                    </g>
+                    <path d="M60,25 h25" stroke="#005FB6" stroke-width="7" stroke-linecap="round" />
+                    <path
+                      d="M125,20 h20"
+                      stroke="#005FB6"
+                      stroke-width="7"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M50,95 L100,90 M50,105 L100,110"
+                      stroke="#005FB6"
+                      stroke-width="2"
+                      stroke-dasharray="4 2"
+                    />
+                    <g
+                      fill="none"
+                      stroke="#005FB6"
+                      stroke-width="6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="85" cy="5" r="8" fill="#005FB6" stroke="none" />
+                      <path d="M82,20 Q105,25 125,20" />
+                      <line x1="125" y1="20" x2="135" y2="20" />
+                      <path d="M82,20 L95,60 L100,118" class="leg-left" opacity="0.4" />
+                      <path d="M82,20 L105,50 L100,82" class="leg-right" />
+                    </g>
+                    <g transform="translate(100, 100)">
+                      <circle r="10" fill="none" stroke="#005FB6" stroke-width="3" />
+                      <g class="crank">
+                        <line
+                          y1="-16"
+                          y2="16"
+                          stroke="#005FB6"
+                          stroke-width="4"
+                          stroke-linecap="round"
+                        />
+                        <line
+                          x1="-6"
+                          y1="-16"
+                          x2="6"
+                          y2="-16"
+                          stroke="#005FB6"
+                          stroke-width="4"
+                          stroke-linecap="round"
+                        />
+                        <line
+                          x1="-6"
+                          y1="16"
+                          x2="6"
+                          y2="16"
+                          stroke="#005FB6"
+                          stroke-width="4"
+                          stroke-linecap="round"
+                        />
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <small style="color: #666; font-style: italic">{{ 'LOGIN.LOADING' | translate }}</small>
+          </div>
+        }
+
+        <button
+          mat-raised-button
+          type="submit"
+          [disabled]="!loginForm.form.valid || isLoading"
+          style="
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 0;
+          "
+        >
+          {{ isLoading ? ('LOGIN.BUTTON' | translate) + '...' : ('LOGIN.BUTTON' | translate) }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Footer -->
+  @if (brandSettings.footerText) {
+    <div
+      style="
+        margin-top: 40px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 13px;
+        max-width: 600px;
+      "
+    >
+      {{ brandSettings.footerText }}
+    </div>
+  }
+</div>

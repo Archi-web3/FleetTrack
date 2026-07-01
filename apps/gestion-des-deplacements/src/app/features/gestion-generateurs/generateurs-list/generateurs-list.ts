@@ -1,0 +1,117 @@
+import { Component, OnInit, inject } from '@angular/core';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import { GenerateursService, Generateur } from '../../../core/services/generateurs.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { InfoBannerComponent } from '../../../core/info-banner/info-banner';
+import { TranslateModule } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-generateurs-list',
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatTooltipModule,
+    RouterModule,
+    InfoBannerComponent,
+    TranslateModule,
+  ],
+  templateUrl: './generateurs-list.html',
+  styleUrls: ['./generateurs-list.css'],
+})
+export class GenerateursListComponent implements OnInit {
+  private generateursService = inject(GenerateursService);
+  private authService = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
+
+  displayedColumns: string[] = [
+    'marque',
+    'modele',
+    'puissanceKVA',
+    'numeroSerie',
+    'site',
+    'heures',
+    'statut',
+    'actions',
+  ];
+  dataSource: Generateur[] = [];
+  loading = false;
+
+  ngOnInit(): void {
+    this.loadGenerateurs();
+  }
+
+  loadGenerateurs() {
+    this.loading = true;
+    this.generateursService.getGenerateurs().subscribe({
+      next: (data) => {
+        this.dataSource = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement générateurs', err);
+        this.loading = false;
+      },
+    });
+  }
+
+  getStatutColor(statut: string): string {
+    switch (statut) {
+      case 'Actif':
+        return 'primary';
+      case 'En maintenance':
+        return 'accent';
+      case 'En panne':
+        return 'warn';
+      case 'Hors service':
+        return 'warn';
+      default:
+        return '';
+    }
+  }
+
+  isAdmin(): boolean {
+    const profile = this.authService.getUserProfile();
+    return profile === 'Admin' || profile === 'SuperAdmin';
+  }
+
+  deleteGenerateur(id: string) {
+    if (confirm('Voulez-vous vraiment supprimer ce générateur ? Cette action est irréversible.')) {
+      this.generateursService.deleteGenerateur(id).subscribe({
+        next: () => {
+          this.snackBar.open('Générateur supprimé', 'OK', { duration: 3000 });
+          this.loadGenerateurs();
+        },
+        error: (err) => {
+          console.error('Erreur suppression', err);
+          this.snackBar.open('Erreur lors de la suppression', 'Fermer');
+        },
+      });
+    }
+  }
+
+  getStatutKey(statut: string): string {
+    if (!statut) return '';
+    const map: any = {
+      Actif: 'ACTIVE',
+      'En maintenance': 'MAINTENANCE',
+      'En panne': 'BROKEN',
+      'Hors service': 'OUT_OF_SERVICE',
+      'À jour': 'UP_TO_DATE',
+      'Dû bientôt': 'DUE',
+      'En retard': 'OVERDUE',
+    };
+    return map[statut] || statut.toUpperCase().replace(/\s+/g, '_');
+  }
+}

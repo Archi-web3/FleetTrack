@@ -1,0 +1,58 @@
+<div class="selector-container">
+  <mat-card class="selector-card">
+    <mat-card-header>
+      <mat-card-title>{{ 'VEHICLE_SELECTOR.TITLE' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (isLoading) {
+        <div class="loading">
+          {{ 'VEHICLE_SELECTOR.LOADING' | translate }}
+        </div>
+      }
+
+      @if (!isLoading) {
+        <div>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>{{ 'VEHICLE_SELECTOR.LABEL' | translate }}</mat-label>
+            <mat-select [(ngModel)]="selectedVehicleId">
+              @for (vehicle of vehicules; track vehicle) {
+                <mat-option [value]="vehicle._id" class="vehicle-option">
+                  <div class="vehicle-item">
+                    @if (vehicle.acfCode) {
+                      <span>{{ vehicle.acfCode }} - {{ vehicle.marque }} {{ vehicle.modele }}</span>
+                    }
+                    @if (!vehicle.acfCode) {
+                      <span
+                        >{{ vehicle.marque }} {{ vehicle.modele }} ({{
+                          vehicle.immatriculation
+                        }})</span
+                      >
+                    }
+                    @if (isAdmin) {
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="deleteVehicle($event, vehicle._id)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color="primary"
+            class="full-width select-btn"
+            (click)="selectVehicle()"
+            [disabled]="!selectedVehicleId"
+          >
+            {{ 'VEHICLE_SELECTOR.CONTINUE' | translate }}
+          </button>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

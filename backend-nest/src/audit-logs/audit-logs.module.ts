@@ -1,0 +1,16 @@
+import { Module, Global } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AuditLogsService } from './audit-logs.service';
+import { AuditLog, AuditLogSchema } from './schemas/audit-log.schema';
+
+@Global() // Rendre le module global pour l'utiliser partout sans l'importer dans chaque module
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: AuditLog.name, schema: AuditLogSchema },
+    ]),
+  ],
+  providers: [AuditLogsService],
+  exports: [AuditLogsService],
+})
+export class AuditLogsModule {}

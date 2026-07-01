@@ -1,0 +1,794 @@
+<div style="padding: 20px">
+  <app-info-banner bannerId="utilisateurs" [title]="'USERS.INFO.TITLE' | translate">
+    {{ 'USERS.INFO.DESC' | translate }}
+  </app-info-banner>
+
+  <!-- En-tête avec titre, filtres et actions -->
+  <div
+    style="
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    "
+  >
+    <h2 style="margin: 0; font-size: 24px; color: #1e293b">{{ 'USERS.INFO.TITLE' | translate }}</h2>
+
+    <div style="display: flex; gap: 15px; align-items: flex-end">
+      <!-- Toggle Views -->
+      <button
+        mat-icon-button
+        title="Affichage Liste"
+        (click)="setViewMode('list')"
+        [style.background-color]="viewMode === 'list' ? 'var(--bg-color)' : 'transparent'"
+      >
+        <mat-icon [style.color]="viewMode === 'list' ? 'var(--primary-color)' : '#94a3b8'"
+          >view_list</mat-icon
+        >
+      </button>
+      <button
+        mat-icon-button
+        title="Affichage Bulles"
+        (click)="setViewMode('bubble')"
+        [style.background-color]="viewMode === 'bubble' ? 'var(--bg-color)' : 'transparent'"
+      >
+        <mat-icon [style.color]="viewMode === 'bubble' ? 'var(--primary-color)' : '#94a3b8'"
+          >apps</mat-icon
+        >
+      </button>
+
+      <!-- Bouton Nouveau -->
+      @if (perms.hasPermission('admin_users', 'create')) {
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="openUserModal()"
+          style="background-color: var(--primary-color); height: 42px"
+        >
+          <mat-icon>add</mat-icon> {{ 'USERS.NEW_BTN' | translate }}
+        </button>
+      }
+
+      <!-- Filtre par profil -->
+      <mat-form-field appearance="outline" style="width: 200px; margin-bottom: -22px">
+        <mat-label>{{ 'USERS.FILTER.PROFILE_LABEL' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedProfileFilter" (selectionChange)="filterByProfile()">
+          <mat-option value="">{{ 'USERS.FILTER.ALL_PROFILES' | translate }}</mat-option>
+          @for (profile of profiles; track profile) {
+            <mat-option [value]="profile">
+              {{ getProfileLabel(profile) }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Recherche globale -->
+      <mat-form-field appearance="outline" style="width: 250px; margin-bottom: -22px">
+        <mat-label>{{ 'COMMON.SEARCH' | translate }}...</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Nom, Email, ID..." />
+        <mat-icon matSuffix style="color: #94a3b8">search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <ng-template #userFormDialog>
+    <div class="custom-modal-layout" style="max-width: 600px; width: 100%">
+      <!-- HEADER -->
+      <div class="custom-modal-header">
+        <h2>
+          <mat-icon>edit</mat-icon>
+          {{
+            selectedUser
+              ? ('USERS.MODAL.EDIT_TITLE' | translate) + ': ' + selectedUser.nom
+              : ('USERS.MODAL.NEW_TITLE' | translate)
+          }}
+        </h2>
+        <button class="custom-modal-close-btn" (click)="closeUserModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="custom-modal-body">
+        <!-- Formulaire de création d'utilisateur -->
+        <form [hidden]="!!selectedUser" (ngSubmit)="addUser()" #userForm="ngForm">
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+            <mat-label>{{ 'USERS.MODAL.NAME' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              name="newUserName"
+              [(ngModel)]="newUser.nom"
+              [required]="!selectedUser"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+            <mat-label>{{ 'USERS.MODAL.SURNAME' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              name="newUserPrenom"
+              [(ngModel)]="newUser.prenom"
+              [required]="!selectedUser && newUser.profil === 'Chauffeur'"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+            <mat-label>{{ 'USERS.FORM.EMPLOYEE_ID' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              name="newUserNumeroEmploye"
+              [(ngModel)]="newUser.numeroEmploye"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+            <mat-label>{{ 'USERS.FORM.PHONE' | translate }}</mat-label>
+            <input
+              matInput
+              type="tel"
+              name="newUserTelephone"
+              [(ngModel)]="newUser.telephone"
+              [required]="!selectedUser && newUser.profil === 'Chauffeur'"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+            <mat-label>{{ 'USERS.MODAL.EMAIL' | translate }}</mat-label>
+            <input
+              matInput
+              type="email"
+              name="newUserEmail"
+              [(ngModel)]="newUser.email"
+              [required]="!selectedUser"
+              email
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+            <mat-label>{{ 'USERS.MODAL.PASSWORD' | translate }}</mat-label>
+            <input
+              matInput
+              type="password"
+              name="newUserPassword"
+              [(ngModel)]="newUser.motDePasse"
+              [required]="!selectedUser"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px">
+            <mat-label>{{ 'USERS.MODAL.PROFILE' | translate }}</mat-label>
+            <mat-select
+              name="newUserProfile"
+              [(ngModel)]="newUser.profil"
+              (selectionChange)="onProfilChange()"
+              [required]="!selectedUser"
+            >
+              @for (profile of profiles; track profile) {
+                <mat-option [value]="profile">
+                  {{ getProfileLabel(profile) }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <!-- Checkbox d'auto-gestion du niveau de sécurité -->
+          <div style="margin-top: 15px; margin-bottom: 5px">
+            <mat-checkbox
+              color="primary"
+              [(ngModel)]="newUser.autoManageSecurity"
+              name="autoManageNewUserSecurity"
+              (change)="onAutoManageNewSecurityChange()"
+            >
+              {{ 'USERS.FORM.AUTO_MANAGE_SECURITY' | translate }}
+            </mat-checkbox>
+          </div>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 5px">
+            <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}*</mat-label>
+            <mat-select
+              name="newUserSecurityLevel"
+              [(ngModel)]="newUser.niveauValidationSecu"
+              required
+              [disabled]="newUser.autoManageSecurity !== false"
+            >
+              @for (level of securityLevels; track level) {
+                <mat-option [value]="level">
+                  {{ 'COMMON.LEVEL' | translate }} {{ level }}
+                </mat-option>
+              }
+            </mat-select>
+            <mat-hint>{{ 'USERS.FORM.SECURITY_HINT' | translate }}</mat-hint>
+          </mat-form-field>
+
+          <!-- Sélecteur de Pays pour SuperAdmin -->
+          @if (userProfile === 'SuperAdmin') {
+            <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+              <mat-label>{{ 'USERS.FORM.COUNTRY' | translate }}</mat-label>
+              <mat-select
+                name="selectedPays"
+                [(ngModel)]="selectedPays"
+                (selectionChange)="onPaysChange($event.value)"
+                [required]="!selectedUser && newUser.profil !== 'SuperAdmin'"
+              >
+                <mat-option [value]="null">Global (Aucun)</mat-option>
+                @for (pays of paysList; track pays) {
+                  <mat-option [value]="pays._id">{{ pays.nom }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+            <mat-label>{{ 'USERS.FORM.BASE' | translate }}</mat-label>
+            <mat-select
+              name="newUserBase"
+              [(ngModel)]="newUser.base"
+              [required]="newUser.profil !== 'SuperAdmin'"
+            >
+              <mat-option [value]="null">Global (Aucune)</mat-option>
+              @for (b of bases; track b) {
+                <mat-option [value]="b._id">{{ b.nom }} ({{ b.pays?.code }})</mat-option>
+              }
+            </mat-select>
+            @if (userProfile === 'SuperAdmin' && bases.length === 0) {
+              <mat-hint> Sélectionnez d'abord un pays pour voir les bases disponibles </mat-hint>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px">
+            <mat-label>{{ 'USERS.FORM.PROJECT' | translate }}</mat-label>
+            <mat-select name="newUserProjet" [(ngModel)]="newUser.projet">
+              @for (p of projets; track p) {
+                <mat-option [value]="p.code">{{ p.code }} - {{ p.nom }}</mat-option>
+              }
+            </mat-select>
+            <mat-hint>{{ 'USERS.FORM.PROJECT_HINT' | translate }}</mat-hint>
+          </mat-form-field>
+
+          <!-- === CHAMPS SPÉCIFIQUES CHAUFFEUR === -->
+          @if (newUser.profil === 'Chauffeur') {
+            <div class="chauffeur-fields">
+              <h4>{{ 'USERS.DRIVER_INFO.TITLE' | translate }}</h4>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.DRIVER_INFO.LICENSE' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  name="newUserPermis"
+                  [(ngModel)]="newUser.permis"
+                  [required]="!selectedUser"
+                />
+              </mat-form-field>
+              <div style="margin-bottom: 15px">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #1976d2">
+                  {{ 'USERS.DRIVER_INFO.ECO_DRIVING' | translate }}
+                </label>
+                <mat-radio-group
+                  name="newUserFormationEffectuee"
+                  [(ngModel)]="newUser.formationEcoConduite.effectuee"
+                  style="display: flex; gap: 20px; margin-bottom: 10px"
+                >
+                  <mat-radio-button [value]="true">{{ 'COMMON.YES' | translate }}</mat-radio-button>
+                  <mat-radio-button [value]="false">{{ 'COMMON.NO' | translate }}</mat-radio-button>
+                </mat-radio-group>
+                @if (newUser.formationEcoConduite.effectuee) {
+                  <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px">
+                    <mat-label>{{ 'USERS.DRIVER_INFO.DATE' | translate }}</mat-label>
+                    <input
+                      matInput
+                      type="date"
+                      name="newUserFormationDate"
+                      [(ngModel)]="newUser.formationEcoConduite.date"
+                    />
+                  </mat-form-field>
+                }
+              </div>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.DRIVER_INFO.ASSIGNED_VEHICLE' | translate }}</mat-label>
+                <mat-select name="newUserVehicule" [(ngModel)]="newUser.vehiculeAttitre">
+                  <mat-option value="">{{ 'COMMON.NONE' | translate }}</mat-option>
+                  @for (v of vehicules; track v) {
+                    <mat-option [value]="v._id">
+                      {{ v.immatriculation }} - {{ v.marque }} {{ v.modele }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <div style="margin-bottom: 15px">
+                <mat-checkbox name="newUserDisponible" [(ngModel)]="newUser.disponible">
+                  {{ 'USERS.DRIVER_INFO.AVAILABLE' | translate }}
+                </mat-checkbox>
+              </div>
+            </div>
+          }
+        </form>
+
+        <!-- Formulaire de modification d'utilisateur -->
+        <form [hidden]="!selectedUser" (ngSubmit)="updateUser()" #editUserForm="ngForm">
+          @if (selectedUser) {
+            <div>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.NAME' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  name="editUserName"
+                  [(ngModel)]="selectedUser.nom"
+                  required
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.FIRSTNAME' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  name="editUserPrenom"
+                  [(ngModel)]="selectedUser.prenom"
+                  [required]="selectedUser.profil === 'Chauffeur'"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.EMPLOYEE_ID' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  name="editUserNumeroEmploye"
+                  [(ngModel)]="selectedUser.numeroEmploye"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.PHONE' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="tel"
+                  name="editUserTelephone"
+                  [(ngModel)]="selectedUser.telephone"
+                  [required]="selectedUser.profil === 'Chauffeur'"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.EMAIL' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="email"
+                  name="editUserEmail"
+                  [(ngModel)]="selectedUser.email"
+                  required
+                  email
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.NEW_PASSWORD' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="password"
+                  name="editUserPassword"
+                  [(ngModel)]="selectedUser.motDePasse"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px">
+                <mat-label>{{ 'USERS.FORM.PROFILE' | translate }}</mat-label>
+                <mat-select
+                  name="editUserProfile"
+                  [(ngModel)]="selectedUser.profil"
+                  required
+                  (selectionChange)="onEditProfilChange()"
+                >
+                  @for (profile of profiles; track profile) {
+                    <mat-option [value]="profile">
+                      {{ getProfileLabel(profile) }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <!-- Checkbox d'auto-gestion du niveau de sécurité -->
+              <div style="margin-top: 15px; margin-bottom: 5px">
+                <mat-checkbox
+                  color="primary"
+                  [(ngModel)]="selectedUser.autoManageSecurity"
+                  name="autoManageEditUserSecurity"
+                  (change)="onAutoManageEditSecurityChange()"
+                >
+                  {{ 'USERS.FORM.AUTO_MANAGE_SECURITY' | translate }}
+                </mat-checkbox>
+              </div>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.SECURITY_LEVEL' | translate }}*</mat-label>
+                <mat-select
+                  name="editUserSecurityLevel"
+                  [(ngModel)]="selectedUser.niveauValidationSecu"
+                  required
+                  [disabled]="selectedUser.autoManageSecurity"
+                >
+                  @for (level of securityLevels; track level) {
+                    <mat-option [value]="level">
+                      {{ 'COMMON.LEVEL' | translate }} {{ level }}
+                    </mat-option>
+                  }
+                </mat-select>
+                <mat-hint>{{ 'USERS.FORM.SECURITY_HINT' | translate }}</mat-hint>
+              </mat-form-field>
+              <!-- === CHAMPS SPÉCIFIQUES CHAUFFEUR (EDIT) === -->
+              @if (selectedUser.profil === 'Chauffeur') {
+                <div class="chauffeur-fields">
+                  <h4>{{ 'USERS.DRIVER_INFO.TITLE' | translate }}</h4>
+                  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                    <mat-label>{{ 'USERS.DRIVER_INFO.LICENSE' | translate }}</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      name="editUserPermis"
+                      [(ngModel)]="selectedUser.permis"
+                      required
+                    />
+                  </mat-form-field>
+                  <div style="margin-bottom: 15px">
+                    <label
+                      style="display: block; margin-bottom: 8px; font-weight: 500; color: #1976d2"
+                    >
+                      {{ 'USERS.DRIVER_INFO.ECO_DRIVING' | translate }}
+                    </label>
+                    <mat-radio-group
+                      name="editUserFormationEffectuee"
+                      [(ngModel)]="selectedUser.formationEcoConduite.effectuee"
+                      style="display: flex; gap: 20px; margin-bottom: 10px"
+                    >
+                      <mat-radio-button [value]="true">{{
+                        'COMMON.YES' | translate
+                      }}</mat-radio-button>
+                      <mat-radio-button [value]="false">{{
+                        'COMMON.NO' | translate
+                      }}</mat-radio-button>
+                    </mat-radio-group>
+                    @if (selectedUser.formationEcoConduite.effectuee) {
+                      <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px">
+                        <mat-label>{{ 'USERS.DRIVER_INFO.DATE' | translate }}</mat-label>
+                        <input
+                          matInput
+                          type="date"
+                          name="editUserFormationDate"
+                          [(ngModel)]="selectedUser.formationEcoConduite.date"
+                        />
+                      </mat-form-field>
+                    }
+                  </div>
+                  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                    <mat-label>{{ 'USERS.DRIVER_INFO.ASSIGNED_VEHICLE' | translate }}</mat-label>
+                    <mat-select name="editUserVehicule" [(ngModel)]="selectedUser.vehiculeAttitre">
+                      <mat-option value="">{{ 'COMMON.NONE' | translate }}</mat-option>
+                      @for (v of vehicules; track v) {
+                        <mat-option [value]="v._id">
+                          {{ v.immatriculation }} - {{ v.marque }} {{ v.modele }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  <div style="margin-bottom: 15px">
+                    <mat-checkbox name="editUserDisponible" [(ngModel)]="selectedUser.disponible">
+                      {{ 'USERS.DRIVER_INFO.AVAILABLE' | translate }}
+                    </mat-checkbox>
+                  </div>
+                </div>
+              }
+              <!-- Sélecteur de pays (SuperAdmin uniquement) -->
+              @if (userProfile === 'SuperAdmin') {
+                <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                  <mat-label>{{ 'USERS.FORM.COUNTRY' | translate }}</mat-label>
+                  <mat-select
+                    name="editUserPays"
+                    [(ngModel)]="selectedUser.pays"
+                    (selectionChange)="onEditPaysChange($event.value)"
+                    [required]="selectedUser.profil !== 'SuperAdmin'"
+                  >
+                    <mat-option [value]="null">Global (Aucun)</mat-option>
+                    @for (p of paysList; track p) {
+                      <mat-option [value]="p._id">{{ p.nom }} ({{ p.code }})</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
+                <mat-label>{{ 'USERS.FORM.BASE' | translate }}</mat-label>
+                <mat-select
+                  name="editUserBase"
+                  [(ngModel)]="selectedUser.base"
+                  [required]="selectedUser.profil !== 'SuperAdmin'"
+                >
+                  <mat-option [value]="null">Global (Aucune)</mat-option>
+                  @for (b of bases; track b) {
+                    <mat-option [value]="b._id">{{ b.nom }} ({{ b.pays?.code }})</mat-option>
+                  }
+                </mat-select>
+                @if (bases.length === 0) {
+                  <mat-hint>Sélectionnez d'abord un pays</mat-hint>
+                }
+              </mat-form-field>
+              <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px">
+                <mat-label>{{ 'USERS.FORM.PROJECT' | translate }}</mat-label>
+                <mat-select name="editUserProjet" [(ngModel)]="selectedUser.projet">
+                  @for (p of projets; track p) {
+                    <mat-option [value]="p.code">{{ p.code }} - {{ p.nom }}</mat-option>
+                  }
+                </mat-select>
+                <mat-hint>{{ 'USERS.FORM.PROJECT_HINT' | translate }}</mat-hint>
+              </mat-form-field>
+            </div>
+          }
+        </form>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="custom-modal-footer">
+        <button class="custom-modal-btn-cancel" (click)="closeUserModal()">
+          <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <!-- The submit button clicks the hidden submit on whichever form is active, but to keep it simple, we use the component method -->
+        <button
+          class="custom-modal-btn-submit"
+          (click)="selectedUser ? updateUser() : addUser()"
+          [disabled]="selectedUser ? !editUserForm?.form?.valid : !userForm?.form?.valid"
+        >
+          <mat-icon>check</mat-icon>
+          {{ selectedUser ? ('COMMON.SAVE' | translate) : ('COMMON.ADD' | translate) }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Liste des utilisateurs existants -->
+  <div
+    style="
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      margin-top: 20px;
+    "
+  >
+    <h3 style="margin: 0; font-size: 20px">{{ 'USERS.LIST.TITLE' | translate }}</h3>
+  </div>
+
+  <!-- TABLE VIEW -->
+  @if (viewMode === 'list') {
+    <div
+      class="table-container"
+      style="
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+      "
+    >
+      <table mat-table [dataSource]="dataSource" style="width: 100%">
+        <!-- Name Column -->
+        <ng-container matColumnDef="nom">
+          <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.COL_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let user">
+            <div style="font-weight: 600; color: #1e293b">{{ user.nom }} {{ user.prenom }}</div>
+            <div style="font-size: 12px; color: #64748b">{{ user.email }}</div>
+          </td>
+        </ng-container>
+        <!-- Profile Column -->
+        <ng-container matColumnDef="profil">
+          <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.COL_PROFILE' | translate }}</th>
+          <td mat-cell *matCellDef="let user">
+            <span class="status-badge draft">{{ getProfileKey(user.profil) | translate }}</span>
+          </td>
+        </ng-container>
+        <!-- Base Column -->
+        <ng-container matColumnDef="base">
+          <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.COL_LOCATION' | translate }}</th>
+          <td mat-cell *matCellDef="let user">
+            <div style="font-weight: 500">{{ user.pays?.nom || '-' }}</div>
+            <div style="font-size: 12px; color: #64748b">{{ user.base?.nom || 'Global' }}</div>
+          </td>
+        </ng-container>
+        <!-- Security Level Column -->
+        <ng-container matColumnDef="security">
+          <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.COL_SECURITY' | translate }}</th>
+          <td mat-cell *matCellDef="let user">
+            <span
+              class="status-badge"
+              [ngClass]="user.niveauValidationSecu >= 3 ? 'rejected' : 'validated'"
+            >
+              {{ 'USERS.LEVEL' | translate }} {{ user.niveauValidationSecu || 1 }}
+            </span>
+          </td>
+        </ng-container>
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right; padding-right: 24px">
+            {{ 'USERS.TABLE.COL_ACTIONS' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let user" style="text-align: right; padding-right: 24px">
+            <button
+              mat-icon-button
+              color="primary"
+              [matMenuTriggerFor]="actionMenu"
+              [matMenuTriggerData]="{ user: user }"
+              title="Actions"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      @if (dataSource.data.length === 0) {
+        <div style="text-align: center; padding: 60px; color: #94a3b8">
+          <mat-icon
+            style="font-size: 48px; width: 48px; height: 48px; opacity: 0.5; margin-bottom: 15px"
+            >group_off</mat-icon
+          >
+          <p style="margin: 0; font-size: 16px">{{ 'USERS.LIST.NO_DATA' | translate }}</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- BUBBLE GRID VIEW -->
+  @if (viewMode === 'bubble') {
+    <div>
+      @if (dataSource.filteredData.length === 0) {
+        <div style="text-align: center; padding: 60px; color: #94a3b8">
+          <mat-icon
+            style="font-size: 48px; width: 48px; height: 48px; opacity: 0.5; margin-bottom: 15px"
+            >group_off</mat-icon
+          >
+          <p style="margin: 0; font-size: 16px">{{ 'USERS.LIST.NO_DATA' | translate }}</p>
+        </div>
+      }
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 20px;
+        "
+      >
+        @for (user of dataSource.filteredData; track user) {
+          <mat-card
+            style="
+              border-radius: 12px;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+              border: 1px solid #e2e8f0;
+              position: relative;
+            "
+          >
+            <!-- Card Header: Profile and Actions -->
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 16px;
+                padding-bottom: 0;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 12px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    background: var(--bg-color);
+                    color: var(--primary-color);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    font-weight: 600;
+                  "
+                >
+                  {{ user.prenom ? user.prenom[0] : '' }}{{ user.nom ? user.nom[0] : '' }}
+                </div>
+                <div>
+                  <div
+                    style="font-weight: 600; font-size: 16px; color: #1e293b; margin-bottom: 2px"
+                  >
+                    {{ user.prenom }} {{ user.nom }}
+                  </div>
+                  <span class="status-badge draft" style="font-size: 11px; padding: 2px 8px">{{
+                    getProfileKey(user.profil) | translate
+                  }}</span>
+                </div>
+              </div>
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="actionMenu"
+                [matMenuTriggerData]="{ user: user }"
+                style="color: #94a3b8; margin-top: -8px; margin-right: -8px"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+            <!-- Card Body: Details -->
+            <mat-card-content style="padding: 16px; padding-top: 20px">
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                  font-size: 13px;
+                  color: #475569;
+                "
+              >
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <mat-icon style="font-size: 18px; width: 18px; height: 18px; color: #94a3b8"
+                    >email</mat-icon
+                  >
+                  <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">{{
+                    user.email
+                  }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <mat-icon style="font-size: 18px; width: 18px; height: 18px; color: #94a3b8"
+                    >public</mat-icon
+                  >
+                  <span
+                    >{{ user.pays?.nom || '-' }} /
+                    <strong style="color: #1e293b">{{ user.base?.nom || 'Global' }}</strong></span
+                  >
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                  <mat-icon style="font-size: 18px; width: 18px; height: 18px; color: #94a3b8"
+                    >security</mat-icon
+                  >
+                  <span
+                    class="status-badge"
+                    [ngClass]="user.niveauValidationSecu >= 3 ? 'rejected' : 'validated'"
+                    style="font-size: 11px"
+                  >
+                    {{ 'USERS.LEVEL' | translate }} {{ user.niveauValidationSecu || 1 }}
+                  </span>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    </div>
+  }
+
+  <mat-menu #actionMenu="matMenu" xPosition="before">
+    <ng-template matMenuContent let-user="user">
+      <button
+        mat-menu-item
+        (click)="openUserModal(user)"
+        [disabled]="!perms.hasPermission('admin_users', 'edit')"
+      >
+        <mat-icon style="color: #0284c7">edit</mat-icon>
+        <span style="color: #0284c7">{{ 'USERS.ACTIONS.UPDATE' | translate }}</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>person</mat-icon>
+        <span>{{ 'USERS.ACTIONS.LOGIN_AS' | translate }}</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>history</mat-icon>
+        <span>{{ 'USERS.ACTIONS.LOG_HISTORY' | translate }}</span>
+      </button>
+      <hr style="margin: 8px 0; border: none; border-top: 1px solid #e2e8f0" />
+      <button mat-menu-item disabled>
+        <mat-icon>lock_reset</mat-icon>
+        <span>{{ 'USERS.ACTIONS.RESET_PASSWORD' | translate }}</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>block</mat-icon>
+        <span>{{ 'USERS.ACTIONS.DISABLE_LOGIN' | translate }}</span>
+      </button>
+      <button
+        mat-menu-item
+        (click)="deleteUser(user._id)"
+        [disabled]="
+          !perms.hasPermission('admin_users', 'delete') || authService.getUserId() === user._id
+        "
+      >
+        <mat-icon style="color: #ef4444">delete</mat-icon>
+        <span style="color: #ef4444">{{ 'USERS.ACTIONS.DELETE' | translate }}</span>
+      </button>
+    </ng-template>
+  </mat-menu>
+</div>

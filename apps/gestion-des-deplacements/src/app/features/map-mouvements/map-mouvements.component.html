@@ -1,0 +1,60 @@
+<div class="map-container" style="position: relative; height: 100%; width: 100%">
+  <div id="map" style="height: 100%; width: 100%"></div>
+
+  <!-- Controls Overlay -->
+  <div class="map-controls">
+    <div class="controls-header">
+      <mat-icon>layers</mat-icon>
+      <span>{{ 'MAP.FILTERS' | translate }}</span>
+    </div>
+
+    <div class="controls-content">
+      <!-- Mode Filter -->
+      <mat-form-field
+        appearance="outline"
+        class="density-sm"
+        style="width: 100%; margin-bottom: 8px"
+      >
+        <mat-label>{{ 'MAP.MODE_TRANSPORT' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedMode" (selectionChange)="onFilterChange()">
+          @for (mode of transportModes; track mode) {
+            <mat-option [value]="mode">
+              @if (mode === 'AERIEN') {
+                <mat-icon>flight</mat-icon>
+              }
+              @if (mode === 'MARITIME') {
+                <mat-icon>directions_boat</mat-icon>
+              }
+              @if (mode === 'ROUTIER') {
+                <mat-icon>directions_car</mat-icon>
+              }
+              {{ 'TRANSPORT_MODES.' + mode | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-checkbox [(ngModel)]="showPlanned" (change)="onFilterChange()" color="primary">
+        <span style="color: #2196f3; font-weight: bold">---</span>
+        {{ 'MAP.PLANNED_TRIPS' | translate }}
+      </mat-checkbox>
+
+      <mat-checkbox [(ngModel)]="showReal" (change)="onFilterChange()" color="warn">
+        <span style="color: #d32f2f; font-weight: bold">———</span>
+        {{ 'MAP.GPS_TRACKS' | translate }}
+      </mat-checkbox>
+    </div>
+
+    <div class="controls-actions">
+      <button
+        mat-flat-button
+        color="warn"
+        (click)="zoomToLastPositions()"
+        [matTooltip]="'MAP.ZOOM_TOOLTIP' | translate"
+      >
+        <mat-icon>my_location</mat-icon>
+        {{ 'MAP.LAST_POSITIONS' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

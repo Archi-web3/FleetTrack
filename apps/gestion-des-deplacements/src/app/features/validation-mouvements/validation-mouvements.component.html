@@ -1,0 +1,299 @@
+<h2>
+  {{ 'VALIDATION.TITLE' | translate }} ({{ 'VALIDATION.PROFILE' | translate }}:
+  {{ userProfile || ('VALIDATION.NOT_CONNECTED' | translate) }})
+  <small style="font-size: 0.6em; color: gray">[v2.2]</small>
+</h2>
+
+<!-- Section pour les mouvements en attente de validation SECURITE -->
+@if (
+  perms.hasPermission('mouvements_workflow', 'validate_level_1') ||
+  perms.hasPermission('mouvements_workflow', 'validate_level_2') ||
+  perms.hasPermission('mouvements_workflow', 'validate_level_3') ||
+  perms.hasPermission('mouvements_workflow', 'validate_level_4') ||
+  perms.hasPermission('mouvements_workflow', 'validate_level_5')
+) {
+  <div>
+    <!-- Ajustez le rôle si vous avez 'CoordinateurTerrain' -->
+    <h3>{{ 'VALIDATION.SECURITY_VALIDATION' | translate }}</h3>
+    @if (mouvementsPourValidationSecurite.length === 0) {
+      <p>{{ 'VALIDATION.NO_PENDING_SECURITY' | translate }}</p>
+    }
+    @for (mouvement of mouvementsPourValidationSecurite; track mouvement) {
+      <div
+        style="
+          border: 1px solid #ccc;
+          padding: 15px;
+          margin-bottom: 15px;
+          border-radius: 5px;
+          background-color: #ffe0b2;
+        "
+      >
+        <!-- Orange clair -->
+        <p>
+          <strong>{{ 'VALIDATION.ID' | translate }}:</strong> {{ mouvement._id }}
+        </p>
+        <p>
+          <strong>{{ 'VALIDATION.STATUS' | translate }}:</strong> {{ mouvement.statut | titlecase }}
+        </p>
+        <!-- NOUVEAU: Affichage du niveau de risque -->
+        @if (mouvement.validationLevelRequired) {
+          <div style="margin-bottom: 10px">
+            <strong>{{ 'VALIDATION.RISK_LEVEL' | translate }}:</strong>
+            <span
+              [ngStyle]="{
+                color: mouvement.validationLevelRequired >= 3 ? '#d32f2f' : '#388e3c',
+                'font-weight': 'bold',
+              }"
+            >
+              {{ mouvement.validationLevelRequired }}
+              @if (mouvement.validationLevelRequired === 1) {
+                <span>{{ 'VALIDATION.STABLE' | translate }}</span>
+              }
+              @if (mouvement.validationLevelRequired === 2) {
+                <span>{{ 'VALIDATION.MODERATE' | translate }}</span>
+              }
+              @if (mouvement.validationLevelRequired === 3) {
+                <span>{{ 'VALIDATION.DIFFICULT' | translate }}</span>
+              }
+              @if (mouvement.validationLevelRequired === 4) {
+                <span>{{ 'VALIDATION.HIGH' | translate }}</span>
+              }
+              @if (mouvement.validationLevelRequired === 5) {
+                <span>{{ 'VALIDATION.EXTREME' | translate }}</span>
+              }
+            </span>
+          </div>
+        }
+        <!-- Affichage des lieux via stops -->
+        @if (mouvement.stops && mouvement.stops.length > 0) {
+          <p>
+            <strong>Départ:</strong> {{ mouvement.stops[0].lieu?.nom }} ({{
+              mouvement.stops[0].lieu?.adresse
+            }})
+          </p>
+        }
+        @if (mouvement.stops && mouvement.stops.length > 1) {
+          <p>
+            <strong>Arrivée:</strong>
+            {{ mouvement.stops[mouvement.stops.length - 1].lieu?.nom }} ({{
+              mouvement.stops[mouvement.stops.length - 1].lieu?.adresse
+            }})
+          </p>
+        }
+        <!-- Affichage des étapes intermédiaires si présentes -->
+        @if (mouvement.stops && mouvement.stops.length > 2) {
+          <div>
+            <p><strong>Étapes intermédiaires:</strong></p>
+            <ul>
+              @for (stop of mouvement.stops.slice(1, -1); track stop) {
+                <li>{{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})</li>
+              }
+            </ul>
+          </div>
+        }
+        <p>
+          <strong>{{ 'VALIDATION.DATE' | translate }}:</strong>
+          {{ mouvement.dateDepart | date: 'medium' }} - {{ mouvement.dateArrivee | date: 'medium' }}
+        </p>
+        <p>
+          <strong>{{ 'VALIDATION.OBJECTIVE' | translate }}:</strong> {{ mouvement.objectif }}
+        </p>
+        <p>
+          <strong>{{ 'VALIDATION.REQUESTER' | translate }}:</strong>
+          {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})
+        </p>
+        <!-- Véhicule et Chauffeur MASQUÉS car pas encore attribués -->
+        <!-- Section Validateurs (Matrice Sécurité) -->
+        @if (mouvement.securityApprovals && mouvement.securityApprovals.length > 0) {
+          <div class="validators-section">
+            <!-- Primary Validators -->
+            @if (getPrimaryValidators(mouvement).length > 0) {
+              <strong>{{ 'VALIDATION.REQUIRED_VALIDATORS' | translate }}:</strong>
+            }
+            @if (getPrimaryValidators(mouvement).length > 0) {
+              <div class="validators-grid">
+                @for (approval of getPrimaryValidators(mouvement); track approval) {
+                  <div
+                    class="validator-badge"
+                    [class.approved]="approval.status === 'approved'"
+                    [class.pending]="approval.status === 'pending'"
+                  >
+                    <span class="status-icon">
+                      @if (approval.status === 'approved') {
+                        <i class="material-icons">check_circle</i>
+                      }
+                      @if (approval.status === 'pending') {
+                        <i class="material-icons">hourglass_empty</i>
+                      }
+                    </span>
+                    <span class="validator-name">
+                      {{ approval.validator?.nom }} {{ approval.validator?.prenom }}
+                      @if (!approval.validator?.nom) {
+                        <span>Validateur {{ approval.validator | slice: 0 : 6 }}...</span>
+                      }
+                    </span>
+                  </div>
+                }
+              </div>
+            }
+            <!-- Backup Validators -->
+            @if (getBackupValidators(mouvement).length > 0) {
+              <div style="margin-top: 15px">
+                <strong style="color: #6c757d">Validateurs de Secours (Niveau Supérieur) :</strong>
+                <div class="validators-grid" style="margin-top: 5px">
+                  @for (approval of getBackupValidators(mouvement); track approval) {
+                    <div
+                      class="validator-badge"
+                      style="background-color: #f8f9fa; border: 1px dashed #6c757d"
+                      [class.approved]="approval.status === 'approved'"
+                      [class.pending]="approval.status === 'pending'"
+                    >
+                      <span class="status-icon">
+                        @if (approval.status === 'approved') {
+                          <i class="material-icons">check_circle</i>
+                        }
+                        @if (approval.status === 'pending') {
+                          <i class="material-icons">hourglass_empty</i>
+                        }
+                      </span>
+                      <span class="validator-name" style="color: #6c757d">
+                        {{ approval.validator?.nom }} {{ approval.validator?.prenom }}
+                        @if (!approval.validator?.nom) {
+                          <span>Validateur {{ approval.validator | slice: 0 : 6 }}...</span>
+                        }
+                      </span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+        <div style="margin-top: 10px">
+          <button
+            (click)="validerMouvement(mouvement._id, mouvement.statut, 'security')"
+            [disabled]="hasUserValidated(mouvement)"
+            [class.disabled-btn]="hasUserValidated(mouvement)"
+            style="
+              background-color: #28a745;
+              color: white;
+              border: none;
+              padding: 8px 15px;
+              cursor: pointer;
+              margin-right: 10px;
+            "
+          >
+            @if (!hasUserValidated(mouvement)) {
+              <span>{{ 'VALIDATION.VALIDATE_SECURITY' | translate }}</span>
+            }
+            @if (hasUserValidated(mouvement)) {
+              <span>{{ 'VALIDATION.WAITING_OTHERS' | translate }}</span>
+            }
+          </button>
+          <button
+            (click)="refuserMouvement(mouvement._id)"
+            style="
+              background-color: #dc3545;
+              color: white;
+              border: none;
+              padding: 8px 15px;
+              cursor: pointer;
+            "
+          >
+            {{ 'VALIDATION.REFUSE' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- Section pour les mouvements en attente de validation LOGISTIQUE -->
+@if (perms.hasPermission('mouvements_workflow', 'validate')) {
+  <div>
+    <h3>{{ 'VALIDATION.LOGISTICS_VALIDATION' | translate }}</h3>
+    @if (mouvementsPourValidationLogistique.length === 0) {
+      <p>{{ 'VALIDATION.NO_PENDING_LOGS' | translate }}</p>
+    }
+    @for (mouvement of mouvementsPourValidationLogistique; track mouvement) {
+      <div
+        style="border: 1px solid #e0f2f7; padding: 15px; margin-bottom: 15px; border-radius: 5px"
+      >
+        <!-- Bleu clair -->
+        <p>
+          <strong>{{ 'VALIDATION.ID' | translate }}:</strong> {{ mouvement._id }}
+        </p>
+        <p>
+          <strong>{{ 'VALIDATION.STATUS' | translate }}:</strong> {{ mouvement.statut | titlecase }}
+        </p>
+        <!-- Affichage des lieux via stops -->
+        @if (mouvement.stops && mouvement.stops.length > 0) {
+          <p>
+            <strong>{{ 'VALIDATION.DEPARTURE' | translate }}:</strong>
+            {{ mouvement.stops[0].lieu?.nom }} ({{ mouvement.stops[0].lieu?.adresse }})
+          </p>
+        }
+        @if (mouvement.stops && mouvement.stops.length > 1) {
+          <p>
+            <strong>{{ 'VALIDATION.ARRIVAL' | translate }}:</strong>
+            {{ mouvement.stops[mouvement.stops.length - 1].lieu?.nom }} ({{
+              mouvement.stops[mouvement.stops.length - 1].lieu?.adresse
+            }})
+          </p>
+        }
+        <!-- Affichage des étapes intermédiaires si présentes -->
+        @if (mouvement.stops && mouvement.stops.length > 2) {
+          <div>
+            <p>
+              <strong>{{ 'VALIDATION.INTERMEDIATE_STOPS' | translate }}:</strong>
+            </p>
+            <ul>
+              @for (stop of mouvement.stops.slice(1, -1); track stop) {
+                <li>{{ stop.lieu?.nom }} ({{ stop.lieu?.adresse }})</li>
+              }
+            </ul>
+          </div>
+        }
+        <p>
+          <strong>{{ 'VALIDATION.DATE' | translate }}:</strong>
+          {{ mouvement.dateDepart | date: 'medium' }} - {{ mouvement.dateArrivee | date: 'medium' }}
+        </p>
+        <p>
+          <strong>{{ 'VALIDATION.OBJECTIVE' | translate }}:</strong> {{ mouvement.objectif }}
+        </p>
+        <p>
+          <strong>{{ 'VALIDATION.REQUESTER' | translate }}:</strong>
+          {{ mouvement.demandeur?.nom }} ({{ mouvement.demandeur?.email }})
+        </p>
+        <!-- Véhicule et Chauffeur MASQUÉS car pas encore attribués -->
+        <div style="margin-top: 10px">
+          <button
+            (click)="validerMouvement(mouvement._id, mouvement.statut, 'logistics')"
+            style="
+              background-color: #28a745;
+              color: white;
+              border: none;
+              padding: 8px 15px;
+              cursor: pointer;
+              margin-right: 10px;
+            "
+          >
+            {{ 'VALIDATION.VALIDATE_LOGS' | translate }}
+          </button>
+          <button
+            (click)="refuserMouvement(mouvement._id)"
+            style="
+              background-color: #dc3545;
+              color: white;
+              border: none;
+              padding: 8px 15px;
+              cursor: pointer;
+            "
+          >
+            {{ 'VALIDATION.REFUSE' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

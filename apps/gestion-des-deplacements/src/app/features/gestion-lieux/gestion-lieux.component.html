@@ -1,0 +1,306 @@
+<app-info-banner bannerId="lieux" [title]="'LOCATIONS.INFO.TITLE' | translate">
+  {{ 'LOCATIONS.INFO.DESC' | translate }}
+</app-info-banner>
+
+<div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px">
+  <h2 style="margin: 0; display: flex; align-items: center; gap: 10px">
+    <mat-icon style="color: var(--primary-color)">location_on</mat-icon>
+    {{ 'LOCATIONS.INFO.TITLE' | translate }}
+  </h2>
+  <div style="display: flex; gap: 15px; align-items: center">
+    @if (userProfile !== 'SuperAdmin') {
+      <button mat-stroked-button (click)="toggleShowAllBasesInPays()">
+        {{
+          showAllBasesInPays
+            ? ('LOCATIONS.TOGGLE_MY_BASE' | translate)
+            : ('LOCATIONS.TOGGLE_ALL_BASES' | translate)
+        }}
+      </button>
+    }
+    @if (perms.hasPermission('admin_geo', 'manage_bases')) {
+      <button mat-flat-button color="primary" (click)="openLieuModal()">
+        <mat-icon>add</mat-icon> {{ 'LOCATIONS.NEW_BTN' | translate }}
+      </button>
+    }
+  </div>
+</div>
+
+<div class="table-container">
+  <div class="table-header-container">
+    <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px">
+      <mat-label>{{ 'PROJECTS.COLUMNS_LABEL' | translate }}</mat-label>
+      <mat-select multiple [(ngModel)]="displayedColumns">
+        @for (col of allColumns; track col) {
+          <mat-option [value]="col.def">{{
+            'LOCATIONS.TABLE.COL_' + col.def.toUpperCase() | translate
+          }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="custom-search-input">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        (keyup)="applyFilter($event)"
+        [placeholder]="'PROJECTS.SEARCH_PLACEHOLDER' | translate"
+      />
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort style="width: 100%">
+      <ng-container matColumnDef="nom">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'LOCATIONS.TABLE.COL_NOM' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <strong>{{ element.nom }}</strong>
+          @if (element.estSensible) {
+            <mat-icon
+              style="color: #f44336; font-size: 16px; margin-left: 5px; vertical-align: middle"
+              [matTooltip]="'LOCATIONS.SENSITIVE_TOOLTIP' | translate"
+              >warning</mat-icon
+            >
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="adresse">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'LOCATIONS.TABLE.COL_ADRESSE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.adresse }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="coordonnees">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LOCATIONS.TABLE.COL_COORDONNEES' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.coordonnees?.latitude }}, {{ element.coordonnees?.longitude }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="securite">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'LOCATIONS.TABLE.COL_SECURITE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span
+            style="
+              display: inline-block;
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+              margin-right: 5px;
+            "
+            [style.background]="getSecurityColor(element.niveauSecurite)"
+          ></span>
+          {{ getSecurityLabel(element.niveauSecurite) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sensible">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'LOCATIONS.TABLE.COL_SENSIBLE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element.estSensible
+              ? ('LOCATIONS.SENSITIVE' | translate)
+              : ('LOCATIONS.NOT_SENSITIVE' | translate)
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pays">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'LOCATIONS.TABLE.COL_PAYS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.pays?.nom || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="base">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'LOCATIONS.TABLE.COL_BASE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.base?.nom || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LOCATIONS.TABLE.COL_ACTIONS' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action-buttons">
+            @if (perms.hasPermission('admin_geo', 'manage_bases')) {
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="openLieuModal(element)"
+                matTooltip="Modifier"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
+            @if (perms.hasPermission('admin_geo', 'manage_bases')) {
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="deleteLieu(element._id)"
+                matTooltip="Supprimer"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+</div>
+
+<!-- MODAL NOUVEAU / MODIFIER LIEU -->
+<ng-template #lieuFormDialog>
+  <div class="custom-modal-layout" style="width: 100%">
+    <div class="custom-modal-header">
+      <h2>
+        <mat-icon>location_on</mat-icon>
+        {{
+          selectedLieu
+            ? ('LOCATIONS.MODAL.EDIT_TITLE' | translate)
+            : ('LOCATIONS.MODAL.NEW_TITLE' | translate)
+        }}
+      </h2>
+      <button class="custom-modal-close-btn" (click)="closeLieuModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="custom-modal-body">
+      <form (ngSubmit)="saveLieu()" #lieuForm="ngForm" id="lieuForm">
+        <div class="modal-grid-2">
+          <div class="modern-form-group">
+            <label>{{ 'LOCATIONS.MODAL.NAME' | translate }}</label>
+            <input
+              class="modern-input"
+              type="text"
+              name="lieuNom"
+              [(ngModel)]="newLieu.nom"
+              required
+            />
+          </div>
+          <div class="modern-form-group">
+            <label>{{ 'LOCATIONS.MODAL.ADDRESS' | translate }}</label>
+            <input
+              class="modern-input"
+              type="text"
+              name="lieuAdresse"
+              [(ngModel)]="newLieu.adresse"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="modal-grid-2">
+          <div class="modern-form-group">
+            <label>{{ 'LOCATIONS.MODAL.LATITUDE' | translate }}</label>
+            <input
+              class="modern-input"
+              type="number"
+              step="any"
+              name="lieuLat"
+              [(ngModel)]="newLieu.coordonnees.latitude"
+              required
+            />
+          </div>
+          <div class="modern-form-group">
+            <label>{{ 'LOCATIONS.MODAL.LONGITUDE' | translate }}</label>
+            <input
+              class="modern-input"
+              type="number"
+              step="any"
+              name="lieuLng"
+              [(ngModel)]="newLieu.coordonnees.longitude"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="modal-grid-2" style="align-items: center">
+          <div class="modern-form-group">
+            <label>{{ 'LOCATIONS.MODAL.SECURITY' | translate }}</label>
+            <select
+              class="modern-input"
+              name="lieuSecurite"
+              [(ngModel)]="newLieu.niveauSecurite"
+              required
+            >
+              @for (sec of securityLevels; track sec) {
+                <option [value]="sec.level">{{ sec.label }}</option>
+              }
+            </select>
+          </div>
+          <div style="margin-top: 15px">
+            <label style="display: flex; align-items: center; cursor: pointer; font-weight: 500">
+              <input
+                type="checkbox"
+                name="lieuSensible"
+                [(ngModel)]="newLieu.estSensible"
+                style="width: auto; margin-right: 10px; transform: scale(1.5)"
+              />
+              {{ 'LOCATIONS.MODAL.IS_SENSITIVE' | translate }}
+            </label>
+          </div>
+        </div>
+
+        <!-- SuperAdmin uniquement -->
+        @if (userProfile === 'SuperAdmin') {
+          <div class="modal-grid-2">
+            <div class="modern-form-group">
+              <label>{{ 'LOCATIONS.MODAL.COUNTRY' | translate }}</label>
+              <select
+                class="modern-input"
+                name="lieuPays"
+                [(ngModel)]="newLieu.pays"
+                (change)="onPaysChange()"
+              >
+                <option value="">{{ 'LOCATIONS.MODAL.NONE' | translate }}</option>
+                @for (p of paysList; track p) {
+                  <option [value]="p._id">{{ p.nom }}</option>
+                }
+              </select>
+            </div>
+            <div class="modern-form-group">
+              <label>{{ 'LOCATIONS.MODAL.BASE' | translate }}</label>
+              <select class="modern-input" name="lieuBase" [(ngModel)]="newLieu.base">
+                <option value="">{{ 'LOCATIONS.MODAL.NONE_FEM' | translate }}</option>
+                @for (b of basesList; track b) {
+                  <option [value]="b._id">{{ b.nom }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        }
+      </form>
+    </div>
+
+    <div class="custom-modal-footer">
+      <button class="custom-modal-btn-cancel" (click)="closeLieuModal()">
+        <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
+      </button>
+      <button
+        class="custom-modal-btn-submit"
+        type="submit"
+        form="lieuForm"
+        [disabled]="!lieuForm.form.valid"
+      >
+        <mat-icon>check</mat-icon>
+        {{ selectedLieu ? ('COMMON.UPDATE' | translate) : ('COMMON.SAVE' | translate) }}
+      </button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,580 @@
+<div style="padding: 20px">
+  <h2>Modifier Mouvement (ID: {{ mouvementId }})</h2>
+  <form #modifierForm="ngForm">
+    <!-- == CHAMPS SPECIFIQUES MISSION (Masqués si Maintenance) == -->
+    @if (mouvement.type !== 'maintenance') {
+      <!-- Lieu de Départ -->
+      <div style="margin-bottom: 10px">
+        <label for="lieuDepart">Lieu de Départ:</label>
+        <select
+          id="lieuDepart"
+          name="lieuDepart"
+          [(ngModel)]="mouvement.lieuDepart"
+          required
+          style="width: 100%; padding: 8px"
+        >
+          <option value="">Sélectionnez un lieu de départ</option>
+          @for (lieu of lieux; track lieu) {
+            <option [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+          }
+        </select>
+      </div>
+      <!-- Lieu d'Arrivée -->
+      <div style="margin-bottom: 10px">
+        <label for="lieuArrivee">Lieu d'Arrivée:</label>
+        <select
+          id="lieuArrivee"
+          name="lieuArrivee"
+          [(ngModel)]="mouvement.lieuArrivee"
+          required
+          style="width: 100%; padding: 8px"
+        >
+          <option value="">Sélectionnez un lieu d'arrivée</option>
+          @for (lieu of lieux; track lieu) {
+            <option [value]="lieu._id">{{ lieu.nom }} ({{ lieu.adresse }})</option>
+          }
+        </select>
+      </div>
+      <!-- Dates (Pour Mission Unique) -->
+      <div style="margin-bottom: 10px">
+        <label for="dateDepart">Date et Heure de Départ:</label>
+        <input
+          type="datetime-local"
+          id="dateDepart"
+          name="dateDepart"
+          [(ngModel)]="mouvement.dateDepart"
+          required
+          style="width: 100%; padding: 8px"
+        />
+      </div>
+      <div style="margin-bottom: 10px">
+        <label for="dateArrivee">Date et Heure d'Arrivée:</label>
+        <input
+          type="datetime-local"
+          id="dateArrivee"
+          name="dateArrivee"
+          [(ngModel)]="mouvement.dateArrivee"
+          required
+          style="width: 100%; padding: 8px"
+        />
+      </div>
+    }
+
+    <!-- == FORMULAIRE SPECIFIQUE MAINTENANCE (Layout Identique Création) == -->
+    @if (mouvement.type === 'maintenance') {
+      <div
+        style="
+          padding: 15px;
+          background-color: #fff3e0;
+          border-radius: 5px;
+          border-left: 5px solid #ff9800;
+          margin-bottom: 20px;
+        "
+      >
+        <h3 style="margin-top: 0; color: #ef6c00">🔧 Modifier le créneau de maintenance</h3>
+        <p style="margin-bottom: 15px; font-style: italic">
+          Ce créneau bloque le véhicule dans le planning.
+        </p>
+        <!-- Sélection Véhicule -->
+        <div style="margin-bottom: 15px">
+          <label for="maintVehicule" style="font-weight: bold; display: block; margin-bottom: 5px"
+            >Véhicule concerné *</label
+          >
+          <select
+            id="maintVehicule"
+            name="maintVehicule"
+            [(ngModel)]="mouvement.vehicule"
+            required
+            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px"
+          >
+            <option [ngValue]="null">Sélectionnez un véhicule</option>
+            @for (v of vehicules; track v) {
+              <option [value]="v._id">
+                {{ v.marque }} {{ v.modele }} ({{ v.immatriculation }}) - {{ v.statut || 'OK' }}
+              </option>
+            }
+          </select>
+        </div>
+        <!-- Type de Maintenance -->
+        <div style="display: flex; gap: 20px; margin-bottom: 15px">
+          <div style="flex: 1">
+            <label for="maintType" style="font-weight: bold; display: block; margin-bottom: 5px"
+              >Type *</label
+            >
+            <select
+              id="maintType"
+              name="maintType"
+              [(ngModel)]="mouvement.maintenanceType"
+              required
+              style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px"
+            >
+              @for (t of maintenanceTypes; track t) {
+                <option [value]="t">{{ t }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <!-- Dates (Row) -->
+        <div style="display: flex; gap: 20px; margin-bottom: 15px">
+          <div style="flex: 1">
+            <label for="maintStart" style="font-weight: bold; display: block; margin-bottom: 5px"
+              >Début *</label
+            >
+            <input
+              type="datetime-local"
+              id="maintStart"
+              name="maintStart"
+              [(ngModel)]="mouvement.dateDepart"
+              required
+              style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px"
+            />
+          </div>
+          <div style="flex: 1">
+            <label for="maintEnd" style="font-weight: bold; display: block; margin-bottom: 5px"
+              >Fin *</label
+            >
+            <input
+              type="datetime-local"
+              id="maintEnd"
+              name="maintEnd"
+              [(ngModel)]="mouvement.dateArrivee"
+              required
+              style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px"
+            />
+          </div>
+        </div>
+        <!-- Description -->
+        <div style="margin-bottom: 15px">
+          <label for="maintDesc" style="font-weight: bold; display: block; margin-bottom: 5px"
+            >Description / Notes :</label
+          >
+          <textarea
+            id="maintDesc"
+            name="maintDesc"
+            [(ngModel)]="mouvement.description"
+            rows="3"
+            placeholder="Détails de l'intervention..."
+            style="
+              width: 100%;
+              padding: 10px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              min-height: 80px;
+            "
+          ></textarea>
+        </div>
+        <!-- RECURRENCE (Identique Création) -->
+        <div
+          style="
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f0f4c3;
+            border-radius: 5px;
+            border-left: 5px solid #cddc39;
+          "
+        >
+          <div style="font-weight: bold; margin-bottom: 10px; color: #827717">
+            <mat-icon style="vertical-align: middle">update</mat-icon> Récurrence (Jusqu'à 3 mois)
+          </div>
+          <div style="display: flex; align-items: center; gap: 15px">
+            <div>
+              <input
+                type="checkbox"
+                id="isRecurringMaint"
+                name="isRecurringMaint"
+                [(ngModel)]="isRecurring"
+              />
+              <label for="isRecurringMaint" style="margin-left: 5px"
+                >Répéter (ex: Check Hebdo)</label
+              >
+            </div>
+            @if (isRecurring) {
+              <div style="display: flex; gap: 10px">
+                <select
+                  name="recurrenceFrequencyMaint"
+                  [(ngModel)]="recurrenceFrequency"
+                  style="padding: 5px"
+                >
+                  <option value="Daily">Tous les jours</option>
+                  <option value="Weekly">Toutes les semaines</option>
+                </select>
+                <input
+                  type="date"
+                  name="recurrenceEndDateMaint"
+                  [(ngModel)]="recurrenceEndDate"
+                  placeholder="Date de fin"
+                  required
+                  style="padding: 5px"
+                />
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- == SUITE CHAMPS MISSION == -->
+    @if (mouvement.type !== 'maintenance') {
+      <!-- Demandeur -->
+      <div style="margin-bottom: 10px">
+        <label for="demandeur">Demandeur:</label>
+        <select
+          id="demandeur"
+          name="demandeur"
+          [(ngModel)]="mouvement.demandeur"
+          required
+          style="width: 100%; padding: 8px"
+        >
+          <option value="">Sélectionnez un demandeur</option>
+          @for (user of utilisateurs; track user) {
+            <option [value]="user._id">{{ user.nom }} ({{ user.email }})</option>
+          }
+        </select>
+      </div>
+      <!-- Passagers -->
+      <div style="margin-bottom: 10px">
+        <label for="passagers">Passagers (Ctrl+clic pour sélection multiple):</label>
+        <select
+          multiple
+          id="passagers"
+          name="passagers"
+          [(ngModel)]="selectedPassagersIds"
+          (change)="onPassengersChange()"
+          style="width: 100%; padding: 8px; min-height: 100px"
+        >
+          @for (user of utilisateurs; track user) {
+            <option [value]="user._id">
+              {{ user.nom }} ({{ user.email }})
+              @if (user._id === authService.getUserId()) {
+                (Vous)
+              }
+            </option>
+          }
+        </select>
+      </div>
+    }
+
+    <!-- Véhicule (Pour Mission, car Maintenance a le sien dans son bloc) -->
+    @if (mouvement.type !== 'maintenance') {
+      <div style="margin-bottom: 10px">
+        <label for="vehicule">Véhicule:</label>
+        <select
+          id="vehicule"
+          name="vehicule"
+          [(ngModel)]="mouvement.vehicule"
+          style="width: 100%; padding: 8px"
+        >
+          <option [ngValue]="null">Aucun</option>
+          <!-- Option pour désaffecter -->
+          @for (vehicule of vehicules; track vehicule) {
+            <option [value]="vehicule._id">
+              {{ vehicule.marque }} {{ vehicule.modele }} ({{ vehicule.immatriculation }})
+            </option>
+          }
+        </select>
+      </div>
+    }
+
+    <!-- == SUITE CHAMPS MISSION UNIQUEMENT == -->
+    @if (mouvement.type !== 'maintenance') {
+      <!-- Chauffeur (Optionnel pour maintenance ?) -> En mission c'est ici. On peut le laisser global ou mission ? Supposons Mission. -->
+      <div style="margin-bottom: 10px">
+        <label for="chauffeur">Chauffeur:</label>
+        <select
+          id="chauffeur"
+          name="chauffeur"
+          [(ngModel)]="mouvement.chauffeur"
+          style="width: 100%; padding: 8px"
+        >
+          <option [ngValue]="null">Aucun</option>
+          <!-- Option pour désaffecter -->
+          @for (chauffeur of chauffeurs; track chauffeur) {
+            <option [value]="chauffeur._id">{{ chauffeur.prenom }} {{ chauffeur.nom }}</option>
+          }
+        </select>
+      </div>
+      <!-- Objectif -->
+      <div style="margin-bottom: 10px">
+        <label for="objectif">Objectif du déplacement:</label>
+        <input
+          type="text"
+          id="objectif"
+          name="objectif"
+          [(ngModel)]="mouvement.objectif"
+          required
+          style="width: 100%; padding: 8px"
+        />
+      </div>
+      <!-- Mode de Transport (Module 2) -->
+      <div style="margin-bottom: 10px">
+        <label for="modeTransport">Mode de Transport:</label>
+        <select
+          id="modeTransport"
+          name="modeTransport"
+          [(ngModel)]="mouvement.modeTransport"
+          required
+          style="width: 100%; padding: 8px"
+        >
+          @for (mode of transportModes; track mode) {
+            <option [value]="mode">{{ mode }}</option>
+          }
+        </select>
+      </div>
+      <!-- Ventilation Financière (Module 2) -->
+      <div
+        style="
+          margin-bottom: 15px;
+          border: 1px solid #ddd;
+          padding: 10px;
+          border-radius: 4px;
+          background-color: #fafafa;
+        "
+      >
+        <h3 style="margin-top: 0; font-size: 1.1em; color: #333">💰 Ventilation Financière</h3>
+        <p style="font-size: 0.9em; color: #666">
+          Répartition automatique basée sur les passagers. Vous pouvez corriger manuellement.
+        </p>
+        @for (item of mouvement.projetsVentilation; track item; let i = $index) {
+          <div style="display: flex; gap: 10px; margin-bottom: 5px; align-items: center">
+            <div style="flex: 1">
+              <select
+                [(ngModel)]="item.projet"
+                name="projet_{{ i }}"
+                required
+                style="width: 100%; padding: 5px"
+              >
+                <option value="" disabled selected>Sélectionner un projet</option>
+                @for (p of projets; track p) {
+                  <option [value]="p">{{ p }}</option>
+                }
+              </select>
+            </div>
+            <div style="width: 80px">
+              <input
+                type="number"
+                [(ngModel)]="item.percentage"
+                name="percent_{{ i }}"
+                placeholder="%"
+                min="0"
+                max="100"
+                style="width: 100%; padding: 5px"
+              />
+            </div>
+            <button
+              type="button"
+              (click)="removeVentilationItem(i)"
+              style="
+                background: #ff5252;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 5px 10px;
+                cursor: pointer;
+              "
+            >
+              X
+            </button>
+          </div>
+        }
+        <div
+          style="
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <button
+            type="button"
+            (click)="addVentilationItem()"
+            style="
+              background: #4caf50;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              padding: 5px 10px;
+              cursor: pointer;
+            "
+          >
+            + Ajouter Projet
+          </button>
+          <div [style.color]="totalVentilation !== 100 ? 'red' : 'green'" style="font-weight: bold">
+            Total: {{ totalVentilation }}%
+          </div>
+        </div>
+        @if (totalVentilation !== 100) {
+          <div style="color: red; font-size: 0.8em; margin-top: 5px">
+            ⚠️ Le total doit être égal à 100%.
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Statut (visible seulement pour Admin/Superviseur ET PAS pour Maintenance) -->
+    @if (
+      (authService.getUserProfile() === 'Admin' ||
+        authService.getUserProfile() === 'Superviseur') &&
+      mouvement.type !== 'maintenance'
+    ) {
+      <div style="margin-bottom: 10px">
+        <label for="statut">Statut:</label>
+        <select
+          id="statut"
+          name="statut"
+          [(ngModel)]="mouvement.statut"
+          required
+          style="width: 100%; padding: 8px"
+        >
+          @for (statut of mouvementStatuts; track statut) {
+            <option [value]="statut">{{ statut | titlecase }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    <!-- SECTION E-LOGBOOK (DONNÉES RÉELLES) - Masqué pour maintenance -->
+    @if (mouvement.type !== 'maintenance') {
+      <div
+        style="
+          margin-top: 30px;
+          padding: 15px;
+          background-color: #e8f5e9;
+          border: 1px solid #c8e6c9;
+          border-radius: 5px;
+        "
+      >
+        <h3 style="color: #2e7d32; display: flex; align-items: center">
+          <mat-icon style="margin-right: 10px">smartphone</mat-icon>
+          Données Réelles (e-Logbook)
+          <!-- Icône Verrou si terminé -->
+          @if (mouvement.statut === 'terminé' || mouvement.realArrivalTime) {
+            <mat-icon
+              style="margin-left: auto; color: #666"
+              title="Trajet finalisé par le conducteur"
+              >lock</mat-icon
+            >
+          }
+        </h3>
+        <p style="font-size: 0.9em; color: #555; margin-bottom: 15px">
+          Ces données proviennent directement de l'application mobile du chauffeur. Elles sont en
+          lecture seule.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+          <!-- Heures -->
+          <div>
+            <label style="font-weight: bold; color: #2e7d32">Départ Réel :</label>
+            <div
+              style="
+                padding: 8px;
+                background: #fff;
+                border: 1px solid #a5d6a7;
+                border-radius: 4px;
+                color: #333;
+              "
+            >
+              {{
+                mouvement.realDepartureTime
+                  ? (mouvement.realDepartureTime | date: 'medium')
+                  : 'Non commencé'
+              }}
+            </div>
+          </div>
+          <div>
+            <label style="font-weight: bold; color: #2e7d32">Arrivée Réelle :</label>
+            <div
+              style="
+                padding: 8px;
+                background: #fff;
+                border: 1px solid #a5d6a7;
+                border-radius: 4px;
+                color: #333;
+              "
+            >
+              {{
+                mouvement.realArrivalTime
+                  ? (mouvement.realArrivalTime | date: 'medium')
+                  : 'En cours / Non terminé'
+              }}
+            </div>
+          </div>
+          <!-- Kilométrage -->
+          <div>
+            <label style="font-weight: bold; color: #2e7d32">Km Départ :</label>
+            <div
+              style="
+                padding: 8px;
+                background: #fff;
+                border: 1px solid #a5d6a7;
+                border-radius: 4px;
+                color: #333;
+              "
+            >
+              {{ mouvement.startMileage ? mouvement.startMileage + ' km' : '--' }}
+            </div>
+          </div>
+          <div>
+            <label style="font-weight: bold; color: #2e7d32">Km Arrivée :</label>
+            <div
+              style="
+                padding: 8px;
+                background: #fff;
+                border: 1px solid #a5d6a7;
+                border-radius: 4px;
+                color: #333;
+              "
+            >
+              {{ mouvement.endMileage ? mouvement.endMileage + ' km' : '--' }}
+            </div>
+          </div>
+        </div>
+        <!-- Observations -->
+        <div style="margin-top: 15px">
+          <label style="font-weight: bold; color: #2e7d32">Observations du Conducteur :</label>
+          <div
+            style="
+              padding: 8px;
+              background: #fff;
+              border: 1px solid #a5d6a7;
+              border-radius: 4px;
+              color: #333;
+              min-height: 40px;
+              font-style: italic;
+            "
+          >
+            {{ mouvement.driverObservations || 'Aucune observation' }}
+          </div>
+        </div>
+      </div>
+    }
+    <br />
+
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="!modifierForm.form.valid"
+      style="
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      "
+    >
+      Mettre à jour Mouvement
+    </button>
+    <button
+      type="button"
+      (click)="router.navigate(['/'])"
+      style="
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-left: 10px;
+      "
+    >
+      Annuler
+    </button>
+  </form>
+</div>

@@ -1,0 +1,37 @@
+@if (canView) {
+  <div class="info-banner-container">
+    <!-- Toggle Button (Discreet) -->
+    <div class="toggle-wrapper">
+      @if (isSuperAdmin && isExpanded) {
+        <button
+          mat-icon-button
+          (click)="editContent()"
+          matTooltip="Modifier ce texte (SuperAdmin)"
+          class="toggle-btn edit-btn"
+        >
+          <mat-icon style="font-size: 18px">edit</mat-icon>
+        </button>
+      }
+      <button
+        mat-icon-button
+        (click)="toggle()"
+        [matTooltip]="isExpanded ? 'Masquer l\'aide' : 'Afficher l\'aide'"
+        class="toggle-btn"
+      >
+        <mat-icon>{{ isExpanded ? 'visibility_off' : 'help_outline' }}</mat-icon>
+      </button>
+    </div>
+    <!-- Content Banner -->
+    <div [@expandCollapse]="isExpanded ? 'expanded' : 'collapsed'" class="info-banner-content">
+      <h3 class="banner-title"><mat-icon>info</mat-icon> {{ title }}</h3>
+      <div class="banner-body">
+        @if (customContent) {
+          <div [innerHTML]="customContent"></div>
+        }
+        @if (!customContent) {
+          <div><ng-content></ng-content></div>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,229 @@
+<div class="config-container">
+  <div
+    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px"
+  >
+    <h2 style="margin: 0">{{ 'MAINTENANCE.CONFIG.TITLE' | translate }}</h2>
+    <button mat-raised-button color="primary" (click)="openConfigModal()">
+      <mat-icon>add</mat-icon> {{ 'COMMON.ADD' | translate }}
+    </button>
+  </div>
+
+  <!-- Modal Formulaire -->
+  <ng-template #configFormDialog>
+    <div class="custom-modal-layout" style="width: 100%; max-width: 600px">
+      <div class="custom-modal-header">
+        <h2>
+          <mat-icon>settings</mat-icon>
+          {{
+            selectedConfig
+              ? ('MAINTENANCE.CONFIG.EDIT_TITLE' | translate)
+              : ('MAINTENANCE.CONFIG.NEW_TITLE' | translate)
+          }}
+        </h2>
+        <button class="custom-modal-close-btn" (click)="closeConfigModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="custom-modal-body">
+        <form
+          [formGroup]="configForm"
+          (ngSubmit)="saveConfig()"
+          style="display: flex; flex-direction: column; gap: 15px"
+        >
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.CONFIG.FIELDS.VEHICLE_TYPE' | translate }}</mat-label>
+            <mat-select formControlName="typeVehicule">
+              @for (type of vehicleTypes; track type) {
+                <mat-option [value]="type">
+                  {{ type }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.CONFIG.FIELDS.ROAD_CONDITIONS' | translate }}</mat-label>
+            <mat-select formControlName="conditionsRoute">
+              <mat-option value="Route mixte/urbaine">{{
+                'MAINTENANCE.CONFIG.ROAD_MIXTE_URBAINE' | translate
+              }}</mat-option>
+              <mat-option value="Route goudronnée">{{
+                'MAINTENANCE.CONFIG.ROAD_GOUDRONNEE' | translate
+              }}</mat-option>
+              <mat-option value="Mixte route + piste">{{
+                'MAINTENANCE.CONFIG.ROAD_MIXTE_PISTE' | translate
+              }}</mat-option>
+              <mat-option value="100% piste difficile">{{
+                'MAINTENANCE.CONFIG.ROAD_PISTE_DIFFICILE' | translate
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <h3>{{ 'MAINTENANCE.CONFIG.INTERVALS' | translate }}</h3>
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.CONFIG.FIELDS.SERVICE_INTERVAL' | translate }}</mat-label>
+            <input matInput type="number" formControlName="intervalleService" />
+            <mat-hint>Ex: 5000 km</mat-hint>
+          </mat-form-field>
+
+          <div class="row">
+            <mat-form-field appearance="outline" style="flex: 1">
+              <mat-label>{{ 'MAINTENANCE.CONFIG.SEQUENCE_LABEL' | translate }}</mat-label>
+              <mat-select formControlName="sequenceMode">
+                <mat-option value="Predefined">{{
+                  'MAINTENANCE.CONFIG.SEQ_PREDEFINED' | translate
+                }}</mat-option>
+                <mat-option value="Custom">{{
+                  'MAINTENANCE.CONFIG.SEQ_CUSTOM' | translate
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          @if (configForm.get('sequenceMode')?.value === 'Custom') {
+            <div
+              style="
+                padding: 15px;
+                background: #f9fafb;
+                border-radius: 8px;
+                border: 1px solid #e5e7eb;
+              "
+            >
+              <h4 style="margin-top: 0">{{ 'MAINTENANCE.CONFIG.CUSTOM_SEQ_TITLE' | translate }}</h4>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px">
+                @for (step of customSequenceControls; track step; let i = $index) {
+                  <div
+                    style="
+                      background: #e0e7ff;
+                      color: #3730a3;
+                      padding: 4px 12px;
+                      border-radius: 16px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                    "
+                  >
+                    <span>{{ i + 1 }}. {{ step }}</span>
+                    <mat-icon
+                      style="font-size: 16px; width: 16px; height: 16px; cursor: pointer"
+                      (click)="removeSequenceStep(i)"
+                      >close</mat-icon
+                    >
+                  </div>
+                }
+              </div>
+              <div style="display: flex; gap: 8px">
+                <mat-form-field appearance="outline" style="flex: 1; margin-bottom: -1.25em">
+                  <mat-label>{{ 'MAINTENANCE.CONFIG.ADD_SERVICE' | translate }}</mat-label>
+                  <input
+                    matInput
+                    #newStepInput
+                    (keyup.enter)="addSequenceStep(newStepInput.value); newStepInput.value = ''"
+                  />
+                </mat-form-field>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="button"
+                  (click)="addSequenceStep(newStepInput.value); newStepInput.value = ''"
+                  style="height: 56px"
+                >
+                  {{ 'COMMON.ADD' | translate }}
+                </button>
+              </div>
+              <p style="font-size: 12px; color: #6b7280; margin-top: 8px">
+                {{ 'MAINTENANCE.CONFIG.REPEAT_ORDER' | translate }}
+                @for (s of customSequenceControls; track s; let last = $last) {
+                  <span
+                    >{{ s
+                    }}{{
+                      !last ? ' ➔ ' : ' ' + ('MAINTENANCE.CONFIG.REPEAT_END' | translate)
+                    }}</span
+                  >
+                }
+              </p>
+            </div>
+          }
+
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'MAINTENANCE.CONFIG.FIELDS.FUEL_QUALITY' | translate }}</mat-label>
+            <mat-select formControlName="qualiteCarburant">
+              <mat-option value="Bonne">{{
+                'MAINTENANCE.CONFIG.FUEL_GOOD' | translate
+              }}</mat-option>
+              <mat-option value="Mauvaise">{{
+                'MAINTENANCE.CONFIG.FUEL_BAD' | translate
+              }}</mat-option>
+              <mat-option value="Inconnue">{{
+                'MAINTENANCE.CONFIG.FUEL_UNKNOWN' | translate
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="actions">
+            <button mat-button type="button" (click)="resetForm()">
+              {{ 'COMMON.CANCEL' | translate }}
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="configForm.invalid">
+              {{ 'COMMON.SAVE' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Liste -->
+  <mat-card class="list-card">
+    <mat-card-header>
+      <mat-card-title>{{ 'MAINTENANCE.CONFIG.LIST_TITLE' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="configs" class="config-table">
+        <ng-container matColumnDef="typeVehicule">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'MAINTENANCE.CONFIG.TABLE.TYPE' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.typeVehicule }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="conditions">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'MAINTENANCE.CONFIG.TABLE.CONDITIONS' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.conditionsRoute }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="intervalle">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'MAINTENANCE.CONFIG.TABLE.INTERVAL' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.intervalleService }} km</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'MAINTENANCE.CONFIG.TABLE.ACTIONS' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="selectConfig(element)"
+              style="margin-right: 8px"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteConfig(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

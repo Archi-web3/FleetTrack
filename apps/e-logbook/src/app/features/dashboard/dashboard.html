@@ -1,0 +1,234 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <!-- NOUVEAU: Notification Bell (Top Right) -->
+    <button mat-icon-button (click)="openInbox()" class="notification-btn-absolute">
+      <mat-icon>notifications</mat-icon>
+    </button>
+
+    <!-- Logo -->
+    @if (brandSettings?.mobileHeaderLogo || brandSettings?.mobileAppLogo) {
+      <div class="logo-container">
+        @if (brandSettings?.mobileHeaderLogoColor) {
+          <div
+            [style.width]="'40px'"
+            [style.height]="'40px'"
+            [style.background-color]="brandSettings.mobileHeaderLogoColor"
+            [style.-webkit-mask]="
+              'url(' +
+              (brandSettings.mobileHeaderLogo || brandSettings.mobileAppLogo) +
+              ') no-repeat center / contain'
+            "
+            [style.mask]="
+              'url(' +
+              (brandSettings.mobileHeaderLogo || brandSettings.mobileAppLogo) +
+              ') no-repeat center / contain'
+            "
+          ></div>
+        }
+        @if (!brandSettings?.mobileHeaderLogoColor) {
+          <img
+            [src]="brandSettings.mobileHeaderLogo || brandSettings.mobileAppLogo"
+            alt="Logo"
+            class="acf-logo"
+            style="max-height: 40px; width: auto"
+          />
+        }
+      </div>
+    }
+
+    <div class="vehicle-info">
+      <mat-icon class="vehicle-icon">directions_car</mat-icon>
+      <div class="vehicle-details">
+        <h2>{{ selectedVehicle?.marque }} {{ selectedVehicle?.modele }}</h2>
+        <p class="immatriculation">{{ selectedVehicle?.immatriculation }}</p>
+      </div>
+    </div>
+
+    @if (currentUser) {
+      <div class="user-info">
+        <mat-icon class="user-icon">account_circle</mat-icon>
+        <div class="user-details">
+          <p class="user-name">{{ currentUser.prenom }} {{ currentUser.nom }}</p>
+          <p class="user-profile">{{ currentUser.profil }}</p>
+        </div>
+      </div>
+    }
+
+    <div class="header-actions">
+      <app-language-selector></app-language-selector>
+      <button mat-stroked-button (click)="changeVehicle()">
+        <mat-icon>swap_horiz</mat-icon>
+        {{ 'HEADER.CHANGE_VEHICLE' | translate }}
+      </button>
+      <!-- NOUVEAU: Bouton Reset pour Admin uniquement -->
+      @if (showResetButton) {
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="resetLocalData()"
+          style="border-color: #ff9800; color: #ff9800"
+        >
+          <mat-icon>delete_sweep</mat-icon>
+          {{ 'HEADER.RESET_DATA' | translate }}
+        </button>
+      }
+      <button mat-stroked-button color="warn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        {{ 'COMMON.LOGOUT' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard Cards -->
+  <div class="dashboard-grid">
+    <!-- NOUVEAU: Active Trip Card (si trip en cours) -->
+    @if (hasActiveTrip()) {
+      <mat-card class="dashboard-card active-trip-card" (click)="resumeActiveTrip()">
+        <mat-card-content>
+          <div class="card-icon-container">
+            <mat-icon class="card-icon">trip_origin</mat-icon>
+          </div>
+          <h3>🚗 {{ 'DASHBOARD.ACTIVE_TRIP' | translate }}</h3>
+          <p class="card-description">{{ 'DASHBOARD.ACTIVE_TRIP_DESC' | translate }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    <!-- Planning Card -->
+    <mat-card class="dashboard-card planning-card" (click)="navigateTo('/planning')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon
+            class="card-icon"
+            [matBadge]="pendingMissionsCount"
+            [matBadgeHidden]="pendingMissionsCount === 0"
+            matBadgeColor="accent"
+            matBadgeSize="small"
+          >
+            event_note
+          </mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.PLANNING' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.PLANNING_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- NOUVEAU: Weekly Checklist Card -->
+    <mat-card class="dashboard-card checklist-card" (click)="navigateTo('/weekly-checklist')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon class="card-icon">checklist</mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.CHECKLIST' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.CHECKLIST_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- NOUVEAU: Scheduled Service Card -->
+    <mat-card class="dashboard-card service-card" (click)="navigateTo('/scheduled-service')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon
+            class="card-icon"
+            [matBadge]="alertsCount"
+            [matBadgeHidden]="alertsCount === 0"
+            matBadgeColor="warn"
+            matBadgeSize="medium"
+          >
+            build_circle
+          </mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.SERVICES' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.SERVICES_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Trips Card -->
+    <mat-card class="dashboard-card trips-card" (click)="navigateTo('/trips')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon
+            class="card-icon"
+            [matBadge]="unsyncedCounts.trips"
+            [matBadgeHidden]="unsyncedCounts.trips === 0"
+            matBadgeColor="warn"
+            matBadgeSize="small"
+          >
+            directions_car
+          </mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.TRIPS' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.TRIPS_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- NOUVEAU: Visitor Waiver Card -->
+    <mat-card class="dashboard-card waiver-card" (click)="navigateTo('/waiver')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon class="card-icon">draw</mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.WAIVER' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.WAIVER_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Fuel Card -->
+    <mat-card class="dashboard-card fuel-card" (click)="navigateTo('/fuels')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon
+            class="card-icon"
+            [matBadge]="unsyncedCounts.fuels"
+            [matBadgeHidden]="unsyncedCounts.fuels === 0"
+            matBadgeColor="warn"
+            matBadgeSize="small"
+          >
+            local_gas_station
+          </mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.FUEL' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.FUEL_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Maintenance Card -->
+    <mat-card class="dashboard-card maintenance-card" (click)="navigateTo('/maintenances')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon
+            class="card-icon"
+            [matBadge]="unsyncedCounts.maintenances"
+            [matBadgeHidden]="unsyncedCounts.maintenances === 0"
+            matBadgeColor="warn"
+            matBadgeSize="small"
+          >
+            build
+          </mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.MAINTENANCE' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.MAINTENANCE_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Incidents Card -->
+    <mat-card class="dashboard-card incidents-card" (click)="navigateTo('/incidents')">
+      <mat-card-content>
+        <div class="card-icon-container">
+          <mat-icon
+            class="card-icon"
+            [matBadge]="unsyncedCounts.incidents"
+            [matBadgeHidden]="unsyncedCounts.incidents === 0"
+            matBadgeColor="warn"
+            matBadgeSize="small"
+          >
+            warning
+          </mat-icon>
+        </div>
+        <h3>{{ 'DASHBOARD.INCIDENTS' | translate }}</h3>
+        <p class="card-description">{{ 'DASHBOARD.INCIDENTS_DESC' | translate }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

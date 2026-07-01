@@ -1,0 +1,111 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      <mat-icon style="vertical-align: middle; margin-right: 8px">build</mat-icon>
+      Validation Maintenance - {{ vehicule.immatriculation }}
+    </h2>
+    <button mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    @if (loading) {
+      <div class="loading-state">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Chargement des données du service...</p>
+      </div>
+    }
+
+    @if (!loading && !service) {
+      <div class="empty-state">
+        <mat-icon color="warn">error_outline</mat-icon>
+        <p>Aucun service en attente trouvé pour ce véhicule.</p>
+      </div>
+    }
+
+    @if (!loading && service) {
+      <div class="service-content">
+        <div class="service-info-banner">
+          <div>
+            <strong>Type de Service:</strong> <span class="badge">{{ service.typeService }}</span>
+          </div>
+          <div>
+            <strong>Kilométrage Prévu:</strong> {{ service.kilometragePrevu | number: '1.0-0' }} km
+          </div>
+          <div>
+            <strong>Statut actuel:</strong> <span class="status-text">{{ service.statut }}</span>
+          </div>
+        </div>
+        @if (service.taches && service.taches.length > 0) {
+          <div class="tasks-section">
+            <div class="tasks-header">
+              <h3>Liste des tâches ({{ service.taches.length }})</h3>
+              <mat-checkbox
+                (change)="toggleAllTasks($event.checked)"
+                [checked]="toutesTachesValidees"
+              >
+                Tout cocher
+              </mat-checkbox>
+            </div>
+            <div class="tasks-list">
+              @for (tache of service.taches; track tache; let i = $index) {
+                <div class="task-item">
+                  <mat-checkbox [(ngModel)]="tache.validee" color="primary">
+                    @if (tache.numeroTacheManuel) {
+                      <span class="task-number">[{{ tache.numeroTacheManuel }}]</span>
+                    }
+                    {{ getLocalizedTask(tache) }}
+                  </mat-checkbox>
+                  <mat-form-field appearance="outline" class="task-comment">
+                    <mat-label>Commentaire (optionnel)</mat-label>
+                    <input matInput [(ngModel)]="tache.commentaire" placeholder="Observations..." />
+                  </mat-form-field>
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (!service.taches || service.taches.length === 0) {
+          <div class="tasks-section">
+            <div class="empty-tasks">
+              <mat-icon>checklist</mat-icon>
+              <p>
+                Aucune tâche de checklist associée à ce service (Service {{ service.typeService }}).
+              </p>
+            </div>
+          </div>
+        }
+        <div class="certification-section">
+          <div class="certification-box">
+            <mat-checkbox [(ngModel)]="certificationCochee" color="primary">
+              <strong>Je certifie que ces travaux ont été réalisés.</strong>
+            </mat-checkbox>
+            <p class="certification-note">
+              En cochant cette case, vous validez la maintenance dans le système. Cette action sera
+              enregistrée dans le journal d'activité avec votre identifiant.
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close [disabled]="saving">Annuler</button>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!canValidate || loading || !service"
+      (click)="validateService()"
+    >
+      @if (!saving) {
+        <mat-icon>check_circle</mat-icon>
+      }
+      @if (saving) {
+        <mat-spinner diameter="20" style="margin-right: 8px"></mat-spinner>
+      }
+      {{ saving ? 'Validation...' : 'Valider la maintenance' }}
+    </button>
+  </mat-dialog-actions>
+</div>

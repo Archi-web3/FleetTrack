@@ -1,0 +1,728 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MouvementService } from '../../core/services/mouvement.service';
+import { UtilisateurService } from '../../core/services/utilisateur.service';
+import { VehiculeService } from '../../core/services/vehicule.service';
+import { ChauffeurService } from '../../core/services/chauffeur.service';
+import { LieuService } from '../../core/services/lieu.service';
+import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../../core/services/auth.service'; // NOUVEAU : Importer AuthService
+import { OsrmService } from '../../core/services/osrm.service'; // NOUVEAU
+import { MatDialogRef } from '@angular/material/dialog';
+
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-demande-mouvement',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    TranslateModule,
+  ],
+  templateUrl: './demande-mouvement.component.html',
+  styleUrls: ['./demande-mouvement.component.scss'],
+})
+export class DemandeMouvementComponent implements OnInit {
+  private mouvementService = inject(MouvementService);
+  private utilisateurService = inject(UtilisateurService);
+  private vehiculeService = inject(VehiculeService);
+  private chauffeurService = inject(ChauffeurService);
+  private lieuService = inject(LieuService);
+  private router = inject(Router);
+  authService = inject(AuthService);
+  private osrmService = inject(OsrmService);
+  private dialogRef = inject<MatDialogRef<DemandeMouvementComponent>>(MatDialogRef, {
+    optional: true,
+  });
+
+  mouvement = {
+    lieuDepart: '',
+    lieuArrivee: '',
+    dateDepart: '',
+    dateArrivee: '',
+    demandeur: '', // Sera défini automatiquement
+    vehicule: null as string | null, // <<< MODIFIÉ : Peut être null
+    chauffeur: null as string | null, // <<< MODIFIÉ : Peut être null
+    passagers: [] as string[], // NOUVEAU : Champ pour les passagers (IDs)
+    materiel: '', // Exemple, si vous voulez l'ajouter au formulaire
+    objectif: '',
+    modeTransport: 'Routier', // Module 2 : Mode de transport par défaut
+  };
+
+  // NOUVEAU : Mode de la demande (Mission vs Maintenance)
+  requestType: 'mission' | 'maintenance' = 'mission';
+  maintenanceType = 'Check Hebdo';
+  maintenanceDescription = '';
+  maintenanceTypes: string[] = ['Check Hebdo', 'Service', 'Réparation', 'Autre'];
+
+  transportModes: string[] = ['Routier', 'Aérien', 'Maritime'];
+
+  utilisateurs: any[] = [];
+  vehicules: any[] = [];
+  chauffeurs: any[] = [];
+  lieux: any[] = [];
+
+  selectedLieuDepartOption: 'existing' | 'new' = 'existing';
+  selectedLieuArriveeOption: 'existing' | 'new' = 'existing';
+
+  newLieuDepart = {
+    nom: '',
+    adresse: '',
+    coordonnees: { latitude: 0, longitude: 0 },
+    estSensible: false,
+  };
+  newLieuArrivee = {
+    nom: '',
+    adresse: '',
+    coordonnees: { latitude: 0, longitude: 0 },
+    estSensible: false,
+  };
+
+  // Variable pour la sélection multiple des passagers
+  selectedPassagersIds: string[] = [];
+
+  // Filtrage des lieux
+  showAllLieuxInPays = false;
+  userProfile: string | null = null;
+  userPaysId: string | null = null;
+  userBaseId: string | null = null;
+
+  // NOUVEAU : Case à cocher pour retour identique
+  isRetourIdentique = false;
+
+  onRetourIdentiqueChange(): void {
+    if (this.isRetourIdentique) {
+      if (this.selectedLieuDepartOption === 'existing') {
+        this.selectedLieuArriveeOption = 'existing';
+        this.mouvement.lieuArrivee = this.mouvement.lieuDepart;
+      } else {
+        // Cas complexe (nouveau lieu), on simplifie en désactivant la copie pour le "nouveau" mode
+        // Ou on copie les champs newLieuDepart vers newLieuArrivee
+        this.selectedLieuArriveeOption = 'new';
+        this.newLieuArrivee = { ...this.newLieuDepart };
+      }
+    } else {
+      // On reset éventuellement si l'utilisateur décoche, ou on laisse tel quel pour qu'il modifie
+      this.mouvement.lieuArrivee = '';
+    }
+  }
+
+  // NOUVEAU : Gestion des étapes intermédiaires
+  etapes: any[] = [];
+
+  // NOUVEAU : Estimation du trajet
+  estimation: { distance: string; duration: string } | null = null;
+  isCalculatingEstimation = false;
+  isModal = false; // Flag to check if component is opened in a modal
+
+  constructor() {
+    this.isModal = !!this.dialogRef;
+  }
+
+  closeModal(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+  }
+
+  ngOnInit(): void {
+    this.userProfile = this.authService.getUserProfile();
+    this.userPaysId = this.authService.getUserPaysId();
+    this.userBaseId = this.authService.getUserBaseId();
+    this.loadData();
+    // Définir le demandeur automatiquement
+    this.mouvement.demandeur = this.authService.getUserId() || '';
+  }
+
+  loadData(): void {
+    this.utilisateurService.getUtilisateurs().subscribe(
+      (data) => (this.utilisateurs = data),
+      (error) => console.error('Erreur chargement utilisateurs:', error),
+    );
+
+    this.vehiculeService.getVehicules().subscribe(
+      (data) => (this.vehicules = data),
+      (error) => console.error('Erreur chargement véhicules:', error),
+    );
+
+    this.chauffeurService.getChauffeurs().subscribe(
+      (data) => (this.chauffeurs = data),
+      (error) => console.error('Erreur chargement chauffeurs:', error),
+    );
+
+    this.lieuService.getLieux().subscribe(
+      (data) => {
+        // Par défaut, afficher tous les lieux pour SuperAdmin
+        if (this.userProfile === 'SuperAdmin') {
+          this.lieux = data;
+          return;
+        }
+
+        // Pour les autres utilisateurs, filtrer par base ou pays
+        if (!this.userBaseId || !this.userPaysId) {
+          console.warn("⚠️ Base ou Pays non défini pour l'utilisateur");
+          this.lieux = [];
+          return;
+        }
+
+        if (this.showAllLieuxInPays) {
+          // Afficher tous les lieux du pays
+          this.lieux = data.filter((lieu: any) => {
+            const lieuPaysId = typeof lieu.pays === 'string' ? lieu.pays : lieu.pays?._id;
+            return lieuPaysId === this.userPaysId;
+          });
+        } else {
+          // Afficher uniquement les lieux de la base (STRICT)
+          this.lieux = data.filter((lieu: any) => {
+            const lieuBaseId = typeof lieu.base === 'string' ? lieu.base : lieu.base?._id;
+            return lieuBaseId === this.userBaseId;
+          });
+        }
+      },
+      (error) => console.error('Erreur chargement lieux:', error),
+    );
+  }
+
+  // Basculer l'affichage des lieux
+  toggleShowAllLieuxInPays(): void {
+    this.showAllLieuxInPays = !this.showAllLieuxInPays;
+    this.loadData();
+  }
+
+  // Gestion des étapes
+  addEtape(): void {
+    this.etapes.push({ lieu: '', dateArrivee: '', dateDepart: '' });
+    this.calculateEstimation();
+  }
+
+  removeEtape(index: number): void {
+    this.etapes.splice(index, 1);
+    this.calculateEstimation();
+  }
+
+  // NOUVEAU : Méthode de calcul d'estimation
+  calculateEstimation(): void {
+    // Collecter tous les IDs de lieux (Départ -> Etapes -> Arrivée)
+    const lieuIds: string[] = [];
+
+    if (this.mouvement.lieuDepart) lieuIds.push(this.mouvement.lieuDepart);
+
+    this.etapes.forEach((e) => {
+      if (e.lieu) lieuIds.push(e.lieu);
+    });
+
+    if (this.mouvement.lieuArrivee) lieuIds.push(this.mouvement.lieuArrivee);
+
+    // Il faut au moins 2 points pour calculer
+    if (lieuIds.length < 2) {
+      this.estimation = null;
+      return;
+    }
+
+    // Récupérer les coordonnées de chaque lieu
+    const waypoints: { lat: number; lng: number }[] = [];
+    let valid = true;
+
+    lieuIds.forEach((id) => {
+      const lieu = this.lieux.find((l) => l._id === id);
+      if (lieu && lieu.coordonnees) {
+        let lat: number, lng: number;
+        if (typeof lieu.coordonnees === 'string') {
+          const parts = lieu.coordonnees.split(',').map((c: string) => parseFloat(c.trim()));
+          lat = parts[0];
+          lng = parts[1];
+        } else {
+          lat = parseFloat(lieu.coordonnees.latitude);
+          lng = parseFloat(lieu.coordonnees.longitude);
+        }
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+          waypoints.push({ lat, lng });
+        } else {
+          valid = false;
+        }
+      } else {
+        valid = false;
+      }
+    });
+
+    if (!valid || waypoints.length < 2) {
+      this.estimation = null;
+      return;
+    }
+
+    this.isCalculatingEstimation = true;
+    this.osrmService.getRoute(waypoints).subscribe({
+      next: (result: any) => {
+        this.isCalculatingEstimation = false;
+        if (result) {
+          // Convert distance (meters -> km) and duration (seconds -> readable)
+          const km = (result.distance / 1000).toFixed(1) + ' km';
+          const durationSeconds = result.duration;
+
+          const hours = Math.floor(durationSeconds / 3600);
+          const minutes = Math.floor((durationSeconds % 3600) / 60);
+
+          let durationStr = '';
+          if (hours > 0) durationStr += `${hours}h `;
+          durationStr += `${minutes} min`;
+
+          this.estimation = { distance: km, duration: durationStr };
+
+          // AUTO-FILL Arrival Date
+          this.updateArrivalDate(durationSeconds);
+        } else {
+          this.estimation = null;
+        }
+      },
+      error: () => {
+        this.isCalculatingEstimation = false;
+        this.estimation = null;
+      },
+    });
+  }
+
+  // NOUVEAU: Mettre à jour la date d'arrivée basés sur la durée estimée + marge
+  updateArrivalDate(durationSeconds?: number): void {
+    if (!this.mouvement.dateDepart) return;
+
+    // Si durationSeconds n'est pas fourni, essayer de le récupérer d'une estimation précédente stockée ?
+    // Pour l'instant, on ne le stocke pas en raw, donc on ne fait rien si pas fourni,
+    // SAUF si on relance le calcul complet (ce qui est le cas avec onLieuChange).
+    // Mais si on change JUSTE la date de départ, il nous faut la durée.
+    // Simplification: on relance calculateEstimation() si la date de départ change ?
+    // Non, c'est coûteux en API. On devrait stocker durationSeconds.
+
+    // Stockons la durée brute pour réutilisation
+    if (durationSeconds) {
+      (this.estimation as any).rawDuration = durationSeconds;
+    } else if (this.estimation && (this.estimation as any).rawDuration) {
+      durationSeconds = (this.estimation as any).rawDuration;
+    } else {
+      return;
+    }
+
+    if (!durationSeconds) return;
+
+    const depart = new Date(this.mouvement.dateDepart);
+    if (isNaN(depart.getTime())) return;
+
+    // Ajouter marge de 20% (x1.2)
+    let estimatedDuration = durationSeconds * 1.2;
+
+    // Minimum 15 minutes (900 secondes) de marge/trajet si c'est très court
+    if (estimatedDuration < durationSeconds + 900) {
+      estimatedDuration = durationSeconds + 900;
+    }
+
+    const arrivee = new Date(depart.getTime() + estimatedDuration * 1000);
+
+    // Formater pour l'input datetime-local (YYYY-MM-DDTHH:mm)
+    // Attention au fuseau horaire local
+    const pad = (n: number) => (n < 10 ? '0' + n : n);
+    const year = arrivee.getFullYear();
+    const month = pad(arrivee.getMonth() + 1);
+    const day = pad(arrivee.getDate());
+    const hours = pad(arrivee.getHours());
+    const minutes = pad(arrivee.getMinutes());
+
+    this.mouvement.dateArrivee = `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  // Appelé quand un lieu change dans le template
+  onLieuChange(): void {
+    this.calculateEstimation();
+  }
+
+  // Appelé quand la date de départ change
+  onDateDepartChange(): void {
+    // Mettre à jour l'arrivée si une estimation existe déjà
+    this.updateArrivalDate();
+  }
+
+  // NOUVEAU : Récurrence
+  isRecurring = false;
+  recurrenceFrequency: 'Daily' | 'Weekly' = 'Daily';
+  recurrenceEndDate = '';
+
+  async onSubmit(): Promise<void> {
+    try {
+      // --- LOGIQUE MAINTENANCE ---
+      if (this.requestType === 'maintenance') {
+        if (!this.mouvement.vehicule) {
+          alert('Veuillez sélectionner un véhicule pour la maintenance.');
+          return;
+        }
+        if (!this.mouvement.dateDepart || !this.mouvement.dateArrivee) {
+          alert('Veuillez définir la période de maintenance (Début/Fin).');
+          return;
+        }
+
+        // Validation Récurrence Maintenance
+        if (this.isRecurring) {
+          if (!this.recurrenceEndDate) {
+            alert('Veuillez spécifier une date de fin pour la récurrence.');
+            return;
+          }
+          const startDate = new Date(this.mouvement.dateDepart);
+          const endDate = new Date(this.recurrenceEndDate);
+          if (endDate <= startDate) {
+            alert('La date de fin de récurrence doit être postérieure à la date de départ.');
+            return;
+          }
+        }
+
+        let currentDate = new Date(this.mouvement.dateDepart);
+        const arrivalDateOrigin = new Date(this.mouvement.dateArrivee);
+        const tripDurationMs = arrivalDateOrigin.getTime() - currentDate.getTime();
+        const endDateLoop = this.isRecurring
+          ? new Date(this.recurrenceEndDate)
+          : new Date(this.mouvement.dateDepart);
+
+        let safeGuard = 0;
+        let countSuccess = 0;
+        const recurrenceGroupId = this.isRecurring ? 'REC_MAINT_' + Date.now() : null;
+
+        do {
+          const currentArriveeDate = new Date(currentDate.getTime() + tripDurationMs);
+
+          const payload = {
+            type: 'maintenance',
+            maintenanceType: this.maintenanceType,
+            description: this.maintenanceDescription,
+            vehicule: this.mouvement.vehicule,
+            dateDepart: currentDate, // Clone implicite via new Date dans la boucle
+            dateArrivee: currentArriveeDate,
+            demandeur: this.mouvement.demandeur,
+            statut: 'validé',
+            stops: [],
+            recurrenceGroupId: recurrenceGroupId,
+            // Champs fictifs pour le modèle strict
+            lieuDepart: null,
+            lieuArrivee: null,
+            passagers: [],
+          };
+
+          try {
+            await firstValueFrom(this.mouvementService.addMouvement(payload));
+            countSuccess++;
+          } catch (error: any) {
+            console.error('Erreur creation maintenance:', error);
+            if (
+              !confirm(
+                `Erreur pour la date ${currentDate.toLocaleDateString()} : ${error.message || 'Inconnue'}. Continuer ?`,
+              )
+            ) {
+              break;
+            }
+          }
+
+          // INCREMENT DATE
+          const nextDate = new Date(currentDate);
+          if (this.recurrenceFrequency === 'Daily') {
+            nextDate.setDate(nextDate.getDate() + 1);
+          } else {
+            nextDate.setDate(nextDate.getDate() + 7);
+          }
+          currentDate = nextDate;
+          safeGuard++;
+        } while (this.isRecurring && currentDate <= endDateLoop && safeGuard < 50);
+
+        if (countSuccess > 0) {
+          alert(
+            this.isRecurring
+              ? `${countSuccess} créneaux de maintenance créés !`
+              : 'Créneau de maintenance créé avec succès !',
+          );
+          if (this.dialogRef) {
+            this.dialogRef.close(true);
+          } else {
+            this.router.navigate(['/']);
+          }
+        }
+        return;
+      }
+
+      // --- LOGIQUE MISSION (Code existant) ---
+
+      // 1. Validation de base
+      if (
+        !this.mouvement.lieuDepart ||
+        !this.mouvement.lieuArrivee ||
+        !this.mouvement.dateDepart ||
+        !this.mouvement.dateArrivee
+      ) {
+        if (!this.mouvement.dateDepart || !this.mouvement.dateArrivee) {
+          alert("Veuillez renseigner les dates de départ et d'arrivée.");
+          return;
+        }
+      }
+
+      // 1.1 Validation Récurrence
+      if (this.isRecurring) {
+        if (!this.recurrenceEndDate) {
+          alert('Veuillez spécifier une date de fin pour la récurrence.');
+          return;
+        }
+        const startDate = new Date(this.mouvement.dateDepart);
+        const endDate = new Date(this.recurrenceEndDate);
+        const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (endDate <= startDate) {
+          alert('La date de fin de récurrence doit être postérieure à la date de départ.');
+          return;
+        }
+
+        if (diffDays > 90) {
+          // Approx 3 mois
+          alert('La récurrence ne peut pas dépasser 3 mois.');
+          return;
+        }
+      }
+
+      // 2. Création des Lieux (si "Nouveau") - IDENTIQUE
+      // Gérer le nouveau lieu de départ si sélectionné
+      if (this.selectedLieuDepartOption === 'new') {
+        const nom = this.newLieuDepart.nom.trim();
+        const adresse = this.newLieuDepart.adresse.trim();
+        const lat = Number(this.newLieuDepart.coordonnees.latitude);
+        const long = Number(this.newLieuDepart.coordonnees.longitude);
+
+        if (nom === '' || adresse === '' || isNaN(lat) || isNaN(long)) {
+          alert(
+            "Veuillez remplir le nom, l'adresse et entrer des nombres valides pour la Latitude et la Longitude du nouveau lieu de départ.",
+          );
+          return;
+        }
+        this.newLieuDepart.coordonnees.latitude = lat;
+        this.newLieuDepart.coordonnees.longitude = long;
+
+        try {
+          const newDepartLieu = await firstValueFrom(this.lieuService.addLieu(this.newLieuDepart));
+          this.mouvement.lieuDepart = newDepartLieu._id;
+          // IMPORTANT: Switch to existing to avoid recreating for every recurrence loop
+          this.selectedLieuDepartOption = 'existing';
+        } catch (error: any) {
+          console.error('Erreur creation lieu depart', error);
+          throw error;
+        }
+      }
+
+      // Gérer le nouveau lieu d'arrivée si sélectionné
+      if (this.selectedLieuArriveeOption === 'new') {
+        const nom = this.newLieuArrivee.nom.trim();
+        const adresse = this.newLieuArrivee.adresse.trim();
+        const lat = Number(this.newLieuArrivee.coordonnees.latitude);
+        const long = Number(this.newLieuArrivee.coordonnees.longitude);
+
+        if (nom === '' || adresse === '' || isNaN(lat) || isNaN(long)) {
+          alert(
+            "Veuillez remplir le nom, l'adresse et entrer des nombres valides pour la Latitude et la Longitude du nouveau lieu d'arrivée.",
+          );
+          return;
+        }
+        this.newLieuArrivee.coordonnees.latitude = lat;
+        this.newLieuArrivee.coordonnees.longitude = long;
+
+        try {
+          const newArriveeLieu = await firstValueFrom(
+            this.lieuService.addLieu(this.newLieuArrivee),
+          );
+          this.mouvement.lieuArrivee = newArriveeLieu._id;
+          // IMPORTANT: Switch to existing
+          this.selectedLieuArriveeOption = 'existing';
+        } catch (error: any) {
+          console.error('Erreur creation lieu arrivee', error);
+          throw error;
+        }
+      }
+
+      // 3. BOUCLE DE RÉCURRENCE OU SIMPLE ENVOI (Séquentiel pour gérer les confirmations)
+      const currentDate = new Date(this.mouvement.dateDepart);
+      const arrivalDateOrigin = new Date(this.mouvement.dateArrivee);
+      const tripDurationMs = arrivalDateOrigin.getTime() - currentDate.getTime();
+
+      const endDateLoop = this.isRecurring
+        ? new Date(this.recurrenceEndDate)
+        : new Date(this.mouvement.dateDepart);
+
+      let safeGuard = 0;
+      let countSuccess = 0;
+
+      do {
+        const currentDepartStr = currentDate.toISOString();
+        const currentArriveeDate = new Date(currentDate.getTime() + tripDurationMs);
+        const stops = [];
+
+        // Reconstruct stops
+        stops.push({
+          lieu: this.mouvement.lieuDepart,
+          dateDepart: currentDate,
+        });
+
+        const timeDelta = currentDate.getTime() - new Date(this.mouvement.dateDepart).getTime();
+
+        this.etapes.forEach((etape) => {
+          if (etape.lieu) {
+            const s: any = { lieu: etape.lieu };
+            if (etape.dateArrivee)
+              s.dateArrivee = new Date(new Date(etape.dateArrivee).getTime() + timeDelta);
+            if (etape.dateDepart)
+              s.dateDepart = new Date(new Date(etape.dateDepart).getTime() + timeDelta);
+            stops.push(s);
+          }
+        });
+
+        stops.push({
+          lieu: this.mouvement.lieuArrivee,
+          dateArrivee: currentArriveeDate,
+        });
+
+        this.mouvement.passagers = this.selectedPassagersIds;
+
+        const payload = {
+          ...this.mouvement,
+          // type: 'mission' (défaut côté back),
+          dateDepart: currentDate,
+          dateArrivee: currentArriveeDate,
+          stops: stops,
+          recurrenceGroupId: this.isRecurring ? 'REC_' + Date.now() : null,
+        };
+
+        // --- EXÉCUTION AVEC GESTION DE CONFLIT ---
+        try {
+          await firstValueFrom(this.mouvementService.addMouvement(payload));
+          countSuccess++;
+        } catch (error: any) {
+          if (error.status === 409) {
+            // Conflit détecté
+            const msg = error.error.message || 'Conflit détecté.';
+            const confirmForce = confirm(
+              `${msg}\n\nVoulez-vous forcer la création malgré ce conflit ?`,
+            );
+
+            if (confirmForce) {
+              try {
+                // Retry avec force=true
+                await firstValueFrom(this.mouvementService.addMouvement(payload, true));
+                countSuccess++;
+              } catch (forceErr: any) {
+                console.error('Erreur forcée:', forceErr);
+                alert(`Erreur lors du forçage : ${forceErr.error?.message || forceErr.message}`);
+                // On arrête ou continue ? Continue pour les autres dates si récurrence
+              }
+            } else {
+              // On ne fait rien, on passe au suivant
+            }
+          } else {
+            console.error('Erreur creation:', error);
+            alert(`Erreur lors de la création : ${error.error?.message || error.message}`);
+            // Break loop on critical error?
+            if (!this.isRecurring) return; // Stop if simple
+          }
+        }
+
+        // INCREMENT DATE
+        if (this.recurrenceFrequency === 'Daily') {
+          currentDate.setDate(currentDate.getDate() + 1);
+        } else {
+          currentDate.setDate(currentDate.getDate() + 7);
+        }
+        safeGuard++;
+      } while (this.isRecurring && currentDate <= endDateLoop && safeGuard < 100);
+
+      if (countSuccess > 0) {
+        alert(
+          this.isRecurring
+            ? `${countSuccess} demandes de mouvement créées !`
+            : 'Demande de mouvement soumise !',
+        );
+        if (this.dialogRef) {
+          this.dialogRef.close(true);
+        } else {
+          this.router.navigate(['/']);
+        }
+      }
+    } catch (error: any) {
+      console.error('Erreur générale dans onSubmit:', error);
+      alert('Une erreur est survenue: ' + (error.message || ''));
+    }
+  }
+  // Helper pour obtenir les infos de sécurité d'un lieu
+  getLieuSecurityInfo(lieuId: string): { level: number; label: string; color: string } | null {
+    if (!lieuId) return null;
+    const lieu = this.lieux.find((l) => l._id === lieuId);
+    if (!lieu) return null;
+
+    // Si le lieu a un niveau défini, l'utiliser. Sinon, baser sur estSensible
+    const level = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
+
+    let label = 'Inconnu';
+    let color = '#757575'; // Gris
+
+    switch (level) {
+      case 1:
+        label = 'Stable';
+        color = '#4CAF50';
+        break; // Vert
+      case 2:
+        label = 'Modéré';
+        color = '#FFC107';
+        break; // Jaune
+      case 3:
+        label = 'Difficile';
+        color = '#FF9800';
+        break; // Orange
+      case 4:
+        label = 'Élevé';
+        color = '#F44336';
+        break; // Rouge
+      case 5:
+        label = 'Extrême';
+        color = '#212121';
+        break; // Noir
+    }
+
+    return { level, label, color };
+  }
+
+  // Calcul du niveau max du trajet (pour info utilisateur)
+  getMaxSecurityLevel(): { level: number; label: string; color: string } | null {
+    let maxLevel = 0;
+    let maxInfo = null;
+
+    // Vérifier depart et arrivée
+    const idsToCheck = [];
+    if (this.mouvement.lieuDepart) idsToCheck.push(this.mouvement.lieuDepart);
+    if (this.mouvement.lieuArrivee) idsToCheck.push(this.mouvement.lieuArrivee);
+
+    // Vérifier les étapes
+    if (this.etapes) {
+      this.etapes.forEach((e) => {
+        if (e.lieu) idsToCheck.push(e.lieu);
+      });
+    }
+
+    idsToCheck.forEach((id) => {
+      const info = this.getLieuSecurityInfo(id);
+      if (info && info.level > maxLevel) {
+        maxLevel = info.level;
+        maxInfo = info;
+      }
+    });
+
+    return maxInfo;
+  }
+}

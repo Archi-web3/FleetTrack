@@ -1,0 +1,47 @@
+name: FleetTrack CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend-nest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: './backend-nest/package-lock.json'
+    - name: Install dependencies
+      run: npm ci
+    - name: Run Linting
+      run: npm run lint
+    - name: Run Unit Tests
+      run: npm run test
+    - name: Build Backend
+      run: npm run build
+
+  frontend-checks:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: './package-lock.json'
+    - name: Install dependencies
+      run: npm ci
+    - name: Build Fleet Management App
+      run: npm run build --workspace=apps/gestion-des-deplacements
+    - name: Build E-Logbook App
+      run: npm run build --workspace=apps/e-logbook

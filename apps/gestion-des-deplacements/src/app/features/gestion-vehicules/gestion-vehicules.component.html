@@ -1,0 +1,1296 @@
+<div style="padding: 20px">
+  <div class="page-header-actions" style="justify-content: space-between; margin-bottom: 20px">
+    <h2 style="margin: 0; display: flex; align-items: center; gap: 10px">
+      <mat-icon style="color: var(--primary-color)">directions_car</mat-icon>
+      {{ 'VEHICLES.TITLE' | translate }}
+    </h2>
+    <div style="display: flex; gap: 15px; align-items: center">
+      @if (perms.hasPermission('flotte_vehicules', 'create')) {
+        <button mat-flat-button color="primary" (click)="openVehiculeModal()">
+          <mat-icon>add</mat-icon> {{ 'VEHICLES.NEW_VEHICLE' | translate | uppercase }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="table-container">
+    <div class="table-header-container">
+      <mat-form-field appearance="outline" style="margin-bottom: -22px; width: 250px">
+        <mat-label>{{ 'VEHICLES.DISPLAYED_COLUMNS' | translate }}</mat-label>
+        <mat-select multiple [(ngModel)]="displayedColumns">
+          @for (col of allColumns; track col) {
+            <mat-option [value]="col.def">{{ col.label | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="custom-search-input">
+        <mat-icon>search</mat-icon>
+        <input
+          type="text"
+          (keyup)="applyFilter($event)"
+          [placeholder]="'VEHICLES.SEARCH' | translate"
+        />
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" matSort style="width: 100%">
+        <ng-container matColumnDef="immatriculation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'VEHICLES.COL_LICENSE' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.immatriculation }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="marque">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'VEHICLES.COL_BRAND_MODEL' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.marque }} {{ element.modele }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acfCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'VEHICLES.COL_FLEET_CODE' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.acfCode || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="typePropriete">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'VEHICLES.COL_OWNERSHIP' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.typePropriete }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ 'VEHICLES.COL_STATUS' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              [ngStyle]="{
+                color: element.statut === 'En Service' ? '#10b981' : '#f59e0b',
+                'font-weight': '500',
+              }"
+            >
+              {{ 'VEHICLES.STATUS.' + (element.statut | uppercase | translate) | translate }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ 'VEHICLES.COL_ACTIONS' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="action-buttons">
+              <button
+                mat-icon-button
+                color="accent"
+                [routerLink]="['/vehicle-profile', element._id]"
+                matTooltip="Profil 360°"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              @if (perms.hasPermission('flotte_vehicules', 'edit')) {
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="openVehiculeModal(element)"
+                  matTooltip="Modifier"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
+              @if (perms.hasPermission('flotte_vehicules', 'delete')) {
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="deleteVehicule(element._id)"
+                  matTooltip="Supprimer"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
+
+<ng-template #vehiculeFormDialog>
+  <div class="custom-modal-layout" style="width: 100vw; max-width: 800px">
+    <div class="custom-modal-header">
+      <h2>
+        <mat-icon>directions_car</mat-icon>
+        {{
+          selectedVehicule
+            ? ('VEHICLES.EDIT_TITLE' | translate)
+            : ('VEHICLES.CREATE_TITLE' | translate)
+        }}
+      </h2>
+      <button class="custom-modal-close-btn" (click)="closeVehiculeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="custom-modal-body">
+      <!-- Create Form -->
+      @if (!selectedVehicule) {
+        <form (ngSubmit)="addVehicule()" #vehiculeForm="ngForm" id="createForm">
+          <div class="modal-grid-2">
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeMarque">{{ 'VEHICLES.FORM.BRAND' | translate }}:</label>
+              <input
+                type="text"
+                id="newVehiculeMarque"
+                name="newVehiculeMarque"
+                [(ngModel)]="newVehicule.marque"
+                required
+                style="width: 100%; padding: 8px"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeModele">{{ 'VEHICLES.FORM.MODEL' | translate }}:</label>
+              <input
+                type="text"
+                id="newVehiculeModele"
+                name="newVehiculeModele"
+                [(ngModel)]="newVehicule.modele"
+                required
+                style="width: 100%; padding: 8px"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label>Car Nickname:</label>
+              <input
+                type="text"
+                name="newVehiculeNickname"
+                [(ngModel)]="newVehicule.nickname"
+                style="width: 100%; padding: 8px"
+              />
+            </div>
+          </div>
+          <div class="modal-grid-2">
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeImmatriculation"
+                >{{ 'VEHICLES.FORM.PLATE' | translate }}:</label
+              >
+              <input
+                type="text"
+                id="newVehiculeImmatriculation"
+                name="newVehiculeImmatriculation"
+                [(ngModel)]="newVehicule.immatriculation"
+                required
+                style="width: 100%; padding: 8px"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeAcfCode">{{ 'VEHICLES.FORM.ACF_CODE' | translate }}:</label>
+              <input
+                type="text"
+                id="newVehiculeAcfCode"
+                name="newVehiculeAcfCode"
+                [(ngModel)]="newVehicule.acfCode"
+                style="width: 100%; padding: 8px; background-color: #e9ecef"
+                [placeholder]="'VEHICLES.FORM.ACF_CODE_HINT' | translate"
+                readonly
+                disabled
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label>Resources Code:</label>
+              <input
+                type="text"
+                name="newVehiculeResourcesCode"
+                [(ngModel)]="newVehicule.resourcesCode"
+                style="width: 100%; padding: 8px"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label>Distance Unit:</label>
+              <select
+                name="newVehiculeDistanceUnit"
+                [(ngModel)]="newVehicule.distanceUnit"
+                style="width: 100%; padding: 8px"
+              >
+                <option value="Kilometers">Kilometers</option>
+                <option value="Miles">Miles</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 10px">
+              <label>Usage Type:</label>
+              <select
+                name="newVehiculeUsageType"
+                [(ngModel)]="newVehicule.usageType"
+                style="width: 100%; padding: 8px"
+              >
+                <option value="Support only">Support only</option>
+                <option value="Activity only">Activity only</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+          </div>
+          <!-- Propriété -->
+          <div style="margin-bottom: 10px">
+            <label for="newVehiculePropriete">{{ 'VEHICLES.FORM.OWNERSHIP' | translate }}:</label>
+            <select
+              id="newVehiculePropriete"
+              name="newVehiculePropriete"
+              [(ngModel)]="newVehicule.typePropriete"
+              required
+              style="width: 100%; padding: 8px"
+            >
+              @for (type of ownershipTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+          </div>
+          <!-- Champs dynamiques -->
+          @if (newVehicule.typePropriete === 'Location') {
+            <div style="margin-bottom: 10px; border-left: 3px solid #ffc107; padding-left: 10px">
+              <div style="margin-bottom: 10px">
+                <label>{{ 'VEHICLES.FORM.RENTAL_NAME' | translate }}:</label>
+                <input
+                  type="text"
+                  name="newNomLoueur"
+                  [(ngModel)]="newVehicule.locationDetails.nomLoueur"
+                  class="form-control"
+                  style="width: 100%; padding: 8px"
+                  required
+                />
+              </div>
+              <div style="display: flex; gap: 10px">
+                <div style="flex: 1">
+                  <label>{{ 'VEHICLES.FORM.RENTAL_START' | translate }}:</label>
+                  <input
+                    type="date"
+                    name="newDateDebutLoc"
+                    [(ngModel)]="newVehicule.locationDetails.dateDebut"
+                    class="form-control"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+                <div style="flex: 1">
+                  <label>{{ 'VEHICLES.FORM.RENTAL_END' | translate }}:</label>
+                  <input
+                    type="date"
+                    name="newDateFinLoc"
+                    [(ngModel)]="newVehicule.locationDetails.dateFin"
+                    class="form-control"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+              </div>
+            </div>
+          }
+          @if (newVehicule.typePropriete === 'Interne') {
+            <div style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px">
+              <label>{{ 'VEHICLES.FORM.PURCHASE_DATE' | translate }}:</label>
+              <input
+                type="date"
+                name="newDateAchat"
+                [(ngModel)]="newVehicule.achatDetails.dateAchat"
+                class="form-control"
+                style="width: 100%; padding: 8px"
+              />
+              <div style="margin-top: 10px">
+                <label>BCF/SPO Number:</label>
+                <input
+                  type="text"
+                  name="newVehiculeBcfSpoNumber"
+                  [(ngModel)]="newVehicule.bcfSpoNumber"
+                  style="width: 100%; padding: 8px"
+                />
+              </div>
+            </div>
+          }
+          <div style="margin-bottom: 10px">
+            <label>Technical Inspection Due Date:</label>
+            <input
+              type="date"
+              name="newVehiculeTechInspection"
+              [(ngModel)]="newVehicule.technicalInspectionDueDate"
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="newVehiculeType">{{ 'VEHICLES.FORM.TYPE' | translate }}:</label>
+            <select
+              id="newVehiculeType"
+              name="newVehiculeType"
+              [(ngModel)]="newVehicule.type"
+              required
+              style="width: 100%; padding: 8px"
+            >
+              @for (type of vehicleTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>Fuel Type:</label>
+            <select
+              name="newVehiculeFuelType"
+              [(ngModel)]="newVehicule.fuelType"
+              style="width: 100%; padding: 8px"
+            >
+              <option value="Diesel">Diesel</option>
+              <option value="Essence">Essence</option>
+              <option value="Hybride">Hybride</option>
+              <option value="Electrique">Electrique</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>{{ 'VEHICLES.FORM.PERMANENT_DRIVER' | translate }}:</label>
+            <div style="display: flex; align-items: center; padding-top: 5px">
+              <input
+                type="checkbox"
+                name="newVehiculeAssigned"
+                [(ngModel)]="newVehicule.permanentlyAssigned"
+                style="transform: scale(1.2); margin-right: 10px"
+              />
+              <span>{{ 'COMMON.YES' | translate }}</span>
+            </div>
+          </div>
+          @if (newVehicule.permanentlyAssigned) {
+            <div style="margin-bottom: 10px; border-left: 3px solid #17a2b8; padding-left: 10px">
+              <label>Sélectionner le Chauffeur:</label>
+              <select
+                name="newVehiculeAssignedDriver"
+                [(ngModel)]="newVehicule.assignedDriverId"
+                style="width: 100%; padding: 8px"
+              >
+                <option [ngValue]="null">-- Choisir --</option>
+                @for (chauffeur of chauffeurs; track chauffeur) {
+                  <option [value]="chauffeur._id">
+                    {{ chauffeur.nom }} {{ chauffeur.prenom }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+          <div style="margin-bottom: 10px">
+            <label for="newVehiculeCapacite">{{ 'VEHICLES.FORM.CAPACITY' | translate }}:</label>
+            <input
+              type="number"
+              id="newVehiculeCapacite"
+              name="newVehiculeCapacite"
+              [(ngModel)]="newVehicule.capacitePassagers"
+              required
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="newVehiculeKilometrageInitial"
+              >{{ 'VEHICLES.FORM.INITIAL_KM' | translate }}:</label
+            >
+            <input
+              type="number"
+              id="newVehiculeKilometrageInitial"
+              name="newVehiculeKilometrageInitial"
+              [(ngModel)]="newVehicule.kilometrageInitial"
+              min="0"
+              style="width: 100%; padding: 8px"
+              placeholder="Ex: 120000"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>{{ 'VEHICLES.FORM.TOTAL_KM_SO_FAR' | translate }}:</label>
+            <input
+              type="number"
+              name="newVehiculeTotalKm"
+              [ngModel]="newVehicule.kilometrageInitial"
+              style="width: 100%; padding: 8px; background-color: #e9ecef"
+              readonly
+              disabled
+            />
+            <small style="color: #6c757d">({{ 'VEHICLES.FORM.TOTAL_KM_AUTO' | translate }})</small>
+          </div>
+          <!-- Sélecteurs Pays et Base pour SuperAdmin ont été retirés à la demande de l'utilisateur -->
+          <!-- Données Environnementales -->
+          <div
+            style="
+              border: 2px solid #4caf50;
+              border-radius: 8px;
+              padding: 15px;
+              margin: 15px 0;
+              background-color: #e8f5e9;
+            "
+          >
+            <h4 style="margin-top: 0; color: #2e7d32">🌱 {{ 'VEHICLES.ENV.TITLE' | translate }}</h4>
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeEmissionsCO2">{{ 'VEHICLES.ENV.CO2' | translate }}:</label>
+              <input
+                type="number"
+                id="newVehiculeEmissionsCO2"
+                name="newVehiculeEmissionsCO2"
+                [(ngModel)]="newVehicule.emissionsCO2.valeur"
+                min="0"
+                step="1"
+                style="width: 100%; padding: 8px"
+                placeholder="Ex: 120"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeEmissionsSource"
+                >{{ 'VEHICLES.ENV.SOURCE' | translate }}:</label
+              >
+              <select
+                id="newVehiculeEmissionsSource"
+                name="newVehiculeEmissionsSource"
+                [(ngModel)]="newVehicule.emissionsCO2.source"
+                style="width: 100%; padding: 8px"
+              >
+                <option value="Constructeur">
+                  🏭 {{ 'VEHICLES.ENV.CONSTRUCTOR' | translate }}
+                </option>
+                <option value="Test Manuel">🔬 {{ 'VEHICLES.ENV.MANUAL' | translate }}</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeConsommation"
+                >{{ 'VEHICLES.ENV.CONSUMPTION' | translate }}:</label
+              >
+              <input
+                type="number"
+                id="newVehiculeConsommation"
+                name="newVehiculeConsommation"
+                [(ngModel)]="newVehicule.consommation.valeur"
+                min="0"
+                step="0.1"
+                style="width: 100%; padding: 8px"
+                placeholder="Ex: 7.5"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="newVehiculeConsommationSource"
+                >{{ 'VEHICLES.ENV.SOURCE' | translate }}:</label
+              >
+              <select
+                id="newVehiculeConsommationSource"
+                name="newVehiculeConsommationSource"
+                [(ngModel)]="newVehicule.consommation.source"
+                style="width: 100%; padding: 8px"
+              >
+                <option value="Constructeur">
+                  🏭 {{ 'VEHICLES.ENV.CONSTRUCTOR' | translate }}
+                </option>
+                <option value="Test Manuel">
+                  🔬 {{ 'VEHICLES.ENV.MANUAL' | translate }} (2 pleins sur 100km)
+                </option>
+              </select>
+            </div>
+            @if (newVehicule.consommation.source === 'Test Manuel') {
+              <div style="margin-bottom: 10px">
+                <label for="newVehiculeConsommationDate"
+                  >{{ 'VEHICLES.ENV.TEST_DATE' | translate }}:</label
+                >
+                <input
+                  type="date"
+                  id="newVehiculeConsommationDate"
+                  name="newVehiculeConsommationDate"
+                  [(ngModel)]="newVehicule.consommation.dateTest"
+                  style="width: 100%; padding: 8px"
+                />
+              </div>
+            }
+          </div>
+          <!-- Assurance -->
+          <div
+            style="
+              border: 2px solid #2196f3;
+              border-radius: 8px;
+              padding: 15px;
+              margin: 15px 0;
+              background-color: #e3f2fd;
+            "
+          >
+            <h4 style="margin-top: 0; color: #1565c0">
+              🛡️ {{ 'VEHICLES.INSURANCE.TITLE' | translate }}
+            </h4>
+            <div style="margin-bottom: 10px">
+              <label>Insurance Available:</label>
+              <div style="display: flex; align-items: center; padding-top: 5px">
+                <input
+                  type="checkbox"
+                  name="newVehiculeAssuranceAvailable"
+                  [(ngModel)]="newVehicule.assurance.isAvailable"
+                  style="transform: scale(1.2); margin-right: 10px"
+                />
+                <span>Yes</span>
+              </div>
+            </div>
+            @if (newVehicule.assurance.isAvailable) {
+              <div>
+                <div style="margin-bottom: 10px">
+                  <label>Contract Number:</label>
+                  <input
+                    type="text"
+                    name="newVehiculeContractNumber"
+                    [(ngModel)]="newVehicule.assurance.contractNumber"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+                <div style="margin-bottom: 10px">
+                  <label for="newVehiculeAssureur"
+                    >{{ 'VEHICLES.INSURANCE.INSURER' | translate }}:</label
+                  >
+                  <input
+                    type="text"
+                    id="newVehiculeAssureur"
+                    name="newVehiculeAssureur"
+                    [(ngModel)]="newVehicule.assurance.nomAssureur"
+                    style="width: 100%; padding: 8px"
+                    placeholder="Nom de l'assurance"
+                  />
+                </div>
+                <div style="margin-bottom: 10px">
+                  <label for="newVehiculeDateFinAssurance"
+                    >{{ 'VEHICLES.INSURANCE.END_DATE' | translate }}:</label
+                  >
+                  <input
+                    type="date"
+                    id="newVehiculeDateFinAssurance"
+                    name="newVehiculeDateFinAssurance"
+                    [(ngModel)]="newVehicule.assurance.dateFin"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+                <div style="margin-bottom: 10px">
+                  <label for="newVehiculeCertificat"
+                    >{{ 'VEHICLES.INSURANCE.CERTIFICATE' | translate }}:</label
+                  >
+                  <input
+                    type="text"
+                    id="newVehiculeCertificat"
+                    name="newVehiculeCertificat"
+                    [(ngModel)]="newVehicule.assurance.certificatUrl"
+                    style="width: 100%; padding: 8px"
+                    placeholder="URL du document"
+                  />
+                </div>
+              </div>
+            }
+          </div>
+          <!-- INVENTAIRE EQUIPEMENTS (CREATE) -->
+          @if (newVehicule.equipementsDisplay) {
+            <div
+              style="
+                border: 2px solid #607d8b;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+                background-color: #eceff1;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 10px;
+                "
+              >
+                <h4 style="margin: 0; color: #455a64">
+                  📦 {{ 'VEHICLES.EQUIPMENT.TITLE' | translate }}
+                </h4>
+                <button
+                  type="button"
+                  (click)="addEquipment(newVehicule)"
+                  style="
+                    background-color: #4caf50;
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  +
+                </button>
+              </div>
+              <div
+                style="
+                  max-height: 300px;
+                  overflow-y: auto;
+                  background: white;
+                  padding: 10px;
+                  border: 1px solid #ccc;
+                "
+              >
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr style="background-color: #f0f0f0; text-align: left">
+                      <th style="padding: 5px; width: 40px">N°</th>
+                      <th style="padding: 5px">{{ 'VEHICLES.EQUIPMENT.NAME' | translate }}</th>
+                      <th style="padding: 5px; text-align: center; width: 60px">
+                        {{ 'VEHICLES.EQUIPMENT.PRESENT' | translate }}
+                      </th>
+                      <th style="padding: 5px; width: 40px"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of newVehicule.equipementsDisplay; track item; let i = $index) {
+                      <tr style="border-bottom: 1px solid #eee">
+                        <td style="padding: 5px">{{ item.code }}</td>
+                        <td style="padding: 5px">
+                          <input
+                            type="text"
+                            [(ngModel)]="item.name"
+                            [ngModelOptions]="{ standalone: true }"
+                            style="
+                              width: 100%;
+                              border: none;
+                              border-bottom: 1px dashed #ccc;
+                              padding: 2px;
+                              font-family: inherit;
+                            "
+                          />
+                        </td>
+                        <td style="padding: 5px; text-align: center">
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="item.isPresent"
+                            [ngModelOptions]="{ standalone: true }"
+                            (change)="updateCheckDate(item)"
+                            style="transform: scale(1.2); cursor: pointer"
+                          />
+                        </td>
+                        <td style="padding: 5px; text-align: center">
+                          <span
+                            (click)="removeEquipment(newVehicule, i)"
+                            style="cursor: pointer; color: #f44336; font-weight: bold"
+                            >🗑️</span
+                          >
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+          <div style="margin-bottom: 10px; display: flex; align-items: center">
+            <input
+              type="checkbox"
+              id="newVehiculeGps"
+              name="newVehiculeGps"
+              [(ngModel)]="newVehicule.enableGpsTracking"
+              style="margin-right: 10px"
+            />
+            <label for="newVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6"
+              >{{ 'VEHICLES.FORM.GPS' | translate }} 🛰️</label
+            >
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="newVehiculeStatut">{{ 'VEHICLES.FORM.STATUS' | translate }}:</label>
+            <select
+              id="newVehiculeStatut"
+              name="newVehiculeStatut"
+              [(ngModel)]="newVehicule.statut"
+              required
+              style="width: 100%; padding: 8px"
+            >
+              @for (s of statuses; track s) {
+                <option [value]="s">
+                  {{ 'VEHICLES.STATUS.' + (s | uppercase | translate) | translate }}
+                </option>
+              }
+            </select>
+          </div>
+        </form>
+      }
+
+      <!-- Edit Form -->
+      @if (selectedVehicule) {
+        <form (ngSubmit)="updateVehicule()" #editVehiculeForm="ngForm" id="editForm">
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeMarque">Marque:</label>
+            <input
+              type="text"
+              id="editVehiculeMarque"
+              name="editVehiculeMarque"
+              [(ngModel)]="selectedVehicule.marque"
+              required
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeModele">Modèle:</label>
+            <input
+              type="text"
+              id="editVehiculeModele"
+              name="editVehiculeModele"
+              [(ngModel)]="selectedVehicule.modele"
+              required
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>Car Nickname:</label>
+            <input
+              type="text"
+              name="editVehiculeNickname"
+              [(ngModel)]="selectedVehicule.nickname"
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeImmatriculation">Immatriculation:</label>
+            <input
+              type="text"
+              id="editVehiculeImmatriculation"
+              name="editVehiculeImmatriculation"
+              [(ngModel)]="selectedVehicule.immatriculation"
+              required
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeAcfCode">Code Interne / Flotte:</label>
+            <input
+              type="text"
+              id="editVehiculeAcfCode"
+              name="editVehiculeAcfCode"
+              [(ngModel)]="selectedVehicule.acfCode"
+              style="width: 100%; padding: 8px; background-color: #e9ecef"
+              readonly
+              disabled
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>Resources Code:</label>
+            <input
+              type="text"
+              name="editVehiculeResourcesCode"
+              [(ngModel)]="selectedVehicule.resourcesCode"
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>Distance Unit:</label>
+            <select
+              name="editVehiculeDistanceUnit"
+              [(ngModel)]="selectedVehicule.distanceUnit"
+              style="width: 100%; padding: 8px"
+            >
+              <option value="Kilometers">Kilometers</option>
+              <option value="Miles">Miles</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>Usage Type:</label>
+            <select
+              name="editVehiculeUsageType"
+              [(ngModel)]="selectedVehicule.usageType"
+              style="width: 100%; padding: 8px"
+            >
+              <option value="Support only">Support only</option>
+              <option value="Activity only">Activity only</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+          </div>
+          <!-- Propriété (Edit) -->
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculePropriete">Propriété:</label>
+            <select
+              id="editVehiculePropriete"
+              name="editVehiculePropriete"
+              [(ngModel)]="selectedVehicule.typePropriete"
+              required
+              style="width: 100%; padding: 8px"
+            >
+              @for (type of ownershipTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+          </div>
+          <!-- Champs dynamiques (Edit) -->
+          @if (selectedVehicule.typePropriete === 'Location') {
+            <div style="margin-bottom: 10px; border-left: 3px solid #ffc107; padding-left: 10px">
+              <div style="margin-bottom: 10px">
+                <label>Nom du Loueur:</label>
+                <input
+                  type="text"
+                  name="editNomLoueur"
+                  [(ngModel)]="selectedVehicule.locationDetails.nomLoueur"
+                  class="form-control"
+                  style="width: 100%; padding: 8px"
+                  required
+                />
+              </div>
+              <div style="display: flex; gap: 10px">
+                <div style="flex: 1">
+                  <label>Début Location:</label>
+                  <input
+                    type="date"
+                    name="editDateDebutLoc"
+                    [ngModel]="selectedVehicule.locationDetails.dateDebut | date: 'yyyy-MM-dd'"
+                    (ngModelChange)="selectedVehicule.locationDetails.dateDebut = $event"
+                    class="form-control"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+                <div style="flex: 1">
+                  <label>Fin Location:</label>
+                  <input
+                    type="date"
+                    name="editDateFinLoc"
+                    [ngModel]="selectedVehicule.locationDetails.dateFin | date: 'yyyy-MM-dd'"
+                    (ngModelChange)="selectedVehicule.locationDetails.dateFin = $event"
+                    class="form-control"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+              </div>
+            </div>
+          }
+          @if (selectedVehicule.typePropriete === 'Interne') {
+            <div style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px">
+              <label>Date d'achat:</label>
+              <input
+                type="date"
+                name="editDateAchat"
+                [ngModel]="selectedVehicule.achatDetails.dateAchat | date: 'yyyy-MM-dd'"
+                (ngModelChange)="selectedVehicule.achatDetails.dateAchat = $event"
+                class="form-control"
+                style="width: 100%; padding: 8px"
+              />
+              <div style="margin-top: 10px">
+                <label>BCF/SPO Number:</label>
+                <input
+                  type="text"
+                  name="editVehiculeBcfSpoNumber"
+                  [(ngModel)]="selectedVehicule.bcfSpoNumber"
+                  style="width: 100%; padding: 8px"
+                />
+              </div>
+            </div>
+          }
+          <div style="margin-bottom: 10px">
+            <label>Technical Inspection Due Date:</label>
+            <input
+              type="date"
+              name="editVehiculeTechInspection"
+              [ngModel]="selectedVehicule.technicalInspectionDueDate | date: 'yyyy-MM-dd'"
+              (ngModelChange)="selectedVehicule.technicalInspectionDueDate = $event"
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeType">Type:</label>
+            <select
+              id="editVehiculeType"
+              name="editVehiculeType"
+              [(ngModel)]="selectedVehicule.type"
+              required
+              style="width: 100%; padding: 8px"
+            >
+              @for (type of vehicleTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>Fuel Type:</label>
+            <select
+              name="editVehiculeFuelType"
+              [(ngModel)]="selectedVehicule.fuelType"
+              style="width: 100%; padding: 8px"
+            >
+              <option value="Diesel">Diesel</option>
+              <option value="Essence">Essence</option>
+              <option value="Hybride">Hybride</option>
+              <option value="Electrique">Electrique</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>{{ 'VEHICLES.FORM.PERMANENT_DRIVER' | translate }}:</label>
+            <div style="display: flex; align-items: center; padding-top: 5px">
+              <input
+                type="checkbox"
+                name="editVehiculeAssigned"
+                [(ngModel)]="selectedVehicule.permanentlyAssigned"
+                style="transform: scale(1.2); margin-right: 10px"
+              />
+              <span>{{ 'COMMON.YES' | translate }}</span>
+            </div>
+          </div>
+          @if (selectedVehicule.permanentlyAssigned) {
+            <div style="margin-bottom: 10px; border-left: 3px solid #17a2b8; padding-left: 10px">
+              <label>Sélectionner le Chauffeur:</label>
+              <select
+                name="editVehiculeAssignedDriver"
+                [(ngModel)]="selectedVehicule.assignedDriverId"
+                style="width: 100%; padding: 8px"
+              >
+                <option [ngValue]="null">-- Choisir --</option>
+                @for (chauffeur of chauffeurs; track chauffeur) {
+                  <option [value]="chauffeur._id">
+                    {{ chauffeur.nom }} {{ chauffeur.prenom }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeCapacite">Capacité Passagers:</label>
+            <input
+              type="number"
+              id="editVehiculeCapacite"
+              name="editVehiculeCapacite"
+              [(ngModel)]="selectedVehicule.capacitePassagers"
+              required
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeKilometrageInitial">Kilométrage Initial:</label>
+            <input
+              type="number"
+              id="editVehiculeKilometrageInitial"
+              name="editVehiculeKilometrageInitial"
+              [(ngModel)]="selectedVehicule.kilometrageInitial"
+              min="0"
+              style="width: 100%; padding: 8px"
+            />
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>{{ 'VEHICLES.FORM.TOTAL_KM_SO_FAR' | translate }}:</label>
+            <input
+              type="number"
+              name="editVehiculeTotalKm"
+              [ngModel]="selectedVehicule.kilometrage"
+              style="width: 100%; padding: 8px; background-color: #e9ecef"
+              readonly
+              disabled
+            />
+            <small style="color: #6c757d">({{ 'VEHICLES.FORM.TOTAL_KM_AUTO' | translate }})</small>
+          </div>
+          <!-- Données Environnementales (Edit) -->
+          <div
+            style="
+              border: 2px solid #4caf50;
+              border-radius: 8px;
+              padding: 15px;
+              margin: 15px 0;
+              background-color: #e8f5e9;
+            "
+          >
+            <h4 style="margin-top: 0; color: #2e7d32">🌱 {{ 'VEHICLES.ENV.TITLE' | translate }}</h4>
+            <div style="margin-bottom: 10px">
+              <label for="editVehiculeEmissionsCO2">Émissions CO2 (g/km):</label>
+              <input
+                type="number"
+                id="editVehiculeEmissionsCO2"
+                name="editVehiculeEmissionsCO2"
+                [(ngModel)]="selectedVehicule.emissionsCO2.valeur"
+                min="0"
+                step="1"
+                style="width: 100%; padding: 8px"
+                placeholder="Ex: 120"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="editVehiculeEmissionsSource">Source données CO2:</label>
+              <select
+                id="editVehiculeEmissionsSource"
+                name="editVehiculeEmissionsSource"
+                [(ngModel)]="selectedVehicule.emissionsCO2.source"
+                style="width: 100%; padding: 8px"
+              >
+                <option value="Constructeur">🏭 Constructeur</option>
+                <option value="Test Manuel">🔬 Test Manuel</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="editVehiculeConsommation">Consommation (L/100km):</label>
+              <input
+                type="number"
+                id="editVehiculeConsommation"
+                name="editVehiculeConsommation"
+                [(ngModel)]="selectedVehicule.consommation.valeur"
+                min="0"
+                step="0.1"
+                style="width: 100%; padding: 8px"
+                placeholder="Ex: 7.5"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="editVehiculeConsommationSource">Source données consommation:</label>
+              <select
+                id="editVehiculeConsommationSource"
+                name="editVehiculeConsommationSource"
+                [(ngModel)]="selectedVehicule.consommation.source"
+                style="width: 100%; padding: 8px"
+              >
+                <option value="Constructeur">🏭 Constructeur</option>
+                <option value="Test Manuel">🔬 Test Manuel (2 pleins sur 100km)</option>
+              </select>
+            </div>
+            @if (selectedVehicule.consommation.source === 'Test Manuel') {
+              <div style="margin-bottom: 10px">
+                <label for="editVehiculeConsommationDate">Date du test:</label>
+                <input
+                  type="date"
+                  id="editVehiculeConsommationDate"
+                  name="editVehiculeConsommationDate"
+                  [(ngModel)]="selectedVehicule.consommation.dateTest"
+                  style="width: 100%; padding: 8px"
+                />
+              </div>
+            }
+          </div>
+          <!-- Assurance (Edit) -->
+          <div
+            style="
+              border: 2px solid #2196f3;
+              border-radius: 8px;
+              padding: 15px;
+              margin: 15px 0;
+              background-color: #e3f2fd;
+            "
+          >
+            <h4 style="margin-top: 0; color: #1565c0">
+              🛡️ {{ 'VEHICLES.INSURANCE.TITLE' | translate }}
+            </h4>
+            <div style="margin-bottom: 10px">
+              <label>Insurance Available:</label>
+              <div style="display: flex; align-items: center; padding-top: 5px">
+                <input
+                  type="checkbox"
+                  name="editVehiculeAssuranceAvailable"
+                  [(ngModel)]="selectedVehicule.assurance.isAvailable"
+                  style="transform: scale(1.2); margin-right: 10px"
+                />
+                <span>Yes</span>
+              </div>
+            </div>
+            @if (selectedVehicule.assurance.isAvailable) {
+              <div>
+                <div style="margin-bottom: 10px">
+                  <label>Contract Number:</label>
+                  <input
+                    type="text"
+                    name="editVehiculeContractNumber"
+                    [(ngModel)]="selectedVehicule.assurance.contractNumber"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+                <div style="margin-bottom: 10px">
+                  <label for="editVehiculeAssureur"
+                    >{{ 'VEHICLES.INSURANCE.INSURER' | translate }}:</label
+                  >
+                  <input
+                    type="text"
+                    id="editVehiculeAssureur"
+                    name="editVehiculeAssureur"
+                    [(ngModel)]="selectedVehicule.assurance.nomAssureur"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+                <div style="margin-bottom: 10px">
+                  <label for="editVehiculeDateFinAssurance"
+                    >{{ 'VEHICLES.INSURANCE.END_DATE' | translate }}:</label
+                  >
+                  <input
+                    type="date"
+                    id="editVehiculeDateFinAssurance"
+                    name="editVehiculeDateFinAssurance"
+                    [ngModel]="selectedVehicule.assurance.dateFin | date: 'yyyy-MM-dd'"
+                    (ngModelChange)="selectedVehicule.assurance.dateFin = $event"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+                <div style="margin-bottom: 10px">
+                  <label for="editVehiculeCertificat"
+                    >{{ 'VEHICLES.INSURANCE.CERTIFICATE' | translate }}:</label
+                  >
+                  <input
+                    type="text"
+                    id="editVehiculeCertificat"
+                    name="editVehiculeCertificat"
+                    [(ngModel)]="selectedVehicule.assurance.certificatUrl"
+                    style="width: 100%; padding: 8px"
+                  />
+                </div>
+              </div>
+            }
+          </div>
+          <div style="margin-bottom: 10px; display: flex; align-items: center">
+            <input
+              type="checkbox"
+              id="editVehiculeGps"
+              name="editVehiculeGps"
+              [(ngModel)]="selectedVehicule.enableGpsTracking"
+              style="margin-right: 10px"
+            />
+            <label for="editVehiculeGps" style="cursor: pointer; font-weight: bold; color: #005fb6"
+              >{{ 'VEHICLES.FORM.GPS' | translate }} 🛰️</label
+            >
+          </div>
+          <!-- INVENTAIRE EQUIPEMENTS -->
+          @if (selectedVehicule.equipementsDisplay) {
+            <div
+              style="
+                border: 2px solid #607d8b;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+                background-color: #eceff1;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 10px;
+                "
+              >
+                <h4 style="margin: 0; color: #455a64">📦 Inventaire & Équipements de bord</h4>
+                <button
+                  type="button"
+                  (click)="addEquipment(selectedVehicule)"
+                  style="
+                    background-color: #4caf50;
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  +
+                </button>
+              </div>
+              <div
+                style="
+                  max-height: 300px;
+                  overflow-y: auto;
+                  background: white;
+                  padding: 10px;
+                  border: 1px solid #ccc;
+                "
+              >
+                <table style="width: 100%; border-collapse: collapse">
+                  <thead>
+                    <tr style="background-color: #f0f0f0; text-align: left">
+                      <th style="padding: 5px; width: 40px">N°</th>
+                      <th style="padding: 5px">{{ 'VEHICLES.EQUIPMENT.NAME' | translate }}</th>
+                      <th style="padding: 5px; text-align: center; width: 60px">
+                        {{ 'VEHICLES.EQUIPMENT.PRESENT' | translate }}
+                      </th>
+                      <th style="padding: 5px">
+                        {{ 'VEHICLES.EQUIPMENT.LAST_CHECK' | translate }}
+                      </th>
+                      <th style="padding: 5px; width: 40px"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of selectedVehicule.equipementsDisplay; track item; let i = $index) {
+                      <tr style="border-bottom: 1px solid #eee">
+                        <td style="padding: 5px">{{ item.code }}</td>
+                        <td style="padding: 5px">
+                          <input
+                            type="text"
+                            [(ngModel)]="item.name"
+                            [ngModelOptions]="{ standalone: true }"
+                            style="
+                              width: 100%;
+                              border: none;
+                              border-bottom: 1px dashed #ccc;
+                              padding: 2px;
+                              font-family: inherit;
+                            "
+                          />
+                        </td>
+                        <td style="padding: 5px; text-align: center">
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="item.isPresent"
+                            [ngModelOptions]="{ standalone: true }"
+                            (change)="updateCheckDate(item)"
+                            style="transform: scale(1.2); cursor: pointer"
+                          />
+                        </td>
+                        <td style="padding: 5px; font-size: 0.85em; color: #666">
+                          {{ item.lastChecked | date: 'dd/MM/yyyy HH:mm' }}
+                        </td>
+                        <td style="padding: 5px; text-align: center">
+                          <span
+                            (click)="removeEquipment(selectedVehicule, i)"
+                            style="cursor: pointer; color: #f44336; font-weight: bold"
+                            >🗑️</span
+                          >
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+          <div style="margin-bottom: 10px">
+            <label for="editVehiculeStatut">{{ 'VEHICLES.FORM.STATUS' | translate }}:</label>
+            <select
+              id="editVehiculeStatut"
+              name="editVehiculeStatut"
+              [(ngModel)]="selectedVehicule.statut"
+              required
+              style="width: 100%; padding: 8px"
+            >
+              @for (s of statuses; track s) {
+                <option [value]="s">
+                  {{ 'VEHICLES.STATUS.' + (s | uppercase | translate) | translate }}
+                </option>
+              }
+            </select>
+          </div>
+          <button
+            type="button"
+            (click)="selectedVehicule = null"
+            style="
+              padding: 10px 20px;
+              background-color: #6c757d;
+              color: white;
+              border: none;
+              cursor: pointer;
+            "
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+        </form>
+      }
+    </div>
+    <div class="custom-modal-footer">
+      <button class="custom-modal-btn-cancel" (click)="closeVehiculeModal()">
+        <mat-icon>close</mat-icon> {{ 'COMMON.CANCEL' | translate }}
+      </button>
+      <button
+        class="custom-modal-btn-submit"
+        type="submit"
+        [attr.form]="selectedVehicule ? 'editForm' : 'createForm'"
+      >
+        <mat-icon>check</mat-icon>
+        {{ selectedVehicule ? ('COMMON.UPDATE' | translate) : ('COMMON.ADD' | translate) }}
+      </button>
+    </div>
+  </div>
+</ng-template>

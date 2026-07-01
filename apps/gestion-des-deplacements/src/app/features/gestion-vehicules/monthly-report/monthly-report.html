@@ -1,0 +1,328 @@
+<div class="container">
+  <div class="header">
+    <h1>{{ 'MONTHLY_REPORT.TITLE' | translate }}</h1>
+    <button mat-raised-button color="primary" (click)="exportToExcel()">
+      <mat-icon>download</mat-icon> {{ 'MONTHLY_REPORT.EXPORT_EXCEL' | translate }}
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="filters-card">
+    <mat-card-content>
+      <form [formGroup]="filterForm" class="filters-form">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ 'MONTHLY_REPORT.FILTERS.START_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="pickerStart" formControlName="startDate" />
+          <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+          <mat-datepicker #pickerStart></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>{{ 'MONTHLY_REPORT.FILTERS.END_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="pickerEnd" formControlName="endDate" />
+          <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+          <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>{{ 'MONTHLY_REPORT.FILTERS.VEHICLE' | translate }}</mat-label>
+          <mat-select formControlName="vehicleId">
+            <mat-option value="all">{{
+              'MONTHLY_REPORT.FILTERS.ALL_VEHICLES' | translate
+            }}</mat-option>
+            @for (vehicle of vehicles; track vehicle) {
+              <mat-option [value]="vehicle._id">
+                {{ vehicle.immatriculation }} - {{ vehicle.marque }} {{ vehicle.modele }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="accent" (click)="generateReport()">
+          <mat-icon>refresh</mat-icon> {{ 'MONTHLY_REPORT.FILTERS.GENERATE_BTN' | translate }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Report Table -->
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!-- Month -->
+      <ng-container matColumnDef="month">
+        <th mat-header-cell *matHeaderCellDef>{{ 'MONTHLY_REPORT.HEADERS.MONTH' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.month }}</td>
+      </ng-container>
+
+      <!-- ACF Code -->
+      <ng-container matColumnDef="acfCode">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.ACF_CODE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.acfCode }}</td>
+      </ng-container>
+
+      <!-- Base -->
+      <ng-container matColumnDef="base">
+        <th mat-header-cell *matHeaderCellDef>{{ 'MONTHLY_REPORT.HEADERS.BASE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.base }}</td>
+      </ng-container>
+
+      <!-- Owner -->
+      <ng-container matColumnDef="owner">
+        <th mat-header-cell *matHeaderCellDef>{{ 'MONTHLY_REPORT.HEADERS.OWNER' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.owner }}</td>
+      </ng-container>
+
+      <!-- Category -->
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.CATEGORY' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+      </ng-container>
+
+      <!-- Type -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>{{ 'MONTHLY_REPORT.HEADERS.TYPE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+      </ng-container>
+
+      <!-- Start Mileage -->
+      <ng-container matColumnDef="startMileage">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.START_KMS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.startMileage | number }}</td>
+      </ng-container>
+
+      <!-- End Mileage -->
+      <ng-container matColumnDef="endMileage">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.END_KMS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.endMileage | number }}</td>
+      </ng-container>
+
+      <!-- Total KM -->
+      <ng-container matColumnDef="totalKm">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.TOTAL_KM' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.totalKm | number }}</td>
+      </ng-container>
+
+      <!-- Fuel Type -->
+      <ng-container matColumnDef="fuelType">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.FUEL_TYPE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.fuelType }}</td>
+      </ng-container>
+
+      <!-- Fuel Quantity -->
+      <ng-container matColumnDef="fuelQuantity">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.FUEL_QTY' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.fuelQuantity | number: '1.1-1' }}</td>
+      </ng-container>
+
+      <!-- CO2 Emissions -->
+      <ng-container matColumnDef="co2Emissions">
+        <th mat-header-cell *matHeaderCellDef style="background-color: #e8f5e9">
+          {{ 'MONTHLY_REPORT.HEADERS.CO2' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" style="background-color: #f1f8e9">
+          {{ element.co2Emissions | number: '1.2-2' }}
+        </td>
+      </ng-container>
+
+      <!-- Fuel Cost -->
+      <ng-container matColumnDef="fuelCost">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.FUEL_COST' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.fuelCost | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Consumption -->
+      <ng-container matColumnDef="consumption">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.CONSUMPTION' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.consumption | number: '1.1-1' }}</td>
+      </ng-container>
+
+      <!-- Rental Cost -->
+      <ng-container matColumnDef="rentalCost">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.RENTAL_COST' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.rentalCost | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Driver Included -->
+      <ng-container matColumnDef="driverIncluded">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.DRIVER_INCLUDED' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.driverIncluded ? 'Oui' : 'Non' }}</td>
+      </ng-container>
+
+      <!-- Maintenance Cost -->
+      <ng-container matColumnDef="maintenanceCost">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.MAINT_COST' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.maintenanceCost | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Repair Cost -->
+      <ng-container matColumnDef="repairCost">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.REPAIR_COST' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.repairCost | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Depreciation Value -->
+      <ng-container matColumnDef="depreciationValue">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.DEPRECIATION_VAL' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.depreciationValue | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Depreciation Allocation -->
+      <ng-container matColumnDef="depreciationAllocation">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.DEPRECIATION_ALLOC' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.depreciationAllocation | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Insurance Cost -->
+      <ng-container matColumnDef="insuranceCost">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.INSURANCE_COST' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.insuranceCost | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Other Costs -->
+      <ng-container matColumnDef="otherCosts">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.OTHER_COSTS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.otherCosts | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Total Cost -->
+      <ng-container matColumnDef="totalCost">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.TOTAL_COST' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.totalCost | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Cost per KM -->
+      <ng-container matColumnDef="costPerKm">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.COST_PER_KM' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.costPerKm | currency: 'EUR' : 'symbol' : '1.2-2' }}
+        </td>
+      </ng-container>
+
+      <!-- Currency -->
+      <ng-container matColumnDef="currency">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.CURRENCY' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.currency }}</td>
+      </ng-container>
+
+      <!-- Total EUR -->
+      <ng-container matColumnDef="totalEUR">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.TOTAL_EUR' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.totalEUR | currency: 'EUR' : 'symbol' : '1.0-0' }}
+        </td>
+      </ng-container>
+
+      <!-- Completion Rate -->
+      <ng-container matColumnDef="completionRate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'MONTHLY_REPORT.HEADERS.COMPLETION_RATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.completionRate | percent: '1.0-0' }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+
+  <!-- Bilan Environnemental -->
+  @if (dataSource.length > 0) {
+    <mat-card style="margin-top: 30px; border-left: 5px solid #4caf50">
+      <mat-card-header>
+        <mat-card-title style="color: #2e7d32">{{
+          'MONTHLY_REPORT.ENV.TITLE' | translate
+        }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p style="margin: 10px 0">
+          <strong>{{ 'MONTHLY_REPORT.ENV.AVAILABLE_DATA' | translate }}</strong>
+          {{ 'MONTHLY_REPORT.ENV.AVAILABLE_DATA_DESC' | translate }}
+        </p>
+        <p style="margin: 10px 0; font-size: 12px; color: #666">
+          <strong>{{ 'MONTHLY_REPORT.ENV.FORMULAS' | translate }}</strong
+          ><br />
+          • {{ 'MONTHLY_REPORT.ENV.CO2_FORMULA' | translate }}<br />
+          • {{ 'MONTHLY_REPORT.ENV.FUEL_FORMULA' | translate }}
+        </p>
+        <div style="display: flex; gap: 20px; margin-top: 15px">
+          <div style="flex: 1; padding: 15px; background-color: #e8f5e9; border-radius: 8px">
+            <div style="font-size: 12px; color: #2e7d32; margin-bottom: 5px">
+              {{ 'MONTHLY_REPORT.ENV.CONSTRUCTOR_DATA' | translate }}
+            </div>
+            <div style="font-size: 11px; color: #666">
+              {{ 'MONTHLY_REPORT.ENV.CONSTRUCTOR_DATA_DESC' | translate }}
+            </div>
+          </div>
+          <div style="flex: 1; padding: 15px; background-color: #e3f2fd; border-radius: 8px">
+            <div style="font-size: 12px; color: #1976d2; margin-bottom: 5px">
+              {{ 'MONTHLY_REPORT.ENV.MANUAL_TEST' | translate }}
+            </div>
+            <div style="font-size: 11px; color: #666">
+              {{ 'MONTHLY_REPORT.ENV.MANUAL_TEST_DESC' | translate }}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

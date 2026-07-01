@@ -1,0 +1,565 @@
+@if (loading) {
+  <div class="profile-container">
+    <div class="loading-state">
+      <mat-icon class="spin">autorenew</mat-icon>
+      <p>Loading vehicle profile...</p>
+    </div>
+  </div>
+}
+
+@if (!loading && vehicle) {
+  <div class="profile-container">
+    <!-- Header Section -->
+    <div class="profile-header">
+      <div class="header-content">
+        <button mat-icon-button routerLink="/gestion-vehicules" class="back-btn">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="vehicle-title-container">
+          <div class="title-row">
+            <h1>{{ vehicle.marque }} {{ vehicle.modele }}</h1>
+            <span class="status-badge" [ngClass]="{ active: vehicle.statut === 'En Service' }">
+              {{ vehicle.statut }}
+            </span>
+          </div>
+          <p class="subtitle">
+            <mat-icon>pin</mat-icon> {{ vehicle.immatriculation }}
+            <mat-divider vertical></mat-divider>
+            <mat-icon>qr_code_2</mat-icon> {{ vehicle.acfCode || 'N/A' }}
+            <mat-divider vertical></mat-divider>
+            <mat-icon>business</mat-icon> {{ vehicle.typePropriete }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- Tabs Section -->
+    <mat-tab-group class="profile-tabs" animationDuration="200ms" dynamicHeight>
+      <!-- 1. ID -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">badge</mat-icon> Identité
+        </ng-template>
+        <div class="tab-content">
+          <div class="card-grid">
+            <!-- Identité Visuelle / Base -->
+            <mat-card class="info-card primary-card">
+              <mat-card-header>
+                <div mat-card-avatar class="card-icon"><mat-icon>directions_car</mat-icon></div>
+                <mat-card-title>Vehicle Identity</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="info-list">
+                  <div class="info-item">
+                    <span class="label">Brand</span><span class="value">{{ vehicle.marque }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Model</span><span class="value">{{ vehicle.modele }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Car Nickname</span
+                    ><span class="value">{{ vehicle.nickname || '-' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Plate number</span
+                    ><span class="value font-mono">{{ vehicle.immatriculation }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <!-- Operationnel -->
+            <mat-card class="info-card">
+              <mat-card-header>
+                <div mat-card-avatar class="card-icon"><mat-icon>assignment</mat-icon></div>
+                <mat-card-title>Operational Details</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="info-list">
+                  <div class="info-item">
+                    <span class="label">Resources code</span
+                    ><span class="value">{{ vehicle.resourcesCode || '-' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Vehicle Ownership</span
+                    ><span class="value">{{ vehicle.typePropriete }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Is it permanently assigned?</span
+                    ><span class="value">{{ vehicle.permanentlyAssigned ? 'Yes' : 'No' }}</span>
+                  </div>
+                  @if (vehicle.permanentlyAssigned) {
+                    <div class="info-item">
+                      <span class="label">Assigned Driver</span
+                      ><span class="value"
+                        >{{ vehicle.assignedDriverId?.nom || '-' }}
+                        {{ vehicle.assignedDriverId?.prenom || '' }}</span
+                      >
+                    </div>
+                  }
+                  <div class="info-item">
+                    <span class="label">Support or Activity Car</span
+                    ><span class="value">{{ vehicle.usageType || '-' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Distance Unit</span
+                    ><span class="value">{{ vehicle.distanceUnit || 'Kilometers' }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <!-- Technique & Achat -->
+            <mat-card class="info-card">
+              <mat-card-header>
+                <div mat-card-avatar class="card-icon"><mat-icon>build</mat-icon></div>
+                <mat-card-title>Technical & Purchase</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="info-list">
+                  <div class="info-item">
+                    <span class="label">Fuel Type</span
+                    ><span class="value">{{ vehicle.fuelType || '-' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Purchase Date</span
+                    ><span class="value">{{
+                      (vehicle.achatDetails?.dateAchat | date: 'mediumDate') || '-'
+                    }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">BCF/SPO Number</span
+                    ><span class="value">{{ vehicle.bcfSpoNumber || '-' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Total Kilometers</span
+                    ><span class="value"
+                      >{{ vehicle.kilometrage || vehicle.kilometrageInitial || 0 }} km</span
+                    >
+                  </div>
+                  <div class="info-item">
+                    <span class="label">Tech. Inspection Due</span
+                    ><span class="value text-warn">{{
+                      (vehicle.technicalInspectionDueDate | date: 'mediumDate') || '-'
+                    }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <!-- Assurance -->
+            <mat-card class="info-card">
+              <mat-card-header>
+                <div mat-card-avatar class="card-icon"><mat-icon>shield</mat-icon></div>
+                <mat-card-title>Insurance</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="info-list">
+                  <div class="info-item">
+                    <span class="label">Insurance Available</span
+                    ><span class="value">{{ vehicle.assurance?.isAvailable ? 'Yes' : 'No' }}</span>
+                  </div>
+                  @if (vehicle.assurance?.isAvailable) {
+                    <div class="info-item">
+                      <span class="label">Contract Number</span
+                      ><span class="value">{{ vehicle.assurance?.contractNumber || '-' }}</span>
+                    </div>
+                  }
+                  @if (vehicle.assurance?.isAvailable) {
+                    <div class="info-item">
+                      <span class="label">Insurer</span
+                      ><span class="value">{{ vehicle.assurance?.nomAssureur || '-' }}</span>
+                    </div>
+                  }
+                  @if (vehicle.assurance?.isAvailable) {
+                    <div class="info-item">
+                      <span class="label">End Date</span
+                      ><span class="value">{{
+                        (vehicle.assurance?.dateFin | date: 'mediumDate') || '-'
+                      }}</span>
+                    </div>
+                  }
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+      <!-- 2. Routine & Checks -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">fact_check</mat-icon> Inspections Routines
+        </ng-template>
+        <div class="tab-content">
+          <div
+            class="action-bar mt-3"
+            style="display: flex; justify-content: flex-end; margin-bottom: 16px"
+          >
+            <a mat-stroked-button color="primary" routerLink="/gestion-maintenance">
+              <mat-icon>launch</mat-icon> Gérer les Checklists Hebdo
+            </a>
+          </div>
+          @if (routineChecks.length > 0) {
+            <table mat-table [dataSource]="routineChecks" class="mat-elevation-z1 w-100 mt-3">
+              <ng-container matColumnDef="semaine">
+                <th mat-header-cell *matHeaderCellDef>Semaine / Année</th>
+                <td mat-cell *matCellDef="let row">Semaine {{ row.semaine }} - {{ row.annee }}</td>
+              </ng-container>
+              <ng-container matColumnDef="chauffeur">
+                <th mat-header-cell *matHeaderCellDef>Chauffeur</th>
+                <td mat-cell *matCellDef="let row">{{ row.chauffeur?.nom || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="tauxCompletion">
+                <th mat-header-cell *matHeaderCellDef>Taux de complétion</th>
+                <td mat-cell *matCellDef="let row">{{ row.tauxCompletion }}%</td>
+              </ng-container>
+              <ng-container matColumnDef="dateCompletion">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ (row.dateCompletion | date: 'mediumDate') || '-' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="routineColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: routineColumns"></tr>
+            </table>
+          }
+          @if (routineChecks.length === 0) {
+            <div class="empty-state">
+              <mat-icon>engineering</mat-icon>
+              <h3>Aucune inspection</h3>
+              <p>L'historique des inspections s'affichera ici.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+      <!-- 3. Maintenance & Repair -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">handyman</mat-icon> Maintenance & Réparations
+        </ng-template>
+        <div class="tab-content">
+          <div
+            class="action-bar mt-3"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 16px;
+            "
+          >
+            <button mat-raised-button color="primary" (click)="openAddMaintenanceModal()">
+              <mat-icon>add</mat-icon> Ajouter Maintenance / Réparation
+            </button>
+            <a mat-stroked-button color="primary" routerLink="/suivi-maintenance">
+              <mat-icon>launch</mat-icon> Aller au Suivi de Maintenance
+            </a>
+          </div>
+          @if (maintenances.length > 0) {
+            <table mat-table [dataSource]="maintenances" class="mat-elevation-z1 w-100">
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let row">{{ row.date | date: 'mediumDate' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let row">{{ row.type }}</td>
+              </ng-container>
+              <ng-container matColumnDef="mileage">
+                <th mat-header-cell *matHeaderCellDef>Kilométrage</th>
+                <td mat-cell *matCellDef="let row">{{ row.mileage }} km</td>
+              </ng-container>
+              <ng-container matColumnDef="garage">
+                <th mat-header-cell *matHeaderCellDef>Garage</th>
+                <td mat-cell *matCellDef="let row">{{ row.garage }}</td>
+              </ng-container>
+              <ng-container matColumnDef="cost">
+                <th mat-header-cell *matHeaderCellDef>Coût</th>
+                <td mat-cell *matCellDef="let row">{{ row.cost }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="maintenanceColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: maintenanceColumns"></tr>
+            </table>
+          }
+          @if (maintenances.length === 0) {
+            <div class="empty-state">
+              <mat-icon>build_circle</mat-icon>
+              <h3>Aucune maintenance</h3>
+              <p>L'historique des services s'affichera ici.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+      <!-- 4. Logbook -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">menu_book</mat-icon> Carnet de bord
+        </ng-template>
+        <div class="tab-content">
+          <div
+            class="action-bar mt-3"
+            style="display: flex; justify-content: flex-end; margin-bottom: 16px"
+          >
+            <a mat-stroked-button color="primary" routerLink="/logbook">
+              <mat-icon>launch</mat-icon> Aller au Logbook
+            </a>
+          </div>
+          @if (logbookTrips.length > 0) {
+            <table mat-table [dataSource]="logbookTrips" class="mat-elevation-z1 w-100 mt-3">
+              <ng-container matColumnDef="dateDepart">
+                <th mat-header-cell *matHeaderCellDef>Date Départ</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.realDepartureTime || row.dateDepart | date: 'mediumDate' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="chauffeur">
+                <th mat-header-cell *matHeaderCellDef>Chauffeur</th>
+                <td mat-cell *matCellDef="let row">{{ row.chauffeur?.nom || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="objectif">
+                <th mat-header-cell *matHeaderCellDef>Objectif</th>
+                <td mat-cell *matCellDef="let row">{{ row.objectif || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="startMileage">
+                <th mat-header-cell *matHeaderCellDef>Km Départ</th>
+                <td mat-cell *matCellDef="let row">{{ row.startMileage || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="endMileage">
+                <th mat-header-cell *matHeaderCellDef>Km Arrivée</th>
+                <td mat-cell *matCellDef="let row">{{ row.endMileage || '-' }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="logbookColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: logbookColumns"></tr>
+            </table>
+          }
+          @if (logbookTrips.length === 0) {
+            <div class="empty-state">
+              <mat-icon>library_books</mat-icon>
+              <h3>Aucun trajet</h3>
+              <p>Les trajets terminés s'afficheront ici.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+      <!-- 5. Trip Requests -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">route</mat-icon> Demandes de Trajet
+        </ng-template>
+        <div class="tab-content">
+          <div
+            class="action-bar mt-3"
+            style="display: flex; justify-content: flex-end; margin-bottom: 16px"
+          >
+            <a mat-stroked-button color="primary" routerLink="/mes-mouvements">
+              <mat-icon>launch</mat-icon> Aller aux Demandes de Mouvement
+            </a>
+          </div>
+          @if (tripRequests.length > 0) {
+            <table mat-table [dataSource]="tripRequests" class="mat-elevation-z1 w-100 mt-3">
+              <ng-container matColumnDef="dateDepart">
+                <th mat-header-cell *matHeaderCellDef>Date Prévue</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.dateDepart || row.stops?.[0]?.dateDepart | date: 'medium' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="chauffeur">
+                <th mat-header-cell *matHeaderCellDef>Chauffeur</th>
+                <td mat-cell *matCellDef="let row">{{ row.chauffeur?.nom || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="objectif">
+                <th mat-header-cell *matHeaderCellDef>Objectif</th>
+                <td mat-cell *matCellDef="let row">{{ row.objectif || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="statut">
+                <th mat-header-cell *matHeaderCellDef>Statut</th>
+                <td mat-cell *matCellDef="let row">
+                  <span class="status-badge">{{ row.statut }}</span>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="tripRequestsColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: tripRequestsColumns"></tr>
+            </table>
+          }
+          @if (tripRequests.length === 0) {
+            <div class="empty-state">
+              <mat-icon>map</mat-icon>
+              <h3>Aucune demande</h3>
+              <p>Les demandes de trajet en attente ou prévues s'afficheront ici.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+      <!-- 6. Fuel History -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">local_gas_station</mat-icon> Historique Carburant
+        </ng-template>
+        <div class="tab-content">
+          @if (fuels.length > 0) {
+            <table mat-table [dataSource]="fuels" class="mat-elevation-z1 w-100 mt-3">
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let row">{{ row.date | date: 'mediumDate' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantité (L)</th>
+                <td mat-cell *matCellDef="let row">{{ row.quantity }}</td>
+              </ng-container>
+              <ng-container matColumnDef="mileage">
+                <th mat-header-cell *matHeaderCellDef>Kilométrage</th>
+                <td mat-cell *matCellDef="let row">{{ row.mileage }} km</td>
+              </ng-container>
+              <ng-container matColumnDef="cost">
+                <th mat-header-cell *matHeaderCellDef>Coût</th>
+                <td mat-cell *matCellDef="let row">{{ row.price || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="consumption">
+                <th mat-header-cell *matHeaderCellDef>Conso Calc.</th>
+                <td mat-cell *matCellDef="let row">
+                  <span [class.text-warn]="row.isOverConsumption">
+                    {{ row.calculatedConsumption ? row.calculatedConsumption + ' L/100km' : '-' }}
+                  </span>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="fuelColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: fuelColumns"></tr>
+            </table>
+          }
+          @if (fuels.length === 0) {
+            <div class="empty-state">
+              <mat-icon>ev_station</mat-icon>
+              <h3>Aucun historique</h3>
+              <p>L'historique de carburant s'affichera ici.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+      <!-- 7. Attachment -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">attach_file</mat-icon> Pièces Jointes
+        </ng-template>
+        <div class="tab-content empty-state">
+          <mat-icon>folder_open</mat-icon>
+          <h3>En construction</h3>
+          <p>Les documents du véhicule seront affichés ici.</p>
+        </div>
+      </mat-tab>
+      <!-- 8. Problem -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">report_problem</mat-icon> Problèmes
+        </ng-template>
+        <div class="tab-content">
+          @if (incidents.length > 0) {
+            <table mat-table [dataSource]="incidents" class="mat-elevation-z1 w-100 mt-3">
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let row">{{ row.date | date: 'mediumDate' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let row">{{ row.type }}</td>
+              </ng-container>
+              <ng-container matColumnDef="severity">
+                <th mat-header-cell *matHeaderCellDef>Sévérité</th>
+                <td mat-cell *matCellDef="let row">{{ row.severity }}</td>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let row">{{ row.description || '-' }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="incidentColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: incidentColumns"></tr>
+            </table>
+          }
+          @if (incidents.length === 0) {
+            <div class="empty-state">
+              <mat-icon>warning</mat-icon>
+              <h3>Aucun problème</h3>
+              <p>Les problèmes signalés s'afficheront ici.</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+}
+
+<!-- Add Maintenance Modal -->
+<ng-template #maintenanceModal>
+  <h2 mat-dialog-title>Ajouter Maintenance / Réparation</h2>
+  <mat-dialog-content>
+    <form style="display: flex; flex-direction: column; gap: 16px; padding-top: 10px">
+      @if (scheduledService) {
+        <div
+          style="
+            background-color: #e0f2fe;
+            padding: 12px;
+            border-radius: 4px;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          "
+        >
+          <mat-icon>info</mat-icon>
+          <span
+            >Prochain service planifié :
+            <strong>Service {{ scheduledService.typeService }}</strong> (prévu à
+            {{ scheduledService.kilometragePrevu }} km)</span
+          >
+        </div>
+      }
+
+      <mat-form-field appearance="fill">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" [(ngModel)]="newMaintenance.date" name="date" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Type (Dérogation)</mat-label>
+        <mat-select [(ngModel)]="newMaintenance.type" name="type">
+          @if (scheduledService) {
+            <mat-option [value]="'Service ' + scheduledService.typeService">
+              Valider : Service {{ scheduledService.typeService }}
+            </mat-option>
+          }
+          <mat-optgroup label="Services configurés">
+            @for (tmpl of availableTemplates; track tmpl) {
+              <mat-option [value]="tmpl.nom"> {{ tmpl.nom }} ({{ tmpl.type }}) </mat-option>
+            }
+          </mat-optgroup>
+          <mat-option value="Autre">Autre (Non configuré)</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Kilométrage</mat-label>
+        <input matInput type="number" [(ngModel)]="newMaintenance.mileage" name="mileage" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Garage</mat-label>
+        <input matInput type="text" [(ngModel)]="newMaintenance.garage" name="garage" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Coût</mat-label>
+        <input matInput type="number" [(ngModel)]="newMaintenance.cost" name="cost" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Commentaires</mat-label>
+        <textarea
+          matInput
+          [(ngModel)]="newMaintenance.comments"
+          name="comments"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Annuler</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="saveMaintenance()"
+      [disabled]="!newMaintenance.date || !newMaintenance.type || !newMaintenance.mileage"
+    >
+      Enregistrer
+    </button>
+  </mat-dialog-actions>
+</ng-template>

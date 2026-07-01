@@ -1,0 +1,274 @@
+<div class="trip-container">
+  <mat-card class="trip-card">
+    <mat-card-header>
+      <mat-card-title>{{
+        tripStarted
+          ? ('ACTIVE_TRIP.TITLE_ONGOING' | translate)
+          : ('ACTIVE_TRIP.TITLE_NEW' | translate)
+      }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- START TRIP FORM -->
+      @if (!tripStarted) {
+        <div>
+          <form [formGroup]="startForm">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ 'ACTIVE_TRIP.FORM.START_KM' | translate }}</mat-label>
+              <input matInput type="number" formControlName="startMileage" />
+              @if (lastMileage > 0) {
+                <mat-hint
+                  >{{ 'ACTIVE_TRIP.FORM.LAST_KM_HINT' | translate }} {{ lastMileage }} km</mat-hint
+                >
+              }
+              @if (startForm.get('startMileage')?.hasError('required')) {
+                <mat-error>
+                  {{ 'ACTIVE_TRIP.ERRORS.START_KM_REQUIRED' | translate }}
+                </mat-error>
+              }
+              @if (startForm.get('startMileage')?.hasError('mileageTooLow')) {
+                <mat-error>
+                  {{ 'ACTIVE_TRIP.ERRORS.START_KM_LOWER' | translate }}
+                </mat-error>
+              }
+              @if (startForm.get('startMileage')?.hasError('min')) {
+                <mat-error>
+                  {{ 'ACTIVE_TRIP.ERRORS.START_KM_LOWER' | translate }}
+                </mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ 'ACTIVE_TRIP.FORM.DEPARTURE_PLACE' | translate }}</mat-label>
+              <mat-select formControlName="departurePlaceId">
+                @for (lieu of lieux; track lieu) {
+                  <mat-option [value]="lieu._id">
+                    {{ lieu.nom }}
+                  </mat-option>
+                }
+              </mat-select>
+              <mat-error>{{ 'ACTIVE_TRIP.ERRORS.DEPARTURE_REQUIRED' | translate }}</mat-error>
+            </mat-form-field>
+            <!-- NOUVEAU: Option ou départ GPS -->
+            <div style="margin-bottom: 15px; display: flex; align-items: center">
+              <input
+                type="checkbox"
+                [checked]="useGpsStart"
+                (change)="toggleGpsStart()"
+                id="gpsStart"
+              />
+              <label for="gpsStart" style="margin-left: 8px">{{
+                'ACTIVE_TRIP.FORM.GPS_START' | translate
+              }}</label>
+            </div>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ 'ACTIVE_TRIP.FORM.PURPOSE' | translate }}</mat-label>
+              <input matInput formControlName="purpose" />
+              <mat-error>{{ 'ACTIVE_TRIP.ERRORS.PURPOSE_REQUIRED' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ 'ACTIVE_TRIP.FORM.PASSENGERS' | translate }}</mat-label>
+              <mat-select formControlName="passengerIds" multiple>
+                @for (user of users; track user) {
+                  <mat-option [value]="user._id">
+                    {{ user.nom }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <div class="actions">
+              <button mat-raised-button color="warn" type="button" (click)="cancel()">
+                {{ 'COMMON.CANCEL' | translate }}
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="startTrip()"
+                [disabled]="startForm.invalid || startForm.pending"
+              >
+                @if (!startForm.pending) {
+                  <span>{{ 'ACTIVE_TRIP.FORM.BTN_START' | translate }}</span>
+                }
+                @if (startForm.pending) {
+                  <span>{{ 'ACTIVE_TRIP.FORM.BTN_VALIDATING' | translate }}</span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      <!-- STOP TRIP FORM -->
+      @if (tripStarted) {
+        <div>
+          <div class="info-row">
+            <mat-icon>schedule</mat-icon>
+            <span
+              >{{ 'ACTIVE_TRIP.ONGOING.START_TIME' | translate }}
+              {{ startTime | date: 'HH:mm' }}</span
+            >
+            <!-- NOUVEAU: Indicateur GPS -->
+            @if (gpsEnabled) {
+              <span
+                style="margin-left: 15px; display: flex; align-items: center; font-size: 0.9em"
+                [ngStyle]="{
+                  color:
+                    gpsSignalStatus === 'good'
+                      ? '#4CAF50'
+                      : gpsSignalStatus === 'searching'
+                        ? '#FF9800'
+                        : '#f44336',
+                }"
+              >
+                <mat-icon style="font-size: 18px; margin-right: 4px; height: 18px; width: 18px"
+                  >satellite_alt</mat-icon
+                >
+                {{
+                  gpsSignalStatus === 'good'
+                    ? ('ACTIVE_TRIP.ONGOING.GPS_OK' | translate)
+                    : gpsSignalStatus === 'searching'
+                      ? ('ACTIVE_TRIP.ONGOING.GPS_SEARCH' | translate)
+                      : ('ACTIVE_TRIP.ONGOING.GPS_WEAK' | translate)
+                }}
+              </span>
+            }
+          </div>
+          <!-- NOUVEAU: Bouton d'annulation d'urgence -->
+          <div style="text-align: right; margin-bottom: 10px">
+            <button mat-button color="warn" (click)="abortTrip()" style="font-size: 0.8em">
+              <mat-icon inline="true">cancel</mat-icon>
+              {{ 'ACTIVE_TRIP.ONGOING.ABORT_BTN' | translate }}
+            </button>
+          </div>
+          <form [formGroup]="endForm">
+            <!-- NOUVEAU: Option arrivée GPS -->
+            <div style="margin-bottom: 15px; display: flex; align-items: center">
+              <input type="checkbox" [checked]="useGpsEnd" (change)="toggleGpsEnd()" id="gpsEnd" />
+              <label for="gpsEnd" style="margin-left: 8px">{{
+                'ACTIVE_TRIP.ONGOING.GPS_END' | translate
+              }}</label>
+            </div>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ 'ACTIVE_TRIP.ONGOING.ARRIVAL_PLACE' | translate }}</mat-label>
+              <mat-select formControlName="arrivalPlaceId">
+                @for (lieu of lieux; track lieu) {
+                  <mat-option [value]="lieu._id">
+                    {{ lieu.nom }}
+                  </mat-option>
+                }
+              </mat-select>
+              <mat-error>{{ 'ACTIVE_TRIP.ERRORS.ARRIVAL_REQUIRED' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>{{ 'ACTIVE_TRIP.ONGOING.END_KM' | translate }}</mat-label>
+              <input matInput type="number" formControlName="endMileage" />
+              <mat-hint
+                >{{ 'ACTIVE_TRIP.FORM.LAST_KM_HINT' | translate }}
+                {{ startForm.get('startMileage')?.value }} km</mat-hint
+              >
+              @if (endForm.get('endMileage')?.hasError('required')) {
+                <mat-error>
+                  {{ 'ACTIVE_TRIP.ERRORS.START_KM_REQUIRED' | translate }}
+                </mat-error>
+              }
+              @if (endForm.get('endMileage')?.hasError('mileageTooLow')) {
+                <mat-error>
+                  {{ 'ACTIVE_TRIP.ERRORS.END_KM_LOWER' | translate }}
+                </mat-error>
+              }
+              @if (endForm.get('endMileage')?.hasError('endLessThanStart')) {
+                <mat-error>
+                  {{ 'ACTIVE_TRIP.ERRORS.END_KM_LOWER' | translate }}
+                </mat-error>
+              }
+            </mat-form-field>
+            <!-- NOUVEAU: Section Photos -->
+            <div class="photos-section">
+              <h3>{{ 'ACTIVE_TRIP.ONGOING.PHOTOS.TITLE' | translate }}</h3>
+              <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="takePhoto()"
+                class="photo-btn"
+              >
+                <mat-icon>photo_camera</mat-icon>
+                {{ 'ACTIVE_TRIP.ONGOING.PHOTOS.BTN' | translate }}
+              </button>
+              <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                capture="environment"
+                (change)="onPhotoSelected($event)"
+                style="display: none"
+              />
+              @if (photos.length > 0) {
+                <div class="photo-grid">
+                  @for (photo of photos; track photo; let i = $index) {
+                    <div class="photo-item">
+                      <img [src]="photo.url || photo.localUrl" [alt]="'Photo ' + (i + 1)" />
+                      <button
+                        mat-icon-button
+                        class="delete-btn"
+                        (click)="removePhoto(i)"
+                        type="button"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                      @if (!photo.synced) {
+                        <mat-icon
+                          class="sync-icon"
+                          [matTooltip]="'FUEL.TOOLTIPS.WAITING_SYNC' | translate"
+                        >
+                          cloud_upload
+                        </mat-icon>
+                      }
+                      @if (photo.synced) {
+                        <mat-icon
+                          class="synced-icon"
+                          [matTooltip]="'FUEL.TOOLTIPS.SYNCED' | translate"
+                        >
+                          cloud_done
+                        </mat-icon>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              @if (getPendingUploadsCount() > 0) {
+                <div class="upload-status">
+                  <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                  <span
+                    >{{ 'ACTIVE_TRIP.ONGOING.PHOTOS.UPLOADING' | translate }} ({{
+                      getPendingUploadsCount()
+                    }}
+                    photo(s))</span
+                  >
+                </div>
+              }
+            </div>
+            <div class="actions">
+              <button mat-stroked-button type="button" (click)="returnToMenu()">
+                {{ 'ACTIVE_TRIP.ONGOING.BTN_MENU' | translate }}
+              </button>
+              <button
+                mat-raised-button
+                color="accent"
+                type="button"
+                (click)="stopTrip()"
+                [disabled]="endForm.invalid || endForm.pending"
+              >
+                @if (!endForm.pending) {
+                  <span>{{ 'ACTIVE_TRIP.ONGOING.BTN_FINISH' | translate }}</span>
+                }
+                @if (endForm.pending) {
+                  <span>{{ 'ACTIVE_TRIP.FORM.BTN_VALIDATING' | translate }}</span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

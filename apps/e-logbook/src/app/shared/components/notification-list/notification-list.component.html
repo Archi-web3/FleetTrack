@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Boîte de Réception</h2>
+<mat-dialog-content>
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-state" style="text-align: center; padding: 20px">
+      <p>Chargement...</p>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading && alerts.length === 0) {
+    <div class="empty-state">
+      <mat-icon>notifications_none</mat-icon>
+      <p>Aucune notification</p>
+    </div>
+  }
+
+  <mat-list>
+    @for (alert of alerts; track alert) {
+      <mat-list-item>
+        <mat-icon matListItemIcon [class]="alert.severity">
+          {{ getIcon(alert.severity) }}
+        </mat-icon>
+        <div matListItemTitle class="alert-title">
+          <span>{{ alert.message }}</span>
+          <span class="date">{{ alert.createdAt | date: 'dd/MM HH:mm' }}</span>
+        </div>
+        <div matListItemLine>{{ alert.message }}</div>
+        <button mat-icon-button matListItemMeta (click)="hideAlert(alert)" color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+    }
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions align="end" style="justify-content: space-between">
+  <button mat-flat-button color="primary" (click)="enablePush()">
+    <mat-icon>notifications_active</mat-icon>
+    ACTIVER NOTIFICATIONS
+  </button>
+  <button mat-button (click)="close()">FERMER</button>
+</mat-dialog-actions>

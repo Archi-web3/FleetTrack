@@ -1,0 +1,146 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ 'INCIDENT_PAGE.TITLE' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- NOUVEAU: Indicateur GPS -->
+      <div class="gps-status-container" [ngClass]="locationStatus">
+        @if (locationStatus === 'loading') {
+          <mat-icon class="spin">gps_not_fixed</mat-icon>
+        }
+        @if (locationStatus === 'success') {
+          <mat-icon>gps_fixed</mat-icon>
+        }
+        @if (locationStatus === 'error') {
+          <mat-icon>location_disabled</mat-icon>
+        }
+
+        @if (locationStatus === 'loading') {
+          <span>{{ 'INCIDENT_PAGE.GPS.LOADING' | translate }}</span>
+        }
+        @if (locationStatus === 'success') {
+          <span
+            >{{ 'INCIDENT_PAGE.GPS.SUCCESS' | translate }} ({{
+              location?.accuracy | number: '1.0-0'
+            }}m)</span
+          >
+        }
+        @if (locationStatus === 'error') {
+          <span>{{ 'INCIDENT_PAGE.GPS.ERROR' | translate }}</span>
+        }
+
+        @if (locationStatus === 'error') {
+          <button mat-icon-button (click)="captureLocation()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        }
+      </div>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'INCIDENT_PAGE.TYPE' | translate }}</mat-label>
+        <mat-select [(ngModel)]="incidentType">
+          <mat-option value="Panne">{{ 'MOBILE.INCIDENT_TYPES.BREAKDOWN' | translate }}</mat-option>
+          <mat-option value="Accident">{{
+            'MOBILE.INCIDENT_TYPES.ACCIDENT' | translate
+          }}</mat-option>
+          <mat-option value="Retard">{{ 'MOBILE.INCIDENT_TYPES.DELAY' | translate }}</mat-option>
+          <mat-option value="Crevaison">{{
+            'MOBILE.INCIDENT_TYPES.PUNCTURE' | translate
+          }}</mat-option>
+          <mat-option value="Autre">{{ 'MOBILE.INCIDENT_TYPES.OTHER' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'INCIDENT_PAGE.SEVERITY' | translate }}</mat-label>
+        <mat-select [(ngModel)]="severity">
+          <mat-option value="Faible">{{ 'MOBILE.SEVERITY.LOW' | translate }}</mat-option>
+          <mat-option value="Moyenne">{{ 'MOBILE.SEVERITY.MEDIUM' | translate }}</mat-option>
+          <mat-option value="Élevée">{{ 'MOBILE.SEVERITY.HIGH' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'INCIDENT_PAGE.DESCRIPTION' | translate }}</mat-label>
+        <textarea matInput [(ngModel)]="description" rows="4" required></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>{{ 'INCIDENT_PAGE.COST' | translate }}</mat-label>
+        <input matInput type="number" [(ngModel)]="cost" step="0.01" />
+      </mat-form-field>
+
+      <!-- NOUVEAU: Section Photos -->
+      <div class="photos-section">
+        <h3>{{ 'INCIDENT_PAGE.PHOTOS' | translate }}</h3>
+
+        <!-- Bouton Prendre Photo -->
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="takePhoto()"
+          class="photo-btn"
+        >
+          <mat-icon>photo_camera</mat-icon>
+          {{ 'INCIDENT_PAGE.TAKE_PHOTO' | translate }}
+        </button>
+
+        <!-- Input caché pour sélection fichier -->
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          capture="environment"
+          (change)="onPhotoSelected($event)"
+          style="display: none"
+        />
+
+        <!-- Miniatures des photos -->
+        @if (photos.length > 0) {
+          <div class="photo-grid">
+            @for (photo of photos; track photo; let i = $index) {
+              <div class="photo-item">
+                <img [src]="photo.url || photo.localUrl" [alt]="'Photo ' + (i + 1)" />
+                <button mat-icon-button class="delete-btn" (click)="removePhoto(i)" type="button">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                @if (!photo.synced) {
+                  <mat-icon class="sync-icon" matTooltip="En attente de synchronisation">
+                    cloud_upload
+                  </mat-icon>
+                }
+                @if (photo.synced) {
+                  <mat-icon class="synced-icon" matTooltip="Synchronisé"> cloud_done </mat-icon>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- NOUVEAU: Message d'upload en cours -->
+        @if (getPendingUploadsCount() > 0) {
+          <div class="upload-status">
+            <mat-icon class="upload-icon">cloud_upload</mat-icon>
+            <span>Upload en cours... ({{ getPendingUploadsCount() }} photo(s))</span>
+          </div>
+        }
+      </div>
+
+      <button
+        mat-raised-button
+        color="warn"
+        class="full-width action-btn"
+        (click)="saveIncident()"
+        [disabled]="!incidentType || !description"
+      >
+        {{ 'INCIDENT_PAGE.REPORT' | translate }}
+      </button>
+
+      <button mat-button class="full-width" (click)="cancel()">
+        {{ 'INCIDENT_PAGE.CANCEL' | translate }}
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

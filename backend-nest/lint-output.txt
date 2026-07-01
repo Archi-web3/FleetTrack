@@ -1,0 +1,120 @@
+
+> backend-nest@0.0.1 lint
+> eslint "{src,apps,libs,test}/**/*.ts" --fix
+
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/analytics/analytics.service.ts
+   73:11  error    'co2Factors' is assigned a value but never used                                    @typescript-eslint/no-unused-vars
+  394:8   warning  Unsafe argument of type `any[]` assigned to a parameter of type `PipelineStage[]`  @typescript-eslint/no-unsafe-argument
+  405:7   warning  Unsafe argument of type `any[]` assigned to a parameter of type `PipelineStage[]`  @typescript-eslint/no-unsafe-argument
+  411:7   warning  Unsafe argument of type `any[]` assigned to a parameter of type `PipelineStage[]`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/audit-logs/audit-logs.service.spec.ts
+   6:7   error    'mockModel' is assigned a value but never used                                                                                                    @typescript-eslint/no-unused-vars
+  39:13  error    Unsafe assignment of an `any` value                                                                                                               @typescript-eslint/no-unsafe-assignment
+  43:13  error    Unsafe call of a type that could not be resolved                                                                                                  @typescript-eslint/no-unsafe-call
+  44:27  warning  Unsafe argument of type `any` assigned to a parameter of type `AuthRequest | Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>`  @typescript-eslint/no-unsafe-argument
+  45:18  error    Unsafe member access .not on a type that cannot be resolved                                                                                       @typescript-eslint/no-unsafe-member-access
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/audit-logs/audit-logs.service.ts
+  60:15  error  '(typeof user.role === 'object' && user.role !== null
+                ? (user.role as { name?: string }).name
+                : user.role) ||
+                user.profil ||
+                'Unknown'' may use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/auth/auth.module.ts
+  18:9  error  Unsafe assignment of an `any` value  @typescript-eslint/no-unsafe-assignment
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/auth/auth.service.spec.ts
+   51:13  error    Unsafe call of a type that could not be resolved                                                                                                                                                                @typescript-eslint/no-unsafe-call
+   53:17  error    Unsafe member access .toThrow on a type that cannot be resolved                                                                                                                                                 @typescript-eslint/no-unsafe-member-access
+   68:50  warning  Unsafe argument of type `any` assigned to a parameter of type `(Document<unknown, {}, Utilisateur, {}, DefaultSchemaOptions> & Utilisateur & { _id: ObjectId; } & { __v: number; } & { ...; }) | Promise<...>`  @typescript-eslint/no-unsafe-argument
+   71:13  error    Unsafe call of a type that could not be resolved                                                                                                                                                                @typescript-eslint/no-unsafe-call
+   73:17  error    Unsafe member access .toThrow on a type that cannot be resolved                                                                                                                                                 @typescript-eslint/no-unsafe-member-access
+   83:50  warning  Unsafe argument of type `any` assigned to a parameter of type `(Document<unknown, {}, Utilisateur, {}, DefaultSchemaOptions> & Utilisateur & { _id: ObjectId; } & { __v: number; } & { ...; }) | Promise<...>`  @typescript-eslint/no-unsafe-argument
+   92:30  error    Unsafe member access .motDePasse on an `any` value                                                                                                                                                              @typescript-eslint/no-unsafe-member-access
+   93:7   error    Unsafe call of a type that could not be resolved                                                                                                                                                                @typescript-eslint/no-unsafe-call
+   99:50  warning  Unsafe argument of type `any` assigned to a parameter of type `(Document<unknown, {}, Utilisateur, {}, DefaultSchemaOptions> & Utilisateur & { _id: ObjectId; } & { __v: number; } & { ...; }) | Promise<...>`  @typescript-eslint/no-unsafe-argument
+  109:13  error    Unsafe call of a type that could not be resolved                                                                                                                                                                @typescript-eslint/no-unsafe-call
+  109:51  error    Unsafe member access .toThrow on a type that cannot be resolved                                                                                                                                                 @typescript-eslint/no-unsafe-member-access
+  114:45  warning  Unsafe argument of type `any` assigned to a parameter of type `(Document<unknown, {}, Utilisateur, {}, DefaultSchemaOptions> & Utilisateur & { _id: ObjectId; } & { __v: number; } & { ...; }) | Promise<...>`  @typescript-eslint/no-unsafe-argument
+  130:7   error    Unsafe call of a type that could not be resolved                                                                                                                                                                @typescript-eslint/no-unsafe-call
+  131:7   error    Unsafe call of a type that could not be resolved                                                                                                                                                                @typescript-eslint/no-unsafe-call
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/bases/bases.service.spec.ts
+  52:13  error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  53:13  error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  56:28  warning  Unsafe argument of type `any` assigned to a parameter of type `CreateBaseDto`   @typescript-eslint/no-unsafe-argument
+  56:33  warning  Unsafe argument of type `any` assigned to a parameter of type `UserPayloadDto`  @typescript-eslint/no-unsafe-argument
+  57:18  error    Unsafe member access .pays on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+  61:13  error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  62:13  error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  64:28  warning  Unsafe argument of type `any` assigned to a parameter of type `CreateBaseDto`   @typescript-eslint/no-unsafe-argument
+  64:33  warning  Unsafe argument of type `any` assigned to a parameter of type `UserPayloadDto`  @typescript-eslint/no-unsafe-argument
+  65:18  error    Unsafe member access .pays on an `any` value                                    @typescript-eslint/no-unsafe-member-access
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/chauffeurs/chauffeurs.controller.spec.ts
+   75:63  warning  Unsafe argument of type `any` assigned to a parameter of type `(Document<unknown, {}, Utilisateur, {}, DefaultSchemaOptions> & Utilisateur & { _id: ObjectId; } & { __v: number; } & { ...; }) | Promise<...>`  @typescript-eslint/no-unsafe-argument
+  105:30  error    Unsafe member access .motDePasse on an `any` value                                                                                                                                                              @typescript-eslint/no-unsafe-member-access
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/environment/environment.service.ts
+  80:5  error  '_base' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/generateurs/generateurs.controller.spec.ts
+  78:51  warning  Unsafe argument of type `any` assigned to a parameter of type `UpdateQuery<GenerateurDocument>`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/logbook/logbook-sync.service.ts
+  141:58  warning  Unsafe argument of type `any[]` assigned to a parameter of type `{ lat: number; lng: number; }[]`  @typescript-eslint/no-unsafe-argument
+  228:54  warning  Unsafe argument of type `any[]` assigned to a parameter of type `{ lat: number; lng: number; }[]`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/logbook/logbook.controller.spec.ts
+  57:13  error    Unsafe assignment of an `any` value                                                       @typescript-eslint/no-unsafe-assignment
+  58:48  warning  Unsafe argument of type `any` assigned to a parameter of type `SyncPayloadDto`            @typescript-eslint/no-unsafe-argument
+  59:60  warning  Unsafe argument of type `any` assigned to a parameter of type `Expected<SyncPayloadDto>`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/maintenance/maintenance.service.ts
+  162:11  error  Unsafe assignment of an `any` value                     @typescript-eslint/no-unsafe-assignment
+  162:19  error  Unsafe call of an `any` typed value                     @typescript-eslint/no-unsafe-call
+  162:45  error  Unsafe member access .id on an `any` value              @typescript-eslint/no-unsafe-member-access
+  165:11  error  Unsafe member access .validee on an `any` value         @typescript-eslint/no-unsafe-member-access
+  166:11  error  Unsafe member access .dateValidation on an `any` value  @typescript-eslint/no-unsafe-member-access
+  167:28  error  Unsafe member access .commentaire on an `any` value     @typescript-eslint/no-unsafe-member-access
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/pays/pays.controller.ts
+  37:7  warning  Unsafe argument of type `any` assigned to a parameter of type `AuthRequest | Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>`  @typescript-eslint/no-unsafe-argument
+  54:7  warning  Unsafe argument of type `any` assigned to a parameter of type `AuthRequest | Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>`  @typescript-eslint/no-unsafe-argument
+  67:7  warning  Unsafe argument of type `any` assigned to a parameter of type `AuthRequest | Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/pays/pays.service.ts
+  25:30  warning  Unsafe argument of type `any` assigned to a parameter of type `UpdateQuery<PaysDocument>`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/users/users.service.spec.ts
+  46:11  error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  48:5   error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  48:22  error    Unsafe member access .userModel on an `any` value                               @typescript-eslint/no-unsafe-member-access
+  57:13  error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  67:13  error    Unsafe call of a type that could not be resolved                                @typescript-eslint/no-unsafe-call
+  67:40  warning  Unsafe argument of type `any` assigned to a parameter of type `UserPayloadDto`  @typescript-eslint/no-unsafe-argument
+  67:58  error    Unsafe member access .toThrow on a type that cannot be resolved                 @typescript-eslint/no-unsafe-member-access
+  73:13  error    Unsafe assignment of an `any` value                                             @typescript-eslint/no-unsafe-assignment
+  89:24  error    Unsafe member access .userModel on an `any` value                               @typescript-eslint/no-unsafe-member-access
+  93:33  warning  Unsafe argument of type `any` assigned to a parameter of type `UserPayloadDto`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/waivers/waivers.controller.spec.ts
+  35:13  error    Unsafe call of a type that could not be resolved                                 @typescript-eslint/no-unsafe-call
+  36:33  warning  Unsafe argument of type `any` assigned to a parameter of type `File`             @typescript-eslint/no-unsafe-argument
+  36:51  warning  Unsafe argument of type `any` assigned to a parameter of type `CreateWaiverDto`  @typescript-eslint/no-unsafe-argument
+  37:17  error    Unsafe member access .toThrow on a type that cannot be resolved                  @typescript-eslint/no-unsafe-member-access
+  42:9   warning  Unsafe argument of type `any` assigned to a parameter of type `File`             @typescript-eslint/no-unsafe-argument
+  43:9   warning  Unsafe argument of type `any` assigned to a parameter of type `CreateWaiverDto`  @typescript-eslint/no-unsafe-argument
+
+✖ 70 problems (42 errors, 28 warnings)
+
+npm error Lifecycle script `lint` failed with error:
+npm error code 1
+npm error path /home/jonathan/Documents/App/ACF_vf/backend-nest
+npm error workspace backend-nest@0.0.1
+npm error location /home/jonathan/Documents/App/ACF_vf/backend-nest
+npm error command failed
+npm error command sh -c eslint "{src,apps,libs,test}/**/*.ts" --fix

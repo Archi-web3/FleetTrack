@@ -1,0 +1,66 @@
+<div class="waiver-list-container">
+  <div class="page-header">
+    <h1>
+      <mat-icon>folder_shared</mat-icon>
+      {{ 'WAIVERS.TITLE' | translate }}
+    </h1>
+  </div>
+
+  <mat-card>
+    <table mat-table [dataSource]="waivers" class="mat-elevation-z0">
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>{{ 'WAIVERS.TABLE.DATE' | translate }}</th>
+        <td mat-cell *matCellDef="let w">{{ w.signedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+      </ng-container>
+
+      <!-- Visitor Column -->
+      <ng-container matColumnDef="visitor">
+        <th mat-header-cell *matHeaderCellDef>{{ 'WAIVERS.TABLE.VISITOR' | translate }}</th>
+        <td mat-cell *matCellDef="let w">
+          <strong>{{ w.visitorName }}</strong>
+        </td>
+      </ng-container>
+
+      <!-- Vehicle Column -->
+      <ng-container matColumnDef="vehicle">
+        <th mat-header-cell *matHeaderCellDef>{{ 'WAIVERS.TABLE.VEHICLE' | translate }}</th>
+        <td mat-cell *matCellDef="let w">
+          {{ w.vehicleId?.immatriculation }} <br />
+          <small class="text-muted">{{ w.vehicleId?.marque }} {{ w.vehicleId?.modele }}</small>
+        </td>
+      </ng-container>
+
+      <!-- Signature Column -->
+      <ng-container matColumnDef="signature">
+        <th mat-header-cell *matHeaderCellDef>{{ 'WAIVERS.TABLE.SIGNATURE' | translate }}</th>
+        <td mat-cell *matCellDef="let w">
+          <img [src]="w.signatureUrl" class="signature-thumb" (click)="printWaiver(w)" />
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ 'WAIVERS.TABLE.ACTIONS' | translate }}</th>
+        <td mat-cell *matCellDef="let w">
+          <button mat-icon-button color="primary" (click)="printWaiver(w)" title="Imprimer / PDF">
+            <mat-icon>print</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteWaiver(w)" title="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    @if (waivers.length === 0) {
+      <div class="no-data">
+        <mat-icon>info</mat-icon>
+        <p>{{ 'WAIVERS.NO_DATA' | translate }}</p>
+      </div>
+    }
+  </mat-card>
+</div>

@@ -1,0 +1,132 @@
+<div class="checklist-container">
+  <!-- En-tête -->
+  <mat-card class="header-card">
+    <mat-card-header class="header-with-back">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <mat-card-title>
+        <mat-icon>checklist</mat-icon>
+        {{ 'CHECKLIST.TITLE' | translate }}
+      </mat-card-title>
+      @if (checklist) {
+        <mat-card-subtitle>
+          {{ 'CHECKLIST.WEEK' | translate }} {{ checklist.semaine }} - {{ checklist.annee }}
+        </mat-card-subtitle>
+      }
+    </mat-card-header>
+
+    @if (checklist) {
+      <mat-card-content>
+        <!-- Barre de progression -->
+        <div class="progress-section">
+          <div class="progress-info">
+            <span class="progress-text">
+              {{ checklist.tauxCompletion }}% {{ 'CHECKLIST.COMPLETION' | translate }} ({{
+                getTotalValidatedTasks()
+              }}/{{ checklist.taches.length }} {{ 'CHECKLIST.TASKS' | translate }})
+            </span>
+            @if (checklist.completee) {
+              <mat-icon class="completed-icon">check_circle</mat-icon>
+            }
+          </div>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="checklist.tauxCompletion"
+            [color]="checklist.completee ? 'primary' : 'accent'"
+          >
+          </mat-progress-bar>
+        </div>
+        <!-- Message de félicitations -->
+        @if (checklist.completee) {
+          <div class="completion-message">
+            <mat-icon>celebration</mat-icon>
+            <span
+              >{{ 'CHECKLIST.CONGRATS' | translate }}
+              {{ checklist.dateCompletion | date: 'dd/MM/yyyy HH:mm' }}</span
+            >
+          </div>
+        }
+      </mat-card-content>
+    }
+  </mat-card>
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <p>{{ 'CHECKLIST.LOADING' | translate }}</p>
+    </div>
+  }
+
+  <!-- Liste des tâches par catégorie -->
+  @if (!loading && checklist) {
+    <div class="tasks-container">
+      <mat-accordion>
+        @for (categorie of categories; track categorie) {
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon [style.color]="getCategoryColor(categorie)">
+                  {{ getCategoryIcon(categorie) }}
+                </mat-icon>
+                <span class="category-title">{{ categorie }}</span>
+                <span class="category-badge">
+                  {{ getValidatedTasksCount(categorie) }}/{{ tachesParCategorie[categorie].length }}
+                </span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <!-- Tâches de la catégorie -->
+            <div class="tasks-list">
+              @for (tache of tachesParCategorie[categorie]; track tache) {
+                <div class="task-item" [class.completed]="tache.validee">
+                  <mat-checkbox
+                    [(ngModel)]="tache.validee"
+                    (change)="toggleTask(tache)"
+                    [color]="'primary'"
+                  >
+                    <span class="task-description">{{ tache.description }}</span>
+                  </mat-checkbox>
+                  <!-- Bouton voir manuel -->
+                  @if (tache.numeroTacheManuel) {
+                    <button
+                      mat-icon-button
+                      (click)="openManual(tache.numeroTacheManuel)"
+                      [matTooltip]="'CHECKLIST.MANUAL_BTN' | translate"
+                      class="manual-button"
+                    >
+                      <mat-icon>menu_book</mat-icon>
+                      <span class="manual-label">{{ 'CHECKLIST.MANUAL_BTN' | translate }}</span>
+                    </button>
+                  }
+                  <!-- Date de validation -->
+                  @if (tache.validee && tache.dateValidation) {
+                    <span class="validation-date">
+                      ✓ {{ tache.dateValidation | date: 'dd/MM HH:mm' }}
+                      @if (tache.validatorName) {
+                        <span>({{ tache.validatorName }})</span>
+                      }
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    </div>
+  }
+
+  <!-- Message si pas de checklist -->
+  @if (!loading && !checklist) {
+    <mat-card class="no-data">
+      <mat-card-content>
+        <mat-icon>info</mat-icon>
+        <p>{{ 'CHECKLIST.NO_DATA' | translate }}</p>
+        <button mat-raised-button color="primary" (click)="loadChecklist()">
+          {{ 'CHECKLIST.RELOAD' | translate }}
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

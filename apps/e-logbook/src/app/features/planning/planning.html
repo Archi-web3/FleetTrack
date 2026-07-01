@@ -1,0 +1,174 @@
+<div class="planning-container">
+  <!-- Header -->
+  <div class="header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>{{ 'PLANNING.TITLE' | translate }}</h2>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-state">
+      <mat-icon class="spinning">sync</mat-icon>
+      <p>{{ 'PLANNING.LOADING' | translate }}</p>
+    </div>
+  }
+
+  @if (!isLoading) {
+    <div>
+      <mat-tab-group animationDuration="0ms">
+        <!-- ONGLET 1 : MISSIONS EN COURS -->
+        <mat-tab [label]="'PLANNING.TABS.MISSIONS' | translate">
+          <div class="tab-content">
+            <!-- Empty State Active -->
+            @if (activeMovements.length === 0) {
+              <div class="empty-state">
+                <mat-icon>event_available</mat-icon>
+                <h3>{{ 'PLANNING.EMPTY_ACTIVE.TITLE' | translate }}</h3>
+                <p>{{ 'PLANNING.EMPTY_ACTIVE.DESC' | translate }}</p>
+              </div>
+            }
+            <!-- Active List -->
+            @if (activeMovements.length > 0) {
+              <div class="movements-list">
+                @for (movement of activeMovements; track movement) {
+                  <mat-card class="movement-card">
+                    <mat-card-header>
+                      <mat-icon mat-card-avatar [class]="'status-icon ' + movement.statut">
+                        {{ getStatusIcon(movement.statut) }}
+                      </mat-icon>
+                      <mat-card-title>
+                        @if (movement.stops && movement.stops.length > 0) {
+                          <span>
+                            {{ getLieuName(movement.stops[0].lieu) || 'Départ' }}
+                            <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                            {{ getLieuName(movement.stops[movement.stops.length - 1].lieu) || 'Arrivée' }}
+                          </span>
+                        }
+                      </mat-card-title>
+                      <mat-card-subtitle>
+                        <mat-chip [color]="getStatusColor(movement.statut)" selected>
+                          {{ getStatusKey(movement.statut) | translate | titlecase }}
+                        </mat-chip>
+                      </mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <div class="movement-details">
+                        @if (movement.stops && movement.stops.length > 0) {
+                          <div class="detail-row">
+                            <mat-icon>event</mat-icon>
+                            <div class="date-times">
+                              <div>
+                                <strong>{{ 'TRIPS.TABLE.DEPARTURE' | translate }}:</strong>
+                                {{ movement.stops[0].dateDepart | date: 'short' }}
+                              </div>
+                              @if (movement.stops[movement.stops.length - 1].dateArrivee) {
+                                <div>
+                                  <strong>{{ 'TRIPS.TABLE.ARRIVAL' | translate }}:</strong>
+                                  {{
+                                    movement.stops[movement.stops.length - 1].dateArrivee
+                                      | date: 'short'
+                                  }}
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        }
+                        @if (movement.vehicule) {
+                          <div class="detail-row">
+                            <mat-icon>directions_car</mat-icon>
+                            <span
+                              >{{ getVehicleDesc(movement.vehicule) }}</span
+                            >
+                          </div>
+                        }
+                        @if (movement.objectif) {
+                          <div class="detail-row">
+                            <mat-icon>description</mat-icon>
+                            <span>{{ movement.objectif }}</span>
+                          </div>
+                        }
+                      </div>
+                    </mat-card-content>
+                    <mat-card-actions>
+                      <button mat-button (click)="viewDetails(movement)">
+                        <mat-icon>info</mat-icon>
+                        {{ 'PLANNING.BUTTONS.DETAILS' | translate }}
+                      </button>
+                      @if (canTakeCharge(movement)) {
+                        <button mat-raised-button color="accent" (click)="takeCharge(movement)">
+                          <mat-icon>assignment_turned_in</mat-icon>
+                          {{ 'PLANNING.BUTTONS.TAKE_CHARGE' | translate }}
+                        </button>
+                      }
+                      @if (canStart(movement)) {
+                        <button mat-raised-button color="primary" (click)="startMovement(movement)">
+                          <mat-icon>play_arrow</mat-icon>
+                          {{ 'PLANNING.BUTTONS.START' | translate }}
+                        </button>
+                      }
+                      @if (movement.statut === 'en cours') {
+                        <button mat-raised-button color="warn" (click)="startMovement(movement)">
+                          <mat-icon>directions_car</mat-icon>
+                          {{ 'PLANNING.BUTTONS.RESUME' | translate }}
+                        </button>
+                      }
+                    </mat-card-actions>
+                  </mat-card>
+                }
+              </div>
+            }
+          </div>
+        </mat-tab>
+        <!-- ONGLET 2 : HISTORIQUE -->
+        <mat-tab [label]="'PLANNING.TABS.HISTORY' | translate">
+          <div class="tab-content">
+            <!-- Empty State History -->
+            @if (historyMovements.length === 0) {
+              <div class="empty-state">
+                <mat-icon>history</mat-icon>
+                <h3>{{ 'PLANNING.EMPTY_HISTORY.TITLE' | translate }}</h3>
+                <p>{{ 'PLANNING.EMPTY_HISTORY.DESC' | translate }}</p>
+              </div>
+            }
+            <!-- History List -->
+            @if (historyMovements.length > 0) {
+              <div class="movements-list">
+                @for (movement of historyMovements; track movement) {
+                  <mat-card class="movement-card history-card">
+                    <mat-card-header>
+                      <mat-icon mat-card-avatar>done_all</mat-icon>
+                      <mat-card-title>
+                        @if (movement.stops && movement.stops.length > 0) {
+                          <span>
+                            {{ getLieuName(movement.stops[0].lieu) || 'Départ' }}
+                            <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                            {{ getLieuName(movement.stops[movement.stops.length - 1].lieu) || 'Arrivée' }}
+                          </span>
+                        }
+                      </mat-card-title>
+                      <mat-card-subtitle>
+                        {{ getStatusKey(movement.statut) | translate | titlecase }}
+                        @if (movement.stops && movement.stops.length > 0) {
+                          - {{ movement.stops[0].dateDepart | date: 'shortDate' }}
+                        }
+                      </mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-actions>
+                      <button mat-button (click)="viewDetails(movement)">
+                        <mat-icon>visibility</mat-icon>
+                        {{ 'PLANNING.BUTTONS.VIEW_DETAILS' | translate }}
+                      </button>
+                    </mat-card-actions>
+                  </mat-card>
+                }
+              </div>
+            }
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  }
+</div>

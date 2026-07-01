@@ -1,0 +1,1074 @@
+<div class="settings-container">
+  <!-- Sidebar -->
+  @if (activeTab !== 'types-vehicules' && activeTab !== 'facteurs-co2') {
+    <div class="settings-sidebar">
+      <h2 class="sidebar-title">{{ 'SETTINGS.SETTINGS' | translate }}</h2>
+      <mat-nav-list>
+        <a mat-list-item [class.active]="activeTab === 'brand'" (click)="setTab('brand')">
+          <mat-icon matListItemIcon>palette</mat-icon>
+          <span matListItemTitle>{{ 'SETTINGS.BRAND_THEME' | translate }}</span>
+        </a>
+        <a mat-list-item [class.active]="activeTab === 'system'" (click)="setTab('system')">
+          <mat-icon matListItemIcon>settings</mat-icon>
+          <span matListItemTitle>{{ 'SETTINGS.SYSTEM_PREF' | translate }}</span>
+        </a>
+        <a mat-list-item [class.active]="activeTab === 'currencies'" (click)="setTab('currencies')">
+          <mat-icon matListItemIcon>monetization_on</mat-icon>
+          <span matListItemTitle>{{ 'SETTINGS.CURRENCIES' | translate }}</span>
+        </a>
+        <a mat-list-item [class.active]="activeTab === 'emails'" (click)="setTab('emails')">
+          <mat-icon matListItemIcon>email</mat-icon>
+          <span matListItemTitle>{{ 'SETTINGS.EMAILS' | translate }}</span>
+        </a>
+      </mat-nav-list>
+    </div>
+  }
+
+  <!-- Content -->
+  <div
+    class="settings-content"
+    [ngStyle]="{
+      'max-width': activeTab === 'types-vehicules' || activeTab === 'facteurs-co2' ? '100%' : '',
+      margin: activeTab === 'types-vehicules' || activeTab === 'facteurs-co2' ? '0 auto' : '',
+    }"
+  >
+    <!-- 1. BRAND & THEME -->
+    @if (activeTab === 'brand') {
+      <div class="settings-section">
+        <h2><mat-icon>palette</mat-icon> {{ 'SETTINGS.BRAND_THEME' | translate }}</h2>
+        <p class="section-desc">{{ 'SETTINGS.PERSONALIZE' | translate }}</p>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>{{ 'SETTINGS.PRIMARY_COLOR' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="color-picker-container">
+              <div class="preset-colors">
+                @for (color of presetColors; track color) {
+                  <div
+                    class="color-swatch"
+                    [style.background]="color"
+                    [class.selected]="brandSettings.primaryColor === color"
+                    (click)="setPrimaryColor(color)"
+                  ></div>
+                }
+              </div>
+              <div class="custom-color-input">
+                <label>{{ 'SETTINGS.CUSTOM_COLOR' | translate }}</label>
+                <input
+                  type="color"
+                  [(ngModel)]="brandSettings.primaryColor"
+                  (change)="setPrimaryColor(brandSettings.primaryColor)"
+                />
+                <span>{{ brandSettings.primaryColor }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>{{ 'SETTINGS.TEXT_INFO' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-2">
+              <div class="modern-form-group" style="grid-column: 1 / -1">
+                <label>{{ 'SETTINGS.DISPLAY_MODE' | translate }}</label>
+                <mat-select class="modern-input" [(ngModel)]="brandSettings.heroDisplayMode">
+                  <mat-option value="text"
+                    >Afficher uniquement le nom de l'application (Texte)</mat-option
+                  >
+                  <mat-option value="logo">Afficher uniquement le Logo</mat-option>
+                  <mat-option value="both">Afficher le Logo + le Texte</mat-option>
+                </mat-select>
+              </div>
+              <div class="modern-form-group">
+                <label>{{ 'SETTINGS.APP_TITLE' | translate }} (Web)</label>
+                <input type="text" class="modern-input" [(ngModel)]="brandSettings.appName" />
+              </div>
+              <div class="modern-form-group">
+                <label>{{ 'SETTINGS.APP_TAGLINE' | translate }} (Web)</label>
+                <input
+                  type="text"
+                  class="modern-input"
+                  [(ngModel)]="brandSettings.appTagline"
+                  placeholder="Votre phrase d'accroche..."
+                />
+              </div>
+              <div class="modern-form-group">
+                <label>{{ 'SETTINGS.APP_TITLE' | translate }} (Mobile)</label>
+                <input
+                  type="text"
+                  class="modern-input"
+                  [(ngModel)]="brandSettings.mobileAppName"
+                  placeholder="ex: e-Logbook"
+                />
+              </div>
+              <div class="modern-form-group">
+                <label>{{ 'SETTINGS.APP_TAGLINE' | translate }} (Mobile)</label>
+                <input
+                  type="text"
+                  class="modern-input"
+                  [(ngModel)]="brandSettings.mobileAppTagline"
+                  placeholder="ex: Chauffeur"
+                />
+              </div>
+              <div class="modern-form-group" style="grid-column: 1 / -1">
+                <label>{{ 'SETTINGS.NEWS_BANNER' | translate }}</label>
+                <textarea
+                  class="modern-input"
+                  [(ngModel)]="brandSettings.newsBanner"
+                  placeholder="Message important pour tous les utilisateurs..."
+                ></textarea>
+              </div>
+              <div class="modern-form-group">
+                <label>{{ 'SETTINGS.FOOTER_TEXT' | translate }}</label>
+                <input type="text" class="modern-input" [(ngModel)]="brandSettings.footerText" />
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>Images et Logos</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="grid-2">
+              <!-- Fond Login -->
+              <div class="modern-form-group">
+                <label>Fond d'écran Login</label>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <label
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      font-size: 13px;
+                      font-weight: normal;
+                      cursor: pointer;
+                    "
+                  >
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="useDefaultBackground"
+                      (change)="toggleDefaultBackground()"
+                    />
+                    Utiliser le fond violet par défaut
+                  </label>
+                  @if (useDefaultBackground) {
+                    <div
+                      style="
+                        height: 60px;
+                        border-radius: 8px;
+                        background:
+                          radial-gradient(
+                            circle at 30% 20%,
+                            rgba(139, 92, 246, 0.4),
+                            transparent 50%
+                          ),
+                          radial-gradient(
+                            circle at 70% 80%,
+                            rgba(217, 70, 239, 0.3),
+                            transparent 50%
+                          ),
+                          radial-gradient(
+                            circle at 50% 50%,
+                            rgba(192, 132, 252, 0.2),
+                            transparent 100%
+                          ),
+                          #1e1b4b;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 12px;
+                      "
+                    >
+                      Fond Violet Par Défaut
+                    </div>
+                  }
+                  @if (!useDefaultBackground && !brandSettings.loginBackgroundUrl) {
+                    <div class="image-upload-box">
+                      <input
+                        type="file"
+                        (change)="onFileSelected($event, 'loginBackgroundUrl')"
+                        accept="image/*"
+                      />
+                      <mat-icon>cloud_upload</mat-icon>
+                      <span>Choisir une image (Max 2MB)</span>
+                    </div>
+                  }
+                  @if (!useDefaultBackground && brandSettings.loginBackgroundUrl) {
+                    <div class="image-preview">
+                      <img
+                        [src]="brandSettings.loginBackgroundUrl"
+                        alt="Login BG"
+                        style="height: 60px; border-radius: 8px"
+                      />
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeImage('loginBackgroundUrl')"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+              <!-- Web Login Logo -->
+              <div class="modern-form-group">
+                <label>Logo Page de Connexion (App Web)</label>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  @if (!brandSettings.webLoginLogo && !brandSettings.logoDark) {
+                    <div class="image-upload-box">
+                      <input
+                        type="file"
+                        (change)="onFileSelected($event, 'webLoginLogo')"
+                        accept="image/*"
+                      />
+                      <mat-icon>cloud_upload</mat-icon>
+                      <span>Choisir une image (Max 2MB)</span>
+                    </div>
+                  }
+                  @if (brandSettings.webLoginLogo || brandSettings.logoDark) {
+                    <div class="image-preview">
+                      <img
+                        [src]="brandSettings.webLoginLogo || brandSettings.logoDark"
+                        alt="Web Login Logo"
+                        style="height: 40px; background: #f8fafc; padding: 5px"
+                      />
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeImage('webLoginLogo'); removeImage('logoDark')"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                  <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px">
+                    <mat-form-field appearance="outline" style="flex: 1">
+                      <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                      <input matInput type="color" [(ngModel)]="brandSettings.webLoginLogoColor" />
+                      <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                    </mat-form-field>
+                    @if (brandSettings.webLoginLogoColor) {
+                      <button
+                        mat-icon-button
+                        matTooltip="Réinitialiser la couleur"
+                        (click)="brandSettings.webLoginLogoColor = null"
+                        style="color: #64748b; margin-top: -15px"
+                      >
+                        <mat-icon>refresh</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+              <!-- Web Header Logo -->
+              <div class="modern-form-group">
+                <label>Logo Bandeau Haut (App Web)</label>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  @if (!brandSettings.webHeaderLogo && !brandSettings.logoLight) {
+                    <div class="image-upload-box">
+                      <input
+                        type="file"
+                        (change)="onFileSelected($event, 'webHeaderLogo')"
+                        accept="image/*"
+                      />
+                      <mat-icon>cloud_upload</mat-icon>
+                      <span>Choisir une image (Max 2MB)</span>
+                    </div>
+                  }
+                  @if (brandSettings.webHeaderLogo || brandSettings.logoLight) {
+                    <div class="image-preview">
+                      <img
+                        [src]="brandSettings.webHeaderLogo || brandSettings.logoLight"
+                        alt="Web Header Logo"
+                        style="height: 40px; background: #1e293b; padding: 5px"
+                      />
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeImage('webHeaderLogo'); removeImage('logoLight')"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                  <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px">
+                    <mat-form-field appearance="outline" style="flex: 1">
+                      <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                      <input matInput type="color" [(ngModel)]="brandSettings.webHeaderLogoColor" />
+                      <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                    </mat-form-field>
+                    @if (brandSettings.webHeaderLogoColor) {
+                      <button
+                        mat-icon-button
+                        matTooltip="Réinitialiser la couleur"
+                        (click)="brandSettings.webHeaderLogoColor = null"
+                        style="color: #64748b; margin-top: -15px"
+                      >
+                        <mat-icon>refresh</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+              <!-- Web Hero Logo -->
+              <div class="modern-form-group">
+                <label>Logo Page d'accueil (App Web)</label>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  @if (!brandSettings.webHeroLogo && !brandSettings.logoDark) {
+                    <div class="image-upload-box">
+                      <input
+                        type="file"
+                        (change)="onFileSelected($event, 'webHeroLogo')"
+                        accept="image/*"
+                      />
+                      <mat-icon>cloud_upload</mat-icon>
+                      <span>Choisir une image (Max 2MB)</span>
+                    </div>
+                  }
+                  @if (brandSettings.webHeroLogo || brandSettings.logoDark) {
+                    <div class="image-preview">
+                      <img
+                        [src]="brandSettings.webHeroLogo || brandSettings.logoDark"
+                        alt="Web Hero Logo"
+                        style="height: 40px; background: #f8fafc; padding: 5px"
+                      />
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeImage('webHeroLogo'); removeImage('logoDark')"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                  <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px">
+                    <mat-form-field appearance="outline" style="flex: 1">
+                      <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                      <input matInput type="color" [(ngModel)]="brandSettings.webHeroLogoColor" />
+                      <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                    </mat-form-field>
+                    @if (brandSettings.webHeroLogoColor) {
+                      <button
+                        mat-icon-button
+                        matTooltip="Réinitialiser la couleur"
+                        (click)="brandSettings.webHeroLogoColor = null"
+                        style="color: #64748b; margin-top: -15px"
+                      >
+                        <mat-icon>refresh</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+              <!-- Mobile Login Logo -->
+              <div class="modern-form-group">
+                <label>Logo Page de Connexion (App Mobile)</label>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  @if (!brandSettings.mobileLoginLogo && !brandSettings.mobileAppLogo) {
+                    <div class="image-upload-box">
+                      <input
+                        type="file"
+                        (change)="onFileSelected($event, 'mobileLoginLogo')"
+                        accept="image/*"
+                      />
+                      <mat-icon>cloud_upload</mat-icon>
+                      <span>Choisir une image (Max 2MB)</span>
+                    </div>
+                  }
+                  @if (brandSettings.mobileLoginLogo || brandSettings.mobileAppLogo) {
+                    <div class="image-preview">
+                      <img
+                        [src]="brandSettings.mobileLoginLogo || brandSettings.mobileAppLogo"
+                        alt="Mobile Login Logo"
+                        style="height: 40px; background: #f8fafc; padding: 5px"
+                      />
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeImage('mobileLoginLogo'); removeImage('mobileAppLogo')"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                  <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px">
+                    <mat-form-field appearance="outline" style="flex: 1">
+                      <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                      <input
+                        matInput
+                        type="color"
+                        [(ngModel)]="brandSettings.mobileLoginLogoColor"
+                      />
+                      <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                    </mat-form-field>
+                    @if (brandSettings.mobileLoginLogoColor) {
+                      <button
+                        mat-icon-button
+                        matTooltip="Réinitialiser la couleur"
+                        (click)="brandSettings.mobileLoginLogoColor = null"
+                        style="color: #64748b; margin-top: -15px"
+                      >
+                        <mat-icon>refresh</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+              <!-- Mobile Header Logo -->
+              <div class="modern-form-group">
+                <label>Logo Bandeau Haut (App Mobile)</label>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  @if (!brandSettings.mobileHeaderLogo) {
+                    <div class="image-upload-box">
+                      <input
+                        type="file"
+                        (change)="onFileSelected($event, 'mobileHeaderLogo')"
+                        accept="image/*"
+                      />
+                      <mat-icon>cloud_upload</mat-icon>
+                      <span>Choisir une image (Max 2MB)</span>
+                    </div>
+                  }
+                  @if (brandSettings.mobileHeaderLogo) {
+                    <div class="image-preview">
+                      <img
+                        [src]="brandSettings.mobileHeaderLogo"
+                        alt="Mobile Header Logo"
+                        style="height: 40px; background: #1e293b; padding: 5px"
+                      />
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeImage('mobileHeaderLogo')"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                  <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px">
+                    <mat-form-field appearance="outline" style="flex: 1">
+                      <mat-label>Couleur personnalisée (optionnel)</mat-label>
+                      <input
+                        matInput
+                        type="color"
+                        [(ngModel)]="brandSettings.mobileHeaderLogoColor"
+                      />
+                      <mat-hint>Laissez vide pour la couleur d'origine</mat-hint>
+                    </mat-form-field>
+                    @if (brandSettings.mobileHeaderLogoColor) {
+                      <button
+                        mat-icon-button
+                        matTooltip="Réinitialiser la couleur"
+                        (click)="brandSettings.mobileHeaderLogoColor = null"
+                        style="color: #64748b; margin-top: -15px"
+                      >
+                        <mat-icon>refresh</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+              <!-- Mode d'affichage du Bandeau En-tête -->
+              <div class="modern-form-group">
+                <label>Affichage Titre/Logo (Bandeau Haut)</label>
+                <mat-form-field appearance="outline" style="width: 100%; margin-top: 8px">
+                  <mat-label>Mode d'affichage</mat-label>
+                  <mat-select [(ngModel)]="brandSettings.headerDisplayMode">
+                    <mat-option value="text">Titre Uniquement</mat-option>
+                    <mat-option value="logo">Logo Uniquement</mat-option>
+                    <mat-option value="both">Titre et Logo</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <!-- Favicon -->
+              <div class="modern-form-group">
+                <label>Favicon</label>
+                @if (!brandSettings.favicon) {
+                  <div class="image-upload-box">
+                    <input
+                      type="file"
+                      (change)="onFileSelected($event, 'favicon')"
+                      accept="image/*"
+                    />
+                    <mat-icon>cloud_upload</mat-icon>
+                    <span>Choisir une image (Max 2MB)</span>
+                  </div>
+                }
+                @if (brandSettings.favicon) {
+                  <div class="image-preview">
+                    <img
+                      [src]="brandSettings.favicon"
+                      alt="Favicon"
+                      style="height: 32px; width: 32px"
+                    />
+                    <button mat-icon-button color="warn" (click)="removeImage('favicon')">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <div class="actions-footer">
+          <button mat-flat-button color="primary" (click)="saveBrandSettings()">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- 3A. TYPES DE VEHICULES -->
+    @if (activeTab === 'types-vehicules') {
+      <div class="settings-section">
+        <h2><mat-icon>directions_car</mat-icon> {{ 'SETTINGS.VEHICLE_TYPES_TAB' | translate }}</h2>
+        <p class="section-desc">{{ 'SETTINGS.VEHICLE_TYPES_DESC' | translate }}</p>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>{{ 'SETTINGS.VEHICLE_TYPES_TAB' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="add-type-form">
+              <input
+                type="text"
+                class="modern-input"
+                [(ngModel)]="newType"
+                [placeholder]="'SETTINGS.NEW_TYPE' | translate"
+              />
+              <button mat-flat-button color="primary" (click)="addType()">
+                {{ 'COMMON.ADD' | translate }}
+              </button>
+            </div>
+            <mat-list>
+              @for (type of vehicleTypes; track type) {
+                <mat-list-item>
+                  <span matListItemTitle>{{ type }}</span>
+                  <button mat-icon-button color="warn" matListItemMeta (click)="removeType(type)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-list-item>
+              }
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+
+    <!-- 3B. FACTEURS CO2 -->
+    @if (activeTab === 'facteurs-co2') {
+      <div class="settings-section">
+        <h2><mat-icon>co2</mat-icon> {{ 'SETTINGS.CO2_TAB' | translate }}</h2>
+        <p class="section-desc">{{ 'SETTINGS.CO2_DESC' | translate }}</p>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>{{ 'SETTINGS.CO2_FACTORS_LABEL' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="modern-form-group">
+              <label>{{ 'SETTINGS.SHORT_TRIP' | translate }}</label>
+              <input type="number" class="modern-input" [(ngModel)]="co2Factors.short" />
+            </div>
+            <div class="modern-form-group">
+              <label>{{ 'SETTINGS.MEDIUM_TRIP' | translate }}</label>
+              <input type="number" class="modern-input" [(ngModel)]="co2Factors.medium" />
+            </div>
+            <div class="modern-form-group">
+              <label>{{ 'SETTINGS.LONG_TRIP' | translate }}</label>
+              <input type="number" class="modern-input" [(ngModel)]="co2Factors.long" />
+            </div>
+            <div class="modern-form-group">
+              <label>{{ 'SETTINGS.SOURCE' | translate }}</label>
+              <input type="text" class="modern-input" [(ngModel)]="co2Factors.source" />
+            </div>
+            <button mat-flat-button color="primary" style="margin-top: 15px" (click)="saveCO2()">
+              {{ 'SETTINGS.SAVE_CO2' | translate }}
+            </button>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+
+    <!-- 4. CURRENCIES -->
+    @if (activeTab === 'currencies') {
+      <div class="settings-section">
+        <h2><mat-icon>monetization_on</mat-icon> {{ 'SETTINGS.CURRENCIES' | translate }}</h2>
+        <p class="section-desc">
+          Gérez les devises supportées par l'application et leurs taux de change par défaut.
+        </p>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>Devises Actives</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div
+              class="add-type-form"
+              style="
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                align-items: flex-end;
+                margin-bottom: 20px;
+              "
+            >
+              <div class="modern-form-group" style="flex: 1; min-width: 100px">
+                <label>Code (ex: USD)</label>
+                <input
+                  type="text"
+                  class="modern-input"
+                  [(ngModel)]="newCurrency.code"
+                  placeholder="USD"
+                />
+              </div>
+              <div class="modern-form-group" style="flex: 1; min-width: 100px">
+                <label>Symbole (ex: $)</label>
+                <input
+                  type="text"
+                  class="modern-input"
+                  [(ngModel)]="newCurrency.symbol"
+                  placeholder="$"
+                />
+              </div>
+              <div class="modern-form-group" style="flex: 1; min-width: 100px">
+                <label>Taux vs EUR</label>
+                <input
+                  type="number"
+                  class="modern-input"
+                  [(ngModel)]="newCurrency.rate"
+                  placeholder="1.08"
+                />
+              </div>
+              <div style="padding-bottom: 8px">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 13px;
+                    cursor: pointer;
+                  "
+                >
+                  <input type="checkbox" [(ngModel)]="newCurrency.isDefault" /> Devise par défaut
+                </label>
+              </div>
+              <button
+                mat-flat-button
+                color="primary"
+                style="margin-bottom: 8px"
+                (click)="addCurrency()"
+                [disabled]="!newCurrency.code || !newCurrency.symbol"
+              >
+                Ajouter
+              </button>
+            </div>
+            <table
+              class="mat-elevation-z2"
+              style="
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+              "
+            >
+              <thead style="background: #f1f5f9; color: #475569; font-size: 14px; text-align: left">
+                <tr>
+                  <th style="padding: 12px 16px">Devise</th>
+                  <th style="padding: 12px 16px">Symbole</th>
+                  <th style="padding: 12px 16px">Taux de change (vs EUR)</th>
+                  <th style="padding: 12px 16px">Par défaut</th>
+                  <th style="padding: 12px 16px">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (curr of currencies; track curr) {
+                  <tr style="border-bottom: 1px solid #e2e8f0">
+                    <td style="padding: 12px 16px; font-weight: 500">{{ curr.code }}</td>
+                    <td style="padding: 12px 16px">{{ curr.symbol }}</td>
+                    <td style="padding: 12px 16px">
+                      <input
+                        type="number"
+                        class="modern-input"
+                        style="width: 100px; padding: 4px 8px"
+                        [(ngModel)]="curr.rate"
+                        (change)="saveCurrencies()"
+                      />
+                    </td>
+                    <td style="padding: 12px 16px">
+                      @if (curr.isDefault) {
+                        <mat-icon color="primary">star</mat-icon>
+                      }
+                      @if (!curr.isDefault) {
+                        <button mat-button (click)="setDefaultCurrency(curr)">
+                          Définir par défaut
+                        </button>
+                      }
+                    </td>
+                    <td style="padding: 12px 16px">
+                      <button mat-icon-button color="warn" (click)="removeCurrency(curr)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                }
+                @if (currencies.length === 0) {
+                  <tr>
+                    <td colspan="5" style="padding: 20px; text-align: center; color: #64748b">
+                      Aucune devise configurée.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+
+    <!-- 5. EMAILS SETTINGS -->
+    @if (activeTab === 'emails') {
+      <div class="settings-section">
+        <h2><mat-icon>email</mat-icon> {{ 'SETTINGS.EMAILS' | translate }}</h2>
+        <p class="section-desc">
+          Gérez les notifications automatiques envoyées par le système. Activez ou désactivez les
+          envois selon les étapes du processus.
+        </p>
+        <!-- AIDE CONTEXTUELLE SUPER ADMIN -->
+        @if (userProfile === 'SuperAdmin' || userProfile === 'Admin') {
+          <div class="admin-help-box">
+            <div class="help-icon"><mat-icon>lightbulb</mat-icon></div>
+            <div class="help-content">
+              <strong>Portée (Scope) des Notifications</strong>
+              <p>
+                Vous pouvez configurer les notifications pour une Base spécifique, pour un Pays
+                entier, ou de manière Globale.
+              </p>
+              <ul>
+                <li>
+                  Le système vérifie d'abord si la <strong>Base</strong> concernée a une
+                  configuration personnalisée.
+                </li>
+                <li>Sinon, il regarde si le <strong>Pays</strong> a une configuration.</li>
+                <li>Par défaut, il utilise la configuration <strong>Globale</strong>.</li>
+              </ul>
+            </div>
+          </div>
+        }
+        <!-- CONTEXT SELECTOR -->
+        <mat-card class="setting-card" style="margin-bottom: 20px">
+          <mat-card-header>
+            <mat-card-title>Contexte de configuration</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap">
+              @if (userProfile === 'SuperAdmin') {
+                <div class="modern-form-group" style="min-width: 200px">
+                  <label>Niveau de configuration</label>
+                  <mat-select
+                    class="modern-input"
+                    [(ngModel)]="selectedEmailContext"
+                    (selectionChange)="onEmailContextChange()"
+                  >
+                    <mat-option value="global">Global (Défaut pour tous)</mat-option>
+                    <mat-option value="pays">Spécifique à un Pays</mat-option>
+                    <mat-option value="base">Spécifique à une Base</mat-option>
+                  </mat-select>
+                </div>
+              }
+              @if (userProfile === 'Admin') {
+                <div class="modern-form-group" style="min-width: 200px">
+                  <label>Niveau de configuration</label>
+                  <mat-select
+                    class="modern-input"
+                    [(ngModel)]="selectedEmailContext"
+                    (selectionChange)="onEmailContextChange()"
+                  >
+                    <mat-option value="pays">Mon Pays (Défaut)</mat-option>
+                    <mat-option value="base">Spécifique à une Base</mat-option>
+                  </mat-select>
+                </div>
+              }
+              @if (
+                (selectedEmailContext === 'pays' || selectedEmailContext === 'base') &&
+                userProfile === 'SuperAdmin'
+              ) {
+                <div class="modern-form-group" style="min-width: 200px">
+                  <label>Sélectionner le Pays</label>
+                  <mat-select
+                    class="modern-input"
+                    [(ngModel)]="selectedEmailPaysContext"
+                    (selectionChange)="onEmailPaysChange()"
+                  >
+                    @for (pays of paysList; track pays) {
+                      <mat-option [value]="pays._id">{{ pays.nom }}</mat-option>
+                    }
+                  </mat-select>
+                </div>
+              }
+              @if (selectedEmailContext === 'base') {
+                <div class="modern-form-group" style="min-width: 200px">
+                  <label>Sélectionner la Base</label>
+                  <mat-select
+                    class="modern-input"
+                    [(ngModel)]="selectedEmailBaseContext"
+                    (selectionChange)="onEmailBaseChange()"
+                    [disabled]="!selectedEmailPaysContext"
+                  >
+                    @for (base of basesList; track base) {
+                      <mat-option [value]="base._id">{{ base.nom }}</mat-option>
+                    }
+                  </mat-select>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>Liste des Notifications</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <table
+              class="mat-elevation-z2"
+              style="
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 20px;
+              "
+            >
+              <thead style="background: #f1f5f9; color: #475569; font-size: 14px; text-align: left">
+                <tr>
+                  <th style="padding: 12px 16px; width: 50px">Statut</th>
+                  <th style="padding: 12px 16px">Notification / Étape</th>
+                  <th style="padding: 12px 16px">Description</th>
+                  <th style="padding: 12px 16px">Destinataires</th>
+                  <th style="padding: 12px 16px; text-align: center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (email of emailNotifications; track email) {
+                  <tr style="border-bottom: 1px solid #e2e8f0">
+                    <td style="padding: 12px 16px">
+                      <mat-slide-toggle
+                        color="primary"
+                        [(ngModel)]="email.enabled"
+                      ></mat-slide-toggle>
+                    </td>
+                    <td style="padding: 12px 16px; font-weight: 500">{{ email.name }}</td>
+                    <td style="padding: 12px 16px; color: #64748b; font-size: 13px">
+                      {{ email.desc }}
+                    </td>
+                    <td style="padding: 12px 16px">
+                      <div style="display: flex; flex-direction: column; gap: 4px">
+                        @if (email.recipientProfiles?.length > 0) {
+                          <span
+                            style="
+                              background: #e2e8f0;
+                              color: #334155;
+                              padding: 4px 8px;
+                              border-radius: 4px;
+                              font-size: 12px;
+                              font-weight: 500;
+                            "
+                          >
+                            <mat-icon
+                              style="
+                                font-size: 14px;
+                                width: 14px;
+                                height: 14px;
+                                vertical-align: middle;
+                              "
+                              >group</mat-icon
+                            >
+                            {{ email.recipientProfiles.join(', ') }}
+                          </span>
+                        }
+                        @if (email.recipientUsers?.length > 0) {
+                          <span
+                            style="
+                              background: #dbeafe;
+                              color: #1e40af;
+                              padding: 4px 8px;
+                              border-radius: 4px;
+                              font-size: 12px;
+                              font-weight: 500;
+                            "
+                          >
+                            <mat-icon
+                              style="
+                                font-size: 14px;
+                                width: 14px;
+                                height: 14px;
+                                vertical-align: middle;
+                              "
+                              >person</mat-icon
+                            >
+                            {{ email.recipientUsers.length }} utilisateur(s)
+                          </span>
+                        }
+                        @if (!email.recipientProfiles?.length && !email.recipientUsers?.length) {
+                          <span style="color: #94a3b8; font-style: italic; font-size: 12px">
+                            Aucun destinataire
+                          </span>
+                        }
+                      </div>
+                    </td>
+                    <td style="padding: 12px 16px; text-align: center">
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="Modifier le template"
+                        (click)="editEmailTemplate(email)"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- INLINE EDITOR -->
+                  @if (editingEmail === email) {
+                    <tr style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1">
+                      <td colspan="5" style="padding: 20px">
+                        <div style="display: flex; flex-direction: column; gap: 15px">
+                          <h3 style="margin: 0; color: #1e293b; font-size: 16px">
+                            <mat-icon style="vertical-align: bottom; font-size: 20px"
+                              >draw</mat-icon
+                            >
+                            Édition du Template : {{ email.name }}
+                          </h3>
+                          <div class="modern-form-group">
+                            <label
+                              >Profils cibles (envoie à tous les utilisateurs ayant ce rôle sur la
+                              base)</label
+                            >
+                            <mat-select
+                              class="modern-input"
+                              [(ngModel)]="email.recipientProfiles"
+                              multiple
+                              style="width: 100%; max-width: 600px"
+                            >
+                              @for (profile of profilesList; track profile) {
+                                <mat-option [value]="profile">{{ profile }}</mat-option>
+                              }
+                            </mat-select>
+                          </div>
+                          <div class="modern-form-group">
+                            <label
+                              >Utilisateurs spécifiques (envoie toujours à ces personnes)</label
+                            >
+                            <mat-select
+                              class="modern-input"
+                              [(ngModel)]="email.recipientUsers"
+                              multiple
+                              style="width: 100%; max-width: 600px"
+                            >
+                              @for (user of usersList; track user) {
+                                <mat-option [value]="user._id"
+                                  >{{ user.nom }} {{ user.prenom }} ({{ user.email }})</mat-option
+                                >
+                              }
+                            </mat-select>
+                          </div>
+                          <div class="modern-form-group">
+                            <label>Sujet de l'email</label>
+                            <input
+                              type="text"
+                              class="modern-input"
+                              [(ngModel)]="email.subject"
+                              style="width: 100%; max-width: 600px"
+                            />
+                          </div>
+                          <div class="modern-form-group">
+                            <label>Corps du message</label>
+                            <textarea
+                              class="modern-input"
+                              [(ngModel)]="email.body"
+                              rows="6"
+                              style="width: 100%; font-family: monospace"
+                            ></textarea>
+                            <small style="color: #64748b; margin-top: 5px"
+                              >Utilisez les variables entre accolades (ex: {{ '{'
+                              }}{{ '{' }}movementId{{ '}' }}{{ '}' }}) pour insérer des données
+                              dynamiques.</small
+                            >
+                          </div>
+                          <div style="display: flex; gap: 10px; justify-content: flex-end">
+                            <button mat-stroked-button (click)="editEmailTemplate(email)">
+                              Fermer
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+            <div class="actions-footer">
+              <button mat-flat-button color="primary" (click)="saveEmailSettings()">
+                Sauvegarder les préférences email
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+
+    <!-- 2. SYSTEM PREFERENCES -->
+    @if (activeTab === 'system') {
+      <div class="settings-section">
+        <h2><mat-icon>settings</mat-icon> {{ 'SETTINGS.SYSTEM_PREF' | translate }}</h2>
+        <p class="section-desc">
+          Gérez les modules optionnels et les fonctionnalités globales de l'application.
+        </p>
+        <mat-card class="setting-card">
+          <mat-card-header>
+            <mat-card-title>Modules Fonctionnels</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div style="display: flex; flex-direction: column; gap: 20px">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  padding: 15px;
+                  background: #f8fafc;
+                  border-radius: 8px;
+                "
+              >
+                <div>
+                  <strong
+                    style="display: block; font-size: 16px; color: #1e293b; margin-bottom: 5px"
+                    >Générateurs (GMAO Énergie)</strong
+                  >
+                  <span style="color: #64748b; font-size: 13px"
+                    >Active le module complet de suivi, logbook horaire et maintenance prédictive
+                    pour les groupes électrogènes.</span
+                  >
+                </div>
+                <mat-slide-toggle
+                  color="primary"
+                  [(ngModel)]="systemPreferences.enableGenerators"
+                ></mat-slide-toggle>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <div class="actions-footer">
+          <button mat-flat-button color="primary" (click)="saveSystemPreferences()">
+            Sauvegarder les préférences système
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- PLACEHOLDERS FOR OTHERS -->
+  </div>
+</div>

@@ -1,0 +1,31 @@
+
+> backend-nest@0.0.1 lint
+> eslint "{src,apps,libs,test}/**/*.ts" --fix
+
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/analytics/analytics.service.ts
+   80:11  error    '_unusedFactors' is assigned a value but never used                                @typescript-eslint/no-unused-vars
+  395:8   warning  Unsafe argument of type `any[]` assigned to a parameter of type `PipelineStage[]`  @typescript-eslint/no-unsafe-argument
+  406:7   warning  Unsafe argument of type `any[]` assigned to a parameter of type `PipelineStage[]`  @typescript-eslint/no-unsafe-argument
+  412:7   warning  Unsafe argument of type `any[]` assigned to a parameter of type `PipelineStage[]`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/environment/environment.service.ts
+  90:11  error  '_unusedBase' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/logbook/logbook-sync.service.ts
+  140:58  warning  Unsafe argument of type `any[]` assigned to a parameter of type `{ lat: number; lng: number; }[]`  @typescript-eslint/no-unsafe-argument
+  227:54  warning  Unsafe argument of type `any[]` assigned to a parameter of type `{ lat: number; lng: number; }[]`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/pays/pays.controller.ts
+  37:7  warning  Unsafe argument of type `any` assigned to a parameter of type `AuthRequest | Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>`  @typescript-eslint/no-unsafe-argument
+  54:7  warning  Unsafe argument of type `any` assigned to a parameter of type `AuthRequest | Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>`  @typescript-eslint/no-unsafe-argument
+  67:7  warning  Unsafe argument of type `any` assigned to a parameter of type `AuthRequest | Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/pays/pays.service.ts
+  25:30  warning  Unsafe argument of type `any` assigned to a parameter of type `UpdateQuery<PaysDocument>`  @typescript-eslint/no-unsafe-argument
+
+/home/jonathan/Documents/App/ACF_vf/backend-nest/src/vehicles/vehicles.controller.ts
+  20:10  error  'Types' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 12 problems (3 errors, 9 warnings)
+
