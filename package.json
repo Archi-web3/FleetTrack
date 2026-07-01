@@ -10,7 +10,9 @@
     "start": "concurrently \"npm run start:backend\" \"npm run start:gestion\" \"npm run start:elogbook\"",
     "start:elogbook": "npm run start --workspace=apps/e-logbook",
     "start:gestion": "npm run start --workspace=apps/gestion-des-deplacements",
-    "start:backend": "npm run start:dev --workspace=backend-nest"
+    "start:backend": "npm run start:dev --workspace=backend-nest",
+    "build:gestion": "npm run build --workspace=apps/gestion-des-deplacements",
+    "build:elogbook": "npm run build --workspace=apps/e-logbook"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
