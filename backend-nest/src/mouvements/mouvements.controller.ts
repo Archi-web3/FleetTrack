@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Query,
+  Put,
 } from '@nestjs/common';
 import { MouvementsService } from './mouvements.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -47,5 +48,13 @@ export class MouvementsController {
     );
   }
 
-  // Update logic to be expanded as needed for Status Updates
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateMouvementDto: any) {
+    return this.mouvementsService.update(id, updateMouvementDto);
+  }
+
+  @Put(':id/validate-security')
+  async validateSecurity(@Param('id') id: string, @Req() req: AuthRequest) {
+    return this.mouvementsService.validateSecurity(id, req.user);
+  }
 }

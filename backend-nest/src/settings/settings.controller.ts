@@ -12,25 +12,28 @@ export class SettingsController {
     if (!value) {
       if (key === 'brandSettings') {
         return {
-          primaryColor: '#8b5cf6',
-          heroDisplayMode: 'both',
-          headerDisplayMode: 'both',
-          appName: 'FleetTrack',
-          appTagline: 'Gestion de flotte',
+          key,
+          value: {
+            primaryColor: '#8b5cf6',
+            heroDisplayMode: 'both',
+            headerDisplayMode: 'both',
+            appName: 'FleetTrack',
+            appTagline: 'Gestion de flotte',
+          }
         };
       }
       if (key === 'co2Factors') {
-        return { short: 150, medium: 120, long: 100 };
+        return { key, value: { short: 150, medium: 120, long: 100 } };
       }
-      return {};
+      return { key, value: {} };
     }
-    return value;
+    return { key, value };
   }
 
   @Get(':key')
   async getSetting(@Param('key') key: string) {
     const value = await this.settingsService.getSetting(key);
-    return value || {};
+    return { key, value: value || {} };
   }
 
   @Post(':key')

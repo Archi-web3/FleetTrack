@@ -218,5 +218,55 @@ export class MouvementsService {
     return savedMouvement;
   }
 
-  // UPDATE / DELETE / STATS LOGIC TO BE ADDED IF NEEDED
+  async update(id: string, updateDto: any): Promise<Mouvement> {
+    const updated = await this.mouvementModel
+      .findByIdAndUpdate(id, updateDto, { new: true })
+      .exec();
+    if (!updated) {
+      throw new ConflictException('Mouvement non trouvé');
+    }
+    return updated;
+  }
+
+  async validateSecurity(id: string, user: UserPayloadDto): Promise<Mouvement> {
+    const mouvement = await this.mouvementModel.findById(id).exec();
+    if (!mouvement) throw new ConflictException('Mouvement non trouvé');
+
+    if (!mouvement.securityApprovals || mouvement.securityApprovals.length === 0) {
+      return mouvement;
+    }
+
+    const userId = user._id || user.id;
+    const approvalIndex = mouvement.securityApprovals.findIndex(
+      (a: any) => a.validator.toString() === userId.toString(),
+    );
+
+    if (approvalIndex === -1) {
+      throw new ConflictException('Vous n\'êtes pas autorisé à valider ce mouvement');
+    }
+
+    // Set this validator's status to approved
+    mouvement.securityApprovals[approvalIndex].status = 'approved';
+    mouvement.securityApprovals[approvalIndex].approvalDate = new Date();
+    
+    // Check if ALL primary validators have approved
+    const allApproved = mouvement.securityApprovals
+      .filter((a: any) => !a.isBackup)
+      .every((a: any) => a.status === 'approved');
+
+    if (allApproved) {
+      mouvement.statutSecurite = 'validé';
+      // If logistics is not required or already valid, set overall to validé
+      if (
+        mouvement.statutLogistique === 'non requis' ||
+        mouvement.statutLogistique === 'validé'
+      ) {
+        mouvement.statut = 'validé';
+      } else {
+        mouvement.statut = 'en attente validation logistique';
+      }
+    }
+
+    return mouvement.save();
+  }
 }

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { MouvementsController } from './mouvements.controller';
 import { MouvementsService } from './mouvements.service';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
@@ -20,6 +21,7 @@ import { User, UserSchema } from '../users/schemas/user.schema';
       { name: User.name, schema: UserSchema },
     ]),
   ],
+  controllers: [MouvementsController],
   providers: [
     MouvementsService,
     MouvementsConflictService,
