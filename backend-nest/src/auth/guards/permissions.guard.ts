@@ -24,11 +24,36 @@ export class PermissionsGuard implements CanActivate {
       return false;
     }
 
-    // Legacy profil check
+    // 1. New RBAC System Check
+    if (user.role && typeof user.role !== 'string' && (user.role as any).permissions) {
+      const role = user.role as { name: string; permissions: string[] };
+      
+      // SuperAdmin bypass
+      if (role.name === 'SuperAdmin' || role.permissions.includes('ALL')) {
+        return true;
+      }
+      
+      if (!requiredPermissions || requiredPermissions.length === 0) {
+        return true;
+      }
+
+      const hasPermission = requiredPermissions.some((permission) =>
+        role.permissions.includes(permission),
+      );
+
+      if (hasPermission) return true;
+      // Fallback to legacy check below if RBAC check failed (for transition period)
+    }
+
+    // 2. Legacy profil check
     const profil = user.profil;
 
     if (profil === 'SuperAdmin') {
       return true;
+    }
+
+    if (!requiredPermissions || requiredPermissions.length === 0) {
+      return true; // No specific permissions required, just authentication
     }
 
     // Basic legacy mapping

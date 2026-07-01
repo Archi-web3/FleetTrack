@@ -91,4 +91,41 @@ export class RolesService implements OnApplicationBootstrap {
   async findByName(name: string): Promise<RoleDocument | null> {
     return this.roleModel.findOne({ name }).exec();
   }
+
+  async migrateExistingUsers(): Promise<any> {
+    const roles = await this.findAll();
+    const roleMap: Record<string, string> = {};
+    for (const role of roles) {
+      roleMap[role.name] = (role as any)._id.toString();
+    }
+
+    // Dynamic import to avoid circular dependency if not injected
+    const mongoose = require('mongoose');
+    const userModel = mongoose.model('Utilisateur');
+    
+    const users = await userModel.find({ role: { $exists: false } }).exec();
+    let updatedCount = 0;
+
+    for (const user of users) {
+      const profil = user.profil;
+      if (profil && roleMap[profil]) {
+        user.role = roleMap[profil];
+        await user.save();
+        updatedCount++;
+      } else if (profil) {
+        // Fallback for profiles that don't match a default role exactly
+        if (profil === 'Superviseur Sécurité' && roleMap['Superviseur']) {
+          user.role = roleMap['Superviseur'];
+          await user.save();
+          updatedCount++;
+        } else if (profil === 'Technicien' && roleMap['Demandeur']) {
+          user.role = roleMap['Demandeur'];
+          await user.save();
+          updatedCount++;
+        }
+      }
+    }
+
+    return { message: `Migrated ${updatedCount} users to RBAC roles successfully.`, totalUnmigrated: users.length - updatedCount };
+  }
 }
