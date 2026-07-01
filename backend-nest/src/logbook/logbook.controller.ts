@@ -15,7 +15,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { SyncPayloadDto } from './dto/sync-payload.dto';
 import type { AuthRequest } from '../analytics/analytics.controller';
 
-@Controller('api/logbook')
+@Controller('logbook')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class LogbookController {
   constructor(

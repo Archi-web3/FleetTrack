@@ -16,7 +16,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 import type { AuthRequest } from '../analytics/analytics.controller';
 
-@Controller('api/alerts')
+@Controller('alerts')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class AlertsController {
   constructor(private readonly alertsService: AlertsService) {}

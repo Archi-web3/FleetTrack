@@ -18,7 +18,7 @@ import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { CreateBaseDto, UpdateBaseDto } from './dto/bases.dto';
 import type { AuthRequest } from '../analytics/analytics.controller';
 
-@Controller('api/bases')
+@Controller('bases')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class BasesController {
   constructor(

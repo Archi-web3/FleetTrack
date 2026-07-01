@@ -21,7 +21,7 @@ export class UploadPhotoDto {
   base!: string;
 }
 
-@Controller('api/upload')
+@Controller('upload')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class UploadsController {
   constructor(private readonly uploadsService: UploadsService) {}

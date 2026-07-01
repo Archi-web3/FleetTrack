@@ -18,7 +18,7 @@ import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import type { AuthRequest } from '../analytics/analytics.controller';
 import { CreateProjetDto, UpdateProjetDto } from './dto/projet.dto';
 
-@Controller('api/projets')
+@Controller('projets')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class ProjetsController {
   constructor(

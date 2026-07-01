@@ -15,7 +15,7 @@ import type { AuthRequest } from '../analytics/analytics.controller';
 import type { UpdateQuery } from 'mongoose';
 import { GenerateurDocument } from './schemas/generateur.schema';
 
-@Controller('api/generateurs')
+@Controller('generateurs')
 @UseGuards(JwtAuthGuard)
 export class GenerateursController {
   constructor(private readonly generateursService: GenerateursService) {}

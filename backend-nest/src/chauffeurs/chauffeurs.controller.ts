@@ -17,7 +17,7 @@ import { CreateUserDto, UpdateUserDto } from '../users/dto/users.dto';
 import type { AuthRequest } from '../analytics/analytics.controller';
 import { UserDocument } from '../users/schemas/user.schema';
 
-@Controller('api/chauffeurs')
+@Controller('chauffeurs')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class ChauffeursController {
   constructor(private readonly usersService: UsersService) {}

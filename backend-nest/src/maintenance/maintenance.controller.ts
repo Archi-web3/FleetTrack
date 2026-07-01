@@ -14,7 +14,7 @@ import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 import { ValidateTaskDto, CompleteServiceDto } from './dto/maintenance.dto';
 import type { AuthRequest } from '../analytics/analytics.controller';
 
-@Controller('api/maintenance')
+@Controller('maintenance')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class MaintenanceController {
   constructor(private readonly maintenanceService: MaintenanceService) {}

@@ -16,7 +16,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 
-@Controller('api/pays')
+@Controller('pays')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class PaysController {
   constructor(

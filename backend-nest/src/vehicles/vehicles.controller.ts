@@ -23,7 +23,7 @@ interface AuthRequest extends Request {
   user: UserPayloadDto;
 }
 
-@Controller('api/vehicules')
+@Controller('vehicules')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class VehiclesController {
   constructor(

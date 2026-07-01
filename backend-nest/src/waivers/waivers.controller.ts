@@ -17,7 +17,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 import { CreateWaiverDto } from './dto/waivers.dto';
 
-@Controller('api/waivers')
+@Controller('waivers')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class WaiversController {
   constructor(private readonly waiversService: WaiversService) {}

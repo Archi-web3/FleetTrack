@@ -17,7 +17,7 @@ import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 import { EnvironmentActionDocument } from './schemas/environment-action.schema';
 import { EnvironmentData } from './schemas/environment-data.schema';
 
-@Controller('api/environment')
+@Controller('environment')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class EnvironmentController {
   constructor(private readonly environmentService: EnvironmentService) {}

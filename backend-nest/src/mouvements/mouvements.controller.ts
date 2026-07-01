@@ -15,7 +15,7 @@ import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 import type { AuthRequest } from '../analytics/analytics.controller';
 import { CreateMouvementDto, MouvementQueryDto } from './dto/mouvements.dto';
 
-@Controller('api/mouvements')
+@Controller('mouvements')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class MouvementsController {
   constructor(private readonly mouvementsService: MouvementsService) {}
