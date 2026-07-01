@@ -13,32 +13,40 @@ export class PermissionsGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-    if (!requiredPermissions) {
+    if (!requiredPermissions || requiredPermissions.length === 0) {
       return true; // No permissions required
     }
 
     const request = context.switchToHttp().getRequest<AuthRequest>();
     const user = request.user;
 
-    // Check if user exists and has a role populated
-    if (
-      !user ||
-      !user.role ||
-      typeof user.role === 'string' ||
-      !(user.role as Record<string, any>).permissions
-    ) {
+    if (!user) {
       return false;
     }
 
-    const role = user.role as { name: string; permissions: string[] };
+    // Legacy profil check
+    const profil = user.profil;
 
-    // If SuperAdmin bypass
-    if (role.name === 'SuperAdmin') {
+    if (profil === 'SuperAdmin') {
       return true;
     }
 
-    return requiredPermissions.some((permission) =>
-      role.permissions.includes(permission),
-    );
+    // Basic legacy mapping
+    const isBasicUser = ['Demandeur', 'Chauffeur', 'Guest'].includes(profil);
+    const isManager = ['Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien'].includes(profil);
+
+    // Basic users can only do basic things
+    const basicPermissions = ['VIEW_OWN_MOUVEMENTS', 'CREATE_MOUVEMENT'];
+    
+    for (const reqPerm of requiredPermissions) {
+       if (basicPermissions.includes(reqPerm)) {
+         return true; // Everyone can view own movements and create
+       }
+       if (isManager) {
+         return true; // Managers can do almost everything for their base/country, logic in controller
+       }
+    }
+
+    return false; // If not basic permission and not manager, deny
   }
 }
