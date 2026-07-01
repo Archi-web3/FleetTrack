@@ -2,12 +2,12 @@
   "name": "gestion-des-deplacements",
   "version": "2.7.0",
   "scripts": {
-    "ng": "ng",
-    "start": "set NODE_OPTIONS=--max-old-space-size=4096 && ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "lint": "ng lint"
+    "ng": "npx ng",
+    "start": "set NODE_OPTIONS=--max-old-space-size=4096 && npx ng serve",
+    "build": "npx ng build",
+    "watch": "npx ng build --watch --configuration development",
+    "test": "npx ng test",
+    "lint": "npx ng lint"
   },
   "prettier": {
     "printWidth": 100,
