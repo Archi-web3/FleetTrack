@@ -40,33 +40,43 @@
               <div class="permissions-summary">
                 <strong>Accès principaux :</strong>
                 <div class="badges-container">
-                  <!-- Afficher quelques badges dynamiques basés sur view_menu -->
-                  @if (matrix[profile]['mouvements_demandes']?.['view_menu']) {
-                    <span class="module-badge">Mouvements</span>
-                  }
-                  @if (matrix[profile]['flotte_vehicules']?.['view_menu']) {
-                    <span class="module-badge">Flotte</span>
-                  }
-                  @if (matrix[profile]['mobile_chauffeur']?.['access_app']) {
-                    <span class="module-badge">App Mobile</span>
-                  }
-                  @if (matrix[profile]['admin_settings']?.['manage']) {
-                    <span class="module-badge admin-badge">Admin</span>
-                  }
-                  @if (
-                    !matrix[profile]['mouvements_demandes']?.['view_menu'] &&
-                    !matrix[profile]['flotte_vehicules']?.['view_menu'] &&
-                    !matrix[profile]['mobile_chauffeur']?.['access_app']
-                  ) {
-                    <span class="module-badge no-access">Accès Restreint</span>
+                  @if (profile === 'SuperAdmin') {
+                    <span class="module-badge admin-badge" style="background-color: #2e7d32; color: white;">Accès Total (All Rights)</span>
+                  } @else {
+                    <!-- Afficher quelques badges dynamiques basés sur view_menu -->
+                    @if (matrix[profile]['mouvements_demandes']?.['view_menu']) {
+                      <span class="module-badge">Mouvements</span>
+                    }
+                    @if (matrix[profile]['flotte_vehicules']?.['view_menu']) {
+                      <span class="module-badge">Flotte</span>
+                    }
+                    @if (matrix[profile]['mobile_chauffeur']?.['access_app']) {
+                      <span class="module-badge">App Mobile</span>
+                    }
+                    @if (matrix[profile]['admin_settings']?.['manage']) {
+                      <span class="module-badge admin-badge">Admin</span>
+                    }
+                    @if (
+                      !matrix[profile]['mouvements_demandes']?.['view_menu'] &&
+                      !matrix[profile]['flotte_vehicules']?.['view_menu'] &&
+                      !matrix[profile]['mobile_chauffeur']?.['access_app']
+                    ) {
+                      <span class="module-badge no-access">Accès Restreint</span>
+                    }
                   }
                 </div>
               </div>
             </mat-card-content>
             <mat-card-actions>
-              <button mat-flat-button color="primary" (click)="selectProfile(profile)">
-                <mat-icon>edit_note</mat-icon> Modifier les droits
-              </button>
+              @if (profile === 'SuperAdmin') {
+                <button mat-flat-button color="primary" disabled matTooltip="Le SuperAdmin a tous les droits par défaut">
+                  <mat-icon>security</mat-icon> Droits Inaltérables
+                </button>
+              } @else {
+                <button mat-flat-button color="primary" (click)="selectProfile(profile)">
+                  <mat-icon>edit_note</mat-icon> Modifier les droits
+                </button>
+              }
             </mat-card-actions>
           </mat-card>
         }

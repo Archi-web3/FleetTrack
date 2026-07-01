@@ -225,6 +225,8 @@ export class AuthService {
         // Fix: Automatically set selectedCountry in localStorage if user has a country assigned
         if (decoded.utilisateur.pays?.id) {
           localStorage.setItem('selectedCountry', decoded.utilisateur.pays.id);
+        } else if (decoded.utilisateur.profil === 'SuperAdmin') {
+          localStorage.setItem('selectedCountry', 'all');
         }
       } else {
         console.warn(
