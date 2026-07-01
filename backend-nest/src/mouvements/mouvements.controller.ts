@@ -8,6 +8,7 @@ import {
   Req,
   Query,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { MouvementsService } from './mouvements.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -26,6 +27,17 @@ export class MouvementsController {
   async findAll(@Query() query: MouvementQueryDto) {
     // Inject auto country/base filtering logic later
     return this.mouvementsService.findAll(query);
+  }
+
+  @Get('stats-by-status')
+  async getStatsByStatus() {
+    return this.mouvementsService.getStatsByStatus();
+  }
+
+  @Get('planning')
+  @RequirePermissions('VIEW_OWN_MOUVEMENTS') // Relaxed permission for planning
+  async getPlanning(@Query('includePending') includePending: string) {
+    return this.mouvementsService.getPlanning(includePending === 'true');
   }
 
   @Get(':id')
@@ -53,8 +65,28 @@ export class MouvementsController {
     return this.mouvementsService.update(id, updateMouvementDto);
   }
 
-  @Put(':id/validate-security')
+  @Put(':id/validate')
   async validateSecurity(@Param('id') id: string, @Req() req: AuthRequest) {
     return this.mouvementsService.validateSecurity(id, req.user);
+  }
+
+  @Delete('cleanup/ghosts')
+  async cleanGhosts() {
+    return this.mouvementsService.cleanGhosts();
+  }
+
+  @Post('fix-countries')
+  async fixCountries() {
+    return this.mouvementsService.fixCountries();
+  }
+
+  @Get('suggestions/:id')
+  async getSuggestions(@Param('id') id: string) {
+    return this.mouvementsService.getSuggestions(id);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.mouvementsService.remove(id);
   }
 }

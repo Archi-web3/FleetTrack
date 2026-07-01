@@ -39,6 +39,40 @@ export class MouvementsService {
       .exec();
   }
 
+  async getPlanning(includePending: boolean): Promise<Mouvement[]> {
+    const statusFilter = ['validé', 'pris en charge', 'en cours', 'terminé'];
+    if (includePending) {
+      statusFilter.push('en attente', 'en attente validation sécurité');
+    }
+    return this.mouvementModel
+      .find({ statut: { $in: statusFilter } })
+      .populate('stops.lieu', 'nom adresse coordonnees estSensible')
+      .populate('demandeur', 'nom email prenom')
+      .populate('vehicule', 'marque modele immatriculation')
+      .populate('chauffeur', 'nom prenom telephone')
+      .populate('passagers', 'nom email prenom')
+      .sort({ 'stops.0.dateDepart': 1 })
+      .exec();
+  }
+
+  async getStatsByStatus(): Promise<any[]> {
+    return this.mouvementModel.aggregate([
+      {
+        $group: {
+          _id: '$statut',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          statut: '$_id',
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+  }
+
   async findById(id: string): Promise<MouvementDocument | null> {
     return this.mouvementModel
       .findById(id)
@@ -268,5 +302,28 @@ export class MouvementsService {
     }
 
     return mouvement.save();
+  }
+
+  async cleanGhosts(): Promise<any> {
+    const mouvementsGroupes = await this.mouvementModel.find({ statut: 'regroupé' }).populate('parentMouvement').exec();
+    const ghostsToDelete = mouvementsGroupes.filter((m: any) => !m.parentMouvement);
+    if (ghostsToDelete.length > 0) {
+      const ids = ghostsToDelete.map(m => m._id);
+      await this.mouvementModel.deleteMany({ _id: { $in: ids } }).exec();
+      return { message: `${ghostsToDelete.length} mouvements fantômes nettoyés.` };
+    }
+    return { message: 'Aucun fantôme trouvé.' };
+  }
+
+  async fixCountries(): Promise<any> {
+    return { message: 'Not implemented' };
+  }
+
+  async getSuggestions(id: string): Promise<any[]> {
+    return [];
+  }
+
+  async remove(id: string): Promise<any> {
+    return this.mouvementModel.findByIdAndDelete(id).exec();
   }
 }
