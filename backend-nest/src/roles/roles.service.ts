@@ -84,7 +84,7 @@ export class RolesService implements OnApplicationBootstrap {
     }
   }
 
-  async findAll(): Promise<Role[]> {
+  async findAll(): Promise<RoleDocument[]> {
     return this.roleModel.find().exec();
   }
 
