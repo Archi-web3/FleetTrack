@@ -92,18 +92,32 @@ export class RolesService implements OnApplicationBootstrap {
     return this.roleModel.findOne({ name }).exec();
   }
 
-  async migrateExistingUsers(): Promise<any> {
+  async migrateExistingUsers(): Promise<{
+    message: string;
+    totalUnmigrated: number;
+  }> {
     const roles = await this.findAll();
     const roleMap: Record<string, string> = {};
     for (const role of roles) {
-      roleMap[role.name] = (role as any)._id.toString();
+      roleMap[role.name] = String(role._id);
     }
 
     // Dynamic import to avoid circular dependency if not injected
-    const mongoose = require('mongoose');
-    const userModel = mongoose.model('Utilisateur');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+    const mongooseClient = require('mongoose');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const userModel = mongooseClient.model('Utilisateur');
 
-    const users = await userModel.find({ role: { $exists: false } }).exec();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const users = (await userModel
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      .find({ role: { $exists: false } })
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      .exec()) as Array<{
+      profil: string;
+      role: string;
+      save: () => Promise<void>;
+    }>;
     let updatedCount = 0;
 
     for (const user of users) {
@@ -128,6 +142,7 @@ export class RolesService implements OnApplicationBootstrap {
 
     return {
       message: `Migrated ${updatedCount} users to RBAC roles successfully.`,
+
       totalUnmigrated: users.length - updatedCount,
     };
   }

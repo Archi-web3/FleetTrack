@@ -33,11 +33,15 @@ export class SettingsController {
   @Get(':key')
   async getSetting(@Param('key') key: string) {
     const value = await this.settingsService.getSetting(key);
+
     return { key, value: value || {} };
   }
 
   @Post(':key')
-  async setSetting(@Param('key') key: string, @Body() body: any) {
+  async setSetting(
+    @Param('key') key: string,
+    @Body() body: Record<string, unknown>,
+  ) {
     return this.settingsService.setSetting(key, body.value || body);
   }
 }

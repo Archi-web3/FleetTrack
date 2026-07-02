@@ -16,6 +16,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 import type { AuthRequest } from '../analytics/analytics.controller';
 import { CreateMouvementDto, MouvementQueryDto } from './dto/mouvements.dto';
+import { Mouvement } from './schemas/mouvement.schema';
 
 @Controller('mouvements')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -66,7 +67,10 @@ export class MouvementsController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateMouvementDto: any) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateMouvementDto: Record<string, unknown>,
+  ) {
     return this.mouvementsService.update(id, updateMouvementDto);
   }
 

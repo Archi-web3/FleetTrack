@@ -366,6 +366,7 @@ export class MouvementsService {
       .populate('parentMouvement')
       .exec();
     const ghostsToDelete = mouvementsGroupes.filter(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (m: any) => !m.parentMouvement,
     );
     if (ghostsToDelete.length > 0) {
@@ -378,11 +379,13 @@ export class MouvementsService {
     return { message: 'Aucun fantôme trouvé.' };
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async fixCountries(): Promise<{ message: string }> {
     return { message: 'Not implemented' };
   }
 
-  async getSuggestions(id: string): Promise<any[]> {
+  // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-unused-vars
+  async getSuggestions(_id: string): Promise<any[]> {
     return [];
   }
 

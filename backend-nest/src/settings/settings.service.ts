@@ -11,7 +11,7 @@ export class SettingsService {
     @InjectModel(Setting.name) private settingModel: Model<SettingDocument>,
   ) {}
 
-  async getSetting(key: string): Promise<any> {
+  async getSetting(key: string): Promise<unknown> {
     const setting = await this.settingModel.findOne({ key }).exec();
     if (setting) return setting.value;
 
@@ -26,7 +26,7 @@ export class SettingsService {
     return null;
   }
 
-  async setSetting(key: string, value: any): Promise<Setting> {
+  async setSetting(key: string, value: unknown): Promise<Setting> {
     const setting = await this.settingModel
       .findOneAndUpdate({ key }, { value }, { new: true, upsert: true })
       .exec();
