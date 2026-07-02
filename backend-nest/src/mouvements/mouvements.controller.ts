@@ -34,6 +34,11 @@ export class MouvementsController {
     return this.mouvementsService.getStatsByStatus();
   }
 
+  @Get('stats-by-vehicle')
+  async getStatsByVehicle() {
+    return this.mouvementsService.getStatsByVehicle();
+  }
+
   @Get('planning')
   @RequirePermissions('VIEW_OWN_MOUVEMENTS') // Relaxed permission for planning
   async getPlanning(@Query('includePending') includePending: string) {

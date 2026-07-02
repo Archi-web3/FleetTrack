@@ -13,7 +13,17 @@ export class SettingsService {
 
   async getSetting(key: string): Promise<any> {
     const setting = await this.settingModel.findOne({ key }).exec();
-    return setting ? setting.value : null;
+    if (setting) return setting.value;
+    
+    // Default brand settings if not found in database
+    if (key === 'brand') {
+      return {
+        appName: 'FleetTrack',
+        headerDisplayMode: 'both',
+      };
+    }
+    
+    return null;
   }
 
   async setSetting(key: string, value: any): Promise<Setting> {

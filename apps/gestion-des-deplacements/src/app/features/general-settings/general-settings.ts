@@ -332,7 +332,7 @@ export class GeneralSettingsComponent implements OnInit {
   paysList: any[] = [];
   basesList: any[] = [];
 
-  selectedEmailContext: 'global' | 'pays' | 'base' = 'global';
+  selectedEmailContext: 'global' | 'pays' | 'base' = 'pays';
   selectedEmailPaysContext = '';
   selectedEmailBaseContext = '';
 
@@ -376,6 +376,7 @@ export class GeneralSettingsComponent implements OnInit {
       id: 'req_created',
       name: 'Nouvelle demande de mouvement',
       desc: "Envoyé aux logisticiens lors d'une nouvelle requête",
+      workflowDesc: 'Cette notification est le point de départ. Elle informe l\'équipe logistique qu\'une nouvelle demande vient d\'être soumise par un utilisateur.',
       enabled: true,
       recipientProfiles: ['Logisticien', 'SuperAdmin'],
       recipientUsers: [],
@@ -385,7 +386,8 @@ export class GeneralSettingsComponent implements OnInit {
     {
       id: 'log_validated',
       name: 'Validation Logistique',
-      desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise',
+      desc: 'Envoyé au département Log pour validation et consolidation mouvement, véhicule, chauffeur.',
+      workflowDesc: 'Cette notification s\'active lorsque le demandeur soumet un mouvement. Le logisticien la reçoit pour assigner un véhicule et un chauffeur.',
       enabled: true,
       recipientProfiles: ['Superviseur Sécurité'],
       recipientUsers: [],
@@ -395,7 +397,8 @@ export class GeneralSettingsComponent implements OnInit {
     {
       id: 'sec_validated',
       name: 'Validation Sécurité',
-      desc: 'Envoyé au pôle logistique pour confirmation finale',
+      desc: 'Envoyé au validateur sécurité pour validation du mouvement selon leur habilitation.',
+      workflowDesc: 'Déclenchée une fois que la logistique a assigné les ressources. Le valideur de sécurité (Niveau 1 à 5) l\'examine pour donner le GO final.',
       enabled: true,
       recipientProfiles: ['Logisticien'],
       recipientUsers: [],
@@ -406,6 +409,7 @@ export class GeneralSettingsComponent implements OnInit {
       id: 'assigned',
       name: 'Chauffeur Assigné / Mouvement Confirmé',
       desc: 'Envoyé au demandeur et au chauffeur',
+      workflowDesc: 'Envoyée quand toutes les validations sont obtenues. Le demandeur et le chauffeur reçoivent la confirmation définitive du départ.',
       enabled: true,
       recipientProfiles: [],
       recipientUsers: [],
@@ -416,6 +420,7 @@ export class GeneralSettingsComponent implements OnInit {
       id: 'cancelled',
       name: 'Mouvement Annulé',
       desc: "Envoyé aux parties prenantes en cas d'annulation",
+      workflowDesc: 'Diffusée à tous les acteurs du mouvement (chauffeur, demandeur, logistique) si le mouvement est refusé ou annulé en cours de route.',
       enabled: true,
       recipientProfiles: ['Logisticien'],
       recipientUsers: [],
@@ -426,6 +431,7 @@ export class GeneralSettingsComponent implements OnInit {
       id: 'maintenance_alert',
       name: 'Alerte Maintenance',
       desc: 'Envoyé quand un véhicule approche de son échéance de maintenance',
+      workflowDesc: 'Notification préventive automatique déclenchée par le module Fleet lorsque le kilométrage approche du seuil critique.',
       enabled: false,
       recipientProfiles: ['Logisticien'],
       recipientUsers: [],
@@ -448,6 +454,7 @@ export class GeneralSettingsComponent implements OnInit {
             id: 'req_created',
             name: 'Nouvelle demande de mouvement',
             desc: "Envoyé aux logisticiens lors d'une nouvelle requête",
+            workflowDesc: 'Cette notification est le point de départ. Elle informe l\'équipe logistique qu\'une nouvelle demande vient d\'être soumise par un utilisateur.',
             enabled: true,
             recipientProfiles: ['Logisticien', 'SuperAdmin'],
             recipientUsers: [],
@@ -457,7 +464,8 @@ export class GeneralSettingsComponent implements OnInit {
           {
             id: 'log_validated',
             name: 'Validation Logistique',
-            desc: 'Envoyé au valideur sécurité ou au demandeur si sécurité non requise',
+            desc: 'Envoyé au département Log pour validation et consolidation mouvement, véhicule, chauffeur.',
+            workflowDesc: 'Cette notification s\'active lorsque le demandeur soumet un mouvement. Le logisticien la reçoit pour assigner un véhicule et un chauffeur.',
             enabled: true,
             recipientProfiles: ['Superviseur Sécurité'],
             recipientUsers: [],
@@ -467,7 +475,8 @@ export class GeneralSettingsComponent implements OnInit {
           {
             id: 'sec_validated',
             name: 'Validation Sécurité',
-            desc: 'Envoyé au pôle logistique pour confirmation finale',
+            desc: 'Envoyé au validateur sécurité pour validation du mouvement selon leur habilitation.',
+            workflowDesc: 'Déclenchée une fois que la logistique a assigné les ressources. Le valideur de sécurité (Niveau 1 à 5) l\'examine pour donner le GO final.',
             enabled: true,
             recipientProfiles: ['Logisticien'],
             recipientUsers: [],
@@ -478,6 +487,7 @@ export class GeneralSettingsComponent implements OnInit {
             id: 'assigned',
             name: 'Chauffeur Assigné / Mouvement Confirmé',
             desc: 'Envoyé au demandeur et au chauffeur',
+            workflowDesc: 'Envoyée quand toutes les validations sont obtenues. Le demandeur et le chauffeur reçoivent la confirmation définitive du départ.',
             enabled: true,
             recipientProfiles: [],
             recipientUsers: [],
@@ -488,6 +498,7 @@ export class GeneralSettingsComponent implements OnInit {
             id: 'cancelled',
             name: 'Mouvement Annulé',
             desc: "Envoyé aux parties prenantes en cas d'annulation",
+            workflowDesc: 'Diffusée à tous les acteurs du mouvement (chauffeur, demandeur, logistique) si le mouvement est refusé ou annulé en cours de route.',
             enabled: true,
             recipientProfiles: ['Logisticien'],
             recipientUsers: [],
@@ -498,6 +509,7 @@ export class GeneralSettingsComponent implements OnInit {
             id: 'maintenance_alert',
             name: 'Alerte Maintenance',
             desc: 'Envoyé quand un véhicule approche de son échéance de maintenance',
+            workflowDesc: 'Notification préventive automatique déclenchée par le module Fleet lorsque le kilométrage approche du seuil critique.',
             enabled: false,
             recipientProfiles: ['Logisticien'],
             recipientUsers: [],
@@ -528,6 +540,13 @@ export class GeneralSettingsComponent implements OnInit {
         this.snackBar.open('Erreur de sauvegarde', 'Fermer');
       },
     });
+  }
+
+  canShowEmailSettings(): boolean {
+    if (this.selectedEmailContext === 'global') return true;
+    if (this.selectedEmailContext === 'pays' && this.selectedEmailPaysContext) return true;
+    if (this.selectedEmailContext === 'base' && this.selectedEmailBaseContext) return true;
+    return false;
   }
 }
 // Triggering Vercel build to fix cache

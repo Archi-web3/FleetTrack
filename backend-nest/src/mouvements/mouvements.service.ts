@@ -73,6 +73,44 @@ export class MouvementsService {
     ]);
   }
 
+  async getStatsByVehicle(): Promise<any[]> {
+    return this.mouvementModel.aggregate([
+      { 
+        $match: {
+          startMileage: { $exists: true, $ne: null },
+          endMileage: { $exists: true, $ne: null }
+        }
+      },
+      {
+        $group: {
+          _id: '$vehicule',
+          totalDistance: { $sum: { $subtract: ['$endMileage', '$startMileage'] } },
+          totalTrips: { $sum: 1 }
+        }
+      },
+      { $sort: { totalDistance: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: 'vehicules',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'vehiculeDetails'
+        }
+      },
+      { $unwind: '$vehiculeDetails' },
+      {
+        $project: {
+          vehicule: '$vehiculeDetails.immatriculation',
+          marque: '$vehiculeDetails.marque',
+          modele: '$vehiculeDetails.modele',
+          totalDistance: 1,
+          totalTrips: 1
+        }
+      }
+    ]);
+  }
+
   async findById(id: string): Promise<MouvementDocument | null> {
     return this.mouvementModel
       .findById(id)

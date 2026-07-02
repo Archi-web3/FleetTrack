@@ -773,7 +773,6 @@
                     [(ngModel)]="selectedEmailContext"
                     (selectionChange)="onEmailContextChange()"
                   >
-                    <mat-option value="global">Global (Défaut pour tous)</mat-option>
                     <mat-option value="pays">Spécifique à un Pays</mat-option>
                     <mat-option value="base">Spécifique à une Base</mat-option>
                   </mat-select>
@@ -827,6 +826,14 @@
             </div>
           </mat-card-content>
         </mat-card>
+        @if (!canShowEmailSettings()) {
+          <div style="text-align: center; padding: 40px; color: #64748b; background: white; border-radius: 8px; margin-bottom: 20px;">
+            <mat-icon style="font-size: 48px; height: 48px; width: 48px; color: #cbd5e1; margin-bottom: 15px;">location_city</mat-icon>
+            <h3 style="margin-bottom: 5px;">Sélectionnez un périmètre</h3>
+            <p>Veuillez sélectionner un Pays ou une Base pour configurer les notifications emails spécifiques.</p>
+          </div>
+        }
+        @if (canShowEmailSettings()) {
         <mat-card class="setting-card">
           <mat-card-header>
             <mat-card-title>Liste des Notifications</mat-card-title>
@@ -864,6 +871,11 @@
                     <td style="padding: 12px 16px; font-weight: 500">{{ email.name }}</td>
                     <td style="padding: 12px 16px; color: #64748b; font-size: 13px">
                       {{ email.desc }}
+                      @if (email.workflowDesc) {
+                        <div style="margin-top: 8px; padding: 8px; background-color: #f8fafc; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 12px; color: #334155;">
+                          <strong><mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle; color: #3b82f6;">info</mat-icon> Workflow :</strong> {{ email.workflowDesc }}
+                        </div>
+                      }
                     </td>
                     <td style="padding: 12px 16px">
                       <div style="display: flex; flex-direction: column; gap: 4px">
@@ -1017,6 +1029,7 @@
             </div>
           </mat-card-content>
         </mat-card>
+        }
       </div>
     }
 
