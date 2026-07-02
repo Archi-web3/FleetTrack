@@ -19,7 +19,7 @@ export class SettingsController {
             headerDisplayMode: 'both',
             appName: 'FleetTrack',
             appTagline: 'Gestion de flotte',
-          }
+          },
         };
       }
       if (key === 'co2Factors') {

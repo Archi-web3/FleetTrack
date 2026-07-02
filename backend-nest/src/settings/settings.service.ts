@@ -14,7 +14,7 @@ export class SettingsService {
   async getSetting(key: string): Promise<any> {
     const setting = await this.settingModel.findOne({ key }).exec();
     if (setting) return setting.value;
-    
+
     // Default brand settings if not found in database
     if (key === 'brand') {
       return {
@@ -22,7 +22,7 @@ export class SettingsService {
         headerDisplayMode: 'both',
       };
     }
-    
+
     return null;
   }
 

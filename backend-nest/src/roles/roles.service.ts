@@ -102,7 +102,7 @@ export class RolesService implements OnApplicationBootstrap {
     // Dynamic import to avoid circular dependency if not injected
     const mongoose = require('mongoose');
     const userModel = mongoose.model('Utilisateur');
-    
+
     const users = await userModel.find({ role: { $exists: false } }).exec();
     let updatedCount = 0;
 
@@ -126,6 +126,9 @@ export class RolesService implements OnApplicationBootstrap {
       }
     }
 
-    return { message: `Migrated ${updatedCount} users to RBAC roles successfully.`, totalUnmigrated: users.length - updatedCount };
+    return {
+      message: `Migrated ${updatedCount} users to RBAC roles successfully.`,
+      totalUnmigrated: users.length - updatedCount,
+    };
   }
 }

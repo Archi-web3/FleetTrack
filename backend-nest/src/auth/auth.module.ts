@@ -16,7 +16,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'super_secret_dev_key_12345',
+        secret:
+          configService.get<string>('JWT_SECRET') ||
+          'super_secret_dev_key_12345',
         signOptions: {
           expiresIn: configService.get<string>('JWT_EXPIRATION') || '1d',
         } as import('@nestjs/jwt').JwtSignOptions,
