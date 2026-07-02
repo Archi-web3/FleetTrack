@@ -291,7 +291,7 @@ export class AuthService {
 
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
-      timeout(15000), // Timeout après 15 secondes
+      timeout(60000), // Timeout après 60 secondes pour laisser le temps à Render de démarrer
       tap((res: any) => {
         if (res.token) {
           localStorage.setItem(this.tokenKey, res.token);
