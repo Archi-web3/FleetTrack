@@ -89,16 +89,19 @@ export class LoginComponent implements OnInit {
         console.error('[Login] Erreur de connexion', error);
         this.isLoading = false;
 
-        if (error.status === 401) {
+        if (error.name === 'TimeoutError' || error.status === 504) {
+          this.errorMessage =
+            "Le serveur est en train de se réveiller 😴 (Cold Start). Veuillez patienter 30 secondes et réessayer la connexion !";
+        } else if (error.status === 401) {
           this.errorMessage = 'Email ou mot de passe incorrect.';
-        } else if (error.status === 0 || error.status === 504 || error.status === 503) {
+        } else if (error.status === 0 || error.status === 503) {
           // Message plus sympa pour le "Cold Start"
           this.errorMessage =
-            "Le serveur est en train de se réveiller 😴. Cela peut prendre jusqu'à 30 secondes. Veuillez patienter un instant et réessayer !";
+            "Le serveur est en train de démarrer 😴. Cela peut prendre jusqu'à 60 secondes. Veuillez patienter un instant et réessayer !";
         } else {
           // Message technique plus doux
           this.errorMessage =
-            'Impossible de joindre le serveur. Il est peut-être en train de démarrer. Réessayez dans 30 secondes.';
+            'Impossible de joindre le serveur. Il est peut-être en train de démarrer. Réessayez dans 60 secondes.';
         }
       },
     });
