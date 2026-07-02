@@ -17,6 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-general-settings',
@@ -46,6 +47,7 @@ export class GeneralSettingsComponent implements OnInit {
   private adminService = inject(AdminService);
   private snackBar = inject(MatSnackBar);
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
 
   activeTab = 'brand'; // 'brand', 'system', 'fleet', 'currencies', 'maintenance', 'emails'
   userProfile = '';
@@ -112,7 +114,8 @@ export class GeneralSettingsComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.userProfile = localStorage.getItem('userProfile') || 'SuperAdmin';
+    const rawProfile = this.authService.getUserProfile();
+    this.userProfile = rawProfile === 'Administrateur Système' ? 'SuperAdmin' : (rawProfile || 'SuperAdmin');
     this.route.queryParams.subscribe((params) => {
       if (params['tab']) {
         this.activeTab = params['tab'];
@@ -125,7 +128,7 @@ export class GeneralSettingsComponent implements OnInit {
     if (this.userProfile === 'SuperAdmin') {
       this.adminService.getPays().subscribe((data) => (this.paysList = data));
     } else if (this.userProfile === 'Admin') {
-      const userPaysId = localStorage.getItem('userPays') || '';
+      const userPaysId = this.authService.getUserPaysId() || '';
       if (userPaysId) {
         this.selectedEmailPaysContext = userPaysId;
         this.adminService.getBases(userPaysId).subscribe((data) => (this.basesList = data));
