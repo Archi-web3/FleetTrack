@@ -75,18 +75,20 @@ export class MouvementsService {
 
   async getStatsByVehicle(): Promise<any[]> {
     return this.mouvementModel.aggregate([
-      { 
+      {
         $match: {
           startMileage: { $exists: true, $ne: null },
-          endMileage: { $exists: true, $ne: null }
-        }
+          endMileage: { $exists: true, $ne: null },
+        },
       },
       {
         $group: {
           _id: '$vehicule',
-          totalDistance: { $sum: { $subtract: ['$endMileage', '$startMileage'] } },
-          totalTrips: { $sum: 1 }
-        }
+          totalDistance: {
+            $sum: { $subtract: ['$endMileage', '$startMileage'] },
+          },
+          totalTrips: { $sum: 1 },
+        },
       },
       { $sort: { totalDistance: -1 } },
       { $limit: 10 },
@@ -95,8 +97,8 @@ export class MouvementsService {
           from: 'vehicules',
           localField: '_id',
           foreignField: '_id',
-          as: 'vehiculeDetails'
-        }
+          as: 'vehiculeDetails',
+        },
       },
       { $unwind: '$vehiculeDetails' },
       {
@@ -105,9 +107,9 @@ export class MouvementsService {
           marque: '$vehiculeDetails.marque',
           modele: '$vehiculeDetails.modele',
           totalDistance: 1,
-          totalTrips: 1
-        }
-      }
+          totalTrips: 1,
+        },
+      },
     ]);
   }
 
@@ -290,7 +292,10 @@ export class MouvementsService {
     return savedMouvement;
   }
 
-  async update(id: string, updateDto: any): Promise<Mouvement> {
+  async update(
+    id: string,
+    updateDto: Record<string, unknown>,
+  ): Promise<Mouvement> {
     const updated = await this.mouvementModel
       .findByIdAndUpdate(id, updateDto, { new: true })
       .exec();
@@ -304,27 +309,40 @@ export class MouvementsService {
     const mouvement = await this.mouvementModel.findById(id).exec();
     if (!mouvement) throw new ConflictException('Mouvement non trouvé');
 
-    if (!mouvement.securityApprovals || mouvement.securityApprovals.length === 0) {
+    if (
+      !mouvement.securityApprovals ||
+      mouvement.securityApprovals.length === 0
+    ) {
       return mouvement;
     }
 
+    const securityApprovals = mouvement.securityApprovals as Array<{
+      validator: { toString: () => string };
+      status: string;
+      approvalDate?: Date;
+      isBackup?: boolean;
+    }>;
+
     const userId = user._id || user.id;
-    const approvalIndex = mouvement.securityApprovals.findIndex(
-      (a: any) => a.validator.toString() === userId.toString(),
+    const userIdStr = userId.toString();
+    const approvalIndex = securityApprovals.findIndex(
+      (a) => a.validator.toString() === userIdStr,
     );
 
     if (approvalIndex === -1) {
-      throw new ConflictException('Vous n\'êtes pas autorisé à valider ce mouvement');
+      throw new ConflictException(
+        "Vous n'êtes pas autorisé à valider ce mouvement",
+      );
     }
 
     // Set this validator's status to approved
-    mouvement.securityApprovals[approvalIndex].status = 'approved';
-    mouvement.securityApprovals[approvalIndex].approvalDate = new Date();
-    
+    securityApprovals[approvalIndex].status = 'approved';
+    securityApprovals[approvalIndex].approvalDate = new Date();
+
     // Check if ALL primary validators have approved
-    const allApproved = mouvement.securityApprovals
-      .filter((a: any) => !a.isBackup)
-      .every((a: any) => a.status === 'approved');
+    const allApproved = securityApprovals
+      .filter((a) => !a.isBackup)
+      .every((a) => a.status === 'approved');
 
     if (allApproved) {
       mouvement.statutSecurite = 'validé';
@@ -342,18 +360,25 @@ export class MouvementsService {
     return mouvement.save();
   }
 
-  async cleanGhosts(): Promise<any> {
-    const mouvementsGroupes = await this.mouvementModel.find({ statut: 'regroupé' }).populate('parentMouvement').exec();
-    const ghostsToDelete = mouvementsGroupes.filter((m: any) => !m.parentMouvement);
+  async cleanGhosts(): Promise<{ message: string }> {
+    const mouvementsGroupes = await this.mouvementModel
+      .find({ statut: 'regroupé' })
+      .populate('parentMouvement')
+      .exec();
+    const ghostsToDelete = mouvementsGroupes.filter(
+      (m: any) => !m.parentMouvement,
+    );
     if (ghostsToDelete.length > 0) {
-      const ids = ghostsToDelete.map(m => m._id);
+      const ids = ghostsToDelete.map((m) => m._id);
       await this.mouvementModel.deleteMany({ _id: { $in: ids } }).exec();
-      return { message: `${ghostsToDelete.length} mouvements fantômes nettoyés.` };
+      return {
+        message: `${ghostsToDelete.length} mouvements fantômes nettoyés.`,
+      };
     }
     return { message: 'Aucun fantôme trouvé.' };
   }
 
-  async fixCountries(): Promise<any> {
+  async fixCountries(): Promise<{ message: string }> {
     return { message: 'Not implemented' };
   }
 
@@ -361,7 +386,7 @@ export class MouvementsService {
     return [];
   }
 
-  async remove(id: string): Promise<any> {
+  async remove(id: string): Promise<Mouvement | null> {
     return this.mouvementModel.findByIdAndDelete(id).exec();
   }
 }

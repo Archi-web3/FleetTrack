@@ -76,12 +76,12 @@ export class MouvementsController {
   }
 
   @Delete('cleanup/ghosts')
-  async cleanGhosts() {
+  async cleanGhosts(): Promise<{ message: string }> {
     return this.mouvementsService.cleanGhosts();
   }
 
   @Post('fix-countries')
-  async fixCountries() {
+  async fixCountries(): Promise<{ message: string }> {
     return this.mouvementsService.fixCountries();
   }
 
@@ -91,7 +91,7 @@ export class MouvementsController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<Mouvement | null> {
     return this.mouvementsService.remove(id);
   }
 }

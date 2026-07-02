@@ -25,14 +25,18 @@ export class PermissionsGuard implements CanActivate {
     }
 
     // 1. New RBAC System Check
-    if (user.role && typeof user.role !== 'string' && (user.role as any).permissions) {
+    if (
+      user.role &&
+      typeof user.role === 'object' &&
+      'permissions' in user.role
+    ) {
       const role = user.role as { name: string; permissions: string[] };
-      
+
       // SuperAdmin bypass
       if (role.name === 'SuperAdmin' || role.permissions.includes('ALL')) {
         return true;
       }
-      
+
       if (!requiredPermissions || requiredPermissions.length === 0) {
         return true;
       }
@@ -57,19 +61,23 @@ export class PermissionsGuard implements CanActivate {
     }
 
     // Basic legacy mapping
-    const isBasicUser = ['Demandeur', 'Chauffeur', 'Guest'].includes(profil);
-    const isManager = ['Admin', 'Superviseur', 'Superviseur Sécurité', 'Technicien'].includes(profil);
+    const isManager = [
+      'Admin',
+      'Superviseur',
+      'Superviseur Sécurité',
+      'Technicien',
+    ].includes(profil);
 
     // Basic users can only do basic things
     const basicPermissions = ['VIEW_OWN_MOUVEMENTS', 'CREATE_MOUVEMENT'];
-    
+
     for (const reqPerm of requiredPermissions) {
-       if (basicPermissions.includes(reqPerm)) {
-         return true; // Everyone can view own movements and create
-       }
-       if (isManager) {
-         return true; // Managers can do almost everything for their base/country, logic in controller
-       }
+      if (basicPermissions.includes(reqPerm)) {
+        return true; // Everyone can view own movements and create
+      }
+      if (isManager) {
+        return true; // Managers can do almost everything for their base/country, logic in controller
+      }
     }
 
     return false; // If not basic permission and not manager, deny
