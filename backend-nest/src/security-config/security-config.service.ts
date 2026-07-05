@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SecurityConfig, SecurityConfigDocument } from '../mouvements/schemas/security-config.schema';
@@ -14,11 +14,11 @@ export class SecurityConfigService {
       throw new Error('PaysId est requis');
     }
 
-    const query: any = { pays: paysId };
+    const query: Record<string, unknown> = { pays: paysId };
     if (baseId && baseId !== 'null') {
-      query.base = baseId;
+      query['base'] = baseId;
     } else {
-      query.base = null;
+      query['base'] = null;
     }
 
     let config = await this.securityConfigModel.findOne(query).exec();
@@ -29,28 +29,28 @@ export class SecurityConfigService {
     return config;
   }
 
-  async saveConfig(paysId: string, baseId: string | null, data: any, userId: string): Promise<SecurityConfigDocument> {
+  async saveConfig(paysId: string, baseId: string | null, data: Record<string, unknown>, userId: string): Promise<SecurityConfigDocument> {
     if (!paysId) {
       throw new Error('PaysId est requis');
     }
 
-    const query: any = { pays: paysId };
+    const query: Record<string, unknown> = { pays: paysId };
     if (baseId && baseId !== 'null') {
-      query.base = baseId;
+      query['base'] = baseId;
     } else {
-      query.base = null;
+      query['base'] = null;
     }
 
-    const updateData = {
+    const updateData: Record<string, unknown> = {
       ...data,
       pays: paysId,
       updatedBy: userId,
     };
     
     if (baseId && baseId !== 'null') {
-        updateData.base = baseId;
+        updateData['base'] = baseId;
     } else {
-        updateData.base = null;
+        updateData['base'] = null;
     }
 
     const config = await this.securityConfigModel.findOneAndUpdate(
