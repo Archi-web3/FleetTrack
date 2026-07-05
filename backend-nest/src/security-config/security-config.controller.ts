@@ -42,8 +42,7 @@ export class SecurityConfigController {
   ) {
     const paysId = this.getPaysId(req, headerPays);
     if (!paysId || paysId === 'all') {
-      // Return an empty config instead of throwing 400 so the frontend can render the table
-      return { pays: '', rules: [] };
+      throw new BadRequestException('Veuillez sélectionner un pays spécifique');
     }
     return this.securityConfigService.getConfig(paysId, baseId);
   }
