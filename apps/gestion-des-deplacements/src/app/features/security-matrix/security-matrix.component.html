@@ -21,6 +21,21 @@
       <strong>{{ 'SECURITY_MATRIX.INFO.LOGIC_TITLE' | translate }}</strong>
       {{ 'SECURITY_MATRIX.INFO.LOGIC_DESC' | translate }}
     </div>
+    
+    <div
+      style="
+        margin-top: 15px;
+        padding: 12px;
+        background-color: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 6px;
+      "
+    >
+      <strong style="color: #166534; font-size: 14px; display: block; margin-bottom: 5px;">
+        {{ 'SECURITY_MATRIX.INFO.FAQ_TITLE' | translate }}
+      </strong>
+      <span style="color: #15803d; font-size: 13px;" [innerHTML]="'SECURITY_MATRIX.INFO.FAQ_DESC' | translate"></span>
+    </div>
   </app-info-banner>
 
   @if (bases && bases.length > 0) {

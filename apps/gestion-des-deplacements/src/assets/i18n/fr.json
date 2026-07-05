@@ -19,7 +19,9 @@
             "LEVEL_4": "Niveau 4 : Superviseur Sécurité (Rsp Sécu en Coordination Capitale)",
             "LEVEL_2_3": "Niveau 1, 2 et 3 : Superviseur (Coordinateurs Terrain / Base)",
             "LOGIC_TITLE": "Logique de validation & Dérogations :",
-            "LOGIC_DESC": "Lors d'une demande de mouvement, le système vérifie d'abord la Matrice de Sécurité spécifique à la Base de départ. Si aucun validateur n'est défini, il se rabat sur la Matrice globale du Pays. De plus, bien que l'habilitation de sécurité soit liée au profil (ex: Superviseur = Niv 3), vous pouvez forcer et personnaliser ce niveau pour un utilisateur spécifique depuis sa fiche dans 'Gestion des Utilisateurs'."
+            "LOGIC_DESC": "Lors d'une demande de mouvement, le système vérifie d'abord la Matrice de Sécurité spécifique à la Base de départ. Si aucun validateur n'est défini, il se rabat sur la Matrice globale du Pays. De plus, bien que l'habilitation de sécurité soit liée au profil (ex: Superviseur = Niv 3), vous pouvez forcer et personnaliser ce niveau pour un utilisateur spécifique depuis sa fiche dans 'Gestion des Utilisateurs'.",
+            "FAQ_TITLE": "💡 Comprendre les deux systèmes (Profils vs Matrice)",
+            "FAQ_DESC": "Il n'y a pas de conflit entre les profils et la matrice, ils sont complémentaires. <strong>Le Profil (Matrice des Rôles)</strong> définit <em>la capacité théorique</em> d'un utilisateur (Ex: \"Un Superviseur Sécurité a le droit d'être validateur Niveau 4\"). C'est une liste d'éligibilité. <strong>La Matrice de Sécurité ci-dessous</strong> définit <em>l'affectation physique sur le terrain</em> (Ex: \"Pour la base de Goma, le validateur de Niveau 4 sera spécifiquement Jean Dupont\"). Le système ne vous permet de cocher ici que les personnes qui sont déjà éligibles selon leur profil."
         },
         "BASE_CONFIG": "Configuration par Base :",
         "BASE_FALLBACK": "Bureau Pays (Matrice Globale & Fallback)",
