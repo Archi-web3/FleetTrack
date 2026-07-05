@@ -76,40 +76,44 @@ export class SecurityMatrixComponent implements OnInit {
 
     // 1. Charger les superviseurs sécurité
     // On suppose qu'il y a une méthode pour ça, sinon on filtre
-    this.utilisateurService.getUtilisateurs().subscribe((users) => {
-      // Filtrer pour ne garder que le personnel administratif/sécurité
-      // Si une base est sélectionnée, on pourrait aussi filtrer les utilisateurs de cette base ?
-      // Mais généralement la matrice utilise des validateurs qui peuvent venir d'ailleurs (ex: Admin RDC).
-      // On garde tous les superviseurs du pays pour permettre la flexibilité.
-      this.supervisors = users.filter(
-        (u: any) =>
-          !['Chauffeur', 'Guest', 'Technicien'].includes(u.profil) && u.niveauValidationSecu >= 1,
-      );
+    this.utilisateurService.getUtilisateurs().subscribe({
+      next: (users) => {
+        // Filtrer pour ne garder que le personnel administratif/sécurité
+        this.supervisors = users.filter(
+          (u: any) =>
+            !['Chauffeur', 'Guest', 'Technicien'].includes(u.profil) && u.niveauValidationSecu >= 1,
+        );
 
-      // 2. Charger la config existante
-      this.securityConfigService.getConfig(this.selectedBaseId).subscribe(
-        (cfg) => {
-          this.config = cfg;
-          this.initializeEmptyRules();
-          this.isLoading = false;
-          this.errorMessage = null;
-        },
-        (err) => {
-          console.error('Erreur chargement config', err);
-          this.isLoading = false;
-
-          if (err.status === 400) {
-            // Utilisateur en vue globale (SuperAdmin avec 'Tous' ou aucun pays)
-            this.errorMessage =
-              err.error?.message ||
-              'Veuillez sélectionner un pays spécifique dans le menu en haut pour configurer la matrice de sécurité.';
-            this.config = { pays: '', rules: [] };
-          } else {
-            // Si 404 ou autre, on initialise
+        // 2. Charger la config existante
+        this.securityConfigService.getConfig(this.selectedBaseId).subscribe({
+          next: (cfg) => {
+            this.config = cfg;
             this.initializeEmptyRules();
+            this.isLoading = false;
+            this.errorMessage = null;
+          },
+          error: (err) => {
+            console.error('Erreur chargement config', err);
+            this.isLoading = false;
+
+            if (err.status === 400) {
+              // Utilisateur en vue globale (SuperAdmin avec 'Tous' ou aucun pays)
+              this.errorMessage =
+                err.error?.message ||
+                'Veuillez sélectionner un pays spécifique dans le menu en haut pour configurer la matrice de sécurité.';
+              this.config = { pays: '', rules: [] };
+            } else {
+              // Si 404 ou autre, on initialise
+              this.initializeEmptyRules();
+            }
           }
-        },
-      );
+        });
+      },
+      error: (err) => {
+        console.error('Erreur chargement utilisateurs', err);
+        this.isLoading = false;
+        this.errorMessage = 'Erreur de connexion : impossible de charger les utilisateurs.';
+      }
     });
   }
 
