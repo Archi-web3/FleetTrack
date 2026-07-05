@@ -578,6 +578,7 @@
         "PROFILES": {
             "SUPERADMIN": "Super Admin",
             "ADMIN": "Admin",
+            "SUPERVISEUR SÉCURITÉ SIÈGE": "Superviseur Sécurité Siège",
             "SUPERVISEUR SÉCURITÉ": "Superviseur Sécurité",
             "SUPERVISEUR": "Superviseur",
             "CHAUFFEUR": "Chauffeur",
