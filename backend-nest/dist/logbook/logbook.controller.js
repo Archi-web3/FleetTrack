@@ -60,7 +60,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LogbookController.prototype, "syncData", null);
 exports.LogbookController = LogbookController = __decorate([
-    (0, common_1.Controller)('api/logbook'),
+    (0, common_1.Controller)('logbook'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [logbook_service_1.LogbookService,
         logbook_sync_service_1.LogbookSyncService])

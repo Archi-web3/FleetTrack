@@ -106,7 +106,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GenerateursController.prototype, "addLogbookEntry", null);
 exports.GenerateursController = GenerateursController = __decorate([
-    (0, common_1.Controller)('api/generateurs'),
+    (0, common_1.Controller)('generateurs'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __metadata("design:paramtypes", [generateurs_service_1.GenerateursService])
 ], GenerateursController);

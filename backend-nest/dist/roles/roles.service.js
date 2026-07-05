@@ -97,6 +97,43 @@ let RolesService = RolesService_1 = class RolesService {
     async findByName(name) {
         return this.roleModel.findOne({ name }).exec();
     }
+    async migrateExistingUsers() {
+        const roles = await this.findAll();
+        const roleMap = {};
+        for (const role of roles) {
+            roleMap[role.name] = String(role._id);
+        }
+        const mongooseClient = require('mongoose');
+        const userModel = mongooseClient.model('Utilisateur');
+        const users = (await userModel
+            .find({ role: { $exists: false } })
+            .exec());
+        let updatedCount = 0;
+        for (const user of users) {
+            const profil = user.profil;
+            if (profil && roleMap[profil]) {
+                user.role = roleMap[profil];
+                await user.save();
+                updatedCount++;
+            }
+            else if (profil) {
+                if (profil === 'Superviseur Sécurité' && roleMap['Superviseur']) {
+                    user.role = roleMap['Superviseur'];
+                    await user.save();
+                    updatedCount++;
+                }
+                else if (profil === 'Technicien' && roleMap['Demandeur']) {
+                    user.role = roleMap['Demandeur'];
+                    await user.save();
+                    updatedCount++;
+                }
+            }
+        }
+        return {
+            message: `Migrated ${updatedCount} users to RBAC roles successfully.`,
+            totalUnmigrated: users.length - updatedCount,
+        };
+    }
 };
 exports.RolesService = RolesService;
 exports.RolesService = RolesService = RolesService_1 = __decorate([

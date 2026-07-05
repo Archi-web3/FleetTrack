@@ -23,8 +23,7 @@ let AuthController = class AuthController {
     }
     async login(body, req) {
         const user = await this.authService.validateUser(body.email, body.motDePasse, req);
-        req.user =
-            user;
+        req.user = user;
         return this.authService.login(user, req);
     }
     async register(body) {
@@ -48,7 +47,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 exports.AuthController = AuthController = __decorate([
-    (0, common_1.Controller)('api/auth'),
+    (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

@@ -108,7 +108,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EnvironmentController.prototype, "aggregateStats", null);
 exports.EnvironmentController = EnvironmentController = __decorate([
-    (0, common_1.Controller)('api/environment'),
+    (0, common_1.Controller)('environment'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [environment_service_1.EnvironmentService])
 ], EnvironmentController);

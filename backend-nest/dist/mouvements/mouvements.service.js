@@ -50,6 +50,77 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
             .populate('securityApprovals.validator', 'nom prenom email')
             .exec();
     }
+    async getPlanning(includePending) {
+        const statusFilter = ['validé', 'pris en charge', 'en cours', 'terminé'];
+        if (includePending) {
+            statusFilter.push('en attente', 'en attente validation sécurité');
+        }
+        return this.mouvementModel
+            .find({ statut: { $in: statusFilter } })
+            .populate('stops.lieu', 'nom adresse coordonnees estSensible')
+            .populate('demandeur', 'nom email prenom')
+            .populate('vehicule', 'marque modele immatriculation')
+            .populate('chauffeur', 'nom prenom telephone')
+            .populate('passagers', 'nom email prenom')
+            .sort({ 'stops.0.dateDepart': 1 })
+            .exec();
+    }
+    async getStatsByStatus() {
+        return this.mouvementModel.aggregate([
+            {
+                $group: {
+                    _id: '$statut',
+                    count: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    statut: '$_id',
+                    count: 1,
+                    _id: 0,
+                },
+            },
+        ]);
+    }
+    async getStatsByVehicle() {
+        return this.mouvementModel.aggregate([
+            {
+                $match: {
+                    startMileage: { $exists: true, $ne: null },
+                    endMileage: { $exists: true, $ne: null },
+                },
+            },
+            {
+                $group: {
+                    _id: '$vehicule',
+                    totalDistance: {
+                        $sum: { $subtract: ['$endMileage', '$startMileage'] },
+                    },
+                    totalTrips: { $sum: 1 },
+                },
+            },
+            { $sort: { totalDistance: -1 } },
+            { $limit: 10 },
+            {
+                $lookup: {
+                    from: 'vehicules',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'vehiculeDetails',
+                },
+            },
+            { $unwind: '$vehiculeDetails' },
+            {
+                $project: {
+                    vehicule: '$vehiculeDetails.immatriculation',
+                    marque: '$vehiculeDetails.marque',
+                    modele: '$vehiculeDetails.modele',
+                    totalDistance: 1,
+                    totalTrips: 1,
+                },
+            },
+        ]);
+    }
     async findById(id) {
         return this.mouvementModel
             .findById(id)
@@ -166,6 +237,71 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
             }
         }
         return savedMouvement;
+    }
+    async update(id, updateDto) {
+        const updated = await this.mouvementModel
+            .findByIdAndUpdate(id, updateDto, { new: true })
+            .exec();
+        if (!updated) {
+            throw new common_1.ConflictException('Mouvement non trouvé');
+        }
+        return updated;
+    }
+    async validateSecurity(id, user) {
+        const mouvement = await this.mouvementModel.findById(id).exec();
+        if (!mouvement)
+            throw new common_1.ConflictException('Mouvement non trouvé');
+        if (!mouvement.securityApprovals ||
+            mouvement.securityApprovals.length === 0) {
+            return mouvement;
+        }
+        const securityApprovals = mouvement.securityApprovals;
+        const userId = user._id || user.id;
+        const userIdStr = userId.toString();
+        const approvalIndex = securityApprovals.findIndex((a) => a.validator.toString() === userIdStr);
+        if (approvalIndex === -1) {
+            throw new common_1.ConflictException("Vous n'êtes pas autorisé à valider ce mouvement");
+        }
+        securityApprovals[approvalIndex].status = 'approved';
+        securityApprovals[approvalIndex].approvalDate = new Date();
+        const allApproved = securityApprovals
+            .filter((a) => !a.isBackup)
+            .every((a) => a.status === 'approved');
+        if (allApproved) {
+            mouvement.statutSecurite = 'validé';
+            if (mouvement.statutLogistique === 'non requis' ||
+                mouvement.statutLogistique === 'validé') {
+                mouvement.statut = 'validé';
+            }
+            else {
+                mouvement.statut = 'en attente validation logistique';
+            }
+        }
+        return mouvement.save();
+    }
+    async cleanGhosts() {
+        const mouvementsGroupes = await this.mouvementModel
+            .find({ statut: 'regroupé' })
+            .populate('parentMouvement')
+            .exec();
+        const ghostsToDelete = mouvementsGroupes.filter((m) => !m.parentMouvement);
+        if (ghostsToDelete.length > 0) {
+            const ids = ghostsToDelete.map((m) => m._id);
+            await this.mouvementModel.deleteMany({ _id: { $in: ids } }).exec();
+            return {
+                message: `${ghostsToDelete.length} mouvements fantômes nettoyés.`,
+            };
+        }
+        return { message: 'Aucun fantôme trouvé.' };
+    }
+    async fixCountries() {
+        return { message: 'Not implemented' };
+    }
+    async getSuggestions(_id) {
+        return [];
+    }
+    async remove(id) {
+        return this.mouvementModel.findByIdAndDelete(id).exec();
     }
 };
 exports.MouvementsService = MouvementsService;

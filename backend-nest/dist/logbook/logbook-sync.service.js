@@ -86,7 +86,8 @@ let LogbookSyncService = LogbookSyncService_1 = class LogbookSyncService {
                     if (existingVehicle) {
                         Object.assign(existingVehicle, vehicleData);
                         if (vehicleData.serverId)
-                            existingVehicle._id = vehicleData.serverId;
+                            existingVehicle._id =
+                                vehicleData.serverId;
                         await existingVehicle.save();
                         results.vehicles.success++;
                         results.vehicles.items.push({

@@ -36,14 +36,20 @@ let AuditLogsService = class AuditLogsService {
                 logEntry.ip = reqObj.ip || reqObj.connection?.remoteAddress;
                 const user = req.user || reqObj.utilisateur;
                 if (user) {
+                    let safeRole = 'Unknown';
+                    if (typeof user.role === 'object' && user.role !== null) {
+                        safeRole = String(user.role.name || 'Unknown');
+                    }
+                    else if (user.role) {
+                        safeRole = String(user.role);
+                    }
+                    else if (user.profil) {
+                        safeRole = String(user.profil);
+                    }
                     logEntry.actor = {
-                        userId: user._id || user.id || 'Unknown',
-                        nom: user.nom || 'Unknown',
-                        role: String((typeof user.role === 'object' && user.role !== null
-                            ? user.role.name
-                            : user.role) ||
-                            user.profil ||
-                            'Unknown'),
+                        userId: String(user._id || user.id || 'Unknown'),
+                        nom: String(user.nom || 'Unknown'),
+                        role: safeRole,
                     };
                     if (user.pays) {
                         logEntry.pays =

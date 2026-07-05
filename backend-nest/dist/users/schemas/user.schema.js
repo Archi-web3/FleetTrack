@@ -164,12 +164,11 @@ exports.User = exports.Utilisateur = Utilisateur = __decorate([
 ], Utilisateur);
 exports.UtilisateurSchema = mongoose_1.SchemaFactory.createForClass(Utilisateur);
 exports.UserSchema = exports.UtilisateurSchema;
-exports.UtilisateurSchema.pre('save', async function (next) {
+exports.UtilisateurSchema.pre('save', async function () {
     if (this.isModified('motDePasse')) {
         const salt = await bcrypt.genSalt(10);
         this.motDePasse = await bcrypt.hash(this.motDePasse, salt);
     }
-    next();
 });
 exports.UtilisateurSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.motDePasse);

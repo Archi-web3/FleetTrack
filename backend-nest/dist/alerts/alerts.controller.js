@@ -97,7 +97,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AlertsController.prototype, "deleteAlert", null);
 exports.AlertsController = AlertsController = __decorate([
-    (0, common_1.Controller)('api/alerts'),
+    (0, common_1.Controller)('alerts'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [alerts_service_1.AlertsService])
 ], AlertsController);

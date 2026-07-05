@@ -27,12 +27,39 @@ let MouvementsController = class MouvementsController {
     async findAll(query) {
         return this.mouvementsService.findAll(query);
     }
+    async getStatsByStatus() {
+        return this.mouvementsService.getStatsByStatus();
+    }
+    async getStatsByVehicle() {
+        return this.mouvementsService.getStatsByVehicle();
+    }
+    async getPlanning(includePending) {
+        return this.mouvementsService.getPlanning(includePending === 'true');
+    }
     async findOne(id) {
         return this.mouvementsService.findById(id);
     }
     async create(createMouvementDto, req, force) {
         const forceConflict = force === 'true';
         return this.mouvementsService.create(createMouvementDto, req.user, forceConflict);
+    }
+    async update(id, updateMouvementDto) {
+        return this.mouvementsService.update(id, updateMouvementDto);
+    }
+    async validateSecurity(id, req) {
+        return this.mouvementsService.validateSecurity(id, req.user);
+    }
+    async cleanGhosts() {
+        return this.mouvementsService.cleanGhosts();
+    }
+    async fixCountries() {
+        return this.mouvementsService.fixCountries();
+    }
+    async getSuggestions(id) {
+        return this.mouvementsService.getSuggestions(id);
+    }
+    async remove(id) {
+        return this.mouvementsService.remove(id);
     }
 };
 exports.MouvementsController = MouvementsController;
@@ -44,6 +71,26 @@ __decorate([
     __metadata("design:paramtypes", [mouvements_dto_1.MouvementQueryDto]),
     __metadata("design:returntype", Promise)
 ], MouvementsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('stats-by-status'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "getStatsByStatus", null);
+__decorate([
+    (0, common_1.Get)('stats-by-vehicle'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "getStatsByVehicle", null);
+__decorate([
+    (0, common_1.Get)('planning'),
+    (0, permissions_decorator_1.RequirePermissions)('VIEW_OWN_MOUVEMENTS'),
+    __param(0, (0, common_1.Query)('includePending')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "getPlanning", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
@@ -61,8 +108,50 @@ __decorate([
     __metadata("design:paramtypes", [mouvements_dto_1.CreateMouvementDto, Object, String]),
     __metadata("design:returntype", Promise)
 ], MouvementsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Put)(':id/validate'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "validateSecurity", null);
+__decorate([
+    (0, common_1.Delete)('cleanup/ghosts'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "cleanGhosts", null);
+__decorate([
+    (0, common_1.Post)('fix-countries'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "fixCountries", null);
+__decorate([
+    (0, common_1.Get)('suggestions/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "getSuggestions", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], MouvementsController.prototype, "remove", null);
 exports.MouvementsController = MouvementsController = __decorate([
-    (0, common_1.Controller)('api/mouvements'),
+    (0, common_1.Controller)('mouvements'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [mouvements_service_1.MouvementsService])
 ], MouvementsController);

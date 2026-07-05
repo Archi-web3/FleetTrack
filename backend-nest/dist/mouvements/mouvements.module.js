@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MouvementsModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const mouvements_controller_1 = require("./mouvements.controller");
 const mouvements_service_1 = require("./mouvements.service");
 const mouvements_conflict_service_1 = require("./mouvements-conflict.service");
 const mouvements_security_service_1 = require("./mouvements-security.service");
@@ -29,6 +30,7 @@ exports.MouvementsModule = MouvementsModule = __decorate([
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
             ]),
         ],
+        controllers: [mouvements_controller_1.MouvementsController],
         providers: [
             mouvements_service_1.MouvementsService,
             mouvements_conflict_service_1.MouvementsConflictService,

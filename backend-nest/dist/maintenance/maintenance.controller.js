@@ -80,7 +80,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], MaintenanceController.prototype, "completeService", null);
 exports.MaintenanceController = MaintenanceController = __decorate([
-    (0, common_1.Controller)('api/maintenance'),
+    (0, common_1.Controller)('maintenance'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [maintenance_service_1.MaintenanceService])
 ], MaintenanceController);

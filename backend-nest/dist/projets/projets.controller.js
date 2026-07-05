@@ -100,7 +100,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ProjetsController.prototype, "delete", null);
 exports.ProjetsController = ProjetsController = __decorate([
-    (0, common_1.Controller)('api/projets'),
+    (0, common_1.Controller)('projets'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [projets_service_1.ProjetsService,
         audit_logs_service_1.AuditLogsService])

@@ -25,7 +25,7 @@ export class SecurityConfigController {
   private getPaysId(req: AuthRequest, headerPays?: string): string {
     const userRole =
       req.user?.profil || (req.user?.role as Record<string, unknown>)?.['name'];
-    if (userRole === 'SuperAdmin') {
+    if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
       if (!headerPays || headerPays === 'null' || headerPays === 'undefined') {
         return 'all'; // Default to all instead of throwing immediately on GET
       }

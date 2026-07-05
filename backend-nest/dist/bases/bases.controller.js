@@ -94,7 +94,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], BasesController.prototype, "delete", null);
 exports.BasesController = BasesController = __decorate([
-    (0, common_1.Controller)('api/bases'),
+    (0, common_1.Controller)('bases'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [bases_service_1.BasesService,
         audit_logs_service_1.AuditLogsService])

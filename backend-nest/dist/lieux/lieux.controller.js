@@ -93,7 +93,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], LieuxController.prototype, "delete", null);
 exports.LieuxController = LieuxController = __decorate([
-    (0, common_1.Controller)('api/lieux'),
+    (0, common_1.Controller)('lieux'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [lieux_service_1.LieuxService,
         audit_logs_service_1.AuditLogsService])

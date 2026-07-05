@@ -81,7 +81,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PaysController.prototype, "delete", null);
 exports.PaysController = PaysController = __decorate([
-    (0, common_1.Controller)('api/pays'),
+    (0, common_1.Controller)('pays'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [pays_service_1.PaysService,
         audit_logs_service_1.AuditLogsService])

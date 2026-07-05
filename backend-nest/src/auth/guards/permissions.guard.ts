@@ -33,7 +33,7 @@ export class PermissionsGuard implements CanActivate {
       const role = user.role as { name: string; permissions: string[] };
 
       // SuperAdmin bypass
-      if (role.name === 'SuperAdmin' || role.permissions.includes('ALL')) {
+      if (role.name === 'SuperAdmin' || role.name === 'Super Admin' || role.permissions.includes('ALL')) {
         return true;
       }
 
@@ -52,7 +52,7 @@ export class PermissionsGuard implements CanActivate {
     // 2. Legacy profil check
     const profil = user.profil;
 
-    if (profil === 'SuperAdmin') {
+    if (profil === 'SuperAdmin' || profil === 'Super Admin') {
       return true;
     }
 

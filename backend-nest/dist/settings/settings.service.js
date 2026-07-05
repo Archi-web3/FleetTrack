@@ -26,7 +26,15 @@ let SettingsService = SettingsService_1 = class SettingsService {
     }
     async getSetting(key) {
         const setting = await this.settingModel.findOne({ key }).exec();
-        return setting ? setting.value : null;
+        if (setting)
+            return setting.value;
+        if (key === 'brand') {
+            return {
+                appName: 'FleetTrack',
+                headerDisplayMode: 'both',
+            };
+        }
+        return null;
     }
     async setSetting(key, value) {
         const setting = await this.settingModel

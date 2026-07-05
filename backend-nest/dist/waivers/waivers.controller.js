@@ -65,7 +65,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WaiversController.prototype, "deleteWaiver", null);
 exports.WaiversController = WaiversController = __decorate([
-    (0, common_1.Controller)('api/waivers'),
+    (0, common_1.Controller)('waivers'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [waivers_service_1.WaiversService])
 ], WaiversController);

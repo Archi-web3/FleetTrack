@@ -16,6 +16,19 @@ export declare class MouvementsService {
     private readonly logger;
     constructor(mouvementModel: Model<MouvementDocument>, lieuModel: Model<LieuDocument>, userModel: Model<UserDocument>, conflictService: MouvementsConflictService, securityService: MouvementsSecurityService, mailService: MailService);
     findAll(query?: MouvementQueryDto): Promise<Mouvement[]>;
+    getPlanning(includePending: boolean): Promise<Mouvement[]>;
+    getStatsByStatus(): Promise<any[]>;
+    getStatsByVehicle(): Promise<any[]>;
     findById(id: string): Promise<MouvementDocument | null>;
     create(createDto: CreateMouvementDto, user: UserPayloadDto, forceConflict?: boolean): Promise<Mouvement>;
+    update(id: string, updateDto: Record<string, unknown>): Promise<Mouvement>;
+    validateSecurity(id: string, user: UserPayloadDto): Promise<Mouvement>;
+    cleanGhosts(): Promise<{
+        message: string;
+    }>;
+    fixCountries(): Promise<{
+        message: string;
+    }>;
+    getSuggestions(_id: string): Promise<any[]>;
+    remove(id: string): Promise<Mouvement | null>;
 }

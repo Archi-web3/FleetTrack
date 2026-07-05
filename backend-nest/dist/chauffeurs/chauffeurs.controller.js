@@ -92,7 +92,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChauffeursController.prototype, "delete", null);
 exports.ChauffeursController = ChauffeursController = __decorate([
-    (0, common_1.Controller)('api/chauffeurs'),
+    (0, common_1.Controller)('chauffeurs'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], ChauffeursController);

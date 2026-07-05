@@ -20,22 +20,51 @@ let PermissionsGuard = class PermissionsGuard {
     }
     canActivate(context) {
         const requiredPermissions = this.reflector.getAllAndOverride(permissions_decorator_1.PERMISSIONS_KEY, [context.getHandler(), context.getClass()]);
-        if (!requiredPermissions) {
+        if (!requiredPermissions || requiredPermissions.length === 0) {
             return true;
         }
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        if (!user ||
-            !user.role ||
-            typeof user.role === 'string' ||
-            !user.role.permissions) {
+        if (!user) {
             return false;
         }
-        const role = user.role;
-        if (role.name === 'SuperAdmin') {
+        if (user.role &&
+            typeof user.role === 'object' &&
+            'permissions' in user.role) {
+            const role = user.role;
+            if (role.name === 'SuperAdmin' || role.permissions.includes('ALL')) {
+                return true;
+            }
+            if (!requiredPermissions || requiredPermissions.length === 0) {
+                return true;
+            }
+            const hasPermission = requiredPermissions.some((permission) => role.permissions.includes(permission));
+            if (hasPermission)
+                return true;
+        }
+        const profil = user.profil;
+        if (profil === 'SuperAdmin') {
             return true;
         }
-        return requiredPermissions.some((permission) => role.permissions.includes(permission));
+        if (!requiredPermissions || requiredPermissions.length === 0) {
+            return true;
+        }
+        const isManager = [
+            'Admin',
+            'Superviseur',
+            'Superviseur Sécurité',
+            'Technicien',
+        ].includes(profil);
+        const basicPermissions = ['VIEW_OWN_MOUVEMENTS', 'CREATE_MOUVEMENT'];
+        for (const reqPerm of requiredPermissions) {
+            if (basicPermissions.includes(reqPerm)) {
+                return true;
+            }
+            if (isManager) {
+                return true;
+            }
+        }
+        return false;
     }
 };
 exports.PermissionsGuard = PermissionsGuard;

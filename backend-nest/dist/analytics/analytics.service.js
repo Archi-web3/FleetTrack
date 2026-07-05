@@ -65,10 +65,6 @@ let AnalyticsService = AnalyticsService_1 = class AnalyticsService {
             else
                 matchFilter.pays = new mongoose_2.Types.ObjectId(countryId);
         }
-        const co2FactorsStr = (await this.settingsService.getSetting('co2Factors'));
-        const co2Factors = co2FactorsStr
-            ? JSON.parse(co2FactorsStr)
-            : { short: 230, medium: 178, long: 152 };
         const mouvements = await this.mouvementModel
             .find(matchFilter)
             .populate('stops.lieu');

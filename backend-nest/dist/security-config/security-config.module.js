@@ -8,10 +8,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SecurityConfigModule = void 0;
 const common_1 = require("@nestjs/common");
+const mongoose_1 = require("@nestjs/mongoose");
+const security_config_controller_1 = require("./security-config.controller");
+const security_config_service_1 = require("./security-config.service");
+const security_config_schema_1 = require("../mouvements/schemas/security-config.schema");
 let SecurityConfigModule = class SecurityConfigModule {
 };
 exports.SecurityConfigModule = SecurityConfigModule;
 exports.SecurityConfigModule = SecurityConfigModule = __decorate([
-    (0, common_1.Module)({})
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: security_config_schema_1.SecurityConfig.name, schema: security_config_schema_1.SecurityConfigSchema },
+            ]),
+        ],
+        controllers: [security_config_controller_1.SecurityConfigController],
+        providers: [security_config_service_1.SecurityConfigService],
+        exports: [security_config_service_1.SecurityConfigService],
+    })
 ], SecurityConfigModule);
 //# sourceMappingURL=security-config.module.js.map

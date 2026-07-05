@@ -91,7 +91,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UploadsController.prototype, "deletePhoto", null);
 exports.UploadsController = UploadsController = __decorate([
-    (0, common_1.Controller)('api/upload'),
+    (0, common_1.Controller)('upload'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [uploads_service_1.UploadsService])
 ], UploadsController);

@@ -106,7 +106,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], VehiclesController.prototype, "delete", null);
 exports.VehiclesController = VehiclesController = __decorate([
-    (0, common_1.Controller)('api/vehicules'),
+    (0, common_1.Controller)('vehicules'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     __metadata("design:paramtypes", [vehicles_service_1.VehiclesService,
         audit_logs_service_1.AuditLogsService])

@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const settings_service_1 = require("./settings.service");
 const setting_schema_1 = require("./schemas/setting.schema");
+const settings_controller_1 = require("./settings.controller");
 let SettingsModule = class SettingsModule {
 };
 exports.SettingsModule = SettingsModule;
@@ -20,6 +21,7 @@ exports.SettingsModule = SettingsModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: setting_schema_1.Setting.name, schema: setting_schema_1.SettingSchema }]),
         ],
+        controllers: [settings_controller_1.SettingsController],
         providers: [settings_service_1.SettingsService],
         exports: [settings_service_1.SettingsService],
     })
