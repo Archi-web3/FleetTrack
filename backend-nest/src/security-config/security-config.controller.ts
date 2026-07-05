@@ -1,7 +1,20 @@
-import { Controller, Get, Post, Body, Headers, Query, UseGuards, Req, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Headers,
+  Query,
+  UseGuards,
+  Req,
+  BadRequestException,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { SecurityConfigService } from './security-config.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { UpdateSecurityConfigDto } from './dto/security-config.dto';
 import type { AuthRequest } from '../analytics/analytics.controller';
 
 @Controller('security-config')
@@ -10,7 +23,8 @@ export class SecurityConfigController {
   constructor(private readonly securityConfigService: SecurityConfigService) {}
 
   private getPaysId(req: AuthRequest, headerPays?: string): string {
-    const userRole = req.user?.profil || (req.user?.role as Record<string, unknown>)?.['name'];
+    const userRole =
+      req.user?.profil || (req.user?.role as Record<string, unknown>)?.['name'];
     if (userRole === 'SuperAdmin') {
       if (!headerPays || headerPays === 'null' || headerPays === 'undefined') {
         return 'all'; // Default to all instead of throwing immediately on GET
@@ -24,27 +38,33 @@ export class SecurityConfigController {
   async getConfig(
     @Req() req: AuthRequest,
     @Headers('x-selected-country') headerPays: string,
-    @Query('baseId') baseId: string
+    @Query('baseId') baseId: string,
   ) {
     const paysId = this.getPaysId(req, headerPays);
     if (!paysId || paysId === 'all') {
-        // Return an empty config instead of throwing 400 so the frontend can render the table
-        return { pays: '', rules: [] };
+      // Return an empty config instead of throwing 400 so the frontend can render the table
+      return { pays: '', rules: [] };
     }
     return this.securityConfigService.getConfig(paysId, baseId);
   }
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async saveConfig(
     @Req() req: AuthRequest,
     @Headers('x-selected-country') headerPays: string,
-    @Body() body: Record<string, unknown>
+    @Body() body: UpdateSecurityConfigDto,
   ) {
     const paysId = this.getPaysId(req, headerPays);
     if (!paysId || paysId === 'all') {
-        throw new BadRequestException("Veuillez sélectionner un pays spécifique");
+      throw new BadRequestException('Veuillez sélectionner un pays spécifique');
     }
-    const baseId = body['base'] as string | null;
-    return this.securityConfigService.saveConfig(paysId, baseId, body, String(req.user._id));
+    const baseId = body.base ?? null;
+    return this.securityConfigService.saveConfig(
+      paysId,
+      baseId,
+      body,
+      String(req.user._id),
+    );
   }
 }

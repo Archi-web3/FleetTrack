@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SecurityConfigController } from './security-config.controller';
 import { SecurityConfigService } from './security-config.service';
-import { SecurityConfig, SecurityConfigSchema } from '../mouvements/schemas/security-config.schema';
+import {
+  SecurityConfig,
+  SecurityConfigSchema,
+} from '../mouvements/schemas/security-config.schema';
 
 @Module({
   imports: [

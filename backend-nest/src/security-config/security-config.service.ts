@@ -5,6 +5,7 @@ import {
   SecurityConfig,
   SecurityConfigDocument,
 } from '../mouvements/schemas/security-config.schema';
+import { UpdateSecurityConfigDto } from './dto/security-config.dto';
 
 @Injectable()
 export class SecurityConfigService {
@@ -43,7 +44,7 @@ export class SecurityConfigService {
   async saveConfig(
     paysId: string,
     baseId: string | null,
-    data: Record<string, unknown>,
+    data: UpdateSecurityConfigDto,
     userId: string,
   ): Promise<SecurityConfigDocument> {
     if (!paysId) {
