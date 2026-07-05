@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
@@ -43,6 +43,7 @@ export class HomeDashboardComponent implements OnInit {
   private mouvementService = inject(MouvementService);
   private authService = inject(AuthService);
   private perms = inject(PermissionsService);
+  private cdr = inject(ChangeDetectorRef);
 
   newsBanner: string | null = null;
   userName = '';
@@ -54,6 +55,7 @@ export class HomeDashboardComponent implements OnInit {
 
   pendingValidations: any[] = [];
   loadingValidations = true;
+  requireCountrySelection = false;
   userId = '';
   userProfile = '';
 
@@ -87,9 +89,20 @@ export class HomeDashboardComponent implements OnInit {
       this.perms.hasPermission('mouvements_workflow', 'validate_level_5');
 
     // Si l'utilisateur n'a aucun profil permettant la validation, on ne charge rien
-    if (!canValidateLogistics && !canValidateSecurity && this.userProfile !== 'SuperAdmin') {
+    if (!canValidateLogistics && !canValidateSecurity && this.userProfile !== 'SuperAdmin' && this.userProfile !== 'Super Admin') {
       this.loadingValidations = false;
+      this.cdr.detectChanges();
       return;
+    }
+
+    const selectedCountry = localStorage.getItem('selectedCountry');
+    if (this.userProfile === 'SuperAdmin' || this.userProfile === 'Super Admin') {
+      if (!selectedCountry || selectedCountry === 'all' || selectedCountry === 'null' || selectedCountry === 'undefined') {
+        this.loadingValidations = false;
+        this.requireCountrySelection = true;
+        this.cdr.detectChanges();
+        return;
+      }
     }
 
     this.mouvementService.getMouvements().subscribe({
@@ -143,10 +156,12 @@ export class HomeDashboardComponent implements OnInit {
           return keep;
         });
         this.loadingValidations = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(`[HomeDashboard] Erreur chargement mouvements :`, err);
         this.loadingValidations = false;
+        this.cdr.detectChanges();
       },
     });
   }

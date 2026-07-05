@@ -134,7 +134,22 @@
               <mat-spinner diameter="40"></mat-spinner>
             </div>
           }
-          @if (!loadingValidations && pendingValidations.length === 0) {
+          @if (requireCountrySelection) {
+            <div style="text-align: center; padding: 20px; color: #64748b">
+              <mat-icon
+                style="
+                  font-size: 40px;
+                  height: 40px;
+                  width: 40px;
+                  color: #cbd5e1;
+                  margin-bottom: 10px;
+                "
+                >public</mat-icon
+              >
+              <p>Veuillez sélectionner un pays dans la barre supérieure pour afficher les demandes de mouvements.</p>
+            </div>
+          }
+          @if (!loadingValidations && !requireCountrySelection && pendingValidations.length === 0) {
             <div style="text-align: center; padding: 20px; color: #64748b">
               <mat-icon
                 style="
@@ -149,7 +164,7 @@
               <p>{{ 'DASHBOARD.NO_PENDING_VALIDATIONS' | translate }}</p>
             </div>
           }
-          @if (!loadingValidations && pendingValidations.length > 0) {
+          @if (!loadingValidations && !requireCountrySelection && pendingValidations.length > 0) {
             <div>
               <div style="display: flex; justify-content: flex-end; margin-bottom: 15px">
                 <mat-button-toggle-group [(ngModel)]="viewMode" aria-label="View Mode">
