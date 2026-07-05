@@ -13,13 +13,15 @@
             "QUORUM": "Minimum number of approvals required (if unanimity unchecked)."
         },
         "INFO": {
-            "TITLE": "Security Matrix",
-            "DESC": "Define the required validation rules for each security level (from 1 to 5). Only users with a sufficient level are displayed for each tier.",
-            "LEVEL_5": "Level 5: Headquarters (HQ)",
-            "LEVEL_4": "Level 4: Coordination",
-            "LEVEL_2_3": "Level 2 and 3: Base",
-            "LOGIC_TITLE": "Validation logic:",
-            "LOGIC_DESC": "During a movement, the system first checks the specific matrix of the departure Base. If no validator is defined for the required risk level, the system automatically falls back to the global matrix (Country Office)."
+            "TITLE": "Security Matrix & Workflow",
+            "DESC": "Define the validation rules required for each security level (from 1 to 5). The security validation workflow is configurable by Base (or globally at the Country level). By default, each profile has a predefined security authorization:",
+            "LEVEL_5": "Level 5: HQ Security Supervisor (Escalates to HQ)",
+            "LEVEL_4": "Level 4: Security Supervisor (Capital Coordination)",
+            "LEVEL_2_3": "Level 1, 2 and 3: Supervisor (Field / Base Coordinators)",
+            "LOGIC_TITLE": "Validation Logic & Exceptions:",
+            "LOGIC_DESC": "When a movement request is made, the system first checks the specific Security Matrix of the departure Base. If no validator is defined, it falls back to the global Country Matrix. Moreover, although the security authorization is linked to the profile (e.g., Supervisor = Lvl 3), you can force and customize this level for a specific user from their profile in 'User Management'.",
+            "FAQ_TITLE": "💡 Understanding the two systems (Profiles vs Matrix)",
+            "FAQ_DESC": "There is no conflict between the profiles and the matrix; they are complementary. <strong>The Profile (Roles Matrix)</strong> defines <em>the theoretical capability</em> of a user (e.g., \"A Security Supervisor is allowed to be a Level 4 validator\"). It is an eligibility list. <strong>The Security Matrix below</strong> defines <em>the physical assignment on the ground</em> (e.g., \"For the Goma base, the Level 4 validator will specifically be John Doe\"). The system only allows you to select people here who are already eligible according to their profile."
         },
         "BASE_CONFIG": "Base Configuration:",
         "BASE_FALLBACK": "Country Office (Global Matrix & Fallback)",
@@ -534,7 +536,7 @@
     "USERS": {
         "INFO": {
             "TITLE": "User Management",
-            "DESC": "This page allows you to manage system access. You can create new users, assign them a role defined in the Matrix, and assign them a security validation level. Note: the list of available roles depends on your own permissions."
+            "DESC": "Manage system access and create new users. The security validation level (1 to 5) is automatically deduced from the chosen profile (e.g., 'Supervisor' = Lvl 3, 'Security Supervisor' = Lvl 4, 'HQ Security Supervisor' = Lvl 5). You can, however, uncheck the automatic management to force a specific level on a user."
         },
         "FILTER": {
             "PROFILE_LABEL": "Filter by Profile",
@@ -578,6 +580,7 @@
         "PROFILES": {
             "SUPERADMIN": "Super Admin",
             "ADMIN": "Admin",
+            "SUPERVISEUR SÉCURITÉ SIÈGE": "HQ Security Supervisor",
             "SUPERVISEUR SÉCURITÉ": "Security Supervisor",
             "SUPERVISEUR": "Supervisor",
             "CHAUFFEUR": "Driver",
