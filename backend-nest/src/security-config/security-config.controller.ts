@@ -14,11 +14,11 @@ export class SecurityConfigController {
     const userRole = req.user?.profil || (req.user?.role as any)?.name;
     if (userRole === 'SuperAdmin') {
       if (!headerPays || headerPays === 'null' || headerPays === 'undefined') {
-        throw new BadRequestException("Veuillez sélectionner un pays spécifique dans le menu en haut pour configurer la matrice de sécurité.");
+        return 'all'; // Default to all instead of throwing immediately on GET
       }
       return headerPays;
     }
-    return req.user?.pays?.toString() || headerPays || '';
+    return req.user?.pays?.toString() || headerPays || 'all';
   }
 
   @Get()
@@ -29,7 +29,8 @@ export class SecurityConfigController {
   ) {
     const paysId = this.getPaysId(req, headerPays);
     if (!paysId || paysId === 'all') {
-        throw new BadRequestException("Veuillez sélectionner un pays spécifique dans le menu en haut pour configurer la matrice de sécurité.");
+        // Return an empty config instead of throwing 400 so the frontend can render the table
+        return { pays: '', rules: [] };
     }
     return this.securityConfigService.getConfig(paysId, baseId);
   }
