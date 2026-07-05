@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import {
@@ -11,6 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { PermissionsService } from '../../core/services/permissions.service';
 import { AdminService } from '../../core/services/admin.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { finalize } from 'rxjs/operators';
 
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,6 +30,7 @@ export class SecurityMatrixComponent implements OnInit {
   private authService = inject(AuthService);
   perms = inject(PermissionsService);
   private adminService = inject(AdminService);
+  private cdr = inject(ChangeDetectorRef);
 
   levels = [1, 2, 3, 4, 5];
   supervisors: any[] = [];
@@ -73,9 +75,10 @@ export class SecurityMatrixComponent implements OnInit {
 
   loadData(): void {
     this.isLoading = true;
+    this.errorMessage = null;
+    this.cdr.detectChanges();
 
     // 1. Charger les superviseurs sécurité
-    // On suppose qu'il y a une méthode pour ça, sinon on filtre
     this.utilisateurService.getUtilisateurs().subscribe({
       next: (users) => {
         // Filtrer pour ne garder que le personnel administratif/sécurité
@@ -85,16 +88,21 @@ export class SecurityMatrixComponent implements OnInit {
         );
 
         // 2. Charger la config existante
-        this.securityConfigService.getConfig(this.selectedBaseId).subscribe({
+        this.securityConfigService.getConfig(this.selectedBaseId)
+          .pipe(
+            finalize(() => {
+              this.isLoading = false;
+              this.cdr.detectChanges();
+            })
+          )
+          .subscribe({
           next: (cfg) => {
             this.config = cfg;
             this.initializeEmptyRules();
-            this.isLoading = false;
             this.errorMessage = null;
           },
           error: (err) => {
             console.error('Erreur chargement config', err);
-            this.isLoading = false;
 
             if (err.status === 400) {
               // Utilisateur en vue globale (SuperAdmin avec 'Tous' ou aucun pays)
@@ -105,6 +113,7 @@ export class SecurityMatrixComponent implements OnInit {
             } else {
               // Si 404 ou autre, on initialise
               this.initializeEmptyRules();
+              this.errorMessage = null;
             }
           }
         });
@@ -113,6 +122,7 @@ export class SecurityMatrixComponent implements OnInit {
         console.error('Erreur chargement utilisateurs', err);
         this.isLoading = false;
         this.errorMessage = 'Erreur de connexion : impossible de charger les utilisateurs.';
+        this.cdr.detectChanges();
       }
     });
   }
