@@ -87,7 +87,7 @@ export class WorkflowDashboardComponent implements OnInit {
               title: 'Validation Sécurité',
               actor: 'Pôle Sécurité',
               description:
-                'Évaluation des risques selon la matrice. Validation en cascade possible.',
+                'Évaluation des risques selon la matrice paramétrable par Base ou Pays. Validation en cascade possible (Niv 1-3: Terrain, Niv 4: Coordination, Niv 5: Siège).',
               icon: 'security',
               notifications: [],
               enabled: true,

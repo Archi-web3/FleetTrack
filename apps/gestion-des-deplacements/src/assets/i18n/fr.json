@@ -13,13 +13,13 @@
             "QUORUM": "Nombre minimum de validations requises (si unanimité décochée)."
         },
         "INFO": {
-            "TITLE": "Matrice de Sécurité",
-            "DESC": "Définissez les règles de validation requises pour chaque niveau de sécurité (de 1 à 5). Seuls les utilisateurs ayant un niveau suffisant sont affichés pour chaque palier.",
-            "LEVEL_5": "Niveau 5 : Personne du siège (HQ)",
-            "LEVEL_4": "Niveau 4 : Coordination",
-            "LEVEL_2_3": "Niveau 2 et 3 : Base",
-            "LOGIC_TITLE": "Logique de validation :",
-            "LOGIC_DESC": "Lors d'un mouvement, le système vérifie d'abord la matrice spécifique à la Base de départ. Si celle-ci n'a pas de validateur défini pour le niveau de risque requis, le système se rabat automatiquement sur la matrice globale (Bureau Pays)."
+            "TITLE": "Matrice de Sécurité & Workflow",
+            "DESC": "Définissez les règles de validation requises pour chaque niveau de sécurité (de 1 à 5). Le workflow de validation de sécurité est paramétrable par Base (ou globalement au niveau du Pays). Par défaut, chaque profil a une habilitation de sécurité prédéfinie :",
+            "LEVEL_5": "Niveau 5 : Superviseur Sécurité siège (Remonte au Siège / HQ)",
+            "LEVEL_4": "Niveau 4 : Superviseur Sécurité (Rsp Sécu en Coordination Capitale)",
+            "LEVEL_2_3": "Niveau 1, 2 et 3 : Superviseur (Coordinateurs Terrain / Base)",
+            "LOGIC_TITLE": "Logique de validation & Dérogations :",
+            "LOGIC_DESC": "Lors d'une demande de mouvement, le système vérifie d'abord la Matrice de Sécurité spécifique à la Base de départ. Si aucun validateur n'est défini, il se rabat sur la Matrice globale du Pays. De plus, bien que l'habilitation de sécurité soit liée au profil (ex: Superviseur = Niv 3), vous pouvez forcer et personnaliser ce niveau pour un utilisateur spécifique depuis sa fiche dans 'Gestion des Utilisateurs'."
         },
         "BASE_CONFIG": "Configuration par Base :",
         "BASE_FALLBACK": "Bureau Pays (Matrice Globale & Fallback)",
@@ -534,7 +534,7 @@
     "USERS": {
         "INFO": {
             "TITLE": "Gestion des Utilisateurs",
-            "DESC": "Cette page vous permet de gérer les accès au système. Vous pouvez créer de nouveaux utilisateurs, leur affecter un rôle défini dans la Matrice, et leur attribuer un niveau de validation sécurité. Note: la liste des rôles disponibles dépend de vos propres droits."
+            "DESC": "Gérez les accès au système et créez de nouveaux utilisateurs. Le niveau de validation sécurité (1 à 5) est automatiquement déduit du profil choisi (ex: 'Superviseur' = Niv 3, 'Superviseur Sécurité' = Niv 4, 'Superviseur Sécurité siège' = Niv 5). Vous pouvez cependant décocher la gestion automatique pour forcer un niveau spécifique sur un utilisateur."
         },
         "FILTER": {
             "PROFILE_LABEL": "Filtrer par profil",
