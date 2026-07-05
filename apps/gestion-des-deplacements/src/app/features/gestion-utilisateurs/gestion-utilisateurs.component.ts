@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 import { UtilisateurService } from '../../core/services/utilisateur.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -252,6 +252,22 @@ export class GestionUtilisateursComponent implements OnInit {
       },
       (error) => console.error('Erreur chargement utilisateurs:', error)
     );
+  }
+
+  submitAddForm(form: NgForm): void {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+    this.addUser();
+  }
+
+  submitEditForm(form: NgForm): void {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+    this.updateUser();
   }
 
   addUser(): void {

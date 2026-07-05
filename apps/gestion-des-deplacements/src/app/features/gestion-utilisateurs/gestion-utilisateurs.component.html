@@ -155,6 +155,7 @@
               name="newUserPassword"
               [(ngModel)]="newUser.motDePasse"
               [required]="!selectedUser"
+              autocomplete="new-password"
             />
           </mat-form-field>
 
@@ -366,6 +367,7 @@
                   type="password"
                   name="editUserPassword"
                   [(ngModel)]="selectedUser.motDePasse"
+                  autocomplete="new-password"
                 />
               </mat-form-field>
               <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px">
@@ -527,8 +529,7 @@
         <!-- The submit button clicks the hidden submit on whichever form is active, but to keep it simple, we use the component method -->
         <button
           class="custom-modal-btn-submit"
-          (click)="selectedUser ? updateUser() : addUser()"
-          [disabled]="selectedUser ? !editUserForm?.form?.valid : !userForm?.form?.valid"
+          (click)="selectedUser ? submitEditForm(editUserForm) : submitAddForm(userForm)"
         >
           <mat-icon>check</mat-icon>
           {{ selectedUser ? ('COMMON.SAVE' | translate) : ('COMMON.ADD' | translate) }}
