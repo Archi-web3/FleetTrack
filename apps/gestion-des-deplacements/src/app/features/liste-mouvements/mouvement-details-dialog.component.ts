@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 @Component({
   selector: 'app-mouvement-details-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, MatIconModule, MatDividerModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatDividerModule],
   templateUrl: './mouvement-details-dialog.component.html',
   styleUrls: ['./mouvement-details-dialog.component.scss'],
 })
