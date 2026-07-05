@@ -9,6 +9,7 @@ import {
   Query,
   Put,
   Delete,
+  Headers,
 } from '@nestjs/common';
 import { MouvementsService } from './mouvements.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -25,8 +26,23 @@ export class MouvementsController {
 
   @Get()
   @RequirePermissions('VIEW_OWN_MOUVEMENTS') // Baseline permission
-  async findAll(@Query() query: MouvementQueryDto) {
-    // Inject auto country/base filtering logic later
+  async findAll(
+    @Query() query: MouvementQueryDto,
+    @Req() req: AuthRequest,
+    @Headers('x-selected-country') headerPays?: string,
+  ) {
+    const user = req.user;
+    const userRole = user?.profil || (user?.role as Record<string, unknown>)?.['name'];
+
+    // Inject auto country/base filtering logic
+    if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
+      if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
+        query['pays'] = headerPays;
+      }
+    } else if (user && user.pays) {
+      query['pays'] = user.pays;
+    }
+
     return this.mouvementsService.findAll(query);
   }
 

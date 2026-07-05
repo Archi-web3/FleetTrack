@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Headers,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -26,12 +27,20 @@ export class UsersController {
   ) {}
 
   @Get()
-  async findAll(@Req() req: AuthRequest) {
+  async findAll(
+    @Req() req: AuthRequest,
+    @Headers('x-selected-country') headerPays?: string,
+  ) {
     const user = req.user;
     const filter: Record<string, any> = {};
 
-    // Country Filter Logic from old middleware
-    if (user && user.profil === 'Admin' && user.pays) {
+    const userRole = user?.profil || (user?.role as Record<string, unknown>)?.['name'];
+
+    if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
+      if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
+        filter.pays = headerPays;
+      }
+    } else if (user && user.pays) {
       filter.pays = user.pays;
     }
 

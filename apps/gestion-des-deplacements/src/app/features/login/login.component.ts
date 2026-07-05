@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 
@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private settingsService = inject(SettingsService);
+  private cdr = inject(ChangeDetectorRef);
 
   credentials = {
     email: '',
@@ -83,6 +84,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.credentials).subscribe({
       next: (res) => {
         this.isLoading = false;
+        this.cdr.detectChanges();
         this.router.navigate(['/']); // Rediriger vers la page d'accueil après connexion
       },
       error: (error) => {
@@ -103,6 +105,7 @@ export class LoginComponent implements OnInit {
           this.errorMessage =
             'Impossible de joindre le serveur. Il est peut-être en train de démarrer. Réessayez dans 60 secondes.';
         }
+        this.cdr.detectChanges();
       },
     });
   }
