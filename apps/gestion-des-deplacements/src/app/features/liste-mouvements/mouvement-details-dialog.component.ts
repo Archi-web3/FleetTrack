@@ -40,15 +40,85 @@ export class MouvementDetailsDialogComponent {
   }
 
   getStatutColor(statut: string): string {
-    const colors: any = {
-      'en attente': '#FFA500',
-      validé: '#4CAF50',
-      'pris en charge': '#2196F3',
-      'en cours': '#2196F3',
-      terminé: '#52ae32',
-      annulé: '#9E9E9E',
-      refusé: '#F44336',
-    };
-    return colors[statut] || '#757575';
+    switch (statut) {
+      case 'en attente':
+      case 'en attente validation sécurité':
+        return '#f59e0b';
+      case 'validé':
+      case 'pris en charge':
+      case 'en cours':
+        return '#3b82f6';
+      case 'terminé':
+        return '#10b981';
+      case 'annulé':
+      case 'refusé':
+        return '#ef4444';
+      default:
+        return '#6b7280';
+    }
+  }
+
+  // --- Helpers pour la Frise Chronologique ---
+  
+  getLogistiqueStepClass(): string {
+    const s = this.data.mouvement.statutLogistique;
+    if (s === 'validé') return 'completed';
+    if (s === 'refusé') return 'rejected';
+    if (s === 'non requis') return 'skipped';
+    return 'pending';
+  }
+
+  getLogistiqueDesc(): string {
+    const s = this.data.mouvement.statutLogistique;
+    if (s === 'validé') return 'Approuvé par la Logistique';
+    if (s === 'refusé') return 'Refusé par la Logistique';
+    if (s === 'non requis') return 'Aucune validation requise';
+    return 'En attente de validation';
+  }
+
+  getSecuriteStepClass(): string {
+    const s = this.data.mouvement.statutSecurite;
+    if (s === 'validé') return 'completed';
+    if (s === 'refusé') return 'rejected';
+    if (s === 'non requis' || this.data.mouvement.validationLevelRequired === 0) return 'skipped';
+    return 'pending';
+  }
+
+  getSecuriteDesc(): string {
+    const s = this.data.mouvement.statutSecurite;
+    if (s === 'validé') return 'Approuvé par la Sécurité';
+    if (s === 'refusé') return 'Refusé par la Sécurité';
+    if (s === 'non requis' || this.data.mouvement.validationLevelRequired === 0) return 'Aucune validation requise';
+    return 'En attente des validations requises';
+  }
+
+  getFinalStepClass(): string {
+    const s = this.data.mouvement.statut;
+    if (['validé', 'pris en charge', 'en cours', 'terminé'].includes(s)) return 'completed';
+    if (['refusé', 'annulé'].includes(s)) return 'rejected';
+    return 'pending';
+  }
+
+  getFinalDesc(): string {
+    const s = this.data.mouvement.statut;
+    if (['validé', 'pris en charge', 'en cours', 'terminé'].includes(s)) return 'Mouvement autorisé';
+    if (['refusé', 'annulé'].includes(s)) return 'Mouvement annulé ou refusé';
+    return 'En attente des autorisations';
+  }
+
+  getApprovalIcon(status: string): string {
+    switch (status) {
+      case 'approved': return 'check_circle';
+      case 'rejected': return 'cancel';
+      default: return 'hourglass_empty';
+    }
+  }
+
+  formatApprovalStatus(status: string): string {
+    switch (status) {
+      case 'approved': return 'Approuvé';
+      case 'rejected': return 'Refusé';
+      default: return 'En attente';
+    }
   }
 }

@@ -23,7 +23,87 @@
       </span>
     </div>
 
-    <mat-divider></mat-divider>
+    <!-- Frise de Validation (Timeline) -->
+    <div class="timeline-container">
+      <!-- Step 1: Création -->
+      <div class="timeline-step completed">
+        <div class="step-content">
+          <div class="step-title">
+            <mat-icon style="color: #10b981; font-size: 18px; width: 18px; height: 18px">check_circle</mat-icon>
+            Demande Soumise
+          </div>
+          <p class="step-desc">
+            Créée par {{ data.mouvement.demandeur?.prenom }} {{ data.mouvement.demandeur?.nom }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 2: Logistique -->
+      <div class="timeline-step" [ngClass]="getLogistiqueStepClass()">
+        <div class="step-content">
+          <div class="step-title">
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px"
+              [style.color]="getLogistiqueStepClass() === 'completed' ? '#10b981' : (getLogistiqueStepClass() === 'rejected' ? '#ef4444' : '#64748b')"
+            >
+              inventory_2
+            </mat-icon>
+            Validation Logistique
+          </div>
+          <p class="step-desc">{{ getLogistiqueDesc() }}</p>
+        </div>
+      </div>
+
+      <!-- Step 3: Sécurité -->
+      <div class="timeline-step" [ngClass]="getSecuriteStepClass()">
+        <div class="step-content">
+          <div class="step-title">
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px"
+              [style.color]="getSecuriteStepClass() === 'completed' ? '#10b981' : (getSecuriteStepClass() === 'rejected' ? '#ef4444' : '#64748b')"
+            >
+              security
+            </mat-icon>
+            Validation Sécurité 
+            @if (data.mouvement.validationLevelRequired > 0) {
+              <span style="font-weight: normal; color: #64748b; font-size: 12px">
+                (Niveau {{ data.mouvement.validationLevelRequired }})
+              </span>
+            }
+          </div>
+          <p class="step-desc">{{ getSecuriteDesc() }}</p>
+
+          @if (data.mouvement.securityApprovals && data.mouvement.securityApprovals.length > 0) {
+            <ul class="validators-list">
+              @for (app of data.mouvement.securityApprovals; track app) {
+                <li>
+                  <mat-icon style="font-size: 16px; width: 16px; height: 16px; color: #94a3b8">person</mat-icon>
+                  {{ app.validator?.nom }} {{ app.validator?.prenom }}
+                  <span class="val-status" [ngClass]="app.status">
+                    {{ formatApprovalStatus(app.status) }}
+                  </span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <!-- Step 4: Final -->
+      <div class="timeline-step" [ngClass]="getFinalStepClass()">
+        <div class="step-content">
+          <div class="step-title">
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px"
+              [style.color]="getFinalStepClass() === 'completed' ? '#10b981' : (getFinalStepClass() === 'rejected' ? '#ef4444' : '#64748b')"
+            >
+              flag
+            </mat-icon>
+            Décision Finale
+          </div>
+          <p class="step-desc">{{ getFinalDesc() }}</p>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider style="margin-top: 5px;"></mat-divider>
 
     <!-- Informations Générales -->
     <div style="margin: 20px 0">
