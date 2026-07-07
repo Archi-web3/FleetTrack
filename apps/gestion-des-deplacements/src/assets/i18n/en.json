@@ -585,7 +585,9 @@
             "SUPERVISEUR": "Supervisor",
             "CHAUFFEUR": "Driver",
             "TECHNICIEN": "Technician",
-            "UTILISATEUR": "User"
+            "UTILISATEUR": "User",
+            "LOGISTICIEN": "Logistician",
+            "GUEST": "Guest"
         },
         "FORM": {
             "NAME": "Last Name",
