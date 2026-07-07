@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Assurez-vous d'importer CommonModule
 import { MouvementService } from '../../core/services/mouvement.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -16,6 +16,7 @@ export class ValidationMouvementsComponent implements OnInit {
   private mouvementService = inject(MouvementService);
   private authService = inject(AuthService);
   perms = inject(PermissionsService);
+  private cdr = inject(ChangeDetectorRef);
 
   mouvementsPourValidationSecurite: any[] = [];
   mouvementsPourValidationLogistique: any[] = [];
@@ -105,6 +106,7 @@ export class ValidationMouvementsComponent implements OnInit {
           this.mouvementsPourValidationSecurite.length === 0
         ) {
         }
+        this.cdr.detectChanges();
       },
       (error) =>
         console.error('❌ [VALIDATION] Erreur chargement mouvements pour validation:', error),
