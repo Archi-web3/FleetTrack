@@ -7,8 +7,8 @@ export class SettingsController {
 
   @Get('public/debug-email-keys')
   async debugEmailKeys() {
-    const settings = await this.settingsService['settingModel'].find({ key: { $regex: /^emailSettings/ } }).select('key').exec();
-    return settings.map(s => s.key);
+    const settings = await this.settingsService['settingModel'].find({ key: { $regex: /^emailSettings/ } }).exec();
+    return settings;
   }
 
   @Get('public/:key')
