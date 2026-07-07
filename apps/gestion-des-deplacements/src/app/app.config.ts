@@ -1,4 +1,4 @@
-import { ApplicationConfig, Injectable, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, Injectable, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
@@ -43,6 +43,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor, countryInterceptor])),
     provideAnimations(),
