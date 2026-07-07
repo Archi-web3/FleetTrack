@@ -20,6 +20,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: true, create: true, edit: true, delete: true },
       mouvements_workflow: {
         view_menu: true,
+        view_all_validations: true,
         manage_levels: true,
         validate_level_1: true,
         validate_level_2: true,
@@ -49,6 +50,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: true, create: true, edit: true, delete: true },
       mouvements_workflow: {
         view_menu: true,
+        view_all_validations: true,
         manage_levels: true,
         validate_level_1: true,
         validate_level_2: true,
@@ -78,6 +80,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false },
       mouvements_workflow: {
         view_menu: true,
+        view_all_validations: false,
         manage_levels: false,
         validate_level_1: true,
         validate_level_2: true,
@@ -107,6 +110,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: true, create: false, edit: false, delete: false },
       mouvements_workflow: {
         view_menu: true,
+        view_all_validations: false,
         manage_levels: true,
         validate_level_1: false,
         validate_level_2: false,
@@ -129,6 +133,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false },
       mouvements_workflow: {
         view_menu: true,
+        view_all_validations: false,
         manage_levels: false,
         validate_level_1: true,
         validate_level_2: true,
@@ -151,6 +156,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: false, create: false, edit: false, delete: false },
       mouvements_workflow: {
         view_menu: false,
+        view_all_validations: false,
         manage_levels: false,
         validate_level_1: false,
         validate_level_2: false,
@@ -180,6 +186,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: true, create: true, edit: false, delete: false },
       mouvements_workflow: {
         view_menu: false,
+        view_all_validations: false,
         manage_levels: false,
         validate_level_1: false,
         validate_level_2: false,
@@ -209,6 +216,7 @@ export class PermissionsService {
       mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false },
       mouvements_workflow: {
         view_menu: false,
+        view_all_validations: false,
         manage_levels: false,
         validate_level_1: false,
         validate_level_2: false,

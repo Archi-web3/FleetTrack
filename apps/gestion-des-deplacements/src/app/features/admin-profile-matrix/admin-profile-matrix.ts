@@ -73,6 +73,7 @@ export class AdminProfileMatrixComponent implements OnInit {
           label: 'Workflow Sécurité',
           permissions: [
             { key: 'view_menu', label: 'Voir le Dashboard Workflow' },
+            { key: 'view_all_validations', label: 'Voir toutes les validations (Vue globale)' },
             { key: 'manage_levels', label: 'Gérer les Niveaux' },
             { key: 'validate_level_1', label: 'Valider Sécurité (Niveau 1)' },
             { key: 'validate_level_2', label: 'Valider Sécurité (Niveau 2)' },

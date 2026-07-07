@@ -71,7 +71,7 @@ export class ValidationMouvementsComponent implements OnInit {
               (!m.statutSecurite && m.statut === 'en attente' && m.validationLevelRequired > 1);
             if (!isSecuAttente) return false;
 
-            if (this.userProfile === 'SuperAdmin') return true;
+            if (this.perms.hasPermission('mouvements_workflow', 'view_all_validations')) return true;
 
             if (m.securityApprovals && m.securityApprovals.length > 0) {
               return m.securityApprovals.some((a: any) => {
@@ -86,8 +86,7 @@ export class ValidationMouvementsComponent implements OnInit {
         }
 
         const canValidateLogistics =
-          this.perms.hasPermission('mouvements_consolidation', 'manage') ||
-          this.userProfile === 'SuperAdmin';
+          this.perms.hasPermission('mouvements_consolidation', 'manage');
 
         if (canValidateLogistics) {
           this.mouvementsPourValidationLogistique = data.filter((m) => {
