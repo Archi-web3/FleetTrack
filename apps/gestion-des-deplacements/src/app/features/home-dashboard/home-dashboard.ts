@@ -261,7 +261,7 @@ export class HomeDashboardComponent implements OnInit {
   getValidationRoute(m: any): string {
     // Si c'est une validation logistique uniquement, on envoie vers la consolidation
     if (m.validationTypes?.includes('Logistique') && !m.validationTypes?.includes('Sécurité')) {
-      return '/consolider-mouvements';
+      return '/consolidation';
     }
     // Si la personne a les DEUX types de validations en attente,
     // on peut privilégier Sécurité car c'est généralement ce qui bloque en premier,
