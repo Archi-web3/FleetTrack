@@ -185,7 +185,12 @@
                         <span class="val-objectif">{{
                           m.objectif || ('DASHBOARD.NO_OBJECTIVE' | translate)
                         }}</span>
-                        <span class="val-date">{{ m.dateDepart | date: 'short' }}</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span class="val-date">{{ m.dateDepart | date: 'short' }}</span>
+                          <button mat-icon-button (click)="openDetail($event, m)" matTooltip="Voir détails">
+                            <mat-icon style="color: #64748b">visibility</mat-icon>
+                          </button>
+                        </div>
                       </div>
                       <div class="val-body">
                         <span
@@ -346,6 +351,19 @@
                         @if (!m.validationTypes.includes('Sécurité')) {
                           <div style="color: #94a3b8">-</div>
                         }
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell *matHeaderCellDef>Actions</th>
+                      <td mat-cell *matCellDef="let m" (click)="$event.stopPropagation()">
+                        <button
+                          mat-icon-button
+                          color="accent"
+                          (click)="openDetail($event, m)"
+                          matTooltip="Voir détails"
+                        >
+                          <mat-icon>visibility</mat-icon>
+                        </button>
                       </td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

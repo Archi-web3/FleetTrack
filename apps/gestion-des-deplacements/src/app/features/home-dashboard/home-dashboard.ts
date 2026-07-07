@@ -17,6 +17,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MouvementDetailsDialogComponent } from '../liste-mouvements/mouvement-details-dialog.component';
 
 @Component({
   selector: 'app-home-dashboard',
@@ -33,6 +35,7 @@ import { FormsModule } from '@angular/forms';
     MatTableModule,
     MatTooltipModule,
     FormsModule,
+    MatDialogModule,
   ],
   templateUrl: './home-dashboard.html',
   styleUrls: ['./home-dashboard.scss'],
@@ -44,6 +47,7 @@ export class HomeDashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private perms = inject(PermissionsService);
   private cdr = inject(ChangeDetectorRef);
+  private dialog = inject(MatDialog);
 
   newsBanner: string | null = null;
   userName = '';
@@ -60,7 +64,7 @@ export class HomeDashboardComponent implements OnInit {
   userProfile = '';
 
   viewMode: 'cards' | 'list' = 'cards';
-  displayedColumns: string[] = ['date', 'objectif', 'demandeur', 'types', 'security'];
+  displayedColumns: string[] = ['date', 'objectif', 'demandeur', 'types', 'security', 'actions'];
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('userName') || 'Utilisateur';
@@ -132,10 +136,11 @@ export class HomeDashboardComponent implements OnInit {
           }
 
           // Sécurité
-          if ((canValidateSecurity || this.userProfile === 'SuperAdmin') && isSecuAttente) {
-            if (this.userProfile === 'SuperAdmin') {
+          const canViewAllSecu = this.perms.hasPermission('mouvements_workflow', 'view_all_validations');
+          if ((canValidateSecurity || canViewAllSecu) && isSecuAttente) {
+            if (canViewAllSecu) {
               displayTypes.push('Sécurité');
-              keep = true; // Le SuperAdmin voit toutes les demandes de sécurité en attente
+              keep = true; // Voit toutes les demandes de sécurité en attente
             } else if (m.securityApprovals && m.securityApprovals.length > 0) {
               const hasPending = m.securityApprovals.some((a: any) => {
                 const validatorId =
@@ -251,5 +256,14 @@ export class HomeDashboardComponent implements OnInit {
   getBackupValidators(mouvement: any) {
     if (!mouvement.securityApprovals) return [];
     return mouvement.securityApprovals.filter((a: any) => a.isBackup);
+  }
+
+  openDetail(event: Event, mouvement: any) {
+    event.stopPropagation();
+    this.dialog.open(MouvementDetailsDialogComponent, {
+      width: '800px',
+      data: { mouvement },
+      panelClass: 'custom-dialog-container',
+    });
   }
 }
