@@ -258,6 +258,22 @@ export class HomeDashboardComponent implements OnInit {
     return mouvement.securityApprovals.filter((a: any) => a.isBackup);
   }
 
+  getValidationRoute(m: any): string {
+    // Si c'est une validation logistique uniquement, on envoie vers la consolidation
+    if (m.validationTypes?.includes('Logistique') && !m.validationTypes?.includes('Sécurité')) {
+      return '/consolider-mouvements';
+    }
+    // Si la personne a les DEUX types de validations en attente,
+    // on peut privilégier Sécurité car c'est généralement ce qui bloque en premier,
+    // MAIS si c'est un Logisticien qui ne PEUT PAS valider la sécurité, il faudrait l'envoyer vers la Logistique.
+    // Heureusement, la logique de validationTypes filtre déjà ce que l'utilisateur peut valider !
+    if (m.validationTypes?.includes('Sécurité')) {
+      return '/valider-mouvements';
+    }
+    // Fallback par défaut vers valider-mouvements (bien que logiquement impossible ici)
+    return '/valider-mouvements';
+  }
+
   openDetail(event: Event, mouvement: any) {
     event.stopPropagation();
     this.dialog.open(MouvementDetailsDialogComponent, {

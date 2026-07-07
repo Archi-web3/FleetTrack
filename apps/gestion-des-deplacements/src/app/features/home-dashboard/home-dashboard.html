@@ -180,7 +180,7 @@
               @if (viewMode === 'cards') {
                 <div class="validations-list">
                   @for (m of pendingValidations; track m) {
-                    <div class="validation-item" routerLink="/valider-mouvements">
+                    <div class="validation-item" [routerLink]="getValidationRoute(m)">
                       <div class="val-header">
                         <span class="val-objectif">{{
                           m.objectif || ('DASHBOARD.NO_OBJECTIVE' | translate)
@@ -243,7 +243,7 @@
                         mat-cell
                         *matCellDef="let m"
                         style="cursor: pointer"
-                        routerLink="/valider-mouvements"
+                        [routerLink]="getValidationRoute(m)"
                       >
                         {{ m.dateDepart | date: 'short' }}
                       </td>
@@ -254,7 +254,7 @@
                         mat-cell
                         *matCellDef="let m"
                         style="cursor: pointer"
-                        routerLink="/valider-mouvements"
+                        [routerLink]="getValidationRoute(m)"
                       >
                         {{ m.objectif || ('DASHBOARD.NO_OBJECTIVE' | translate) }}
                       </td>
@@ -267,7 +267,7 @@
                         mat-cell
                         *matCellDef="let m"
                         style="cursor: pointer"
-                        routerLink="/valider-mouvements"
+                        [routerLink]="getValidationRoute(m)"
                       >
                         {{ m.demandeur?.nom }} {{ m.demandeur?.prenom }}
                       </td>
@@ -280,7 +280,7 @@
                         mat-cell
                         *matCellDef="let m"
                         style="cursor: pointer"
-                        routerLink="/valider-mouvements"
+                        [routerLink]="getValidationRoute(m)"
                       >
                         @for (type of m.validationTypes; track type) {
                           <span
