@@ -1,4 +1,4 @@
-import { Injectable, Logger, ConflictException } from '@nestjs/common';
+import { Injectable, Logger, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Mouvement, MouvementDocument } from './schemas/mouvement.schema';
@@ -219,6 +219,12 @@ export class MouvementsService {
 
     const finalBase = user.base || inferredBase;
     const finalPays = user.pays || inferredPays || createDto.pays;
+    
+    if (!finalPays && createDto.type !== 'maintenance') {
+      throw new BadRequestException(
+        "Impossible de déterminer le pays pour ce mouvement. Veuillez vérifier que votre profil ou le lieu de départ est bien rattaché à un pays.",
+      );
+    }
 
     // 5. Instanciation
     const mouvement = new this.mouvementModel({
@@ -236,7 +242,7 @@ export class MouvementsService {
     if (mouvement.statutSecurite === 'en attente') {
       const { mode, validators } =
         await this.securityService.calculateValidators(
-          mouvement.pays ? mouvement.pays.toString() : '',
+          mouvement.pays.toString(),
           mouvement.base ? mouvement.base.toString() : null,
           maxSecurityLevel,
         );
