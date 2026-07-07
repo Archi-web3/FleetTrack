@@ -225,12 +225,11 @@ export const MouvementSchema = SchemaFactory.createForClass(Mouvement);
 
 MouvementSchema.pre(
   'save',
-  function (next: import('mongoose').CallbackWithoutResultAndOptionalError) {
+  function () {
     if (this.stops && this.stops.length > 0) {
       this.dateDepart = this.stops[0].dateDepart;
       this.dateArrivee = this.stops[this.stops.length - 1].dateArrivee;
     }
-    next();
   },
 );
 

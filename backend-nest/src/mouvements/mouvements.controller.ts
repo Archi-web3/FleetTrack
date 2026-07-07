@@ -75,6 +75,10 @@ export class MouvementsController {
     @Query('force') force: string,
   ) {
     const forceConflict = force === 'true';
+    console.log('--- DEBUG CREATE MOUVEMENT ---');
+    console.log('User Pays:', req.user.pays, typeof req.user.pays);
+    console.log('CreateDto Pays:', createMouvementDto.pays);
+    console.log('Stops:', createMouvementDto.stops);
     return this.mouvementsService.create(
       createMouvementDto,
       req.user,
