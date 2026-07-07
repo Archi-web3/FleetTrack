@@ -767,21 +767,25 @@
       <button
         type="submit"
         [ngClass]="isModal ? 'custom-modal-btn-submit' : ''"
-        [disabled]="!demandeForm.form.valid"
+        [disabled]="!demandeForm.form.valid || isSubmitting"
         [style]="
           isModal
             ? ''
             : 'padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; width: 100%; font-size: 1.1em; border-radius: 6px;'
         "
       >
-        @if (isModal) {
+        @if (isModal && !isSubmitting) {
           <mat-icon>check</mat-icon>
         }
-        {{
-          requestType === 'maintenance'
-            ? ('NEW_REQUEST.SUBMIT.MAINTENANCE' | translate)
-            : ('NEW_REQUEST.SUBMIT.MISSION' | translate)
-        }}
+        @if (isSubmitting) {
+          <mat-icon>hourglass_empty</mat-icon> Envoi en cours...
+        } @else {
+          {{
+            requestType === 'maintenance'
+              ? ('NEW_REQUEST.SUBMIT.MAINTENANCE' | translate)
+              : ('NEW_REQUEST.SUBMIT.MISSION' | translate)
+          }}
+        }
       </button>
     </div>
   </div>

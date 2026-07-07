@@ -367,7 +367,11 @@ export class DemandeMouvementComponent implements OnInit {
   recurrenceFrequency: 'Daily' | 'Weekly' = 'Daily';
   recurrenceEndDate = '';
 
+  isSubmitting = false; // NOUVEAU: Empêcher les doubles clics
+
   async onSubmit(): Promise<void> {
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
     try {
       // --- LOGIQUE MAINTENANCE ---
       if (this.requestType === 'maintenance') {
@@ -669,6 +673,8 @@ export class DemandeMouvementComponent implements OnInit {
     } catch (error: any) {
       console.error('Erreur générale dans onSubmit:', error);
       alert('Une erreur est survenue: ' + (error.message || ''));
+    } finally {
+      this.isSubmitting = false; // Réactiver le bouton
     }
   }
   // Helper pour obtenir les infos de sécurité d'un lieu
