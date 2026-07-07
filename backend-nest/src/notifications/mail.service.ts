@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { SettingsService } from '../settings/settings.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User, UserDocument } from '../users/schemas/user.schema';
 
 export interface MovementContext {
   demandeur?: {
@@ -23,7 +26,10 @@ export class MailService {
   private transporter: nodemailer.Transporter | null = null;
   private isSimulationMode = false;
 
-  constructor(private settingsService: SettingsService) {
+  constructor(
+    private settingsService: SettingsService,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+  ) {
     this.initTransporter();
   }
 
@@ -183,6 +189,105 @@ export class MailService {
     `;
 
     await this.sendMail(to, subject, html);
+  }
+
+  /**
+   * Envoi d'un email basé sur les templates personnalisés (base, pays ou global)
+   */
+  async sendTemplateEmail(
+    templateId: string,
+    movement: MovementContext,
+    defaultEmails: string[],
+  ): Promise<void> {
+    const isEnabled = await this.isNotificationEnabled(templateId);
+    if (!isEnabled) return;
+
+    // Chercher le template dans settings
+    let emailSettings = null;
+    let template = null;
+    
+    // Essayer de trouver le template de la Base d'abord
+    if (movement.base) {
+      emailSettings = await this.settingsService.getSetting(`emailSettings_base_${movement.base.toString()}`) as any[];
+      template = emailSettings?.find((t) => t.id === templateId);
+    }
+    // Sinon le template du Pays
+    if (!template && movement.pays) {
+      emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${movement.pays.toString()}`) as any[];
+      template = emailSettings?.find((t) => t.id === templateId);
+    }
+    // Sinon le global
+    if (!template) {
+      emailSettings = await this.settingsService.getSetting('emailSettings_global') as any[];
+      template = emailSettings?.find((t) => t.id === templateId);
+    }
+
+    // Si on a un template, et qu'il demande de bypasser la matrice
+    let recipients = [...defaultEmails];
+    if (template && template.useMatrixRecipients === false) {
+       // Chercher les emails des profils/users configurés
+       recipients = [];
+       const queryOr = [];
+       if (template.recipientProfiles && template.recipientProfiles.length > 0) {
+         queryOr.push({ profil: { $in: template.recipientProfiles } });
+       }
+       if (template.recipientUsers && template.recipientUsers.length > 0) {
+         queryOr.push({ _id: { $in: template.recipientUsers } });
+       }
+       
+       if (queryOr.length > 0) {
+         const users = await this.userModel.find({ $or: queryOr }).exec();
+         users.forEach(u => {
+           if (u.email && !recipients.includes(u.email)) {
+             recipients.push(u.email);
+           }
+         });
+       }
+    }
+
+    if (recipients.length === 0) {
+       this.logger.warn(`Aucun destinataire trouvé pour l'email template: ${templateId}`);
+       return;
+    }
+
+    if (template && template.body && template.subject) {
+       // Remplacer les variables
+       const demandeurName = movement.demandeur ? (movement.demandeur.prenom + ' ' + movement.demandeur.nom) : 'Inconnu';
+       const link = `${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}`;
+       
+       let subject = template.subject.replace(/{{movementId}}/g, movement.reference || movement._id?.toString().slice(-6));
+       let body = template.body
+         .replace(/{{user}}/g, demandeurName)
+         .replace(/{{movementId}}/g, movement.reference || movement._id?.toString().slice(-6))
+         .replace(/{{link}}/g, link)
+         .replace(/\\n/g, '<br/>');
+
+       const html = `
+         <div style="font-family: Arial, sans-serif; max-width: 600px; border: 1px solid #ccc; border-radius: 5px; padding: 20px;">
+           <div style="text-align: center; margin-bottom: 20px;">
+             <h2 style="color: #005FB6; margin: 0;">FleetTrack</h2>
+           </div>
+           <div style="color: #333; line-height: 1.6;">
+             ${body}
+           </div>
+           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+           <div style="font-size: 12px; color: #999; text-align: center;">
+             Cet email est généré automatiquement. Merci de ne pas y répondre.
+           </div>
+         </div>
+       `;
+
+       for (const email of recipients) {
+         await this.sendMail(email, subject, html);
+       }
+    } else {
+       // Fallback
+       if (templateId === 'req_created' || templateId === 'log_validated' || templateId === 'sec_validated') {
+         for (const email of recipients) {
+           await this.sendValidationRequest(email, movement);
+         }
+       }
+    }
   }
 
   private getLastDestination(movement: MovementContext): string {

@@ -27,10 +27,16 @@ let UsersController = class UsersController {
         this.usersService = usersService;
         this.auditLogsService = auditLogsService;
     }
-    async findAll(req) {
+    async findAll(req, headerPays) {
         const user = req.user;
         const filter = {};
-        if (user && user.profil === 'Admin' && user.pays) {
+        const userRole = user?.profil || user?.role?.['name'];
+        if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
+            if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
+                filter.pays = headerPays;
+            }
+        }
+        else if (user && user.pays) {
             filter.pays = user.pays;
         }
         return this.usersService.findAll(filter);
@@ -58,8 +64,9 @@ exports.UsersController = UsersController;
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)('x-selected-country')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
 __decorate([

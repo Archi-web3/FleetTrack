@@ -6,7 +6,7 @@ export declare class UsersController {
     private readonly usersService;
     private readonly auditLogsService;
     constructor(usersService: UsersService, auditLogsService: AuditLogsService);
-    findAll(req: AuthRequest): Promise<import("./schemas/user.schema").Utilisateur[]>;
+    findAll(req: AuthRequest, headerPays?: string): Promise<import("./schemas/user.schema").Utilisateur[]>;
     findOne(id: string): Promise<import("mongoose").Document<unknown, {}, import("./schemas/user.schema").Utilisateur, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/user.schema").Utilisateur & {
         _id: import("mongoose").Types.ObjectId;
     } & {

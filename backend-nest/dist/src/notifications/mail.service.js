@@ -41,19 +41,27 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var MailService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailService = void 0;
 const common_1 = require("@nestjs/common");
 const nodemailer = __importStar(require("nodemailer"));
 const settings_service_1 = require("../settings/settings.service");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+const user_schema_1 = require("../users/schemas/user.schema");
 let MailService = MailService_1 = class MailService {
     settingsService;
+    userModel;
     logger = new common_1.Logger(MailService_1.name);
     transporter = null;
     isSimulationMode = false;
-    constructor(settingsService) {
+    constructor(settingsService, userModel) {
         this.settingsService = settingsService;
+        this.userModel = userModel;
         this.initTransporter();
     }
     initTransporter() {
@@ -132,7 +140,7 @@ let MailService = MailService_1 = class MailService {
           <li><strong>Projet:</strong> ${folder}</li>
           <li><strong>Destination:</strong> ${destination}</li>
         </ul>
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:4200'}/validation" 
+        <a href="${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}/validation" 
            style="background-color: #005FB6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px;">
            Accéder à la Validation
         </a>
@@ -157,13 +165,89 @@ let MailService = MailService_1 = class MailService {
         <h2 style="color: ${color};">Statut de la demande : ${status.toUpperCase()}</h2>
         <p>Votre demande de mouvement vers <strong>${destination}</strong> a été mise à jour.</p>
         ${reasonHtml}
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:4200'}/mes-mouvements" 
+        <a href="${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}/mes-mouvements" 
            style="background-color: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px;">
            Voir ma demande
         </a>
       </div>
     `;
         await this.sendMail(to, subject, html);
+    }
+    async sendTemplateEmail(templateId, movement, defaultEmails) {
+        const isEnabled = await this.isNotificationEnabled(templateId);
+        if (!isEnabled)
+            return;
+        let emailSettings = null;
+        let template = null;
+        if (movement.base) {
+            emailSettings = await this.settingsService.getSetting(`emailSettings_base_${movement.base.toString()}`);
+            template = emailSettings?.find((t) => t.id === templateId);
+        }
+        if (!template && movement.pays) {
+            emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${movement.pays.toString()}`);
+            template = emailSettings?.find((t) => t.id === templateId);
+        }
+        if (!template) {
+            emailSettings = await this.settingsService.getSetting('emailSettings_global');
+            template = emailSettings?.find((t) => t.id === templateId);
+        }
+        let recipients = [...defaultEmails];
+        if (template && template.useMatrixRecipients === false) {
+            recipients = [];
+            const queryOr = [];
+            if (template.recipientProfiles && template.recipientProfiles.length > 0) {
+                queryOr.push({ profil: { $in: template.recipientProfiles } });
+            }
+            if (template.recipientUsers && template.recipientUsers.length > 0) {
+                queryOr.push({ _id: { $in: template.recipientUsers } });
+            }
+            if (queryOr.length > 0) {
+                const users = await this.userModel.find({ $or: queryOr }).exec();
+                users.forEach(u => {
+                    if (u.email && !recipients.includes(u.email)) {
+                        recipients.push(u.email);
+                    }
+                });
+            }
+        }
+        if (recipients.length === 0) {
+            this.logger.warn(`Aucun destinataire trouvé pour l'email template: ${templateId}`);
+            return;
+        }
+        if (template && template.body && template.subject) {
+            const demandeurName = movement.demandeur ? (movement.demandeur.prenom + ' ' + movement.demandeur.nom) : 'Inconnu';
+            const link = `${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}`;
+            let subject = template.subject.replace(/{{movementId}}/g, movement.reference || movement._id?.toString().slice(-6));
+            let body = template.body
+                .replace(/{{user}}/g, demandeurName)
+                .replace(/{{movementId}}/g, movement.reference || movement._id?.toString().slice(-6))
+                .replace(/{{link}}/g, link)
+                .replace(/\\n/g, '<br/>');
+            const html = `
+         <div style="font-family: Arial, sans-serif; max-width: 600px; border: 1px solid #ccc; border-radius: 5px; padding: 20px;">
+           <div style="text-align: center; margin-bottom: 20px;">
+             <h2 style="color: #005FB6; margin: 0;">FleetTrack</h2>
+           </div>
+           <div style="color: #333; line-height: 1.6;">
+             ${body}
+           </div>
+           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+           <div style="font-size: 12px; color: #999; text-align: center;">
+             Cet email est généré automatiquement. Merci de ne pas y répondre.
+           </div>
+         </div>
+       `;
+            for (const email of recipients) {
+                await this.sendMail(email, subject, html);
+            }
+        }
+        else {
+            if (templateId === 'req_created' || templateId === 'log_validated' || templateId === 'sec_validated') {
+                for (const email of recipients) {
+                    await this.sendValidationRequest(email, movement);
+                }
+            }
+        }
     }
     getLastDestination(movement) {
         if (movement.stops && movement.stops.length > 0) {
@@ -178,6 +262,8 @@ let MailService = MailService_1 = class MailService {
 exports.MailService = MailService;
 exports.MailService = MailService = MailService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [settings_service_1.SettingsService])
+    __param(1, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    __metadata("design:paramtypes", [settings_service_1.SettingsService,
+        mongoose_2.Model])
 ], MailService);
 //# sourceMappingURL=mail.service.js.map

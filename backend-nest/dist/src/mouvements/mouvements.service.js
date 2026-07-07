@@ -190,6 +190,14 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
         }
         const finalBase = user.base || inferredBase;
         const finalPays = user.pays || inferredPays || createDto.pays;
+        console.log('--- DEBUG SERVICE ---');
+        console.log('inferredPays:', inferredPays);
+        console.log('user.pays:', user.pays);
+        console.log('createDto.pays:', createDto.pays);
+        console.log('finalPays:', finalPays);
+        if (!finalPays && createDto.type !== 'maintenance') {
+            throw new common_1.BadRequestException("Impossible de déterminer le pays pour ce mouvement. Veuillez vérifier que votre profil ou le lieu de départ est bien rattaché à un pays.");
+        }
         const mouvement = new this.mouvementModel({
             ...createDto,
             demandeur: createDto.demandeur || user._id || user.id,
@@ -213,13 +221,17 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
                 pays: savedMouvement.pays,
             })
                 .exec();
+            const emails = [];
             for (const log of logisticiens) {
                 if (log.email)
-                    await this.mailService.sendValidationRequest(log.email, await savedMouvement.populate([
-                        { path: 'vehicule' },
-                        { path: 'stops.lieu' },
-                        { path: 'demandeur' },
-                    ]));
+                    emails.push(log.email);
+            }
+            if (emails.length > 0) {
+                await this.mailService.sendTemplateEmail('req_created', await savedMouvement.populate([
+                    { path: 'vehicule' },
+                    { path: 'stops.lieu' },
+                    { path: 'demandeur' },
+                ]), emails);
             }
         }
         if (savedMouvement.statutSecurite === 'en attente') {
@@ -227,23 +239,50 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
             const valideursSecu = await this.userModel
                 .find({ _id: { $in: validatorIds } })
                 .exec();
+            const emails = [];
             for (const valideur of valideursSecu) {
                 if (valideur.email)
-                    await this.mailService.sendValidationRequest(valideur.email, await savedMouvement.populate([
-                        { path: 'vehicule' },
-                        { path: 'stops.lieu' },
-                        { path: 'demandeur' },
-                    ]));
+                    emails.push(valideur.email);
+            }
+            if (emails.length > 0) {
+                await this.mailService.sendTemplateEmail('sec_validated', await savedMouvement.populate([
+                    { path: 'vehicule' },
+                    { path: 'stops.lieu' },
+                    { path: 'demandeur' },
+                ]), emails);
             }
         }
         return savedMouvement;
     }
     async update(id, updateDto) {
+        const oldMouvement = await this.mouvementModel.findById(id).exec();
         const updated = await this.mouvementModel
             .findByIdAndUpdate(id, updateDto, { new: true })
+            .populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }])
             .exec();
         if (!updated) {
             throw new common_1.ConflictException('Mouvement non trouvé');
+        }
+        if (oldMouvement && oldMouvement.statut !== updated.statut) {
+            const demandeurEmail = updated.demandeur?.email;
+            if (demandeurEmail) {
+                if (updated.statut === 'validé') {
+                    await this.mailService.sendTemplateEmail('assigned', updated, [demandeurEmail]);
+                }
+                else if (updated.statut === 'refusé' || updated.statut === 'annulé') {
+                    await this.mailService.sendTemplateEmail('cancelled', updated, [demandeurEmail]);
+                }
+            }
+        }
+        if (oldMouvement && oldMouvement.statutLogistique !== updated.statutLogistique && updated.statutLogistique === 'validé') {
+            if (updated.statutSecurite === 'en attente') {
+                const validatorIds = updated.securityApprovals.map((a) => a.validator);
+                const valideursSecu = await this.userModel.find({ _id: { $in: validatorIds } }).exec();
+                const emails = valideursSecu.map(v => v.email).filter(e => e);
+                if (emails.length > 0) {
+                    await this.mailService.sendTemplateEmail('log_validated', updated, emails);
+                }
+            }
         }
         return updated;
     }
@@ -267,6 +306,7 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
         const allApproved = securityApprovals
             .filter((a) => !a.isBackup)
             .every((a) => a.status === 'approved');
+        let oldStatut = mouvement.statut;
         if (allApproved) {
             mouvement.statutSecurite = 'validé';
             if (mouvement.statutLogistique === 'non requis' ||
@@ -277,7 +317,18 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
                 mouvement.statut = 'en attente validation logistique';
             }
         }
-        return mouvement.save();
+        const updated = await mouvement.save();
+        const populatedMouvement = await this.mouvementModel.findById(updated._id).populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }]).exec();
+        const demandeurEmail = populatedMouvement?.demandeur?.email;
+        if (demandeurEmail) {
+            if (allApproved && mouvement.statutSecurite === 'validé') {
+                await this.mailService.sendTemplateEmail('sec_validated', populatedMouvement, [demandeurEmail]);
+            }
+            if (oldStatut !== updated.statut && updated.statut === 'validé') {
+                await this.mailService.sendTemplateEmail('assigned', populatedMouvement, [demandeurEmail]);
+            }
+        }
+        return updated;
     }
     async cleanGhosts() {
         const mouvementsGroupes = await this.mouvementModel

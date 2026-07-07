@@ -5,7 +5,7 @@ import { Mouvement } from './schemas/mouvement.schema';
 export declare class MouvementsController {
     private readonly mouvementsService;
     constructor(mouvementsService: MouvementsService);
-    findAll(query: MouvementQueryDto): Promise<Mouvement[]>;
+    findAll(query: MouvementQueryDto, req: AuthRequest, headerPays?: string): Promise<Mouvement[]>;
     getStatsByStatus(): Promise<any[]>;
     getStatsByVehicle(): Promise<any[]>;
     getPlanning(includePending: string): Promise<Mouvement[]>;

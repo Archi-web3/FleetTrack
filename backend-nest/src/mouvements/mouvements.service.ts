@@ -268,16 +268,20 @@ export class MouvementsService {
           pays: savedMouvement.pays,
         })
         .exec();
+      const emails: string[] = [];
       for (const log of logisticiens) {
-        if (log.email)
-          await this.mailService.sendValidationRequest(
-            log.email,
-            await savedMouvement.populate([
-              { path: 'vehicule' },
-              { path: 'stops.lieu' },
-              { path: 'demandeur' },
-            ]),
-          );
+        if (log.email) emails.push(log.email);
+      }
+      if (emails.length > 0) {
+        await this.mailService.sendTemplateEmail(
+          'req_created',
+          await savedMouvement.populate([
+            { path: 'vehicule' },
+            { path: 'stops.lieu' },
+            { path: 'demandeur' },
+          ]),
+          emails,
+        );
       }
     }
 
@@ -288,16 +292,20 @@ export class MouvementsService {
       const valideursSecu = await this.userModel
         .find({ _id: { $in: validatorIds } })
         .exec();
+      const emails: string[] = [];
       for (const valideur of valideursSecu) {
-        if (valideur.email)
-          await this.mailService.sendValidationRequest(
-            valideur.email,
-            await savedMouvement.populate([
-              { path: 'vehicule' },
-              { path: 'stops.lieu' },
-              { path: 'demandeur' },
-            ]),
-          );
+        if (valideur.email) emails.push(valideur.email);
+      }
+      if (emails.length > 0) {
+        await this.mailService.sendTemplateEmail(
+          'sec_validated', // Or 'req_created' ? Wait, if it's security, it's sec_validated. But wait, if it's JUST created, is it log_validated or req_created? 
+          await savedMouvement.populate([
+            { path: 'vehicule' },
+            { path: 'stops.lieu' },
+            { path: 'demandeur' },
+          ]),
+          emails,
+        );
       }
     }
 
@@ -308,12 +316,40 @@ export class MouvementsService {
     id: string,
     updateDto: Record<string, unknown>,
   ): Promise<Mouvement> {
+    const oldMouvement = await this.mouvementModel.findById(id).exec();
+    
     const updated = await this.mouvementModel
       .findByIdAndUpdate(id, updateDto, { new: true })
+      .populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }])
       .exec();
     if (!updated) {
       throw new ConflictException('Mouvement non trouvé');
     }
+
+    // Email Notifications on status change
+    if (oldMouvement && oldMouvement.statut !== updated.statut) {
+       const demandeurEmail = (updated.demandeur as any)?.email;
+       if (demandeurEmail) {
+          if (updated.statut === 'validé') {
+            await this.mailService.sendTemplateEmail('assigned', updated as any, [demandeurEmail]);
+          } else if (updated.statut === 'refusé' || updated.statut === 'annulé') {
+            await this.mailService.sendTemplateEmail('cancelled', updated as any, [demandeurEmail]);
+          }
+       }
+    }
+    
+    if (oldMouvement && oldMouvement.statutLogistique !== updated.statutLogistique && updated.statutLogistique === 'validé') {
+       // Logistique validée, on notifie la sécurité si requise
+       if (updated.statutSecurite === 'en attente') {
+          const validatorIds = updated.securityApprovals.map((a: any) => a.validator);
+          const valideursSecu = await this.userModel.find({ _id: { $in: validatorIds } }).exec();
+          const emails = valideursSecu.map(v => v.email).filter(e => e);
+          if (emails.length > 0) {
+             await this.mailService.sendTemplateEmail('log_validated', updated as any, emails);
+          }
+       }
+    }
+
     return updated;
   }
 
@@ -356,6 +392,8 @@ export class MouvementsService {
       .filter((a) => !a.isBackup)
       .every((a) => a.status === 'approved');
 
+    let oldStatut = mouvement.statut;
+
     if (allApproved) {
       mouvement.statutSecurite = 'validé';
       // If logistics is not required or already valid, set overall to validé
@@ -369,7 +407,22 @@ export class MouvementsService {
       }
     }
 
-    return mouvement.save();
+    const updated = await mouvement.save();
+
+    const populatedMouvement = await this.mouvementModel.findById(updated._id).populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }]).exec();
+
+    // Notifier le demandeur
+    const demandeurEmail = (populatedMouvement?.demandeur as any)?.email;
+    if (demandeurEmail) {
+       if (allApproved && mouvement.statutSecurite === 'validé') {
+         await this.mailService.sendTemplateEmail('sec_validated', populatedMouvement as any, [demandeurEmail]);
+       }
+       if (oldStatut !== updated.statut && updated.statut === 'validé') {
+         await this.mailService.sendTemplateEmail('assigned', populatedMouvement as any, [demandeurEmail]);
+       }
+    }
+
+    return updated;
   }
 
   async cleanGhosts(): Promise<{ message: string }> {

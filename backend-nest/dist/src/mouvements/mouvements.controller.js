@@ -24,7 +24,17 @@ let MouvementsController = class MouvementsController {
     constructor(mouvementsService) {
         this.mouvementsService = mouvementsService;
     }
-    async findAll(query) {
+    async findAll(query, req, headerPays) {
+        const user = req.user;
+        const userRole = user?.profil || user?.role?.['name'];
+        if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
+            if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
+                query['pays'] = headerPays;
+            }
+        }
+        else if (user && user.pays) {
+            query['pays'] = user.pays;
+        }
         return this.mouvementsService.findAll(query);
     }
     async getStatsByStatus() {
@@ -41,6 +51,10 @@ let MouvementsController = class MouvementsController {
     }
     async create(createMouvementDto, req, force) {
         const forceConflict = force === 'true';
+        console.log('--- DEBUG CREATE MOUVEMENT ---');
+        console.log('User Pays:', req.user.pays, typeof req.user.pays);
+        console.log('CreateDto Pays:', createMouvementDto.pays);
+        console.log('Stops:', createMouvementDto.stops);
         return this.mouvementsService.create(createMouvementDto, req.user, forceConflict);
     }
     async update(id, updateMouvementDto) {
@@ -67,8 +81,10 @@ __decorate([
     (0, common_1.Get)(),
     (0, permissions_decorator_1.RequirePermissions)('VIEW_OWN_MOUVEMENTS'),
     __param(0, (0, common_1.Query)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Headers)('x-selected-country')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [mouvements_dto_1.MouvementQueryDto]),
+    __metadata("design:paramtypes", [mouvements_dto_1.MouvementQueryDto, Object, String]),
     __metadata("design:returntype", Promise)
 ], MouvementsController.prototype, "findAll", null);
 __decorate([

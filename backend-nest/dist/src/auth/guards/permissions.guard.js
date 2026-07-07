@@ -32,7 +32,7 @@ let PermissionsGuard = class PermissionsGuard {
             typeof user.role === 'object' &&
             'permissions' in user.role) {
             const role = user.role;
-            if (role.name === 'SuperAdmin' || role.permissions.includes('ALL')) {
+            if (role.name === 'SuperAdmin' || role.name === 'Super Admin' || role.permissions.includes('ALL')) {
                 return true;
             }
             if (!requiredPermissions || requiredPermissions.length === 0) {
@@ -43,7 +43,7 @@ let PermissionsGuard = class PermissionsGuard {
                 return true;
         }
         const profil = user.profil;
-        if (profil === 'SuperAdmin') {
+        if (profil === 'SuperAdmin' || profil === 'Super Admin') {
             return true;
         }
         if (!requiredPermissions || requiredPermissions.length === 0) {

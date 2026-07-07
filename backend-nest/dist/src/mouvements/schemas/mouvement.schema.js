@@ -332,11 +332,10 @@ exports.Mouvement = Mouvement = __decorate([
     (0, mongoose_1.Schema)()
 ], Mouvement);
 exports.MouvementSchema = mongoose_1.SchemaFactory.createForClass(Mouvement);
-exports.MouvementSchema.pre('save', function (next) {
+exports.MouvementSchema.pre('save', function () {
     if (this.stops && this.stops.length > 0) {
         this.dateDepart = this.stops[0].dateDepart;
         this.dateArrivee = this.stops[this.stops.length - 1].dateArrivee;
     }
-    next();
 });
 //# sourceMappingURL=mouvement.schema.js.map
