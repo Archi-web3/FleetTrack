@@ -236,7 +236,7 @@ export class MouvementsService {
     if (mouvement.statutSecurite === 'en attente') {
       const { mode, validators } =
         await this.securityService.calculateValidators(
-          mouvement.pays.toString(),
+          mouvement.pays ? mouvement.pays.toString() : '',
           mouvement.base ? mouvement.base.toString() : null,
           maxSecurityLevel,
         );
