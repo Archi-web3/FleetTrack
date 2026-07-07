@@ -7,8 +7,16 @@ export class SettingsController {
 
   @Get('public/debug-email-keys')
   async debugEmailKeys() {
-    const settings = await this.settingsService['settingModel'].find({ key: { $regex: /^emailSettings/ } }).exec();
-    return settings;
+    const baseId = "6937ff5290074e68ade3c07b";
+    const emailSettings = await this.settingsService.getSetting(`emailSettings_base_${baseId}`) as any[];
+    const template = emailSettings?.find((t) => t.id === 'req_created');
+    
+    return {
+      foundArray: !!emailSettings,
+      arrayLength: emailSettings ? emailSettings.length : 0,
+      foundTemplate: !!template,
+      templateData: template || null
+    };
   }
 
   @Get('public/:key')
