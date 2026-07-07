@@ -158,7 +158,7 @@ export class ValidationMouvementsComponent implements OnInit {
     // CAS 2 : Validation LOGISTIQUE (Classique)
     else {
       const nouveauStatut = 'validé';
-      this.mouvementService.updateMouvement(mouvementId, { statut: nouveauStatut }).subscribe(
+      this.mouvementService.updateMouvement(mouvementId, { statutLogistique: nouveauStatut }).subscribe(
         (response) => {
           alert(`Mouvement validé logistiquement avec succès !`);
           this.loadMouvementsPourValidation();

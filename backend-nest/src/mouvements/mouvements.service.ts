@@ -322,6 +322,33 @@ export class MouvementsService {
   ): Promise<Mouvement> {
     const oldMouvement = await this.mouvementModel.findById(id).exec();
     
+    if (oldMouvement) {
+      let newStatutLogistique = updateDto.statutLogistique !== undefined ? updateDto.statutLogistique : oldMouvement.statutLogistique;
+      let newStatutSecurite = updateDto.statutSecurite !== undefined ? updateDto.statutSecurite : oldMouvement.statutSecurite;
+      
+      // Implicit logistics validation when assigning vehicle & driver
+      if (updateDto.vehicule && updateDto.chauffeur && updateDto.statutLogistique === undefined) {
+          if (newStatutLogistique === 'en attente') {
+              newStatutLogistique = 'validé';
+              updateDto.statutLogistique = 'validé';
+          }
+      }
+
+      const isPendingPhase = ['en attente', 'en attente validation logistique', 'en attente validation sécurité', 'validé'].includes(oldMouvement.statut);
+      
+      if (isPendingPhase && updateDto.statut === undefined) {
+          if (newStatutLogistique === 'validé' && (newStatutSecurite === 'validé' || newStatutSecurite === 'non requis')) {
+              updateDto.statut = 'validé';
+          } else if (newStatutLogistique === 'validé' && newStatutSecurite === 'en attente') {
+              updateDto.statut = 'en attente validation sécurité';
+          } else if (newStatutLogistique === 'en attente' && (newStatutSecurite === 'validé' || newStatutSecurite === 'non requis')) {
+              updateDto.statut = 'en attente validation logistique';
+          } else if (newStatutLogistique === 'en attente' && newStatutSecurite === 'en attente') {
+              updateDto.statut = 'en attente';
+          }
+      }
+    }
+    
     const updated = await this.mouvementModel
       .findByIdAndUpdate(id, updateDto, { new: true })
       .populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }])
