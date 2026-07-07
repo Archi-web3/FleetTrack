@@ -466,13 +466,10 @@ export class GeneralSettingsComponent implements OnInit {
   loadEmailSettings() {
     const key = this.getCurrentEmailContextKey();
     this.settingsService.getEmailSettings(key).subscribe((data) => {
-      if (data && data.length > 0) {
-        this.emailNotifications = data;
-      } else {
-        // Reset to default objects if nothing saved for this context
-        this.emailNotifications = [
-          {
-            id: 'req_created',
+      // Define the complete list of default templates
+      const defaultTemplates = [
+        {
+          id: 'req_created',
             name: 'Nouvelle demande de mouvement',
             desc: "Envoyé aux logisticiens lors d'une nouvelle requête",
             workflowDesc: 'Cette notification est le point de départ. Elle informe l\'équipe logistique qu\'une nouvelle demande vient d\'être soumise par un utilisateur.',
@@ -556,6 +553,15 @@ export class GeneralSettingsComponent implements OnInit {
             body: 'Bonjour,\n\nLe véhicule {{vehiclePlate}} nécessitera une maintenance sous peu.\n\nMerci de planifier son passage au garage.',
           },
         ];
+
+      if (data && data.length > 0) {
+        // Merge saved data with defaults so new templates appear
+        this.emailNotifications = defaultTemplates.map(def => {
+          const saved = data.find((d: any) => d.id === def.id);
+          return saved ? { ...def, ...saved } : def;
+        });
+      } else {
+        this.emailNotifications = defaultTemplates;
       }
     });
   }
