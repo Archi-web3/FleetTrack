@@ -206,22 +206,41 @@ export class MailService {
     let emailSettings = null;
     let template = null;
     
+    // Helper pour extraire l'ID (string) de manière sécurisée
+    const extractId = (field: any): string | null => {
+      if (!field) return null;
+      if (typeof field === 'string') return field;
+      if (field._id) return field._id.toString();
+      if (typeof field.toString === 'function') return field.toString();
+      return String(field);
+    };
+
     // Essayer de trouver le template de la Base d'abord
-    if (movement.base) {
-      const baseId = (movement.base as any)._id ? (movement.base as any)._id.toString() : movement.base.toString();
+    const baseId = extractId(movement.base);
+    if (baseId) {
+      this.logger.log(`🔍 Recherche template Base: emailSettings_base_${baseId}`);
       emailSettings = await this.settingsService.getSetting(`emailSettings_base_${baseId}`) as any[];
       template = emailSettings?.find((t) => t.id === templateId);
+      if (template) this.logger.log(`✅ Template trouvé pour la base !`);
     }
     // Sinon le template du Pays
-    if (!template && movement.pays) {
-      const paysId = (movement.pays as any)._id ? (movement.pays as any)._id.toString() : movement.pays.toString();
+    const paysId = extractId(movement.pays);
+    if (!template && paysId) {
+      this.logger.log(`🔍 Recherche template Pays: emailSettings_pays_${paysId}`);
       emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${paysId}`) as any[];
       template = emailSettings?.find((t) => t.id === templateId);
+      if (template) this.logger.log(`✅ Template trouvé pour le pays !`);
     }
     // Sinon le global
     if (!template) {
+      this.logger.log(`🔍 Recherche template Global: emailSettings_global`);
       emailSettings = await this.settingsService.getSetting('emailSettings_global') as any[];
       template = emailSettings?.find((t) => t.id === templateId);
+      if (template) this.logger.log(`✅ Template trouvé au niveau global !`);
+    }
+
+    if (!template) {
+       this.logger.warn(`❌ Aucun template trouvé pour: ${templateId}, utilisation du fallback par défaut.`);
     }
 
     // Si on a un template, et qu'il demande de bypasser la matrice

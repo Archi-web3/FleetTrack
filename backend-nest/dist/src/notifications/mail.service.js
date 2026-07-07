@@ -179,17 +179,42 @@ let MailService = MailService_1 = class MailService {
             return;
         let emailSettings = null;
         let template = null;
-        if (movement.base) {
-            emailSettings = await this.settingsService.getSetting(`emailSettings_base_${movement.base.toString()}`);
+        const extractId = (field) => {
+            if (!field)
+                return null;
+            if (typeof field === 'string')
+                return field;
+            if (field._id)
+                return field._id.toString();
+            if (typeof field.toString === 'function')
+                return field.toString();
+            return String(field);
+        };
+        const baseId = extractId(movement.base);
+        if (baseId) {
+            this.logger.log(`🔍 Recherche template Base: emailSettings_base_${baseId}`);
+            emailSettings = await this.settingsService.getSetting(`emailSettings_base_${baseId}`);
             template = emailSettings?.find((t) => t.id === templateId);
+            if (template)
+                this.logger.log(`✅ Template trouvé pour la base !`);
         }
-        if (!template && movement.pays) {
-            emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${movement.pays.toString()}`);
+        const paysId = extractId(movement.pays);
+        if (!template && paysId) {
+            this.logger.log(`🔍 Recherche template Pays: emailSettings_pays_${paysId}`);
+            emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${paysId}`);
             template = emailSettings?.find((t) => t.id === templateId);
+            if (template)
+                this.logger.log(`✅ Template trouvé pour le pays !`);
         }
         if (!template) {
+            this.logger.log(`🔍 Recherche template Global: emailSettings_global`);
             emailSettings = await this.settingsService.getSetting('emailSettings_global');
             template = emailSettings?.find((t) => t.id === templateId);
+            if (template)
+                this.logger.log(`✅ Template trouvé au niveau global !`);
+        }
+        if (!template) {
+            this.logger.warn(`❌ Aucun template trouvé pour: ${templateId}, utilisation du fallback par défaut.`);
         }
         let recipients = [...defaultEmails];
         if (template && template.useMatrixRecipients === false) {

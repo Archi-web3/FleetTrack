@@ -5,6 +5,12 @@ import { SettingsService } from './settings.service';
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
+  @Get('public/debug-email-keys')
+  async debugEmailKeys() {
+    const settings = await this.settingsService['settingModel'].find({ key: { $regex: /^emailSettings/ } }).select('key').exec();
+    return settings.map(s => s.key);
+  }
+
   @Get('public/:key')
   async getPublicSetting(@Param('key') key: string) {
     const value = await this.settingsService.getSetting(key);
