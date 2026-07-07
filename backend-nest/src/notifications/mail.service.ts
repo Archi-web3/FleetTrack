@@ -303,7 +303,7 @@ export class MailService {
        }
     } else {
        // Fallback
-       if (templateId === 'req_created' || templateId === 'log_validated' || templateId === 'sec_validated') {
+       if (templateId === 'req_created' || templateId === 'sec_request' || templateId === 'log_validated' || templateId === 'sec_validated') {
          for (const email of recipients) {
            await this.sendValidationRequest(email, movement);
          }

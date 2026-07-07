@@ -297,15 +297,15 @@ export class MouvementsService {
         if (valideur.email) emails.push(valideur.email);
       }
       if (emails.length > 0) {
-        const populatedMouvement = await savedMouvement.populate([
-          { path: 'vehicule' },
-          { path: 'stops.lieu' },
-          { path: 'demandeur' },
-        ]) as any;
-
-        for (const email of emails) {
-          await this.mailService.sendValidationRequest(email, populatedMouvement);
-        }
+        await this.mailService.sendTemplateEmail(
+          'sec_request',
+          await savedMouvement.populate([
+            { path: 'vehicule' },
+            { path: 'stops.lieu' },
+            { path: 'demandeur' },
+          ]) as any,
+          emails,
+        );
       }
     }
 
