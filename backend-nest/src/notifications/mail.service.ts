@@ -208,12 +208,14 @@ export class MailService {
     
     // Essayer de trouver le template de la Base d'abord
     if (movement.base) {
-      emailSettings = await this.settingsService.getSetting(`emailSettings_base_${movement.base.toString()}`) as any[];
+      const baseId = (movement.base as any)._id ? (movement.base as any)._id.toString() : movement.base.toString();
+      emailSettings = await this.settingsService.getSetting(`emailSettings_base_${baseId}`) as any[];
       template = emailSettings?.find((t) => t.id === templateId);
     }
     // Sinon le template du Pays
     if (!template && movement.pays) {
-      emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${movement.pays.toString()}`) as any[];
+      const paysId = (movement.pays as any)._id ? (movement.pays as any)._id.toString() : movement.pays.toString();
+      emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${paysId}`) as any[];
       template = emailSettings?.find((t) => t.id === templateId);
     }
     // Sinon le global

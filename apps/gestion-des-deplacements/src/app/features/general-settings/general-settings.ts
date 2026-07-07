@@ -340,7 +340,7 @@ export class GeneralSettingsComponent implements OnInit {
   selectedEmailBaseContext = '';
 
   onEmailContextChange() {
-    if (this.selectedEmailContext === 'pays' && this.selectedEmailPaysContext) {
+    if ((this.selectedEmailContext === 'pays' || this.selectedEmailContext === 'base') && this.selectedEmailPaysContext) {
       this.adminService
         .getBases(this.selectedEmailPaysContext)
         .subscribe((data) => (this.basesList = data));
