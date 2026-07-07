@@ -558,7 +558,7 @@ export class GeneralSettingsComponent implements OnInit {
         // Merge saved data with defaults so new templates appear
         this.emailNotifications = defaultTemplates.map(def => {
           const saved = data.find((d: any) => d.id === def.id);
-          return saved ? { ...def, ...saved } : def;
+          return saved ? Object.assign({}, def, saved) : def;
         });
       } else {
         this.emailNotifications = defaultTemplates;
