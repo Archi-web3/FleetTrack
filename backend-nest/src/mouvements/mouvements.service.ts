@@ -297,15 +297,15 @@ export class MouvementsService {
         if (valideur.email) emails.push(valideur.email);
       }
       if (emails.length > 0) {
-        await this.mailService.sendTemplateEmail(
-          'sec_validated', // Or 'req_created' ? Wait, if it's security, it's sec_validated. But wait, if it's JUST created, is it log_validated or req_created? 
-          await savedMouvement.populate([
-            { path: 'vehicule' },
-            { path: 'stops.lieu' },
-            { path: 'demandeur' },
-          ]),
-          emails,
-        );
+        const populatedMouvement = await savedMouvement.populate([
+          { path: 'vehicule' },
+          { path: 'stops.lieu' },
+          { path: 'demandeur' },
+        ]) as any;
+
+        for (const email of emails) {
+          await this.mailService.sendValidationRequest(email, populatedMouvement);
+        }
       }
     }
 
