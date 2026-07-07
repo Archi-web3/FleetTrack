@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MouvementService } from '../../core/services/mouvement.service';
@@ -41,6 +41,7 @@ export class DemandeMouvementComponent implements OnInit {
   private lieuService = inject(LieuService);
   private router = inject(Router);
   authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
   private osrmService = inject(OsrmService);
   private dialogRef = inject<MatDialogRef<DemandeMouvementComponent>>(MatDialogRef, {
     optional: true,
@@ -147,17 +148,26 @@ export class DemandeMouvementComponent implements OnInit {
 
   loadData(): void {
     this.utilisateurService.getUtilisateurs().subscribe(
-      (data) => (this.utilisateurs = data),
+      (data) => {
+        this.utilisateurs = data;
+        this.cdr.detectChanges();
+      },
       (error) => console.error('Erreur chargement utilisateurs:', error),
     );
 
     this.vehiculeService.getVehicules().subscribe(
-      (data) => (this.vehicules = data),
+      (data) => {
+        this.vehicules = data;
+        this.cdr.detectChanges();
+      },
       (error) => console.error('Erreur chargement véhicules:', error),
     );
 
     this.chauffeurService.getChauffeurs().subscribe(
-      (data) => (this.chauffeurs = data),
+      (data) => {
+        this.chauffeurs = data;
+        this.cdr.detectChanges();
+      },
       (error) => console.error('Erreur chargement chauffeurs:', error),
     );
 
@@ -189,6 +199,7 @@ export class DemandeMouvementComponent implements OnInit {
             return lieuBaseId === this.userBaseId;
           });
         }
+        this.cdr.detectChanges();
       },
       (error) => console.error('Erreur chargement lieux:', error),
     );
