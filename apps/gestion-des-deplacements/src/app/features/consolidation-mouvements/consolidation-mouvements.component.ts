@@ -81,7 +81,7 @@ export class ConsolidationMouvementsComponent implements OnInit {
 
         // Filtrer par base si pas SuperAdmin
         if (this.userProfile !== 'SuperAdmin' && this.userBaseId) {
-          this.chauffeurs = chauffeurs.filter((c: any) => c.base === this.userBaseId);
+          this.chauffeurs = chauffeurs.filter((c: any) => (c.base?._id || c.base) === this.userBaseId);
         } else {
           this.chauffeurs = chauffeurs;
         }
