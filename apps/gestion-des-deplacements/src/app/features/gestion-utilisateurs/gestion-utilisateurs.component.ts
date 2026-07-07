@@ -58,6 +58,8 @@ export class GestionUtilisateursComponent implements OnInit {
   private dialog = inject(MatDialog);
 
   @ViewChild('userFormDialog') userFormDialog!: TemplateRef<any>;
+  @ViewChild('userForm') userForm?: NgForm;
+  @ViewChild('editUserForm') editUserForm?: NgForm;
   
   utilisateurs: any[] = [];
   dataSource = new MatTableDataSource<any>([]);
@@ -254,17 +256,17 @@ export class GestionUtilisateursComponent implements OnInit {
     );
   }
 
-  submitAddForm(form: NgForm): void {
-    if (form.invalid) {
-      form.control.markAllAsTouched();
+  submitAddForm(): void {
+    if (this.userForm?.invalid) {
+      this.userForm.control.markAllAsTouched();
       return;
     }
     this.addUser();
   }
 
-  submitEditForm(form: NgForm): void {
-    if (form.invalid) {
-      form.control.markAllAsTouched();
+  submitEditForm(): void {
+    if (this.editUserForm?.invalid) {
+      this.editUserForm.control.markAllAsTouched();
       return;
     }
     this.updateUser();

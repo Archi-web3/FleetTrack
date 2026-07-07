@@ -63,20 +63,25 @@ export class MouvementsSecurityService {
 
       allValidators = extractValidators(config);
 
+      let configUsed = config;
+
       // Si aucune règle spécifique à la base, fallback sur la règle du Pays (base: null)
       if (allValidators.length === 0 && baseId) {
-        config = await this.securityConfigModel
+        const paysConfig = await this.securityConfigModel
           .findOne({ pays: paysId, base: null })
           .exec();
-        allValidators = extractValidators(config);
+        if (paysConfig) {
+           configUsed = paysConfig;
+           allValidators = extractValidators(paysConfig);
+        }
       }
 
       // Deduplication
       allValidators = [...new Set(allValidators)];
 
-      if (allValidators.length > 0) {
+      if (configUsed) {
         this.logger.log(
-          `🛡️ Using matrix validators for level ${maxSecurityLevel}`,
+          `🛡️ Using matrix config for level ${maxSecurityLevel}`,
         );
         return {
           mode: 'matrix',
@@ -87,7 +92,7 @@ export class MouvementsSecurityService {
           })),
         };
       } else {
-        // FALLBACK : S'il n'y a pas de matrice, on prend les utilisateurs ayant le bon niveau de validation
+        // FALLBACK : Seulement s'il n'y a AUCUNE matrice pour le pays/base
         this.logger.warn(
           `⚠️ FALLBACK TRIGGERED! No valid matrix config found for level ${maxSecurityLevel} and pays ${paysId}`,
         );

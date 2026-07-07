@@ -91,7 +91,8 @@
       <!-- BODY -->
       <div class="custom-modal-body">
         <!-- Formulaire de création d'utilisateur -->
-        <form [hidden]="!!selectedUser" (ngSubmit)="addUser()" #userForm="ngForm">
+        @if (!selectedUser) {
+        <form (ngSubmit)="addUser()" #userForm="ngForm">
           <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
             <mat-label>{{ 'USERS.MODAL.NAME' | translate }}</mat-label>
             <input
@@ -305,11 +306,11 @@
               </div>
             </div>
           }
-        </form>
+        }
 
         <!-- Formulaire de modification d'utilisateur -->
-        <form [hidden]="!selectedUser" (ngSubmit)="updateUser()" #editUserForm="ngForm">
-          @if (selectedUser) {
+        @if (selectedUser) {
+        <form (ngSubmit)="updateUser()" #editUserForm="ngForm">
             <div>
               <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
                 <mat-label>{{ 'USERS.FORM.NAME' | translate }}</mat-label>
@@ -519,8 +520,9 @@
                 <mat-hint>{{ 'USERS.FORM.PROJECT_HINT' | translate }}</mat-hint>
               </mat-form-field>
             </div>
-          }
+            </div>
         </form>
+        }
       </div>
 
       <!-- FOOTER -->
@@ -531,7 +533,7 @@
         <!-- The submit button clicks the hidden submit on whichever form is active, but to keep it simple, we use the component method -->
         <button
           class="custom-modal-btn-submit"
-          (click)="selectedUser ? submitEditForm(editUserForm) : submitAddForm(userForm)"
+          (click)="selectedUser ? submitEditForm() : submitAddForm()"
         >
           <mat-icon>check</mat-icon>
           {{ selectedUser ? ('COMMON.SAVE' | translate) : ('COMMON.ADD' | translate) }}
