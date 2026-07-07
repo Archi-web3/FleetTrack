@@ -954,7 +954,20 @@
                             >
                             Édition du Template : {{ email.name }}
                           </h3>
-                          <div class="modern-form-group">
+                          <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                              <div>
+                                <strong style="color: #166534; font-size: 15px;">Destinataires automatiques via la Matrice de Sécurité / Automatic recipients via Security Matrix</strong>
+                                <p style="color: #15803d; font-size: 13px; margin: 5px 0 0 0;">Si activé, le système ignore les profils ci-dessous et envoie l'email strictement aux personnes devant valider cette étape (ex: le valideur de sécurité défini par la matrice). <br/><em>If enabled, the system ignores the profiles below and sends the email strictly to the persons who must validate this step according to the matrix.</em></p>
+                              </div>
+                              <mat-slide-toggle
+                                color="primary"
+                                [(ngModel)]="email.useMatrixRecipients"
+                              ></mat-slide-toggle>
+                            </div>
+                          </div>
+
+                          <div class="modern-form-group" [style.opacity]="email.useMatrixRecipients ? '0.5' : '1'">
                             <label
                               >Profils cibles (envoie à tous les utilisateurs ayant ce rôle sur la
                               base)</label
@@ -963,6 +976,7 @@
                               class="modern-input"
                               [(ngModel)]="email.recipientProfiles"
                               multiple
+                              [disabled]="email.useMatrixRecipients"
                               style="width: 100%; max-width: 600px"
                             >
                               @for (profile of profilesList; track profile) {
@@ -970,7 +984,7 @@
                               }
                             </mat-select>
                           </div>
-                          <div class="modern-form-group">
+                          <div class="modern-form-group" [style.opacity]="email.useMatrixRecipients ? '0.5' : '1'">
                             <label
                               >Utilisateurs spécifiques (envoie toujours à ces personnes)</label
                             >
@@ -978,6 +992,7 @@
                               class="modern-input"
                               [(ngModel)]="email.recipientUsers"
                               multiple
+                              [disabled]="email.useMatrixRecipients"
                               style="width: 100%; max-width: 600px"
                             >
                               @for (user of usersList; track user) {

@@ -138,7 +138,7 @@ export class MailService {
           <li><strong>Projet:</strong> ${folder}</li>
           <li><strong>Destination:</strong> ${destination}</li>
         </ul>
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:4200'}/validation" 
+        <a href="${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}/validation" 
            style="background-color: #005FB6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px;">
            Accéder à la Validation
         </a>
@@ -175,7 +175,7 @@ export class MailService {
         <h2 style="color: ${color};">Statut de la demande : ${status.toUpperCase()}</h2>
         <p>Votre demande de mouvement vers <strong>${destination}</strong> a été mise à jour.</p>
         ${reasonHtml}
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:4200'}/mes-mouvements" 
+        <a href="${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}/mes-mouvements" 
            style="background-color: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px;">
            Voir ma demande
         </a>
