@@ -343,6 +343,11 @@ export class GestionUtilisateursComponent implements OnInit {
       if (this.selectedUser) this.selectedUser.pays = paysId; // Garder l'ID pour le select
     }
 
+    // Si role est un objet peuplé, extraire l'ID
+    if (this.selectedUser?.role && this.selectedUser.role._id) {
+      this.selectedUser.role = this.selectedUser.role._id;
+    }
+
     // Charger les bases pour ce pays (pour SuperAdmin et Admin)
     if (paysId) {
       this.loadBases(paysId);

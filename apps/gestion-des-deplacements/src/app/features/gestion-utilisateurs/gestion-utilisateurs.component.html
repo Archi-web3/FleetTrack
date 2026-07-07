@@ -144,6 +144,7 @@
               [(ngModel)]="newUser.email"
               [required]="!selectedUser"
               email
+              autocomplete="username"
             />
           </mat-form-field>
 
@@ -358,6 +359,7 @@
                   [(ngModel)]="selectedUser.email"
                   required
                   email
+                  autocomplete="username"
                 />
               </mat-form-field>
               <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
