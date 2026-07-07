@@ -64,7 +64,14 @@ export class UsersService {
     }
 
     const createdUser = new this.userModel(createUserDto);
-    return createdUser.save();
+    try {
+      return await createdUser.save();
+    } catch (error: any) {
+      if (error.code === 11000) {
+        throw new BadRequestException('Cet email est déjà utilisé.');
+      }
+      throw error;
+    }
   }
 
   async update(
@@ -76,14 +83,21 @@ export class UsersService {
       updateUserDto.motDePasse = await bcrypt.hash(updateUserDto.motDePasse, salt);
     }
 
-    const updatedUser = await this.userModel
-      .findByIdAndUpdate(id, updateUserDto, { new: true })
-      .select('-motDePasse')
-      .exec();
-    if (!updatedUser) {
-      throw new NotFoundException(`Cannot find user`);
+    try {
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(id, updateUserDto, { new: true })
+        .select('-motDePasse')
+        .exec();
+      if (!updatedUser) {
+        throw new NotFoundException(`Cannot find user`);
+      }
+      return updatedUser;
+    } catch (error: any) {
+      if (error.code === 11000) {
+        throw new BadRequestException('Cet email est déjà utilisé par un autre utilisateur.');
+      }
+      throw error;
     }
-    return updatedUser;
   }
 
   async delete(id: string): Promise<UserDocument> {
