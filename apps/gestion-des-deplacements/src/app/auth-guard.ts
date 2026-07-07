@@ -36,7 +36,15 @@ export class AuthGuard implements CanActivate {
         const requiredPermission = route.data['requiredPermission'];
         if (requiredPermission) {
           const { module, action } = requiredPermission;
-          if (!this.permissionsService.hasPermission(module, action)) {
+          
+          let hasPerm = false;
+          if (Array.isArray(action)) {
+            hasPerm = action.some(a => this.permissionsService.hasPermission(module, a));
+          } else {
+            hasPerm = this.permissionsService.hasPermission(module, action);
+          }
+
+          if (!hasPerm) {
             alert("Accès refusé. Vous n'avez pas la permission requise.");
             return this.router.createUrlTree(['/']);
           }

@@ -17,7 +17,7 @@ export class PermissionsService {
   // Matrice par défaut si rien n'est sauvegardé en BDD/LocalStorage
   private defaultMatrix: ProfileMatrix = {
     SuperAdmin: {
-      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: true },
+      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: true, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: true,
         view_all_validations: true,
@@ -47,7 +47,7 @@ export class PermissionsService {
       security_matrix: { manage: true },
     },
     Admin: {
-      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: true },
+      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: true, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: true,
         view_all_validations: true,
@@ -77,7 +77,7 @@ export class PermissionsService {
       security_matrix: { manage: true },
     },
     Superviseur: {
-      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false },
+      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: true,
         view_all_validations: false,
@@ -107,7 +107,7 @@ export class PermissionsService {
       security_matrix: { manage: false },
     },
     'Superviseur Sécurité': {
-      mouvements_demandes: { view_menu: true, create: false, edit: false, delete: false },
+      mouvements_demandes: { view_menu: true, create: false, edit: false, delete: false, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: true,
         view_all_validations: false,
@@ -130,7 +130,7 @@ export class PermissionsService {
       security_matrix: { manage: false },
     },
     Logisticien: {
-      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false },
+      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: true,
         view_all_validations: false,
@@ -153,7 +153,7 @@ export class PermissionsService {
       security_matrix: { manage: false },
     },
     Chauffeur: {
-      mouvements_demandes: { view_menu: false, create: false, edit: false, delete: false },
+      mouvements_demandes: { view_menu: false, create: false, edit: false, delete: false, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: false,
         view_all_validations: false,
@@ -183,7 +183,7 @@ export class PermissionsService {
       security_matrix: { manage: false },
     },
     Guest: {
-      mouvements_demandes: { view_menu: true, create: true, edit: false, delete: false },
+      mouvements_demandes: { view_menu: true, create: true, edit: false, delete: false, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: false,
         view_all_validations: false,
@@ -213,7 +213,7 @@ export class PermissionsService {
       security_matrix: { manage: false },
     },
     Technicien: {
-      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false },
+      mouvements_demandes: { view_menu: true, create: true, edit: true, delete: false, edit_own_draft: true },
       mouvements_workflow: {
         view_menu: false,
         view_all_validations: false,

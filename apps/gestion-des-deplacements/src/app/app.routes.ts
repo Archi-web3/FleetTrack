@@ -109,7 +109,7 @@ export const routes: Routes = [
     path: 'modifier-mouvement/:id',
     component: ModifierMouvementComponent,
     canActivate: [AuthGuard],
-    data: { requiredPermission: { module: 'mouvements_demandes', action: 'edit' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
+    data: { requiredPermission: { module: 'mouvements_demandes', action: ['edit', 'edit_own_draft'] }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'tableau-bord',

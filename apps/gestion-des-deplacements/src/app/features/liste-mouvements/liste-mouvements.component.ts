@@ -199,6 +199,20 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
     }
   }
 
+  canEditMouvement(m: any): boolean {
+    if (this.perms.hasPermission('mouvements_demandes', 'edit')) {
+      return true;
+    }
+    
+    if (this.perms.hasPermission('mouvements_demandes', 'edit_own_draft')) {
+      const demandeurId = typeof m.demandeur === 'string' ? m.demandeur : m.demandeur?._id;
+      if (demandeurId === this.userId && m.statut === 'en attente') {
+        return true;
+      }
+    }
+    return false;
+  }
+
   viewMouvement(mouvement: any): void {
     this.dialog.open(MouvementDetailsDialogComponent, {
       width: '800px',

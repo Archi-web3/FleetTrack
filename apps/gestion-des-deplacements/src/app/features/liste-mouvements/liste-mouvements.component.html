@@ -255,7 +255,7 @@
             >
               <mat-icon>visibility</mat-icon>
             </button>
-            @if (perms.hasPermission('mouvements_demandes', 'edit')) {
+            @if (canEditMouvement(mouvement)) {
               <button
                 mat-icon-button
                 class="action-btn edit"
@@ -350,7 +350,7 @@
             >
               <mat-icon>visibility</mat-icon>
             </button>
-            @if (perms.hasPermission('mouvements_demandes', 'edit')) {
+            @if (canEditMouvement(element)) {
               <button
                 mat-icon-button
                 color="primary"

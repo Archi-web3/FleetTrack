@@ -65,6 +65,7 @@ export class AdminProfileMatrixComponent implements OnInit {
             { key: 'view_menu', label: 'Voir (Menu)' },
             { key: 'create', label: 'Créer' },
             { key: 'edit', label: 'Modifier' },
+            { key: 'edit_own_draft', label: 'Modifier (ses propres brouillons/en attente)' },
             { key: 'delete', label: 'Supprimer' },
           ],
         },
