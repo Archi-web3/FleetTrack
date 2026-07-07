@@ -91,25 +91,25 @@ export const routes: Routes = [
     path: 'gestion-chauffeurs',
     component: GestionChauffeursComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'flotte_chauffeurs', action: 'view_menu' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'chauffeur-profile/:id',
     loadComponent: () => import('./features/gestion-chauffeurs/chauffeur-profile/chauffeur-profile').then(m => m.ChauffeurProfileComponent),
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'flotte_chauffeurs', action: 'view_menu' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'consolidation',
     component: ConsolidationMouvementsComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'mouvements_consolidation', action: 'manage' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'modifier-mouvement/:id',
     component: ModifierMouvementComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'mouvements_demandes', action: 'edit' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'tableau-bord',
@@ -121,19 +121,19 @@ export const routes: Routes = [
     path: 'recap-flotte',
     loadComponent: () => import('./features/gestion-vehicules/fleet-recap/fleet-recap').then(m => m.FleetRecapComponent),
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'flotte_vehicules', action: 'view_menu' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'gestion-vehicules/new',
     loadComponent: () => import('./features/gestion-vehicules/vehicle-form/vehicle-form').then(m => m.VehicleFormComponent),
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'flotte_vehicules', action: 'create' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'gestion-vehicules/edit/:id',
     loadComponent: () => import('./features/gestion-vehicules/vehicle-form/vehicle-form').then(m => m.VehicleFormComponent),
     canActivate: [AuthGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Superviseur'] }
+    data: { requiredPermission: { module: 'flotte_vehicules', action: 'edit' }, roles: ['SuperAdmin', 'Admin', 'Superviseur', 'Logisticien'] }
   },
   {
     path: 'rapports-mensuels',
