@@ -12,6 +12,7 @@ import {
 } from './schemas/user.schema';
 import { CreateUserDto, UpdateUserDto } from './dto/users.dto';
 import { UserPayloadDto } from '../mouvements/dto/mouvements.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -70,6 +71,11 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
+    if (updateUserDto.motDePasse) {
+      const salt = await bcrypt.genSalt(10);
+      updateUserDto.motDePasse = await bcrypt.hash(updateUserDto.motDePasse, salt);
+    }
+
     const updatedUser = await this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .select('-motDePasse')

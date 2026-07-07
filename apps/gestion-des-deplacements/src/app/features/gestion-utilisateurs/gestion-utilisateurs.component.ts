@@ -376,7 +376,11 @@ export class GestionUtilisateursComponent implements OnInit {
 
     // Nettoyer l'objet avant envoi
     const userData = { ...this.selectedUser };
-    
+    delete userData._id;
+    delete userData.createdAt;
+    delete userData.updatedAt;
+    delete userData.__v;
+
     // Force security level calculation if auto-manage is checked
     if (userData.autoManageSecurity) {
       userData.niveauValidationSecu = this.perms.getMaxSecurityLevelForProfile(userData.profil);
