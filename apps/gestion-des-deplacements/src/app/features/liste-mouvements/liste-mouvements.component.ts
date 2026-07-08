@@ -199,6 +199,36 @@ export class ListeMouvementsComponent implements OnInit, OnDestroy {
     }
   }
 
+  revertSecurity(id: string): void {
+    if (confirm('Êtes-vous sûr de vouloir dé-valider la sécurité de ce mouvement ?')) {
+      this.mouvementService.revertSecurityToDraft(id).subscribe(
+        () => {
+          alert('Sécurité dé-validée avec succès.');
+          this.getMouvements();
+        },
+        (error) => {
+          console.error('Erreur lors de la dé-validation sécurité:', error);
+          alert('Erreur lors de la dé-validation.');
+        }
+      );
+    }
+  }
+
+  revertLogistics(id: string): void {
+    if (confirm('Êtes-vous sûr de vouloir désaffecter ce mouvement ?')) {
+      this.mouvementService.revertLogisticsToDraft(id).subscribe(
+        () => {
+          alert('Logistique désaffectée avec succès.');
+          this.getMouvements();
+        },
+        (error) => {
+          console.error('Erreur lors de la désaffectation:', error);
+          alert('Erreur lors de la désaffectation.');
+        }
+      );
+    }
+  }
+
   canEditMouvement(m: any): boolean {
     if (this.perms.hasPermission('mouvements_demandes', 'edit')) {
       return true;

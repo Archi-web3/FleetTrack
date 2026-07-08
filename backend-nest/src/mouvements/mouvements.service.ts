@@ -456,6 +456,44 @@ export class MouvementsService {
     return updated;
   }
 
+  async revertSecurityToDraft(id: string): Promise<Mouvement> {
+    const mouvement = await this.mouvementModel.findById(id).exec();
+    if (!mouvement) throw new ConflictException('Mouvement non trouvé');
+
+    mouvement.statutSecurite = 'en attente';
+    if (mouvement.securityApprovals) {
+      mouvement.securityApprovals.forEach((a: any) => {
+        a.status = 'pending';
+        a.approvalDate = undefined;
+      });
+    }
+
+    if (mouvement.statutLogistique === 'en attente') {
+      mouvement.statut = 'en attente';
+    } else {
+      mouvement.statut = 'en attente validation sécurité';
+    }
+
+    return mouvement.save();
+  }
+
+  async revertLogisticsToDraft(id: string): Promise<Mouvement> {
+    const mouvement = await this.mouvementModel.findById(id).exec();
+    if (!mouvement) throw new ConflictException('Mouvement non trouvé');
+
+    mouvement.statutLogistique = 'en attente';
+    mouvement.vehicule = undefined;
+    mouvement.chauffeur = undefined;
+
+    if (mouvement.statutSecurite === 'en attente') {
+      mouvement.statut = 'en attente';
+    } else {
+      mouvement.statut = 'en attente validation logistique';
+    }
+
+    return mouvement.save();
+  }
+
   async cleanGhosts(): Promise<{ message: string }> {
     const mouvementsGroupes = await this.mouvementModel
       .find({ statut: 'regroupé' })

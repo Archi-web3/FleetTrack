@@ -27,6 +27,8 @@ export class PermissionsService {
         validate_level_3: true,
         validate_level_4: true,
         validate_level_5: true,
+        revert_to_draft_secu: true,
+        revert_to_draft_log: true,
       },
       mouvements_consolidation: { view_menu: true, manage: true },
       mobile_chauffeur: {
@@ -57,6 +59,8 @@ export class PermissionsService {
         validate_level_3: true,
         validate_level_4: true,
         validate_level_5: true,
+        revert_to_draft_secu: true,
+        revert_to_draft_log: true,
       },
       mouvements_consolidation: { view_menu: true, manage: true },
       mobile_chauffeur: {
@@ -87,6 +91,8 @@ export class PermissionsService {
         validate_level_3: true,
         validate_level_4: true,
         validate_level_5: false,
+        revert_to_draft_secu: true,
+        revert_to_draft_log: true,
       },
       mouvements_consolidation: { view_menu: true, manage: true },
       mobile_chauffeur: {
@@ -117,6 +123,8 @@ export class PermissionsService {
         validate_level_3: false,
         validate_level_4: true,
         validate_level_5: true,
+        revert_to_draft_secu: true,
+        revert_to_draft_log: true,
       },
       mouvements_consolidation: { view_menu: false, manage: false },
       mobile_chauffeur: { access_app: false },
@@ -140,6 +148,8 @@ export class PermissionsService {
         validate_level_3: true,
         validate_level_4: false,
         validate_level_5: false,
+        revert_to_draft_secu: false,
+        revert_to_draft_log: true,
       },
       mouvements_consolidation: { view_menu: true, manage: true },
       mobile_chauffeur: { access_app: false },
@@ -163,6 +173,8 @@ export class PermissionsService {
         validate_level_3: false,
         validate_level_4: false,
         validate_level_5: false,
+        revert_to_draft_secu: false,
+        revert_to_draft_log: false,
       },
       mouvements_consolidation: { view_menu: false, manage: false },
       mobile_chauffeur: {
@@ -193,6 +205,8 @@ export class PermissionsService {
         validate_level_3: false,
         validate_level_4: false,
         validate_level_5: false,
+        revert_to_draft_secu: false,
+        revert_to_draft_log: true,
       },
       mouvements_consolidation: { view_menu: false, manage: false },
       mobile_chauffeur: {
@@ -223,6 +237,8 @@ export class PermissionsService {
         validate_level_3: false,
         validate_level_4: false,
         validate_level_5: false,
+        revert_to_draft_secu: false,
+        revert_to_draft_log: true,
       },
       mouvements_consolidation: { view_menu: false, manage: false },
       mobile_chauffeur: {

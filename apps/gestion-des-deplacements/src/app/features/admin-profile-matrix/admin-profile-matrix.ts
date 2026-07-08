@@ -81,6 +81,8 @@ export class AdminProfileMatrixComponent implements OnInit {
             { key: 'validate_level_3', label: 'Valider Sécurité (Niveau 3)' },
             { key: 'validate_level_4', label: 'Valider Sécurité (Niveau 4)' },
             { key: 'validate_level_5', label: 'Valider Sécurité (Niveau 5)' },
+            { key: 'revert_to_draft_secu', label: 'Autoriser retour en draft sécurité (dé-validation)' },
+            { key: 'revert_to_draft_log', label: 'Autoriser retour en draft logistique (désaffectation)' },
           ],
         },
         {

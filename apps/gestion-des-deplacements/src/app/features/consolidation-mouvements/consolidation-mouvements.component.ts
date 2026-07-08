@@ -581,4 +581,19 @@ export class ConsolidationMouvementsComponent implements OnInit {
       );
     }
   }
+
+  revertLogistics(id: string): void {
+    if (confirm('Êtes-vous sûr de vouloir désaffecter ce mouvement (retour en attente logistique) ?')) {
+      this.mouvementService.revertLogisticsToDraft(id).subscribe(
+        () => {
+          alert('Mouvement désaffecté avec succès.');
+          this.loadDataForConsolidation();
+        },
+        (error) => {
+          console.error('Erreur lors de la désaffectation:', error);
+          alert('Erreur lors de la désaffectation.');
+        }
+      );
+    }
+  }
 }

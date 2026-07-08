@@ -276,6 +276,32 @@
               </button>
             }
             @if (
+              perms.hasPermission('mouvements_workflow', 'revert_to_draft_secu') &&
+              mouvement.statutSecurite !== 'en attente'
+            ) {
+              <button
+                mat-icon-button
+                class="action-btn revert"
+                (click)="revertSecurity(mouvement._id)"
+                [title]="'Dé-valider Sécurité'"
+              >
+                <mat-icon>security</mat-icon>
+              </button>
+            }
+            @if (
+              perms.hasPermission('mouvements_workflow', 'revert_to_draft_log') &&
+              mouvement.statutLogistique !== 'en attente'
+            ) {
+              <button
+                mat-icon-button
+                class="action-btn revert"
+                (click)="revertLogistics(mouvement._id)"
+                [title]="'Désaffecter Logistique'"
+              >
+                <mat-icon>local_shipping</mat-icon>
+              </button>
+            }
+            @if (
               mouvement.statut === 'validé' &&
               (mouvement.modeTransport === 'Aérien' || mouvement.modeTransport === 'Maritime')
             ) {

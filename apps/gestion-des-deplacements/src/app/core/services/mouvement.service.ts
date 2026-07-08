@@ -69,4 +69,12 @@ export class MouvementService {
   fixCountries(): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/fix-countries`, {});
   }
+
+  revertSecurityToDraft(id: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/revert-secu`, {});
+  }
+
+  revertLogisticsToDraft(id: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/revert-log`, {});
+  }
 }

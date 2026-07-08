@@ -623,6 +623,23 @@
                 }
                 <strong>{{ 'MY_TRIPS.STATUS' | translate }}:</strong>
                 {{ mouvement.statut | titlecase }}<br />
+                @if (mouvement.statut !== 'terminé' && mouvement.statut !== 'annulé') {
+                  <button
+                    (click)="revertLogistics(mouvement._id)"
+                    style="
+                      margin-top: 10px;
+                      background-color: #dc3545;
+                      color: white;
+                      border: none;
+                      padding: 5px 10px;
+                      border-radius: 4px;
+                      cursor: pointer;
+                    "
+                  >
+                    <mat-icon style="font-size: 16px; vertical-align: middle; height: 16px; width: 16px;">undo</mat-icon>
+                    Désaffecter
+                  </button>
+                }
               </div>
             </div>
             <!-- COMPARAISON THÉORIE VS RÉEL -->

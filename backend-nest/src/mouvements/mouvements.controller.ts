@@ -99,6 +99,16 @@ export class MouvementsController {
     return this.mouvementsService.validateSecurity(id, req.user);
   }
 
+  @Put(':id/revert-secu')
+  async revertSecurityToDraft(@Param('id') id: string) {
+    return this.mouvementsService.revertSecurityToDraft(id);
+  }
+
+  @Put(':id/revert-log')
+  async revertLogisticsToDraft(@Param('id') id: string) {
+    return this.mouvementsService.revertLogisticsToDraft(id);
+  }
+
   @Delete('cleanup/ghosts')
   async cleanGhosts(): Promise<{ message: string }> {
     return this.mouvementsService.cleanGhosts();
