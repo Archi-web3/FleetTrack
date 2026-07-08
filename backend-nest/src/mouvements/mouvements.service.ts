@@ -358,27 +358,31 @@ export class MouvementsService {
     }
 
     // Email Notifications on status change
-    if (oldMouvement && oldMouvement.statut !== updated.statut) {
-       const demandeurEmail = (updated.demandeur as any)?.email;
-       if (demandeurEmail) {
-          if (updated.statut === 'validé') {
-            await this.mailService.sendTemplateEmail('assigned', updated as any, [demandeurEmail]);
-          } else if (updated.statut === 'refusé' || updated.statut === 'annulé') {
-            await this.mailService.sendTemplateEmail('cancelled', updated as any, [demandeurEmail]);
-          }
-       }
-    }
-    
-    if (oldMouvement && oldMouvement.statutLogistique !== updated.statutLogistique && updated.statutLogistique === 'validé') {
-       // Logistique validée, on notifie la sécurité si requise
-       if (updated.statutSecurite === 'en attente') {
-          const validatorIds = updated.securityApprovals.map((a: any) => a.validator);
-          const valideursSecu = await this.userModel.find({ _id: { $in: validatorIds } }).exec();
-          const emails = valideursSecu.map(v => v.email).filter(e => e);
-          if (emails.length > 0) {
-             await this.mailService.sendTemplateEmail('log_validated', updated as any, emails);
-          }
-       }
+    try {
+      if (oldMouvement && oldMouvement.statut !== updated.statut) {
+         const demandeurEmail = (updated.demandeur as any)?.email;
+         if (demandeurEmail) {
+            if (updated.statut === 'validé') {
+              await this.mailService.sendTemplateEmail('assigned', updated as any, [demandeurEmail]);
+            } else if (updated.statut === 'refusé' || updated.statut === 'annulé') {
+              await this.mailService.sendTemplateEmail('cancelled', updated as any, [demandeurEmail]);
+            }
+         }
+      }
+      
+      if (oldMouvement && oldMouvement.statutLogistique !== updated.statutLogistique && updated.statutLogistique === 'validé') {
+         // Logistique validée, on notifie la sécurité si requise
+         if (updated.statutSecurite === 'en attente') {
+            const validatorIds = updated.securityApprovals.map((a: any) => a.validator);
+            const valideursSecu = await this.userModel.find({ _id: { $in: validatorIds } }).exec();
+            const emails = valideursSecu.map(v => v.email).filter(e => e);
+            if (emails.length > 0) {
+               await this.mailService.sendTemplateEmail('log_validated', updated as any, emails);
+            }
+         }
+      }
+    } catch (e) {
+      this.logger.error('Erreur lors de l\'envoi des emails de notification', e);
     }
 
     return updated;
@@ -443,14 +447,18 @@ export class MouvementsService {
     const populatedMouvement = await this.mouvementModel.findById(updated._id).populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }]).exec();
 
     // Notifier le demandeur
-    const demandeurEmail = (populatedMouvement?.demandeur as any)?.email;
-    if (demandeurEmail) {
-       if (allApproved && mouvement.statutSecurite === 'validé') {
-         await this.mailService.sendTemplateEmail('sec_validated', populatedMouvement as any, [demandeurEmail]);
-       }
-       if (oldStatut !== updated.statut && updated.statut === 'validé') {
-         await this.mailService.sendTemplateEmail('assigned', populatedMouvement as any, [demandeurEmail]);
-       }
+    try {
+      const demandeurEmail = (populatedMouvement?.demandeur as any)?.email;
+      if (demandeurEmail) {
+         if (allApproved && mouvement.statutSecurite === 'validé') {
+           await this.mailService.sendTemplateEmail('sec_validated', populatedMouvement as any, [demandeurEmail]);
+         }
+         if (oldStatut !== updated.statut && updated.statut === 'validé') {
+           await this.mailService.sendTemplateEmail('assigned', populatedMouvement as any, [demandeurEmail]);
+         }
+      }
+    } catch (e) {
+      this.logger.error('Erreur lors de l\'envoi des emails de notification', e);
     }
 
     return updated;
