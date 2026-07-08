@@ -358,6 +358,7 @@ export class MouvementsService {
     }
 
     // Email Notifications on status change
+    let emailError = false;
     try {
       if (oldMouvement && oldMouvement.statut !== updated.statut) {
          const demandeurEmail = (updated.demandeur as any)?.email;
@@ -383,9 +384,15 @@ export class MouvementsService {
       }
     } catch (e) {
       this.logger.error('Erreur lors de l\'envoi des emails de notification', e);
+      emailError = true;
     }
 
-    return updated;
+    const result = updated.toObject();
+    if (emailError) {
+      (result as any).emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
+    }
+
+    return result as Mouvement;
   }
 
   async validateSecurity(id: string, user: UserPayloadDto): Promise<Mouvement> {
@@ -447,6 +454,7 @@ export class MouvementsService {
     const populatedMouvement = await this.mouvementModel.findById(updated._id).populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }]).exec();
 
     // Notifier le demandeur
+    let emailError = false;
     try {
       const demandeurEmail = (populatedMouvement?.demandeur as any)?.email;
       if (demandeurEmail) {
@@ -459,9 +467,15 @@ export class MouvementsService {
       }
     } catch (e) {
       this.logger.error('Erreur lors de l\'envoi des emails de notification', e);
+      emailError = true;
     }
 
-    return updated;
+    const result = updated.toObject();
+    if (emailError) {
+      (result as any).emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
+    }
+
+    return result as Mouvement;
   }
 
   async revertSecurityToDraft(id: string): Promise<Mouvement> {

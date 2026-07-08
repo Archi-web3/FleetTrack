@@ -454,10 +454,14 @@ export class ConsolidationMouvementsComponent implements OnInit {
     };
 
     try {
-      await firstValueFrom(
+      const response = await firstValueFrom(
         this.mouvementService.updateMouvement(this.selectedMouvementId, assignmentData),
       );
-      alert('Affectation réussie !');
+      if (response && response.emailWarning) {
+        alert('Affectation réussie ! ⚠️ ' + response.emailWarning);
+      } else {
+        alert('Affectation réussie !');
+      }
       this.selectedMouvementId = null;
       this.selectedVehiculeId = '';
       this.selectedChauffeurId = '';
@@ -469,14 +473,18 @@ export class ConsolidationMouvementsComponent implements OnInit {
         if (confirm(`${msg}\n\nVoulez-vous forcer l'affectation malgré ce conflit ?`)) {
           try {
             // Retry avec force=true
-            await firstValueFrom(
+            const retryResponse = await firstValueFrom(
               this.mouvementService.updateMouvement(
                 this.selectedMouvementId!,
                 assignmentData,
                 true,
               ),
             );
-            alert('Affectation réussie (Forcée) !');
+            if (retryResponse && retryResponse.emailWarning) {
+              alert('Affectation réussie (Forcée) ! ⚠️ ' + retryResponse.emailWarning);
+            } else {
+              alert('Affectation réussie (Forcée) !');
+            }
             this.selectedMouvementId = null;
             this.selectedVehiculeId = '';
             this.selectedChauffeurId = '';
@@ -570,8 +578,12 @@ export class ConsolidationMouvementsComponent implements OnInit {
   validerAdHoc(mouvement: any): void {
     if (confirm('Valider ce trajet imprévu ? Il sera à fait intégré comme un trajet normal.')) {
       this.mouvementService.updateMouvement(mouvement._id, { isAdHoc: false }).subscribe(
-        () => {
-          alert('Trajet validé !');
+        (response) => {
+          if (response && response.emailWarning) {
+            alert('Affectation réussie ! ⚠️ ' + response.emailWarning);
+          } else {
+            alert('Affectation réussie !');
+          }
           this.loadDataForConsolidation();
         },
         (error) => {

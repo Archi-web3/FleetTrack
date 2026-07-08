@@ -136,9 +136,13 @@ export class ValidationMouvementsComponent implements OnInit {
     if (type === 'security') {
       this.mouvementService.validateMouvement(mouvementId).subscribe(
         (response) => {
-          alert(
-            'Validation de sécurité effectuée avec succès ! Le mouvement est maintenant validé.',
-          );
+          if (response.emailWarning) {
+            alert('Validation de sécurité effectuée ! ⚠️ ' + response.emailWarning);
+          } else {
+            alert(
+              'Validation de sécurité effectuée avec succès ! Le mouvement est maintenant validé.',
+            );
+          }
           this.loadMouvementsPourValidation();
         },
         (error) => {
