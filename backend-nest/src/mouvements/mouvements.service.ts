@@ -445,7 +445,7 @@ export class MouvementsService {
       ) {
         mouvement.statut = 'validé';
       } else {
-        mouvement.statut = 'en attente validation logistique';
+        mouvement.statut = 'en attente';
       }
     }
 
@@ -507,11 +507,7 @@ export class MouvementsService {
     mouvement.vehicule = undefined;
     mouvement.chauffeur = undefined;
 
-    if (mouvement.statutSecurite === 'en attente') {
-      mouvement.statut = 'en attente';
-    } else {
-      mouvement.statut = 'en attente validation logistique';
-    }
+    mouvement.statut = 'en attente';
 
     return mouvement.save();
   }
