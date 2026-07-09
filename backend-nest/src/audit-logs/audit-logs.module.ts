@@ -1,6 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuditLogsService } from './audit-logs.service';
+import { AuditLogsController } from './audit-logs.controller';
 import { AuditLog, AuditLogSchema } from './schemas/audit-log.schema';
 
 @Global() // Rendre le module global pour l'utiliser partout sans l'importer dans chaque module
@@ -10,6 +11,7 @@ import { AuditLog, AuditLogSchema } from './schemas/audit-log.schema';
       { name: AuditLog.name, schema: AuditLogSchema },
     ]),
   ],
+  controllers: [AuditLogsController],
   providers: [AuditLogsService],
   exports: [AuditLogsService],
 })

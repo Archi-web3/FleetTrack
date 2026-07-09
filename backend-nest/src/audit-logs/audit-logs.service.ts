@@ -87,4 +87,29 @@ export class AuditLogsService {
       );
     }
   }
+
+  async getLogs(
+    limit = 50,
+    category?: string,
+    pays?: string,
+  ): Promise<AuditLog[]> {
+    const query: any = {};
+    if (category) {
+      query.category = category;
+    }
+    if (pays && pays !== 'all') {
+      query.pays = pays;
+    }
+
+    return this.auditLogModel
+      .find(query)
+      .sort({ timestamp: -1 })
+      .limit(limit)
+      .populate('pays', 'nom')
+      .exec();
+  }
+
+  async clearLogs(): Promise<void> {
+    await this.auditLogModel.deleteMany({});
+  }
 }
