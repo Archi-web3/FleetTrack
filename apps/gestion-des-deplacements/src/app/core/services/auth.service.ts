@@ -128,18 +128,8 @@ export class AuthService {
       id: this.getUserId(),
       nom: this.getUserName(),
       profil: this.getUserProfile(),
-      pays: this.getUserPaysId()
-        ? {
-            id: this.getUserPaysId(),
-            nom: this.getUserPays(),
-          }
-        : null,
-      base: this.getUserBaseId()
-        ? {
-            id: this.getUserBaseId(),
-            nom: this.getUserBase(),
-          }
-        : null,
+      pays: this.getStoredPaysArray(),
+      base: this.getStoredBaseArray(),
     };
   }
 
@@ -176,7 +166,8 @@ export class AuthService {
     const token = this.getToken();
     if (token) {
       const decoded = this.decodeToken(token);
-      return decoded?.utilisateur?.pays?.nom || null;
+      const pays = decoded?.utilisateur?.pays;
+      return Array.isArray(pays) && pays.length > 0 ? pays[0].nom : null;
     }
     return null;
   }
@@ -185,7 +176,8 @@ export class AuthService {
     const token = this.getToken();
     if (token) {
       const decoded = this.decodeToken(token);
-      return decoded?.utilisateur?.base?.nom || null;
+      const base = decoded?.utilisateur?.base;
+      return Array.isArray(base) && base.length > 0 ? base[0].nom : null;
     }
     return null;
   }
@@ -194,7 +186,8 @@ export class AuthService {
     const token = this.getToken();
     if (token) {
       const decoded = this.decodeToken(token);
-      return decoded?.utilisateur?.pays?.id || null;
+      const pays = decoded?.utilisateur?.pays;
+      return Array.isArray(pays) && pays.length > 0 ? pays[0].id : null;
     }
     return null;
   }
@@ -203,9 +196,28 @@ export class AuthService {
     const token = this.getToken();
     if (token) {
       const decoded = this.decodeToken(token);
-      return decoded?.utilisateur?.base?.id || null;
+      const base = decoded?.utilisateur?.base;
+      return Array.isArray(base) && base.length > 0 ? base[0].id : null;
     }
     return null;
+  }
+
+  private getStoredPaysArray(): any[] {
+    const token = this.getToken();
+    if (token) {
+      const decoded = this.decodeToken(token);
+      return Array.isArray(decoded?.utilisateur?.pays) ? decoded.utilisateur.pays : [];
+    }
+    return [];
+  }
+
+  private getStoredBaseArray(): any[] {
+    const token = this.getToken();
+    if (token) {
+      const decoded = this.decodeToken(token);
+      return Array.isArray(decoded?.utilisateur?.base) ? decoded.utilisateur.base : [];
+    }
+    return [];
   }
 
   // Modifié pour inclure le nom, l'ID, le pays et la base
@@ -214,17 +226,23 @@ export class AuthService {
       const decoded = this.decodeToken(token);
 
       if (decoded && decoded.utilisateur) {
+        const paysArray = Array.isArray(decoded.utilisateur.pays) ? decoded.utilisateur.pays : [];
+        const baseArray = Array.isArray(decoded.utilisateur.base) ? decoded.utilisateur.base : [];
+
         this._userProfile.next(decoded.utilisateur.profil || null);
         this._userName.next(decoded.utilisateur.nom || null);
         this._userId.next(decoded.utilisateur.id || null);
-        this._userPays.next(decoded.utilisateur.pays?.nom || null);
-        this._userBase.next(decoded.utilisateur.base?.nom || null);
-        this._userPaysId.next(decoded.utilisateur.pays?.id || null);
-        this._userBaseId.next(decoded.utilisateur.base?.id || null);
+        this._userPays.next(paysArray.length > 0 ? paysArray[0].nom : null);
+        this._userBase.next(baseArray.length > 0 ? baseArray[0].nom : null);
+        this._userPaysId.next(paysArray.length > 0 ? paysArray[0].id : null);
+        this._userBaseId.next(baseArray.length > 0 ? baseArray[0].id : null);
 
         // Fix: Automatically set selectedCountry in localStorage if user has a country assigned
-        if (decoded.utilisateur.pays?.id) {
-          localStorage.setItem('selectedCountry', decoded.utilisateur.pays.id);
+        if (paysArray.length > 0) {
+          const currentSelection = localStorage.getItem('selectedCountry');
+          if (!currentSelection || currentSelection === 'undefined' || currentSelection === 'null') {
+            localStorage.setItem('selectedCountry', paysArray[0].id);
+          }
         } else if (decoded.utilisateur.profil === 'SuperAdmin' || decoded.utilisateur.profil === 'Super Admin') {
           const currentSelection = localStorage.getItem('selectedCountry');
           if (!currentSelection || currentSelection === 'undefined' || currentSelection === 'null') {
