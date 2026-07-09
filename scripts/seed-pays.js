@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 require('dotenv').config({ path: '.env.local' });
 
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://acf:nCg7f7bSDEr9jBhi@acf.qf75gbb.mongodb.net/?retryWrites=true&w=majority&appName=ACF';
+const MONGO_URI = process.env.MONGODB_URI;
+if (!MONGO_URI) {
+  console.error("MONGODB_URI is missing in environment variables.");
+  process.exit(1);
+}
 
 const countries = [
   { code: 'AF', nom: 'Afghanistan', nomEn: 'Afghanistan', devise: 'AFN' },
