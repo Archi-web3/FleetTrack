@@ -220,11 +220,7 @@ export class MouvementsService {
     const finalBase = user.base || inferredBase;
     const finalPays = user.pays || inferredPays || createDto.pays;
     
-    console.log('--- DEBUG SERVICE ---');
-    console.log('inferredPays:', inferredPays);
-    console.log('user.pays:', user.pays);
-    console.log('createDto.pays:', createDto.pays);
-    console.log('finalPays:', finalPays);
+
     
     if (!finalPays && createDto.type !== 'maintenance') {
       throw new BadRequestException(
