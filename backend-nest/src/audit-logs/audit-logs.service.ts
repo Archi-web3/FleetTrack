@@ -69,12 +69,11 @@ export class AuditLogsService {
             nom: String(user.nom || 'Unknown'),
             role: safeRole,
           };
-          if (user.pays) {
-            // Handle populated or direct ObjectId
-            logEntry.pays =
-              typeof user.pays === 'object' && user.pays !== null
-                ? (user.pays as { _id?: string })._id
-                : user.pays;
+          if (user.pays && Array.isArray(user.pays) && user.pays.length > 0) {
+            const pays = user.pays[0];
+            logEntry.pays = typeof pays === 'object' && pays !== null ? (pays as { _id?: string })._id : String(pays);
+          } else if (user.pays && !Array.isArray(user.pays)) {
+            logEntry.pays = typeof user.pays === 'object' && user.pays !== null ? (user.pays as { _id?: string })._id : String(user.pays);
           }
         }
       }

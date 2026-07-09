@@ -4,8 +4,8 @@ export class RegisterDto {
   prenom?: string;
   motDePasse!: string;
   profil!: string;
-  pays?: string;
-  base?: string;
+  pays?: string[];
+  base?: string[];
 }
 
 export class LoginPayloadDto {

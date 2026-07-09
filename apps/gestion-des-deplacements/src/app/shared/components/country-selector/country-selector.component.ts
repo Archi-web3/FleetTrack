@@ -6,36 +6,60 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { PaysService, Pays } from '../../../core/services/pays.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ContextService } from '../../../core/services/context.service';
+import { AdminService } from '../../../core/services/admin.service';
 
 @Component({
   selector: 'app-country-selector',
   standalone: true,
   imports: [FormsModule, MatSelectModule, MatFormFieldModule, MatIconModule],
   template: `
-    @if (isSuperAdmin) {
-      <div class="country-dropdown-wrapper">
-        <mat-icon class="building-icon">domain</mat-icon>
-        <mat-form-field appearance="outline" class="country-select-field">
-          <mat-select [(ngModel)]="selectedCountryId" (selectionChange)="onCountryChange()">
-            <mat-option value="none">Aucun</mat-option>
-            <mat-option value="all">Tous</mat-option>
-            @for (pays of paysList; track pays) {
-              <mat-option [value]="pays._id"> {{ pays.nom }} ({{ pays.code }}) </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-    }
+    <div class="context-wrapper">
+      @if (paysList.length > 1 || isSuperAdmin) {
+        <div class="country-dropdown-wrapper">
+          <mat-icon class="building-icon">public</mat-icon>
+          <mat-form-field appearance="outline" class="country-select-field">
+            <mat-select [(ngModel)]="selectedCountryId" (selectionChange)="onCountryChange()">
+              <mat-option value="all">Tous les pays</mat-option>
+              @for (pays of paysList; track pays) {
+                <mat-option [value]="pays.id || pays._id"> {{ pays.nom }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      } @else if (paysList.length === 1) {
+        <div class="country-dropdown-wrapper">
+          <mat-icon class="building-icon">public</mat-icon>
+          <span class="country-text">{{ paysList[0].nom }}</span>
+        </div>
+      }
 
-    @if (!isSuperAdmin && userCountry) {
-      <div class="country-dropdown-wrapper">
-        <mat-icon class="building-icon">domain</mat-icon>
-        <span class="country-text">{{ userCountry.nom }}</span>
-      </div>
-    }
+      @if (baseList.length > 1 || isSuperAdmin) {
+        <div class="country-dropdown-wrapper" style="margin-left: 10px;">
+          <mat-icon class="building-icon">domain</mat-icon>
+          <mat-form-field appearance="outline" class="country-select-field">
+            <mat-select [(ngModel)]="selectedBaseId" (selectionChange)="onBaseChange()">
+              <mat-option value="all">Toutes les bases</mat-option>
+              @for (b of baseList; track b) {
+                <mat-option [value]="b.id || b._id"> {{ b.nom }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      } @else if (baseList.length === 1) {
+        <div class="country-dropdown-wrapper" style="margin-left: 10px;">
+          <mat-icon class="building-icon">domain</mat-icon>
+          <span class="country-text">{{ baseList[0].nom }}</span>
+        </div>
+      }
+    </div>
   `,
   styles: [
     `
+      .context-wrapper {
+        display: flex;
+        flex-direction: row;
+      }
       .country-dropdown-wrapper {
         display: flex;
         align-items: center;
@@ -95,56 +119,72 @@ import { AuthService } from '../../../core/services/auth.service';
 export class CountrySelectorComponent implements OnInit {
   private paysService = inject(PaysService);
   private authService = inject(AuthService);
+  private contextService = inject(ContextService);
+  private adminService = inject(AdminService);
 
   @Output() countryChanged = new EventEmitter<string>();
 
-  paysList: Pays[] = [];
+  paysList: any[] = [];
+  baseList: any[] = [];
   selectedCountryId: string | null = null;
+  selectedBaseId: string | null = null;
   isSuperAdmin = false;
-  userCountry: any = null;
 
   ngOnInit(): void {
-    // Check if user is SuperAdmin
-    this.isSuperAdmin = this.authService.getUserProfile() === 'SuperAdmin';
+    const user = this.authService.getUser();
+    if (!user) return;
 
-    // Only load countries if user is authenticated
-    if (!this.authService.getToken()) {
-      return; // User not authenticated yet
-    }
+    this.isSuperAdmin = user.profil === 'SuperAdmin';
+    
+    // Initialize state
+    this.selectedCountryId = this.contextService.getSelectedCountry() || 'all';
+    this.selectedBaseId = this.contextService.getSelectedBase() || 'all';
 
-    // Load countries list
-    this.paysService.getPays().subscribe({
-      next: (pays) => {
+    if (this.isSuperAdmin) {
+      this.paysService.getPays().subscribe(pays => {
         this.paysList = pays;
+        this.loadBases();
+      });
+    } else {
+      this.paysList = Array.isArray(user.pays) ? user.pays : [];
+      if (this.paysList.length === 1) {
+        this.selectedCountryId = this.paysList[0].id || this.paysList[0]._id;
+        this.contextService.setSelectedCountry(this.selectedCountryId);
+      }
+      this.loadBases();
+    }
+  }
 
-        if (this.isSuperAdmin) {
-          // Load selected country from localStorage
-          const stored = this.paysService.getSelectedCountry();
-          // Default to 'all' if nothing stored (Global View)
-          this.selectedCountryId = stored && stored !== 'undefined' && stored !== 'null' ? stored : 'all';
-          // Ensure it's saved so requests don't fail with undefined header
-          if (!stored || stored === 'undefined' || stored === 'null') {
-             this.paysService.setSelectedCountry('all');
-          }
-        } else {
-          // For non-SuperAdmin, get their assigned country
-          const user = this.authService.getUser();
-          this.userCountry = user?.pays;
-        }
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des pays:', err);
-      },
+  loadBases() {
+    const paysFilter = this.selectedCountryId && this.selectedCountryId !== 'all' ? this.selectedCountryId : undefined;
+    this.adminService.getBases(paysFilter).subscribe(bases => {
+      // If not super admin, filter bases to user's allowed bases
+      if (!this.isSuperAdmin) {
+        const user = this.authService.getUser();
+        const allowedBases = Array.isArray(user.base) ? user.base.map((b: any) => b.id || b._id) : [];
+        this.baseList = bases.filter(b => allowedBases.includes(b._id || b.id));
+      } else {
+        this.baseList = bases;
+      }
+      
+      if (this.baseList.length === 1) {
+         this.selectedBaseId = this.baseList[0].id || this.baseList[0]._id;
+         this.contextService.setSelectedBase(this.selectedBaseId);
+      }
     });
   }
 
   onCountryChange(): void {
     if (this.selectedCountryId) {
-      // Save selection (including 'all' and 'none') to localStorage
-      this.paysService.setSelectedCountry(this.selectedCountryId);
-
+      this.contextService.setSelectedCountry(this.selectedCountryId);
       this.countryChanged.emit(this.selectedCountryId);
-      // Reload page to apply new country filter
+      window.location.reload();
+    }
+  }
+
+  onBaseChange(): void {
+    if (this.selectedBaseId) {
+      this.contextService.setSelectedBase(this.selectedBaseId);
       window.location.reload();
     }
   }

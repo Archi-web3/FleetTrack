@@ -1,5 +1,7 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { inject } from '@angular/core';
+import { PaysService } from '../services/pays.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // Skip third-party external APIs
@@ -8,16 +10,25 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const token = localStorage.getItem('jwtToken');
+  const paysService = inject(PaysService);
 
   if (token) {
-    const selectedCountry = localStorage.getItem('selectedCountry');
+    const selectedCountry = paysService.getSelectedCountry();
+    const selectedBase = localStorage.getItem('selectedBase');
+
+    // Add required headers for all API requests
     const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
       'x-auth-token': token,
       'Authorization': `Bearer ${token}`
     };
 
     if (selectedCountry) {
       headers['X-Selected-Country'] = selectedCountry;
+    }
+    if (selectedBase) {
+      headers['X-Selected-Base'] = selectedBase;
     }
 
     const cloned = req.clone({ setHeaders: headers });

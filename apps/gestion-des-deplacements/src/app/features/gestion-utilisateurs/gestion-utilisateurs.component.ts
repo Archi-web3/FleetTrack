@@ -173,10 +173,14 @@ export class GestionUtilisateursComponent implements OnInit {
   }
 
   // Appelé quand le SuperAdmin change le pays dans le form
-  onPaysChange(paysId: string) {
-    this.newUser.pays = paysId; // Assigner le pays sélectionné
-    this.newUser.base = ''; // Reset base selection
-    this.loadBases(paysId);
+  onPaysChange(paysIds: string[]) {
+    this.newUser.pays = paysIds; // Assigner les pays sélectionnés
+    this.newUser.base = []; // Reset base selection
+    if (paysIds && paysIds.length > 0) {
+      this.loadBases(paysIds.join(','));
+    } else {
+      this.bases = [];
+    }
   }
 
   loadVehicules(): void {
@@ -365,11 +369,13 @@ export class GestionUtilisateursComponent implements OnInit {
   }
 
   // Appelé quand le SuperAdmin change le pays dans le formulaire d'édition
-  onEditPaysChange(paysId: string) {
-    if (this.selectedUser) {
-      this.selectedUser.pays = paysId;
-      this.selectedUser.base = ''; // Reset base selection
-      this.loadBases(paysId);
+  onEditPaysChange(paysIds: string[]) {
+    this.selectedUser.pays = paysIds;
+    this.selectedUser.base = [];
+    if (paysIds && paysIds.length > 0) {
+      this.loadBases(paysIds.join(','));
+    } else {
+      this.bases = [];
     }
   }
 

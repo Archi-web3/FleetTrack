@@ -30,7 +30,7 @@ export class BasesService {
       user?.profil ||
       (((user?.role as Record<string, any>)?.name as string) ?? 'Unknown');
     if (userRole === 'Admin' && user.pays) {
-      createBaseDto.pays = user.pays;
+      createBaseDto.pays = Array.isArray(user.pays) && user.pays.length > 0 ? String(user.pays[0]) : String(user.pays);
     }
 
     const base = new this.baseModel(createBaseDto);

@@ -22,8 +22,9 @@ export class LieuxService {
     // countryFilter logic: if Admin or Superviseur, filter locations by country
     if ((userRole === 'Admin' || userRole === 'Superviseur') && user.pays) {
       // Find all bases in this country
+      const paysArray = Array.isArray(user.pays) ? user.pays : [user.pays];
       const basesInCountry = await this.baseModel
-        .find({ pays: user.pays })
+        .find({ pays: { $in: paysArray } })
         .select('_id')
         .exec();
       const baseIds = basesInCountry.map((b) => b._id);
@@ -47,10 +48,10 @@ export class LieuxService {
 
     if (userRole !== 'SuperAdmin') {
       if (!createLieuDto.pays && user.pays) {
-        createLieuDto.pays = user.pays;
+        createLieuDto.pays = Array.isArray(user.pays) && user.pays.length > 0 ? String(user.pays[0]) : String(user.pays);
       }
       if (!createLieuDto.base && user.base) {
-        createLieuDto.base = user.base;
+        createLieuDto.base = Array.isArray(user.base) && user.base.length > 0 ? String(user.base[0]) : String(user.base);
       }
     }
 

@@ -29,8 +29,12 @@ export class AdminService {
   }
 
   // Base endpoints
-  getBases(paysId?: string): Observable<any[]> {
-    const url = paysId ? `${this.apiUrl}/bases?pays=${paysId}` : `${this.apiUrl}/bases`;
+  getBases(paysIds?: string | string[]): Observable<any[]> {
+    let url = `${this.apiUrl}/bases`;
+    if (paysIds) {
+      const paysStr = Array.isArray(paysIds) ? paysIds.join(',') : paysIds;
+      url += `?pays=${paysStr}`;
+    }
     return this.http.get<any[]>(url);
   }
 

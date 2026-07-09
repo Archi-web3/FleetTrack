@@ -7,6 +7,7 @@ export class CreateMouvementDto {
   type?: string;
   demandeur?: string;
   pays?: string;
+  base?: string;
 }
 
 export class UserPayloadDto {
@@ -14,8 +15,8 @@ export class UserPayloadDto {
   id?: string;
   nom?: string;
   prenom?: string;
-  base?: string;
-  pays?: string;
+  base?: any[];
+  pays?: any[];
   profil?: string;
   role?: string | { name: string };
   [key: string]: any;

@@ -60,7 +60,11 @@ export class UsersService {
         );
       }
       // RÈGLE 2 : Un Admin force le pays de l'utilisateur créé à être le sien
-      createUserDto.pays = creator.pays;
+      if (creator.pays && Array.isArray(creator.pays) && creator.pays.length > 0) {
+        createUserDto.pays = creator.pays; // It's already string[]
+      } else if (creator.pays && typeof creator.pays === 'string') {
+        createUserDto.pays = [creator.pays];
+      }
     }
 
     const createdUser = new this.userModel(createUserDto);

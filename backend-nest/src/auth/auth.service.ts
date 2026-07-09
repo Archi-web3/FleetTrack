@@ -74,19 +74,19 @@ export class AuthService {
         id: fullUser._id.toString(),
         nom: fullUser.nom,
         profil: fullUser.profil, // Backward compatibility
-        pays: fullUser.pays
-          ? {
-              id: (fullUser.pays as unknown as PaysDocument)._id,
-              nom: (fullUser.pays as unknown as PaysDocument).nom,
-              code: (fullUser.pays as unknown as PaysDocument).code,
-            }
-          : null,
-        base: fullUser.base
-          ? {
-              id: (fullUser.base as unknown as BaseDocument)._id,
-              nom: (fullUser.base as unknown as BaseDocument).nom,
-            }
-          : null,
+        pays: Array.isArray(fullUser.pays) && fullUser.pays.length > 0
+          ? fullUser.pays.map((p: any) => ({
+              id: p._id.toString(),
+              nom: p.nom,
+              code: p.code,
+            }))
+          : [],
+        base: Array.isArray(fullUser.base) && fullUser.base.length > 0
+          ? fullUser.base.map((b: any) => ({
+              id: b._id.toString(),
+              nom: b.nom,
+            }))
+          : [],
       },
     };
 

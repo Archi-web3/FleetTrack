@@ -33,11 +33,11 @@ export class Utilisateur {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Role' })
   role: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Pays' })
-  pays: string;
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'Pays' }])
+  pays: string[];
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Base' })
-  base: string;
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'Base' }])
+  base: string[];
 
   @Prop()
   numeroEmploye: string;

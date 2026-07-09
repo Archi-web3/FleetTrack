@@ -217,14 +217,15 @@ export class MouvementsService {
       }
     }
 
-    const finalBase = user.base || inferredBase;
-    const finalPays = user.pays || inferredPays || createDto.pays;
+    // Prioritize createDto, then inferred, then if user has only 1 pays/base
+    const finalBase = createDto.base && createDto.base !== 'all' ? createDto.base : (inferredBase || (Array.isArray(user.base) && user.base.length === 1 ? user.base[0] : null));
+    let finalPays = createDto.pays && createDto.pays !== 'all' ? createDto.pays : (inferredPays || (Array.isArray(user.pays) && user.pays.length === 1 ? user.pays[0] : null));
     
 
-    
+
     if (!finalPays && createDto.type !== 'maintenance') {
       throw new BadRequestException(
-        "Impossible de déterminer le pays pour ce mouvement. Veuillez vérifier que votre profil ou le lieu de départ est bien rattaché à un pays.",
+        "Impossible de déterminer le pays pour ce mouvement. Veuillez sélectionner un pays de contexte ou préciser le lieu de départ.",
       );
     }
 

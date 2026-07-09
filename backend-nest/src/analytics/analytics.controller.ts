@@ -37,7 +37,7 @@ export class AnalyticsController {
       dateFin: query.dateFin,
       projet: query.projet,
       vehicule: query.vehicule,
-      countryId: req.user.pays,
+      countryId: req.headers['x-selected-country'] as string,
     };
     return this.analyticsService.getGlobalStats(filters);
   }
@@ -53,7 +53,7 @@ export class AnalyticsController {
       dateFin: query.dateFin,
       projet: query.projet,
       vehicule: query.vehicule,
-      countryId: req.user.pays,
+      countryId: req.headers['x-selected-country'] as string,
     };
     return this.analyticsService.getStatsByProject(filters);
   }
@@ -65,7 +65,7 @@ export class AnalyticsController {
       startDate: query.startDate,
       endDate: query.endDate,
       vehicleId: query.vehicleId,
-      country: req.user.pays,
+      country: req.headers['x-selected-country'] as string,
     };
     return this.analyticsService.calculateTCO(filters);
   }
@@ -76,6 +76,6 @@ export class AnalyticsController {
     @Query('months') months: number,
     @Req() req: AuthRequest,
   ) {
-    return this.analyticsService.predictCosts(req.user.pays, months);
+    return this.analyticsService.predictCosts(req.headers['x-selected-country'] as string, months);
   }
 }

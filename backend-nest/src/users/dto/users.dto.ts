@@ -5,8 +5,8 @@ export class CreateUserDto {
   prenom?: string;
   profil?: string;
   role?: string;
-  pays?: string;
-  base?: string;
+  pays?: string[];
+  base?: string[];
   [key: string]: any;
 }
 
@@ -17,7 +17,7 @@ export class UpdateUserDto {
   prenom?: string;
   profil?: string;
   role?: string;
-  pays?: string;
-  base?: string;
+  pays?: string[];
+  base?: string[];
   [key: string]: any;
 }

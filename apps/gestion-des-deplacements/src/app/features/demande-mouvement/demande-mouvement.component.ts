@@ -9,6 +9,7 @@ import { LieuService } from '../../core/services/lieu.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service'; // NOUVEAU : Importer AuthService
+import { ContextService } from '../../core/services/context.service';
 import { OsrmService } from '../../core/services/osrm.service'; // NOUVEAU
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -41,6 +42,7 @@ export class DemandeMouvementComponent implements OnInit {
   private lieuService = inject(LieuService);
   private router = inject(Router);
   authService = inject(AuthService);
+  private contextService = inject(ContextService);
   private cdr = inject(ChangeDetectorRef);
   private osrmService = inject(OsrmService);
   private dialogRef = inject<MatDialogRef<DemandeMouvementComponent>>(MatDialogRef, {
@@ -98,6 +100,7 @@ export class DemandeMouvementComponent implements OnInit {
   userProfile: string | null = null;
   userPaysId: string | null = null;
   userBaseId: string | null = null;
+  isGlobalBase = false;
 
   // NOUVEAU : Case à cocher pour retour identique
   isRetourIdentique = false;
@@ -139,8 +142,10 @@ export class DemandeMouvementComponent implements OnInit {
 
   ngOnInit(): void {
     this.userProfile = this.authService.getUserProfile();
-    this.userPaysId = this.authService.getUserPaysId();
-    this.userBaseId = this.authService.getUserBaseId();
+    this.userPaysId = this.contextService.getSelectedCountry();
+    this.userBaseId = this.contextService.getSelectedBase();
+    this.isGlobalBase = !this.userBaseId || this.userBaseId === 'all';
+    
     this.loadData();
     // Définir le demandeur automatiquement
     this.mouvement.demandeur = this.authService.getUserId() || '';
@@ -427,6 +432,8 @@ export class DemandeMouvementComponent implements OnInit {
             lieuDepart: null,
             lieuArrivee: null,
             passagers: [],
+            base: this.userBaseId,
+            pays: this.userPaysId
           };
 
           try {
@@ -614,6 +621,8 @@ export class DemandeMouvementComponent implements OnInit {
           dateArrivee: currentArriveeDate,
           stops: stops,
           recurrenceGroupId: this.isRecurring ? 'REC_' + Date.now() : null,
+          base: this.userBaseId,
+          pays: this.userPaysId
         };
 
         // --- EXÉCUTION AVEC GESTION DE CONFLIT ---

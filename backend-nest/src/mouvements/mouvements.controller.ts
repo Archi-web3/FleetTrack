@@ -30,17 +30,46 @@ export class MouvementsController {
     @Query() query: MouvementQueryDto,
     @Req() req: AuthRequest,
     @Headers('x-selected-country') headerPays?: string,
+    @Headers('x-selected-base') headerBase?: string,
   ) {
     const user = req.user;
     const userRole = user?.profil || (user?.role as Record<string, unknown>)?.['name'];
+    const isSuperAdmin = userRole === 'SuperAdmin' || userRole === 'Super Admin';
 
-    // Inject auto country/base filtering logic
-    if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
-      if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
-        query['pays'] = headerPays;
-      }
-    } else if (user && user.pays) {
-      query['pays'] = user.pays;
+    // Context Country
+    if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
+       // If not SuperAdmin, verify the requested country is in the user's allowed countries
+       if (!isSuperAdmin) {
+          const userPaysIds = Array.isArray(user.pays) ? user.pays.map((p: any) => p.id || p.toString()) : [];
+          if (!userPaysIds.includes(headerPays)) {
+             // Not allowed, fallback to allowed countries
+             query['pays'] = { $in: userPaysIds };
+          } else {
+             query['pays'] = headerPays;
+          }
+       } else {
+          query['pays'] = headerPays;
+       }
+    } else if (!isSuperAdmin && user && Array.isArray(user.pays) && user.pays.length > 0) {
+       const userPaysIds = user.pays.map((p: any) => p.id || p.toString());
+       query['pays'] = { $in: userPaysIds };
+    }
+
+    // Context Base
+    if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined') {
+       if (!isSuperAdmin) {
+          const userBaseIds = Array.isArray(user.base) ? user.base.map((b: any) => b.id || b.toString()) : [];
+          if (!userBaseIds.includes(headerBase)) {
+             query['base'] = { $in: userBaseIds };
+          } else {
+             query['base'] = headerBase;
+          }
+       } else {
+          query['base'] = headerBase;
+       }
+    } else if (!isSuperAdmin && user && Array.isArray(user.base) && user.base.length > 0) {
+       const userBaseIds = user.base.map((b: any) => b.id || b.toString());
+       query['base'] = { $in: userBaseIds };
     }
 
     return this.mouvementsService.findAll(query);

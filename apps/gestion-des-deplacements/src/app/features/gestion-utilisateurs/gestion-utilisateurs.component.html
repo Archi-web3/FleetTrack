@@ -210,12 +210,12 @@
             <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
               <mat-label>{{ 'USERS.FORM.COUNTRY' | translate }}</mat-label>
               <mat-select
+                multiple
                 name="selectedPays"
                 [(ngModel)]="selectedPays"
                 (selectionChange)="onPaysChange($event.value)"
                 [required]="!selectedUser && newUser.profil !== 'SuperAdmin'"
               >
-                <mat-option [value]="null">Global (Aucun)</mat-option>
                 @for (pays of paysList; track pays) {
                   <mat-option [value]="pays._id">{{ pays.nom }}</mat-option>
                 }
@@ -226,11 +226,11 @@
           <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
             <mat-label>{{ 'USERS.FORM.BASE' | translate }}</mat-label>
             <mat-select
+              multiple
               name="newUserBase"
               [(ngModel)]="newUser.base"
               [required]="newUser.profil !== 'SuperAdmin'"
             >
-              <mat-option [value]="null">Global (Aucune)</mat-option>
               @for (b of bases; track b) {
                 <mat-option [value]="b._id">{{ b.nom }} ({{ b.pays?.code }})</mat-option>
               }
@@ -483,12 +483,12 @@
                 <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
                   <mat-label>{{ 'USERS.FORM.COUNTRY' | translate }}</mat-label>
                   <mat-select
+                    multiple
                     name="editUserPays"
                     [(ngModel)]="selectedUser.pays"
                     (selectionChange)="onEditPaysChange($event.value)"
                     [required]="selectedUser.profil !== 'SuperAdmin'"
                   >
-                    <mat-option [value]="null">Global (Aucun)</mat-option>
                     @for (p of paysList; track p) {
                       <mat-option [value]="p._id">{{ p.nom }} ({{ p.code }})</mat-option>
                     }
@@ -498,11 +498,11 @@
               <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px">
                 <mat-label>{{ 'USERS.FORM.BASE' | translate }}</mat-label>
                 <mat-select
+                  multiple
                   name="editUserBase"
                   [(ngModel)]="selectedUser.base"
                   [required]="selectedUser.profil !== 'SuperAdmin'"
                 >
-                  <mat-option [value]="null">Global (Aucune)</mat-option>
                   @for (b of bases; track b) {
                     <mat-option [value]="b._id">{{ b.nom }} ({{ b.pays?.code }})</mat-option>
                   }

@@ -8,8 +8,14 @@ export class Pays {
   @Prop({ required: true })
   nom: string;
 
+  @Prop()
+  nomEn: string;
+
   @Prop({ required: true, unique: true })
   code: string;
+
+  @Prop()
+  imageUrl: string;
 
   @Prop({ default: 'USD' })
   devise: string;

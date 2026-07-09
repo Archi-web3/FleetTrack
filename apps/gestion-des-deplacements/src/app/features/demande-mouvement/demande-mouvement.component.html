@@ -51,7 +51,17 @@
       [ngClass]="isModal ? 'custom-modal-body' : ''"
       [style.padding]="isModal ? '' : '0 20px 20px 20px'"
     >
-      <!-- TOGGLE MODE (Visible uniquement pour SuperAdmin/Admin/Superviseur) -->
+      @if (isGlobalBase) {
+        <div style="padding: 20px; background-color: #f8d7da; color: #721c24; border-radius: 8px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+          <h3 style="margin-top: 0; display: flex; align-items: center; gap: 10px;">
+            <mat-icon>warning</mat-icon> Action Requise
+          </h3>
+          <p>
+            Vous devez sélectionner une base spécifique dans le contexte (en haut de l'écran) pour pouvoir créer une demande de mouvement ou de maintenance.
+          </p>
+        </div>
+      } @else {
+        <!-- TOGGLE MODE (Visible uniquement pour SuperAdmin/Admin/Superviseur) -->
       @if (userProfile !== 'Normal') {
         <div
           style="
@@ -752,6 +762,7 @@
           </div>
         </div>
       }
+      }
     </div>
     <!-- End Body -->
 
@@ -767,7 +778,7 @@
       <button
         type="submit"
         [ngClass]="isModal ? 'custom-modal-btn-submit' : ''"
-        [disabled]="!demandeForm.form.valid || isSubmitting"
+        [disabled]="!demandeForm.form.valid || isSubmitting || isGlobalBase"
         [style]="
           isModal
             ? ''
