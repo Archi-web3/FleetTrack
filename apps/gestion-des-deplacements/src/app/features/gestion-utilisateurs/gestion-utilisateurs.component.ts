@@ -279,8 +279,8 @@ export class GestionUtilisateursComponent implements OnInit {
   addUser(): void {
     // Nettoyer les données avant envoi : convertir les chaînes vides en null pour les ObjectId
     const userData = { ...this.newUser };
-    if (userData.pays === '') userData.pays = null;
-    if (userData.base === '') userData.base = null;
+    if (!userData.pays || userData.pays.length === 0) userData.pays = [];
+    if (!userData.base || userData.base.length === 0) userData.base = [];
     if (userData.vehiculeAttitre === '') userData.vehiculeAttitre = null;
 
     // Force security level calculation if auto-manage is checked
@@ -338,15 +338,29 @@ export class GestionUtilisateursComponent implements OnInit {
     }
 
     // Si base est un objet peuplé, on garde juste l'ID pour le select
-    if (this.selectedUser.base && this.selectedUser.base._id) {
-      this.selectedUser.base = this.selectedUser.base._id;
+    if (this.selectedUser.base && Array.isArray(this.selectedUser.base)) {
+      this.selectedUser.base = this.selectedUser.base.map((b: any) => b._id || b.id || b);
+    } else if (this.selectedUser.base && this.selectedUser.base._id) {
+      this.selectedUser.base = [this.selectedUser.base._id];
+    } else if (typeof this.selectedUser.base === 'string') {
+      this.selectedUser.base = [this.selectedUser.base];
+    } else {
+      this.selectedUser.base = [];
     }
 
     // Si pays est un objet peuplé, extraire l'ID
-    let paysId = this.selectedUser?.pays;
-    if (this.selectedUser?.pays && this.selectedUser.pays._id) {
+    let paysId = null;
+    if (this.selectedUser.pays && Array.isArray(this.selectedUser.pays)) {
+      this.selectedUser.pays = this.selectedUser.pays.map((p: any) => p._id || p.id || p);
+      if (this.selectedUser.pays.length > 0) paysId = this.selectedUser.pays.join(',');
+    } else if (this.selectedUser.pays && this.selectedUser.pays._id) {
       paysId = this.selectedUser.pays._id;
-      if (this.selectedUser) this.selectedUser.pays = paysId; // Garder l'ID pour le select
+      this.selectedUser.pays = [paysId];
+    } else if (typeof this.selectedUser.pays === 'string') {
+      paysId = this.selectedUser.pays;
+      this.selectedUser.pays = [paysId];
+    } else {
+      this.selectedUser.pays = [];
     }
 
     // Si role est un objet peuplé, extraire l'ID
@@ -396,8 +410,8 @@ export class GestionUtilisateursComponent implements OnInit {
     if (!userData.motDePasse || userData.motDePasse.trim() === '') {
       delete userData.motDePasse;
     }
-    if (userData.pays === '') userData.pays = null;
-    if (userData.base === '') userData.base = null;
+    if (userData.pays === '' || !userData.pays) userData.pays = [];
+    if (userData.base === '' || !userData.base) userData.base = [];
     if (userData.vehiculeAttitre === '') userData.vehiculeAttitre = null;
 
     this.utilisateurService.updateUser(this.selectedUser._id, userData).subscribe(
@@ -428,6 +442,46 @@ export class GestionUtilisateursComponent implements OnInit {
           else alert('Erreur lors de la suppression de l\'utilisateur.');
         }
       );
+    }
+  }
+
+  getPaysNames(pays: any, profil: string): string {
+    if (!pays || (Array.isArray(pays) && pays.length === 0)) {
+      return profil === 'SuperAdmin' || profil === 'Super Admin' ? 'Global' : 'Aucun';
+    }
+    if (Array.isArray(pays)) {
+      return pays.map((p: any) => p.nom || p).join(', ');
+    }
+    return pays.nom || pays;
+  }
+
+  getBaseNames(base: any, profil: string): string {
+    if (!base || (Array.isArray(base) && base.length === 0)) {
+      return profil === 'SuperAdmin' || profil === 'Super Admin' ? 'Global' : 'Aucune';
+    }
+    if (Array.isArray(base)) {
+      return base.map((b: any) => b.nom || b).join(', ');
+    }
+    return base.nom || base;
+  }
+
+  selectAllPays(type: 'new' | 'edit'): void {
+    const allIds = this.paysList.map(p => p._id || p.id);
+    if (type === 'new') {
+      this.newUser.pays = allIds;
+      this.onPaysChange(allIds);
+    } else {
+      this.selectedUser.pays = allIds;
+      this.onEditPaysChange(allIds);
+    }
+  }
+
+  selectAllBases(type: 'new' | 'edit'): void {
+    const allIds = this.bases.map(b => b._id || b.id);
+    if (type === 'new') {
+      this.newUser.base = allIds;
+    } else {
+      this.selectedUser.base = allIds;
     }
   }
 }
