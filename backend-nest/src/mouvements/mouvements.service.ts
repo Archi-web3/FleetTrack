@@ -7,6 +7,8 @@ import { MouvementsSecurityService } from './mouvements-security.service';
 import { MailService } from '../notifications/mail.service';
 import { Lieu, LieuDocument } from '../lieux/schemas/lieu.schema';
 import { User, UserDocument } from '../users/schemas/user.schema';
+import { AxesService } from '../axes/axes.service';
+import { SettingsService } from '../settings/settings.service';
 import {
   CreateMouvementDto,
   UserPayloadDto,
@@ -25,6 +27,8 @@ export class MouvementsService {
     private conflictService: MouvementsConflictService,
     private securityService: MouvementsSecurityService,
     private mailService: MailService,
+    private axesService: AxesService,
+    private settingsService: SettingsService,
   ) {}
 
   async findAll(query: MouvementQueryDto = {}): Promise<Mouvement[]> {
@@ -196,6 +200,26 @@ export class MouvementsService {
         const niveau = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
         if (niveau > maxSecurityLevel) maxSecurityLevel = niveau;
       });
+
+      // --- AXES SECURITY LOGIC ---
+      try {
+        const isAxeSecurityEnabled = await this.settingsService.getSettingValue('FEATURE_AXES_SECURITY', false);
+        if (isAxeSecurityEnabled && stopLieuIds.length > 1) {
+          for (let i = 0; i < stopLieuIds.length - 1; i++) {
+            const lieu1 = stopLieuIds[i];
+            const lieu2 = stopLieuIds[i + 1];
+            if (lieu1 && lieu2) {
+              const axe = await this.axesService.findAxeBetween(lieu1, lieu2);
+              if (axe && axe.niveauSecurite > maxSecurityLevel) {
+                maxSecurityLevel = axe.niveauSecurite;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        this.logger.error('Error calculating axes security level', err);
+      }
+      // --- END AXES SECURITY LOGIC ---
 
       if (maxSecurityLevel === 0) statutSecuriteInitial = 'non requis';
     }

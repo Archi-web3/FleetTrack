@@ -11,6 +11,8 @@ import {
 } from './schemas/security-config.schema';
 import { Lieu, LieuSchema } from '../lieux/schemas/lieu.schema';
 import { User, UserSchema } from '../users/schemas/user.schema';
+import { AxesModule } from '../axes/axes.module';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { User, UserSchema } from '../users/schemas/user.schema';
       { name: Lieu.name, schema: LieuSchema },
       { name: User.name, schema: UserSchema },
     ]),
+    AxesModule,
+    SettingsModule,
   ],
   controllers: [MouvementsController],
   providers: [

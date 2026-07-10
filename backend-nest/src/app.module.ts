@@ -11,6 +11,7 @@ import { SecurityConfigModule } from './security-config/security-config.module';
 import { PaysModule } from './pays/pays.module';
 import { BasesModule } from './bases/bases.module';
 import { LieuxModule } from './lieux/lieux.module';
+import { AxesModule } from './axes/axes.module';
 import { ProjetsModule } from './projets/projets.module';
 import { ChauffeursModule } from './chauffeurs/chauffeurs.module';
 import { GenerateursModule } from './generateurs/generateurs.module';
@@ -49,6 +50,7 @@ import { AuditLogsModule } from './audit-logs/audit-logs.module';
     PaysModule,
     BasesModule,
     LieuxModule,
+    AxesModule,
     ProjetsModule,
     ChauffeursModule,
     GenerateursModule,

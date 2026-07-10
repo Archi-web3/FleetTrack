@@ -248,6 +248,12 @@ export const routes: Routes = [
     data: { roles: ['SuperAdmin'] }
   },
   {
+    path: 'parametrage/axes',
+    loadComponent: () => import('./features/gestion-axes/gestion-axes').then(m => m.GestionAxesComponent),
+    canActivate: [AuthGuard],
+    data: { roles: ['SuperAdmin', 'Admin'] }
+  },
+  {
     path: 'environment-roadmap',
     loadComponent: () => import('./features/environment-roadmap/environment-roadmap').then(m => m.EnvironmentRoadmapComponent),
     canActivate: [AuthGuard],

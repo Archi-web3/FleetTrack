@@ -253,6 +253,9 @@
             <button mat-menu-item routerLink="/gestion-lieux">
               <mat-icon>place</mat-icon><span>{{ 'MENU.LOCATION_MANAGEMENT' | translate }}</span>
             </button>
+            <button mat-menu-item routerLink="/parametrage/axes">
+              <mat-icon>add_road</mat-icon><span>Axes Routiers</span>
+            </button>
           }
           @if (perms.canViewMenu('admin_geo')) {
             <button mat-menu-item routerLink="/admin/pays-bases">
