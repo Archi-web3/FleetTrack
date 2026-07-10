@@ -23,6 +23,8 @@ const mouvements_security_service_1 = require("./mouvements-security.service");
 const mail_service_1 = require("../notifications/mail.service");
 const lieu_schema_1 = require("../lieux/schemas/lieu.schema");
 const user_schema_1 = require("../users/schemas/user.schema");
+const axes_service_1 = require("../axes/axes.service");
+const settings_service_1 = require("../settings/settings.service");
 let MouvementsService = MouvementsService_1 = class MouvementsService {
     mouvementModel;
     lieuModel;
@@ -30,14 +32,18 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
     conflictService;
     securityService;
     mailService;
+    axesService;
+    settingsService;
     logger = new common_1.Logger(MouvementsService_1.name);
-    constructor(mouvementModel, lieuModel, userModel, conflictService, securityService, mailService) {
+    constructor(mouvementModel, lieuModel, userModel, conflictService, securityService, mailService, axesService, settingsService) {
         this.mouvementModel = mouvementModel;
         this.lieuModel = lieuModel;
         this.userModel = userModel;
         this.conflictService = conflictService;
         this.securityService = securityService;
         this.mailService = mailService;
+        this.axesService = axesService;
+        this.settingsService = settingsService;
     }
     async findAll(query = {}) {
         return this.mouvementModel
@@ -172,6 +178,24 @@ let MouvementsService = MouvementsService_1 = class MouvementsService {
                 if (niveau > maxSecurityLevel)
                     maxSecurityLevel = niveau;
             });
+            try {
+                const isAxeSecurityEnabled = await this.settingsService.getSetting('FEATURE_AXES_SECURITY');
+                if (isAxeSecurityEnabled && stopLieuIds.length > 1) {
+                    for (let i = 0; i < stopLieuIds.length - 1; i++) {
+                        const lieu1 = stopLieuIds[i];
+                        const lieu2 = stopLieuIds[i + 1];
+                        if (lieu1 && lieu2) {
+                            const axe = await this.axesService.findAxeBetween(lieu1, lieu2);
+                            if (axe && axe.niveauSecurite > maxSecurityLevel) {
+                                maxSecurityLevel = axe.niveauSecurite;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (err) {
+                this.logger.error('Error calculating axes security level', err);
+            }
             if (maxSecurityLevel === 0)
                 statutSecuriteInitial = 'non requis';
         }
@@ -440,6 +464,8 @@ exports.MouvementsService = MouvementsService = MouvementsService_1 = __decorate
         mongoose_2.Model,
         mouvements_conflict_service_1.MouvementsConflictService,
         mouvements_security_service_1.MouvementsSecurityService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        axes_service_1.AxesService,
+        settings_service_1.SettingsService])
 ], MouvementsService);
 //# sourceMappingURL=mouvements.service.js.map

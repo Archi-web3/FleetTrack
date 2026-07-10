@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/mongoose';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Axe, AxeDocument } from './schemas/axe.schema';
@@ -12,16 +12,16 @@ export class AxesService {
     private readonly auditLogsService: AuditLogsService,
   ) {}
 
-  async create(createAxeDto: CreateAxeDto, reqUser: any): Promise<Axe> {
+  async create(createAxeDto: CreateAxeDto, req: any): Promise<Axe> {
     const createdAxe = new this.axeModel(createAxeDto);
     const result = await createdAxe.save();
 
     await this.auditLogsService.logAction(
+      req as any,
       'CREATE_AXE',
-      reqUser,
       'Axe',
       result._id.toString(),
-      result,
+      result.toObject() as any,
     );
     return result.populate(['depart', 'arrivee', 'pays', 'base']);
   }
@@ -45,7 +45,7 @@ export class AxesService {
     return axe;
   }
 
-  async update(id: string, updateAxeDto: UpdateAxeDto, reqUser: any): Promise<Axe> {
+  async update(id: string, updateAxeDto: UpdateAxeDto, req: any): Promise<Axe> {
     const existingAxe = await this.axeModel
       .findByIdAndUpdate(id, updateAxeDto, { new: true })
       .exec();
@@ -55,28 +55,28 @@ export class AxesService {
     }
 
     await this.auditLogsService.logAction(
+      req as any,
       'UPDATE_AXE',
-      reqUser,
       'Axe',
       id,
-      existingAxe,
+      existingAxe.toObject() as any,
     );
 
     return existingAxe.populate(['depart', 'arrivee', 'pays', 'base']);
   }
 
-  async delete(id: string, reqUser: any): Promise<void> {
+  async delete(id: string, req: any): Promise<void> {
     const deletedAxe = await this.axeModel.findByIdAndDelete(id).exec();
     if (!deletedAxe) {
       throw new NotFoundException(`Axe with ID ${id} not found`);
     }
 
     await this.auditLogsService.logAction(
+      req as any,
       'DELETE_AXE',
-      reqUser,
       'Axe',
       id,
-      deletedAxe,
+      deletedAxe.toObject() as any,
     );
   }
 

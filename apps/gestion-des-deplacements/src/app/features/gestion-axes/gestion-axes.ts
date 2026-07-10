@@ -10,7 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AxeService, Axe } from '../../core/services/axe.service';
 import { LieuService } from '../../core/services/lieu.service';
-import { AppStateService } from '../../core/services/app-state.service';
+import { ContextService } from '../../core/services/context.service';
 import * as L from 'leaflet';
 
 @Component({
@@ -40,17 +40,20 @@ export class GestionAxesComponent implements OnInit, AfterViewInit {
   
   private map!: L.Map;
   private polylines: L.Polyline[] = [];
-  private markers: L.Marker[] = [];
+  private markers: L.Layer[] = [];
 
   constructor(
     private axeService: AxeService,
     private lieuService: LieuService,
-    public appState: AppStateService
+    public contextService: ContextService
   ) {}
 
   ngOnInit() {
     this.loadData();
-    this.appState.context$.subscribe(() => {
+    this.contextService.selectedCountry$.subscribe(() => {
+      this.loadData();
+    });
+    this.contextService.selectedBase$.subscribe(() => {
       this.loadData();
     });
   }
@@ -87,7 +90,7 @@ export class GestionAxesComponent implements OnInit, AfterViewInit {
     if (axe) {
       this.selectedAxe = { ...axe, depart: axe.depart._id || axe.depart, arrivee: axe.arrivee._id || axe.arrivee };
     } else {
-      this.selectedAxe = { nom: '', depart: '', arrivee: '', niveauSecurite: 1, actif: true, pays: this.appState.getCurrentContext().paysIds[0] || '' };
+      this.selectedAxe = { nom: '', depart: '', arrivee: '', niveauSecurite: 1, actif: true, pays: this.contextService.getSelectedCountry() || '' };
     }
     this.showModal = true;
   }

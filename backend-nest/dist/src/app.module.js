@@ -20,6 +20,7 @@ const security_config_module_1 = require("./security-config/security-config.modu
 const pays_module_1 = require("./pays/pays.module");
 const bases_module_1 = require("./bases/bases.module");
 const lieux_module_1 = require("./lieux/lieux.module");
+const axes_module_1 = require("./axes/axes.module");
 const projets_module_1 = require("./projets/projets.module");
 const chauffeurs_module_1 = require("./chauffeurs/chauffeurs.module");
 const generateurs_module_1 = require("./generateurs/generateurs.module");
@@ -61,6 +62,7 @@ exports.AppModule = AppModule = __decorate([
             pays_module_1.PaysModule,
             bases_module_1.BasesModule,
             lieux_module_1.LieuxModule,
+            axes_module_1.AxesModule,
             projets_module_1.ProjetsModule,
             chauffeurs_module_1.ChauffeursModule,
             generateurs_module_1.GenerateursModule,

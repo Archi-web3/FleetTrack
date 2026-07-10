@@ -17,6 +17,8 @@ const mouvement_schema_1 = require("./schemas/mouvement.schema");
 const security_config_schema_1 = require("./schemas/security-config.schema");
 const lieu_schema_1 = require("../lieux/schemas/lieu.schema");
 const user_schema_1 = require("../users/schemas/user.schema");
+const axes_module_1 = require("../axes/axes.module");
+const settings_module_1 = require("../settings/settings.module");
 let MouvementsModule = class MouvementsModule {
 };
 exports.MouvementsModule = MouvementsModule;
@@ -29,6 +31,8 @@ exports.MouvementsModule = MouvementsModule = __decorate([
                 { name: lieu_schema_1.Lieu.name, schema: lieu_schema_1.LieuSchema },
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
             ]),
+            axes_module_1.AxesModule,
+            settings_module_1.SettingsModule,
         ],
         controllers: [mouvements_controller_1.MouvementsController],
         providers: [

@@ -8,13 +8,13 @@ import {
   Delete,
   UseGuards,
   Req,
+  Headers,
 } from '@nestjs/common';
 import { AxesService } from './axes.service';
 import { CreateAxeDto, UpdateAxeDto } from './dto/axes.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { PermissionsGuard } from '../auth/permissions.guard';
-import { RequirePermissions } from '../auth/permissions.decorator';
-import { extractContext } from '../utils/context.util';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequirePermissions } from '../auth/decorators/permissions.decorator';
 
 @Controller('axes')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -22,15 +22,19 @@ export class AxesController {
   constructor(private readonly axesService: AxesService) {}
 
   @Post()
-  @RequirePermissions({ resource: 'admin_security', action: 'create' })
+  @RequirePermissions('CREATE_AXE')
   async create(@Body() createAxeDto: CreateAxeDto, @Req() req: any) {
-    return this.axesService.create(createAxeDto, req.user);
+    return this.axesService.create(createAxeDto, req);
   }
 
   @Get()
-  async findAll(@Req() req: any) {
-    const context = extractContext(req);
-    return this.axesService.findAll(context);
+  async findAll(
+    @Headers('x-context-pays') paysIdsStr?: string,
+    @Headers('x-context-base') baseIdsStr?: string,
+  ) {
+    const paysIds = paysIdsStr ? paysIdsStr.split(',') : [];
+    const baseIds = baseIdsStr ? baseIdsStr.split(',') : [];
+    return this.axesService.findAll({ paysIds, baseIds });
   }
 
   @Get(':id')
@@ -39,18 +43,18 @@ export class AxesController {
   }
 
   @Put(':id')
-  @RequirePermissions({ resource: 'admin_security', action: 'update' })
+  @RequirePermissions('UPDATE_AXE')
   async update(
     @Param('id') id: string,
     @Body() updateAxeDto: UpdateAxeDto,
     @Req() req: any,
   ) {
-    return this.axesService.update(id, updateAxeDto, req.user);
+    return this.axesService.update(id, updateAxeDto, req);
   }
 
   @Delete(':id')
-  @RequirePermissions({ resource: 'admin_security', action: 'delete' })
+  @RequirePermissions('DELETE_AXE')
   async remove(@Param('id') id: string, @Req() req: any) {
-    return this.axesService.delete(id, req.user);
+    return this.axesService.delete(id, req);
   }
 }

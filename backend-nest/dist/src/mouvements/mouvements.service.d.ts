@@ -5,6 +5,8 @@ import { MouvementsSecurityService } from './mouvements-security.service';
 import { MailService } from '../notifications/mail.service';
 import { LieuDocument } from '../lieux/schemas/lieu.schema';
 import { UserDocument } from '../users/schemas/user.schema';
+import { AxesService } from '../axes/axes.service';
+import { SettingsService } from '../settings/settings.service';
 import { CreateMouvementDto, UserPayloadDto, MouvementQueryDto } from './dto/mouvements.dto';
 export declare class MouvementsService {
     private mouvementModel;
@@ -13,8 +15,10 @@ export declare class MouvementsService {
     private conflictService;
     private securityService;
     private mailService;
+    private axesService;
+    private settingsService;
     private readonly logger;
-    constructor(mouvementModel: Model<MouvementDocument>, lieuModel: Model<LieuDocument>, userModel: Model<UserDocument>, conflictService: MouvementsConflictService, securityService: MouvementsSecurityService, mailService: MailService);
+    constructor(mouvementModel: Model<MouvementDocument>, lieuModel: Model<LieuDocument>, userModel: Model<UserDocument>, conflictService: MouvementsConflictService, securityService: MouvementsSecurityService, mailService: MailService, axesService: AxesService, settingsService: SettingsService);
     findAll(query?: MouvementQueryDto): Promise<Mouvement[]>;
     getPlanning(includePending: boolean): Promise<Mouvement[]>;
     getStatsByStatus(): Promise<any[]>;

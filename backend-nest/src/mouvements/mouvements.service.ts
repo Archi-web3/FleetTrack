@@ -203,7 +203,7 @@ export class MouvementsService {
 
       // --- AXES SECURITY LOGIC ---
       try {
-        const isAxeSecurityEnabled = await this.settingsService.getSettingValue('FEATURE_AXES_SECURITY', false);
+        const isAxeSecurityEnabled = await this.settingsService.getSetting('FEATURE_AXES_SECURITY');
         if (isAxeSecurityEnabled && stopLieuIds.length > 1) {
           for (let i = 0; i < stopLieuIds.length - 1; i++) {
             const lieu1 = stopLieuIds[i];
