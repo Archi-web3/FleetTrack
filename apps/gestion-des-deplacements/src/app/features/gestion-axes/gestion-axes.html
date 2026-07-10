@@ -68,22 +68,26 @@
     <h3>{{ selectedAxe?._id ? 'Modifier' : 'Ajouter' }} un Axe</h3>
     <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
       
+      <div *ngIf="!selectedAxe!.pays" style="color: red; margin-bottom: 10px;">
+        ⚠️ Veuillez d'abord sélectionner un pays dans le menu contextuel en haut de l'écran.
+      </div>
+      
       <mat-form-field appearance="outline">
         <mat-label>Nom de l'axe</mat-label>
-        <input matInput [(ngModel)]="selectedAxe!.nom" placeholder="Ex: Goma - Sake">
+        <input matInput [(ngModel)]="selectedAxe!.nom" placeholder="Ex: Goma - Sake" required>
       </mat-form-field>
 
       <div style="display: flex; gap: 10px;">
         <mat-form-field appearance="outline" style="flex: 1;">
           <mat-label>Lieu de départ</mat-label>
-          <mat-select [(ngModel)]="selectedAxe!.depart">
+          <mat-select [(ngModel)]="selectedAxe!.depart" required>
             <mat-option *ngFor="let lieu of lieux" [value]="lieu._id">{{lieu.nom}}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="flex: 1;">
           <mat-label>Lieu d'arrivée</mat-label>
-          <mat-select [(ngModel)]="selectedAxe!.arrivee">
+          <mat-select [(ngModel)]="selectedAxe!.arrivee" required>
             <mat-option *ngFor="let lieu of lieux" [value]="lieu._id">{{lieu.nom}}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -107,7 +111,7 @@
 
       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
         <button mat-stroked-button (click)="closeModal()">Annuler</button>
-        <button mat-raised-button color="primary" (click)="saveAxe()">Enregistrer</button>
+        <button mat-raised-button color="primary" (click)="saveAxe()" [disabled]="!selectedAxe!.nom || !selectedAxe!.depart || !selectedAxe!.arrivee || !selectedAxe!.pays">Enregistrer</button>
       </div>
     </div>
   </div>
