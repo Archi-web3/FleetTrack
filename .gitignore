@@ -80,3 +80,4 @@ Thumbs.db
 ~$*.pptx
 .vercel
 .env*.local
+backend-nest/dist
