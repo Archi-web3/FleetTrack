@@ -288,10 +288,6 @@ export class MouvementsService {
         );
       mouvement.securityValidationMode = mode;
       mouvement.securityApprovals = validators;
-      
-      if (validators.length === 0 && mode === 'matrix') {
-        mouvement.statutSecurite = 'validé';
-      }
     }
 
     // 7. Sauvegarde

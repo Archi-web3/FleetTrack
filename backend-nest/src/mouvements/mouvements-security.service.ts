@@ -79,7 +79,7 @@ export class MouvementsSecurityService {
       // Deduplication
       allValidators = [...new Set(allValidators)];
 
-      if (configUsed) {
+      if (configUsed && allValidators.length > 0) {
         this.logger.log(
           `🛡️ Using matrix config for level ${maxSecurityLevel}`,
         );
