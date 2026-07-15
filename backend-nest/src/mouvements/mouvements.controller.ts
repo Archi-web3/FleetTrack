@@ -40,7 +40,8 @@ export class MouvementsController {
     if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
        // If not SuperAdmin, verify the requested country is in the user's allowed countries
        if (!isSuperAdmin) {
-          const userPaysIds = Array.isArray(user.pays) ? user.pays.map((p: any) => p.id || p.toString()) : [];
+          const userPaysArray = Array.isArray(user.pays) ? user.pays : (user.pays ? [user.pays] : []);
+          const userPaysIds = userPaysArray.map((p: any) => p._id?.toString() || p.id || p.toString());
           if (!userPaysIds.includes(headerPays)) {
              // Not allowed, fallback to allowed countries
              query['pays'] = { $in: userPaysIds };
@@ -50,15 +51,17 @@ export class MouvementsController {
        } else {
           query['pays'] = headerPays;
        }
-    } else if (!isSuperAdmin && user && Array.isArray(user.pays) && user.pays.length > 0) {
-       const userPaysIds = user.pays.map((p: any) => p.id || p.toString());
+    } else if (!isSuperAdmin && user && user.pays) {
+       const userPaysArray = Array.isArray(user.pays) ? user.pays : [user.pays];
+       const userPaysIds = userPaysArray.map((p: any) => p._id?.toString() || p.id || p.toString());
        query['pays'] = { $in: userPaysIds };
     }
 
     // Context Base
     if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined') {
        if (!isSuperAdmin) {
-          const userBaseIds = Array.isArray(user.base) ? user.base.map((b: any) => b.id || b.toString()) : [];
+          const userBaseArray = Array.isArray(user.base) ? user.base : (user.base ? [user.base] : []);
+          const userBaseIds = userBaseArray.map((b: any) => b._id?.toString() || b.id || b.toString());
           if (!userBaseIds.includes(headerBase)) {
              query['base'] = { $in: userBaseIds };
           } else {
@@ -67,8 +70,9 @@ export class MouvementsController {
        } else {
           query['base'] = headerBase;
        }
-    } else if (!isSuperAdmin && user && Array.isArray(user.base) && user.base.length > 0) {
-       const userBaseIds = user.base.map((b: any) => b.id || b.toString());
+    } else if (!isSuperAdmin && user && user.base) {
+       const userBaseArray = Array.isArray(user.base) ? user.base : [user.base];
+       const userBaseIds = userBaseArray.map((b: any) => b._id?.toString() || b.id || b.toString());
        query['base'] = { $in: userBaseIds };
     }
 
