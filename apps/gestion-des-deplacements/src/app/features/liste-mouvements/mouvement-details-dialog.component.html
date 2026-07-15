@@ -76,6 +76,18 @@
           }
           <p class="step-desc">{{ getSecuriteDesc() }}</p>
 
+          @if (data.mouvement.securityValidationMode === 'fallback') {
+            <div style="background-color: #fffbeb; border: 1px solid #fde68a; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
+              <strong style="color: #b45309; font-size: 11px; display: flex; align-items: center; gap: 4px;">
+                <mat-icon style="font-size: 14px; width: 14px; height: 14px;">warning</mat-icon>
+                Matrice Incomplète (Mode Secours)
+              </strong>
+              <p style="margin: 4px 0 0 0; color: #92400e; font-size: 11px;">
+                Aucun validateur spécifique n'a été trouvé pour ce niveau de risque. La demande a été transférée à l'ensemble des superviseurs sécurité du pays.
+              </p>
+            </div>
+          }
+
           @if (data.mouvement.securityApprovals && data.mouvement.securityApprovals.length > 0) {
             <ul class="validators-list">
               @for (app of data.mouvement.securityApprovals; track app) {
