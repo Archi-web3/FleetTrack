@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
@@ -15,6 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
 })
 export class MouvementDetailsDialogComponent {
   data = inject(MAT_DIALOG_DATA);
+  private dialog = inject(MatDialog);
 
   formatDate(date: any): string {
     if (!date) return '-';
@@ -121,5 +122,16 @@ export class MouvementDetailsDialogComponent {
       case 'rejected': return 'Refusé';
       default: return 'En attente';
     }
+  }
+
+  openMap(): void {
+    import('./mouvement-map-dialog.component').then((m) => {
+      this.dialog.open(m.MouvementMapDialogComponent, {
+        width: '900px',
+        maxWidth: '95vw',
+        panelClass: 'custom-dialog-container',
+        data: { mouvement: this.data.mouvement }
+      });
+    });
   }
 }

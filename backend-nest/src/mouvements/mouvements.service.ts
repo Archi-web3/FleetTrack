@@ -269,6 +269,13 @@ export class MouvementsService {
       securityLevelReason,
       base: finalBase,
       pays: finalPays,
+      auditTrail: [
+        {
+          action: 'Demande de mouvement créée',
+          performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
+          role: user.profil || 'Utilisateur',
+        }
+      ]
     });
 
     // 6. Matrice de Sécurité (si requis)
@@ -346,6 +353,7 @@ export class MouvementsService {
   async update(
     id: string,
     updateDto: Record<string, unknown>,
+    user?: UserPayloadDto,
   ): Promise<Mouvement> {
     const oldMouvement = await this.mouvementModel.findById(id).exec();
     
@@ -374,8 +382,26 @@ export class MouvementsService {
               updateDto.statut = 'en attente';
           }
       }
+
+      if (user) {
+        let actionDesc = 'Mouvement mis à jour';
+        if (updateDto.statut && updateDto.statut !== oldMouvement.statut) {
+            actionDesc = `Statut changé à : ${updateDto.statut}`;
+        } else if (updateDto.statutLogistique && updateDto.statutLogistique !== oldMouvement.statutLogistique) {
+            actionDesc = `Validation Logistique : ${updateDto.statutLogistique}`;
+        } else if (updateDto.vehicule && !oldMouvement.vehicule) {
+            actionDesc = `Véhicule et chauffeur assignés`;
+        }
+        
+        const auditEntry = {
+            action: actionDesc,
+            performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
+            role: user.profil || 'Utilisateur',
+            timestamp: new Date()
+        };
+        updateDto['$push'] = { auditTrail: auditEntry } as any;
+      }
     }
-    
     const updated = await this.mouvementModel
       .findByIdAndUpdate(id, updateDto, { new: true })
       .populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }])
@@ -476,6 +502,14 @@ export class MouvementsService {
       }
     }
 
+    if (!mouvement.auditTrail) mouvement.auditTrail = [];
+    mouvement.auditTrail.push({
+      action: 'Validation Sécurité approuvée',
+      performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
+      role: user.profil || 'Sécurité',
+      timestamp: new Date()
+    });
+
     const updated = await mouvement.save();
 
     const populatedMouvement = await this.mouvementModel.findById(updated._id).populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }]).exec();
@@ -505,7 +539,7 @@ export class MouvementsService {
     return result as Mouvement;
   }
 
-  async revertSecurityToDraft(id: string): Promise<Mouvement> {
+  async revertSecurityToDraft(id: string, user: UserPayloadDto): Promise<Mouvement> {
     const mouvement = await this.mouvementModel.findById(id).exec();
     if (!mouvement) throw new ConflictException('Mouvement non trouvé');
 
@@ -523,10 +557,18 @@ export class MouvementsService {
       mouvement.statut = 'en attente validation sécurité';
     }
 
+    if (!mouvement.auditTrail) mouvement.auditTrail = [];
+    mouvement.auditTrail.push({
+      action: 'Validation Sécurité annulée (retour en attente)',
+      performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
+      role: user.profil || 'Utilisateur',
+      timestamp: new Date()
+    });
+
     return mouvement.save();
   }
 
-  async revertLogisticsToDraft(id: string): Promise<Mouvement> {
+  async revertLogisticsToDraft(id: string, user: UserPayloadDto): Promise<Mouvement> {
     const mouvement = await this.mouvementModel.findById(id).exec();
     if (!mouvement) throw new ConflictException('Mouvement non trouvé');
 
@@ -535,6 +577,14 @@ export class MouvementsService {
     mouvement.chauffeur = undefined;
 
     mouvement.statut = 'en attente';
+
+    if (!mouvement.auditTrail) mouvement.auditTrail = [];
+    mouvement.auditTrail.push({
+      action: 'Validation Logistique annulée (retour en attente)',
+      performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
+      role: user.profil || 'Utilisateur',
+      timestamp: new Date()
+    });
 
     return mouvement.save();
   }

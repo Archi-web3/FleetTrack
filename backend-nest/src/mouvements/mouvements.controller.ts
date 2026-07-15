@@ -120,8 +120,9 @@ export class MouvementsController {
   async update(
     @Param('id') id: string,
     @Body() updateMouvementDto: Record<string, unknown>,
+    @Req() req: AuthRequest,
   ) {
-    return this.mouvementsService.update(id, updateMouvementDto);
+    return this.mouvementsService.update(id, updateMouvementDto, req.user);
   }
 
   @Put(':id/validate')
@@ -130,13 +131,13 @@ export class MouvementsController {
   }
 
   @Put(':id/revert-secu')
-  async revertSecurityToDraft(@Param('id') id: string) {
-    return this.mouvementsService.revertSecurityToDraft(id);
+  async revertSecurityToDraft(@Param('id') id: string, @Req() req: AuthRequest) {
+    return this.mouvementsService.revertSecurityToDraft(id, req.user);
   }
 
   @Put(':id/revert-log')
-  async revertLogisticsToDraft(@Param('id') id: string) {
-    return this.mouvementsService.revertLogisticsToDraft(id);
+  async revertLogisticsToDraft(@Param('id') id: string, @Req() req: AuthRequest) {
+    return this.mouvementsService.revertLogisticsToDraft(id, req.user);
   }
 
   @Delete('cleanup/ghosts')

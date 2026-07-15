@@ -222,6 +222,17 @@ export class Mouvement {
 
   @Prop({ enum: ['pending', 'synced', 'error'], default: 'pending' })
   syncStatus: string;
+
+  @Prop([
+    {
+      action: String,
+      performedBy: String,
+      role: String,
+      timestamp: { type: Date, default: Date.now },
+      details: String,
+    }
+  ])
+  auditTrail: any[];
 }
 
 export const MouvementSchema = SchemaFactory.createForClass(Mouvement);

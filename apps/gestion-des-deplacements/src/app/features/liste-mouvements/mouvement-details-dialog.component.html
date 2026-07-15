@@ -283,9 +283,56 @@
         </p>
       </div>
     }
+
+    <mat-divider></mat-divider>
+
+    <!-- Historique des actions -->
+    @if (data.mouvement.auditTrail && data.mouvement.auditTrail.length > 0) {
+      <div style="margin: 20px 0">
+        <h3
+          style="
+            margin: 0 0 12px 0;
+            color: var(--primary-color);
+            font-size: 14px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          "
+        >
+          <mat-icon style="font-size: 20px; width: 20px; height: 20px">history</mat-icon>
+          Historique des Demandes de Trajet
+        </h3>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <thead>
+              <tr style="border-bottom: 1px solid #e2e8f0; color: #64748b; text-align: left;">
+                <th style="padding: 8px;">Date/Heure</th>
+                <th style="padding: 8px;">Action</th>
+                <th style="padding: 8px;">Par</th>
+                <th style="padding: 8px;">Rôle</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (log of data.mouvement.auditTrail; track log) {
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 8px; white-space: nowrap;">{{ formatDateTime(log.timestamp) }}</td>
+                  <td style="padding: 8px;">{{ log.action }}</td>
+                  <td style="padding: 8px;">{{ log.performedBy }}</td>
+                  <td style="padding: 8px;">{{ log.role }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
   </div>
 
-  <div class="custom-modal-footer">
+  <div class="custom-modal-footer" style="justify-content: space-between;">
+    <button mat-raised-button color="primary" (click)="openMap()">
+      <mat-icon>map</mat-icon> Afficher l'itinéraire
+    </button>
     <button class="custom-modal-btn-cancel" mat-dialog-close>
       <mat-icon>close</mat-icon> Fermer
     </button>
