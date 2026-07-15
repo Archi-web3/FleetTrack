@@ -13,25 +13,8 @@ export class LieuxService {
     @InjectModel(Base.name) private baseModel: Model<BaseDocument>, // Utilisé pour le filtrage par pays
   ) {}
 
-  async findAll(user: UserPayloadDto): Promise<Lieu[]> {
-    const query: Record<string, any> = {};
-    const userRole =
-      user?.profil ||
-      (((user?.role as Record<string, any>)?.name as string) ?? 'Unknown');
-
-    // countryFilter logic: if Admin or Superviseur, filter locations by country
-    if ((userRole === 'Admin' || userRole === 'Superviseur') && user.pays) {
-      // Find all bases in this country
-      const paysArray = Array.isArray(user.pays) ? user.pays : [user.pays];
-      const basesInCountry = await this.baseModel
-        .find({ pays: { $in: paysArray } })
-        .select('_id')
-        .exec();
-      const baseIds = basesInCountry.map((b) => b._id);
-      query.base = { $in: baseIds };
-    }
-
-    return this.lieuModel.find(query).populate('pays').populate('base').exec();
+  async findAll(filter: Record<string, any> = {}): Promise<Lieu[]> {
+    return this.lieuModel.find(filter).populate('pays').populate('base').exec();
   }
 
   async findById(id: string): Promise<LieuDocument | null> {

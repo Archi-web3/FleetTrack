@@ -69,6 +69,11 @@
               </span>
             }
           </div>
+          @if (data.mouvement.securityLevelReason) {
+            <p style="font-size: 12px; font-style: italic; color: #f59e0b; margin: 0 0 8px 0;">
+              Raison : {{ data.mouvement.securityLevelReason }}
+            </p>
+          }
           <p class="step-desc">{{ getSecuriteDesc() }}</p>
 
           @if (data.mouvement.securityApprovals && data.mouvement.securityApprovals.length > 0) {

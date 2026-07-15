@@ -678,6 +678,10 @@
           </div>
           <!-- NOUVEAU : Sélection multiple des passagers (MatSelect) -->
           <div style="margin-bottom: 10px">
+            <div style="margin-bottom: 5px; font-size: 0.9em; text-align: right;" *ngIf="userProfile !== 'SuperAdmin' && !isGlobalBase">
+              <input type="checkbox" id="toggleAllUsers" [checked]="showAllUsersInPays" (change)="toggleShowAllUsersInPays()">
+              <label for="toggleAllUsers" style="cursor:pointer; margin-left:5px;">Afficher tous les utilisateurs du pays ({{userPaysId}})</label>
+            </div>
             <mat-form-field appearance="outline" style="width: 100%">
               <mat-label>{{ 'NEW_REQUEST.MISSION.PASSENGERS' | translate }}</mat-label>
               <mat-select
@@ -706,8 +710,13 @@
             >
               <strong>{{ 'NEW_REQUEST.MISSION.RISK_LEVEL' | translate }}</strong>
               <span [style.color]="risk.color" style="font-weight: bold">
-                {{ risk.level }} - {{ risk.label }}</span
-              >
+                {{ risk.level }} - {{ risk.label }}
+              </span>
+              @if (risk.reason) {
+                <div style="font-size: 0.85em; font-style: italic; color: #555; margin-top: 2px;">
+                  (Raison : {{ risk.reason }})
+                </div>
+              }
               @if (risk.level >= 3) {
                 <div style="font-size: 0.9em; margin-top: 5px">
                   {{ 'NEW_REQUEST.MISSION.HIGH_RISK_WARNING' | translate }}

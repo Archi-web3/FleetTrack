@@ -183,6 +183,7 @@ export class MouvementsService {
     let statutLogistiqueInitial = 'en attente';
     let statutSecuriteInitial = 'en attente';
     let maxSecurityLevel = 0;
+    let securityLevelReason = '';
 
     if (createDto.type === 'maintenance') {
       statutInitial = 'validé';
@@ -198,7 +199,10 @@ export class MouvementsService {
 
       lieuxImpliques.forEach((lieu) => {
         const niveau = lieu.niveauSecurite || (lieu.estSensible ? 3 : 1);
-        if (niveau > maxSecurityLevel) maxSecurityLevel = niveau;
+        if (niveau > maxSecurityLevel) {
+          maxSecurityLevel = niveau;
+          securityLevelReason = `Lieu : ${lieu.nom} (Niveau ${niveau})`;
+        }
       });
 
       // --- AXES SECURITY LOGIC ---
@@ -212,6 +216,7 @@ export class MouvementsService {
               const axe = await this.axesService.findAxeBetween(lieu1, lieu2);
               if (axe && axe.niveauSecurite > maxSecurityLevel) {
                 maxSecurityLevel = axe.niveauSecurite;
+                securityLevelReason = `Axe : ${axe.nom} (Niveau ${axe.niveauSecurite})`;
               }
             }
           }
@@ -261,6 +266,7 @@ export class MouvementsService {
       statutLogistique: statutLogistiqueInitial,
       statutSecurite: statutSecuriteInitial,
       validationLevelRequired: maxSecurityLevel,
+      securityLevelReason,
       base: finalBase,
       pays: finalPays,
     });

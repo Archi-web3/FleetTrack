@@ -119,6 +119,9 @@ export class Mouvement {
   @Prop({ default: 0 })
   validationLevelRequired: number;
 
+  @Prop()
+  securityLevelReason: string;
+
   @Prop([
     {
       validatedBy: { type: MongooseSchema.Types.ObjectId, ref: 'Utilisateur' },

@@ -13,8 +13,9 @@ export class UtilisateurService {
 
   private apiUrl = `${environment.apiUrl}/utilisateurs`;
 
-  getUtilisateurs(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getUtilisateurs(scope?: string): Observable<any[]> {
+    const url = scope ? `${this.apiUrl}?scope=${scope}` : this.apiUrl;
+    return this.http.get<any[]>(url);
   }
 
   getUserById(id: string): Observable<any> {

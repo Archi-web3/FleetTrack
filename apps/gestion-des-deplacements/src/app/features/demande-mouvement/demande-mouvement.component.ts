@@ -6,6 +6,7 @@ import { UtilisateurService } from '../../core/services/utilisateur.service';
 import { VehiculeService } from '../../core/services/vehicule.service';
 import { ChauffeurService } from '../../core/services/chauffeur.service';
 import { LieuService } from '../../core/services/lieu.service';
+import { AxeService } from '../../core/services/axe.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service'; // NOUVEAU : Importer AuthService
@@ -40,6 +41,7 @@ export class DemandeMouvementComponent implements OnInit {
   private vehiculeService = inject(VehiculeService);
   private chauffeurService = inject(ChauffeurService);
   private lieuService = inject(LieuService);
+  private axeService = inject(AxeService);
   private router = inject(Router);
   authService = inject(AuthService);
   private contextService = inject(ContextService);
@@ -75,6 +77,7 @@ export class DemandeMouvementComponent implements OnInit {
   vehicules: any[] = [];
   chauffeurs: any[] = [];
   lieux: any[] = [];
+  axes: any[] = [];
 
   selectedLieuDepartOption: 'existing' | 'new' = 'existing';
   selectedLieuArriveeOption: 'existing' | 'new' = 'existing';
@@ -97,6 +100,7 @@ export class DemandeMouvementComponent implements OnInit {
 
   // Filtrage des lieux
   showAllLieuxInPays = false;
+  showAllUsersInPays = false;
   userProfile: string | null = null;
   userPaysId: string | null = null;
   userBaseId: string | null = null;
@@ -152,7 +156,7 @@ export class DemandeMouvementComponent implements OnInit {
   }
 
   loadData(): void {
-    this.utilisateurService.getUtilisateurs().subscribe(
+    this.utilisateurService.getUtilisateurs(this.showAllUsersInPays ? 'pays' : undefined).subscribe(
       (data) => {
         this.utilisateurs = data;
         this.cdr.detectChanges();
@@ -176,34 +180,17 @@ export class DemandeMouvementComponent implements OnInit {
       (error) => console.error('Erreur chargement chauffeurs:', error),
     );
 
-    this.lieuService.getLieux().subscribe(
+    this.axeService.getAxes().subscribe(
       (data) => {
-        // Par défaut, afficher tous les lieux pour SuperAdmin
-        if (this.userProfile === 'SuperAdmin') {
-          this.lieux = data;
-          return;
-        }
+        this.axes = data;
+        this.cdr.detectChanges();
+      },
+      (error) => console.error('Erreur chargement axes:', error),
+    );
 
-        // Pour les autres utilisateurs, filtrer par base ou pays
-        if (!this.userBaseId || !this.userPaysId) {
-          console.warn("⚠️ Base ou Pays non défini pour l'utilisateur");
-          this.lieux = [];
-          return;
-        }
-
-        if (this.showAllLieuxInPays) {
-          // Afficher tous les lieux du pays
-          this.lieux = data.filter((lieu: any) => {
-            const lieuPaysId = typeof lieu.pays === 'string' ? lieu.pays : lieu.pays?._id;
-            return lieuPaysId === this.userPaysId;
-          });
-        } else {
-          // Afficher uniquement les lieux de la base (STRICT)
-          this.lieux = data.filter((lieu: any) => {
-            const lieuBaseId = typeof lieu.base === 'string' ? lieu.base : lieu.base?._id;
-            return lieuBaseId === this.userBaseId;
-          });
-        }
+    this.lieuService.getLieux(this.showAllLieuxInPays ? 'pays' : undefined).subscribe(
+      (data) => {
+        this.lieux = data;
         this.cdr.detectChanges();
       },
       (error) => console.error('Erreur chargement lieux:', error),
@@ -213,6 +200,12 @@ export class DemandeMouvementComponent implements OnInit {
   // Basculer l'affichage des lieux
   toggleShowAllLieuxInPays(): void {
     this.showAllLieuxInPays = !this.showAllLieuxInPays;
+    this.loadData();
+  }
+
+  // Basculer l'affichage des utilisateurs
+  toggleShowAllUsersInPays(): void {
+    this.showAllUsersInPays = !this.showAllUsersInPays;
     this.loadData();
   }
 
@@ -725,9 +718,9 @@ export class DemandeMouvementComponent implements OnInit {
   }
 
   // Calcul du niveau max du trajet (pour info utilisateur)
-  getMaxSecurityLevel(): { level: number; label: string; color: string } | null {
+  getMaxSecurityLevel(): { level: number; label: string; color: string; reason?: string } | null {
     let maxLevel = 0;
-    let maxInfo = null;
+    let maxInfo: any = null;
 
     // Vérifier depart et arrivée
     const idsToCheck = [];
@@ -745,9 +738,40 @@ export class DemandeMouvementComponent implements OnInit {
       const info = this.getLieuSecurityInfo(id);
       if (info && info.level > maxLevel) {
         maxLevel = info.level;
-        maxInfo = info;
+        const lieuObj = this.lieux.find(l => l._id === id);
+        maxInfo = { ...info, reason: `Lieu : ${lieuObj?.nom || 'Inconnu'}` };
       }
     });
+
+    // Check axes between steps
+    if (idsToCheck.length > 1 && this.axes && this.axes.length > 0) {
+      for (let i = 0; i < idsToCheck.length - 1; i++) {
+        const lieu1 = idsToCheck[i];
+        const lieu2 = idsToCheck[i + 1];
+        
+        // Find if there is an axe between these two locations
+        const axe = this.axes.find(a => 
+          (a.depart === lieu1 && a.arrivee === lieu2) || 
+          (a.depart === lieu2 && a.arrivee === lieu1) ||
+          (a.depart?._id === lieu1 && a.arrivee?._id === lieu2) ||
+          (a.depart?._id === lieu2 && a.arrivee?._id === lieu1)
+        );
+
+        if (axe && axe.niveauSecurite > maxLevel) {
+          maxLevel = axe.niveauSecurite;
+          let label = 'Inconnu';
+          let color = '#757575';
+          switch (maxLevel) {
+            case 1: label = 'Stable'; color = '#4CAF50'; break;
+            case 2: label = 'Modéré'; color = '#FFC107'; break;
+            case 3: label = 'Difficile'; color = '#FF9800'; break;
+            case 4: label = 'Élevé'; color = '#F44336'; break;
+            case 5: label = 'Extrême'; color = '#212121'; break;
+          }
+          maxInfo = { level: maxLevel, label, color, reason: `Axe : ${axe.nom}` };
+        }
+      }
+    }
 
     return maxInfo;
   }

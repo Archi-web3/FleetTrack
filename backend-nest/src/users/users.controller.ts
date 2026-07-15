@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   Headers,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -30,18 +31,31 @@ export class UsersController {
   async findAll(
     @Req() req: AuthRequest,
     @Headers('x-selected-country') headerPays?: string,
+    @Headers('x-selected-base') headerBase?: string,
+    @Query('scope') scope?: string,
   ) {
     const user = req.user;
     const filter: Record<string, any> = {};
 
     const userRole = user?.profil || (user?.role as Record<string, unknown>)?.['name'];
 
+    // Check if we should enforce filtering by base or pays
     if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
       if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
         filter.pays = headerPays;
       }
-    } else if (user && user.pays) {
-      filter.pays = user.pays;
+      if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined' && scope !== 'pays') {
+        filter.base = headerBase;
+      }
+    } else if (user) {
+      if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined' && scope !== 'pays') {
+        // If a specific base is selected, show users of this base
+        filter.base = headerBase;
+      } else if (user.pays) {
+        // Otherwise, if no base is selected (or user clicked "Show all in country"), show users from their country
+        const userPays = Array.isArray(user.pays) ? user.pays : [user.pays];
+        filter.pays = { $in: userPays };
+      }
     }
 
     return this.usersService.findAll(filter);

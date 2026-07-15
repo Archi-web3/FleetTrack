@@ -13,8 +13,9 @@ export class LieuService {
 
   private apiUrl = `${environment.apiUrl}/lieux`;
 
-  getLieux(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getLieux(scope?: string): Observable<any[]> {
+    const url = scope ? `${this.apiUrl}?scope=${scope}` : this.apiUrl;
+    return this.http.get<any[]>(url);
   }
 
   getLieuById(id: string): Observable<any> {
