@@ -8,14 +8,14 @@ on:
 
 jobs:
   backend-checks:
-      runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: ./backend-nest
     steps:
-      - uses: actions/checkout@v6
+    - uses: actions/checkout@v6
     - name: Use Node.js
-        uses: actions/setup-node@v7
+      uses: actions/setup-node@v7
       with:
         node-version: '20.x'
         cache: 'npm'
@@ -30,11 +30,11 @@ jobs:
       run: npm run build
 
   frontend-checks:
-      runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+    - uses: actions/checkout@v6
     - name: Use Node.js
-        uses: actions/setup-node@v7
+      uses: actions/setup-node@v7
       with:
         node-version: '20.x'
         cache: 'npm'
