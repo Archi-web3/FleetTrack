@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { Request } from 'express';
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 import { RegisterDto } from './dto/auth.dto';
 import { UserDocument } from '../users/schemas/user.schema';
 import { PaysDocument } from '../pays/schemas/pays.schema';

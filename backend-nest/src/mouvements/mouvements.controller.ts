@@ -19,6 +19,28 @@ import type { AuthRequest } from '../analytics/analytics.controller';
 import { CreateMouvementDto, MouvementQueryDto } from './dto/mouvements.dto';
 import { Mouvement } from './schemas/mouvement.schema';
 
+function getReferenceIds(value: unknown): string[] {
+  const references: unknown[] = Array.isArray(value)
+    ? (value as unknown[])
+    : value === null || value === undefined
+      ? []
+      : [value];
+
+  return references.map((reference) => {
+    if (typeof reference === 'string' || typeof reference === 'number') {
+      return String(reference);
+    }
+    if (typeof reference !== 'object' || reference === null) return '';
+
+    const item = reference as { _id?: unknown; id?: unknown; toString: () => string };
+    const nestedId = item._id ?? item.id;
+    if (nestedId !== undefined && nestedId !== reference) {
+      return getReferenceIds(nestedId)[0] ?? '';
+    }
+    return item.toString();
+  }).filter(Boolean);
+}
+
 @Controller('mouvements')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class MouvementsController {
@@ -40,8 +62,7 @@ export class MouvementsController {
     if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
        // If not SuperAdmin, verify the requested country is in the user's allowed countries
        if (!isSuperAdmin) {
-          const userPaysArray = Array.isArray(user.pays) ? user.pays : (user.pays ? [user.pays] : []);
-          const userPaysIds = userPaysArray.map((p: any) => p._id?.toString() || p.id || p.toString());
+          const userPaysIds = getReferenceIds(user.pays as unknown);
           if (!userPaysIds.includes(headerPays)) {
              // Not allowed, fallback to allowed countries
              query['pays'] = { $in: userPaysIds };
@@ -52,16 +73,14 @@ export class MouvementsController {
           query['pays'] = headerPays;
        }
     } else if (!isSuperAdmin && user && user.pays) {
-       const userPaysArray = Array.isArray(user.pays) ? user.pays : [user.pays];
-       const userPaysIds = userPaysArray.map((p: any) => p._id?.toString() || p.id || p.toString());
+      const userPaysIds = getReferenceIds(user.pays as unknown);
        query['pays'] = { $in: userPaysIds };
     }
 
     // Context Base
     if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined') {
        if (!isSuperAdmin) {
-          const userBaseArray = Array.isArray(user.base) ? user.base : (user.base ? [user.base] : []);
-          const userBaseIds = userBaseArray.map((b: any) => b._id?.toString() || b.id || b.toString());
+          const userBaseIds = getReferenceIds(user.base as unknown);
           if (!userBaseIds.includes(headerBase)) {
              query['base'] = { $in: userBaseIds };
           } else {
@@ -71,8 +90,7 @@ export class MouvementsController {
           query['base'] = headerBase;
        }
     } else if (!isSuperAdmin && user && user.base) {
-       const userBaseArray = Array.isArray(user.base) ? user.base : [user.base];
-       const userBaseIds = userBaseArray.map((b: any) => b._id?.toString() || b.id || b.toString());
+      const userBaseIds = getReferenceIds(user.base as unknown);
        query['base'] = { $in: userBaseIds };
     }
 
