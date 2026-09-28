@@ -23,6 +23,37 @@ export interface MovementContext {
   }>;
 }
 
+interface EmailTemplate {
+  id: string;
+  subject?: string;
+  body?: string;
+  useMatrixRecipients?: boolean;
+  recipientProfiles?: string[];
+  recipientUsers?: string[];
+}
+
+function isEmailTemplate(value: unknown): value is EmailTemplate {
+  if (typeof value !== 'object' || value === null) return false;
+  const template = value as Record<string, unknown>;
+  return (
+    typeof template.id === 'string' &&
+    (template.subject === undefined || typeof template.subject === 'string') &&
+    (template.body === undefined || typeof template.body === 'string') &&
+    (template.useMatrixRecipients === undefined ||
+      typeof template.useMatrixRecipients === 'boolean') &&
+    (template.recipientProfiles === undefined ||
+      (Array.isArray(template.recipientProfiles) &&
+        template.recipientProfiles.every((profile) => typeof profile === 'string'))) &&
+    (template.recipientUsers === undefined ||
+      (Array.isArray(template.recipientUsers) &&
+        template.recipientUsers.every((userId) => typeof userId === 'string')))
+  );
+}
+
+function getEmailTemplates(value: unknown): EmailTemplate[] {
+  return Array.isArray(value) ? value.filter(isEmailTemplate) : [];
+}
+
 function asMovementContext(value: unknown): MovementContext {
   return typeof value === 'object' && value !== null
     ? (value as MovementContext)
@@ -213,8 +244,7 @@ export class MailService {
     if (!isEnabled) return;
 
     // Chercher le template dans settings
-    let emailSettings = null;
-    let template = null;
+    let template: EmailTemplate | undefined;
     
     // Helper pour extraire l'ID (string) de manière sécurisée
     const extractId = (field: unknown): string | null => {
@@ -234,23 +264,29 @@ export class MailService {
     const baseId = extractId(movement.base);
     if (baseId) {
       this.logger.log(`🔍 Recherche template Base: emailSettings_base_${baseId}`);
-      emailSettings = await this.settingsService.getSetting(`emailSettings_base_${baseId}`) as any[];
-      template = emailSettings?.find((t) => t.id === templateId);
+      const templates = getEmailTemplates(
+        await this.settingsService.getSetting(`emailSettings_base_${baseId}`),
+      );
+      template = templates.find((item) => item.id === templateId);
       if (template) this.logger.log(`✅ Template trouvé pour la base !`);
     }
     // Sinon le template du Pays
     const paysId = extractId(movement.pays);
     if (!template && paysId) {
       this.logger.log(`🔍 Recherche template Pays: emailSettings_pays_${paysId}`);
-      emailSettings = await this.settingsService.getSetting(`emailSettings_pays_${paysId}`) as any[];
-      template = emailSettings?.find((t) => t.id === templateId);
+      const templates = getEmailTemplates(
+        await this.settingsService.getSetting(`emailSettings_pays_${paysId}`),
+      );
+      template = templates.find((item) => item.id === templateId);
       if (template) this.logger.log(`✅ Template trouvé pour le pays !`);
     }
     // Sinon le global
     if (!template) {
       this.logger.log(`🔍 Recherche template Global: emailSettings_global`);
-      emailSettings = await this.settingsService.getSetting('emailSettings_global') as any[];
-      template = emailSettings?.find((t) => t.id === templateId);
+      const templates = getEmailTemplates(
+        await this.settingsService.getSetting('emailSettings_global'),
+      );
+      template = templates.find((item) => item.id === templateId);
       if (template) this.logger.log(`✅ Template trouvé au niveau global !`);
     }
 
@@ -263,7 +299,10 @@ export class MailService {
     if (template && template.useMatrixRecipients === false) {
        // Chercher les emails des profils/users configurés
        recipients = [];
-       const queryOr = [];
+       const queryOr: Array<{
+         profil?: { $in: string[] };
+         _id?: { $in: string[] };
+       }> = [];
        if (template.recipientProfiles && template.recipientProfiles.length > 0) {
          queryOr.push({ profil: { $in: template.recipientProfiles } });
        }
@@ -291,10 +330,12 @@ export class MailService {
        const demandeurName = movement.demandeur ? (movement.demandeur.prenom + ' ' + movement.demandeur.nom) : 'Inconnu';
        const link = `${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}`;
        
-       let subject = template.subject.replace(/{{movementId}}/g, movement.reference || movement._id?.toString().slice(-6));
+       const movementId =
+         movement.reference || movement._id?.toString().slice(-6) || '';
+       const subject = template.subject.replace(/{{movementId}}/g, movementId);
        let body = template.body
          .replace(/{{user}}/g, demandeurName)
-         .replace(/{{movementId}}/g, movement.reference || movement._id?.toString().slice(-6))
+         .replace(/{{movementId}}/g, movementId)
          .replace(/{{link}}/g, link)
          .replace(/\\n/g, '<br/>');
 

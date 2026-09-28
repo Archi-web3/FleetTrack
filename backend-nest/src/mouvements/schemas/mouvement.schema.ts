@@ -1,5 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Schema as MongooseSchema, HydratedDocument } from 'mongoose';
+import { Schema as MongooseSchema, HydratedDocument, Types } from 'mongoose';
+
+export interface SecurityApproval {
+  validator: string | Types.ObjectId;
+  status: string;
+  approvalDate?: Date;
+  isBackup?: boolean;
+}
 
 @Schema({ _id: false })
 export class Stop {
@@ -145,7 +152,7 @@ export class Mouvement {
       isBackup: { type: Boolean, default: false },
     },
   ])
-  securityApprovals: any[];
+  securityApprovals: SecurityApproval[];
 
   @Prop({ default: false })
   securityConsensusReached: boolean;

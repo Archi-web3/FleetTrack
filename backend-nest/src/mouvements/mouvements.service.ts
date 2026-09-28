@@ -1,7 +1,11 @@
 import { Injectable, Logger, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Mouvement, MouvementDocument } from './schemas/mouvement.schema';
+import {
+  Mouvement,
+  MouvementDocument,
+  SecurityApproval,
+} from './schemas/mouvement.schema';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
 import { MailService } from '../notifications/mail.service';
@@ -497,12 +501,12 @@ export class MouvementsService {
       emailError = true;
     }
 
-    const result = updated.toObject();
+    const result = updated.toObject() as unknown as Record<string, unknown>;
     if (emailError) {
-      (result as any).emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
+      result.emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
     }
 
-    return result as Mouvement;
+    return result as unknown as Mouvement;
   }
 
   async validateSecurity(id: string, user: UserPayloadDto): Promise<Mouvement> {
@@ -516,12 +520,7 @@ export class MouvementsService {
       return mouvement;
     }
 
-    const securityApprovals = mouvement.securityApprovals as Array<{
-      validator: { toString: () => string };
-      status: string;
-      approvalDate?: Date;
-      isBackup?: boolean;
-    }>;
+    const securityApprovals = mouvement.securityApprovals as SecurityApproval[];
 
     const userId = user._id || user.id;
     const userIdStr = userId.toString();
@@ -598,12 +597,12 @@ export class MouvementsService {
       emailError = true;
     }
 
-    const result = updated.toObject();
+    const result = updated.toObject() as unknown as Record<string, unknown>;
     if (emailError) {
-      (result as any).emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
+      result.emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
     }
 
-    return result as Mouvement;
+    return result as unknown as Mouvement;
   }
 
   async revertSecurityToDraft(id: string, user: UserPayloadDto): Promise<Mouvement> {
@@ -612,9 +611,9 @@ export class MouvementsService {
 
     mouvement.statutSecurite = 'en attente';
     if (mouvement.securityApprovals) {
-      mouvement.securityApprovals.forEach((a: any) => {
-        a.status = 'pending';
-        a.approvalDate = undefined;
+      (mouvement.securityApprovals as SecurityApproval[]).forEach((approval) => {
+        approval.status = 'pending';
+        approval.approvalDate = undefined;
       });
     }
 
