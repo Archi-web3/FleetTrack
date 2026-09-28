@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import type { Request } from 'express';
 import { Axe, AxeDocument } from './schemas/axe.schema';
 import { CreateAxeDto, UpdateAxeDto } from './dto/axes.dto';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
+
+interface AxeContext {
+  paysIds: string[];
+  baseIds: string[];
+}
 
 @Injectable()
 export class AxesService {
@@ -12,22 +18,22 @@ export class AxesService {
     private readonly auditLogsService: AuditLogsService,
   ) {}
 
-  async create(createAxeDto: CreateAxeDto, req: any): Promise<Axe> {
+  async create(createAxeDto: CreateAxeDto, req: Request): Promise<Axe> {
     const createdAxe = new this.axeModel(createAxeDto);
     const result = await createdAxe.save();
 
     await this.auditLogsService.logAction(
-      req as any,
+      req,
       'CREATE_AXE',
       'Axe',
       result._id.toString(),
-      result.toObject() as any,
+      result.toObject() as Record<string, unknown>,
     );
     return result.populate(['depart', 'arrivee', 'pays', 'base']);
   }
 
-  async findAll(context: any): Promise<Axe[]> {
-    const filter: any = {};
+  async findAll(context: AxeContext): Promise<Axe[]> {
+    const filter: FilterQuery<AxeDocument> = {};
     if (context.paysIds && context.paysIds.length > 0) {
       filter.pays = { $in: context.paysIds };
     }
@@ -45,7 +51,7 @@ export class AxesService {
     return axe;
   }
 
-  async update(id: string, updateAxeDto: UpdateAxeDto, req: any): Promise<Axe> {
+  async update(id: string, updateAxeDto: UpdateAxeDto, req: Request): Promise<Axe> {
     const existingAxe = await this.axeModel
       .findByIdAndUpdate(id, updateAxeDto, { new: true })
       .exec();
@@ -55,28 +61,28 @@ export class AxesService {
     }
 
     await this.auditLogsService.logAction(
-      req as any,
+      req,
       'UPDATE_AXE',
       'Axe',
       id,
-      existingAxe.toObject() as any,
+      existingAxe.toObject() as Record<string, unknown>,
     );
 
     return existingAxe.populate(['depart', 'arrivee', 'pays', 'base']);
   }
 
-  async delete(id: string, req: any): Promise<void> {
+  async delete(id: string, req: Request): Promise<void> {
     const deletedAxe = await this.axeModel.findByIdAndDelete(id).exec();
     if (!deletedAxe) {
       throw new NotFoundException(`Axe with ID ${id} not found`);
     }
 
     await this.auditLogsService.logAction(
-      req as any,
+      req,
       'DELETE_AXE',
       'Axe',
       id,
-      deletedAxe.toObject() as any,
+      deletedAxe.toObject() as Record<string, unknown>,
     );
   }
 

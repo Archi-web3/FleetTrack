@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { Request } from 'express';
 import { AuditLog, AuditLogDocument } from './schemas/audit-log.schema';
 import type { AuthRequest } from '../analytics/analytics.controller';
@@ -93,7 +93,7 @@ export class AuditLogsService {
     category?: string,
     pays?: string,
   ): Promise<AuditLog[]> {
-    const query: any = {};
+    const query: FilterQuery<AuditLogDocument> = {};
     if (category) {
       query.category = category;
     }

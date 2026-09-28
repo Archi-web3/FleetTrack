@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { Request } from 'express';
+import { Types } from 'mongoose';
 import { RegisterDto } from './dto/auth.dto';
 import { UserDocument } from '../users/schemas/user.schema';
 import { PaysDocument } from '../pays/schemas/pays.schema';
@@ -68,23 +69,26 @@ export class AuthService {
 
     if (!fullUser) throw new UnauthorizedException('Utilisateur introuvable');
 
+    const pays = fullUser.pays as unknown as PaysDocument[];
+    const bases = fullUser.base as unknown as BaseDocument[];
+
     // Le payload doit être exactement comme dans l'ancien backend pour la rétrocompatibilité
     const payload = {
       utilisateur: {
         id: fullUser._id.toString(),
         nom: fullUser.nom,
         profil: fullUser.profil, // Backward compatibility
-        pays: Array.isArray(fullUser.pays) && fullUser.pays.length > 0
-          ? fullUser.pays.map((p: any) => ({
-              id: p._id.toString(),
-              nom: p.nom,
-              code: p.code,
+        pays: Array.isArray(pays) && pays.length > 0
+          ? pays.map((country) => ({
+              id: (country._id as Types.ObjectId).toString(),
+              nom: country.nom,
+              code: country.code,
             }))
           : [],
-        base: Array.isArray(fullUser.base) && fullUser.base.length > 0
-          ? fullUser.base.map((b: any) => ({
-              id: b._id.toString(),
-              nom: b.nom,
+        base: Array.isArray(bases) && bases.length > 0
+          ? bases.map((base) => ({
+              id: (base._id as Types.ObjectId).toString(),
+              nom: base.nom,
             }))
           : [],
       },

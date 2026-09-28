@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Mouvement, MouvementDocument } from './schemas/mouvement.schema';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
-import { MailService } from '../notifications/mail.service';
+import { MailService, type MovementContext } from '../notifications/mail.service';
 import { Lieu, LieuDocument } from '../lieux/schemas/lieu.schema';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { AxesService } from '../axes/axes.service';
@@ -333,11 +333,11 @@ export class MouvementsService {
       if (emails.length > 0) {
         await this.mailService.sendTemplateEmail(
           'sec_request',
-          await savedMouvement.populate([
+          (await savedMouvement.populate([
             { path: 'vehicule' },
             { path: 'stops.lieu' },
             { path: 'demandeur' },
-          ]) as any,
+          ])) as unknown as MovementContext,
           emails,
         );
       }
@@ -413,9 +413,17 @@ export class MouvementsService {
          const demandeurEmail = (updated.demandeur as any)?.email;
          if (demandeurEmail) {
             if (updated.statut === 'validé') {
-              await this.mailService.sendTemplateEmail('assigned', updated as any, [demandeurEmail]);
+              await this.mailService.sendTemplateEmail(
+                'assigned',
+                updated as unknown as MovementContext,
+                [demandeurEmail],
+              );
             } else if (updated.statut === 'refusé' || updated.statut === 'annulé') {
-              await this.mailService.sendTemplateEmail('cancelled', updated as any, [demandeurEmail]);
+              await this.mailService.sendTemplateEmail(
+                'cancelled',
+                updated as unknown as MovementContext,
+                [demandeurEmail],
+              );
             }
          }
       }
@@ -427,7 +435,11 @@ export class MouvementsService {
             const valideursSecu = await this.userModel.find({ _id: { $in: validatorIds } }).exec();
             const emails = valideursSecu.map(v => v.email).filter(e => e);
             if (emails.length > 0) {
-               await this.mailService.sendTemplateEmail('log_validated', updated as any, emails);
+               await this.mailService.sendTemplateEmail(
+                 'log_validated',
+                 updated as unknown as MovementContext,
+                 emails,
+               );
             }
          }
       }

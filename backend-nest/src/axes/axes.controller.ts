@@ -15,6 +15,7 @@ import { CreateAxeDto, UpdateAxeDto } from './dto/axes.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/permissions.decorator';
+import type { Request } from 'express';
 
 @Controller('axes')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -23,7 +24,7 @@ export class AxesController {
 
   @Post()
   @RequirePermissions('CREATE_AXE')
-  async create(@Body() createAxeDto: CreateAxeDto, @Req() req: any) {
+  async create(@Body() createAxeDto: CreateAxeDto, @Req() req: Request) {
     return this.axesService.create(createAxeDto, req);
   }
 
@@ -47,14 +48,14 @@ export class AxesController {
   async update(
     @Param('id') id: string,
     @Body() updateAxeDto: UpdateAxeDto,
-    @Req() req: any,
+    @Req() req: Request,
   ) {
     return this.axesService.update(id, updateAxeDto, req);
   }
 
   @Delete(':id')
   @RequirePermissions('DELETE_AXE')
-  async remove(@Param('id') id: string, @Req() req: any) {
+  async remove(@Param('id') id: string, @Req() req: Request) {
     return this.axesService.delete(id, req);
   }
 }
