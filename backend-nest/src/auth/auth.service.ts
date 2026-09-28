@@ -7,7 +7,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { Request } from 'express';
-import type { Types } from 'mongoose';
 import { RegisterDto } from './dto/auth.dto';
 import { UserDocument } from '../users/schemas/user.schema';
 import { PaysDocument } from '../pays/schemas/pays.schema';
@@ -80,14 +79,14 @@ export class AuthService {
         profil: fullUser.profil, // Backward compatibility
         pays: Array.isArray(pays) && pays.length > 0
           ? pays.map((country) => ({
-              id: (country._id as Types.ObjectId).toString(),
+              id: country._id.toString(),
               nom: country.nom,
               code: country.code,
             }))
           : [],
         base: Array.isArray(bases) && bases.length > 0
           ? bases.map((base) => ({
-              id: (base._id as Types.ObjectId).toString(),
+              id: base._id.toString(),
               nom: base.nom,
             }))
           : [],

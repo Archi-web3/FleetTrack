@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Mouvement, MouvementDocument } from './schemas/mouvement.schema';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
-import { MailService, type MovementContext } from '../notifications/mail.service';
+import { MailService } from '../notifications/mail.service';
 import { Lieu, LieuDocument } from '../lieux/schemas/lieu.schema';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { AxesService } from '../axes/axes.service';
@@ -14,6 +14,45 @@ import {
   UserPayloadDto,
   MouvementQueryDto,
 } from './dto/mouvements.dto';
+
+function getReferenceId(value: unknown): string | null {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value);
+  }
+  if (typeof value !== 'object' || value === null) return null;
+
+  const reference = value as {
+    _id?: unknown;
+    id?: unknown;
+    toString?: () => string;
+  };
+  const nestedId = reference._id ?? reference.id;
+  if (nestedId !== undefined && nestedId !== value) {
+    return getReferenceId(nestedId);
+  }
+  return typeof reference.toString === 'function' ? reference.toString() : null;
+}
+
+function getValidatorIds(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((approval: unknown) => {
+      if (typeof approval !== 'object' || approval === null) return null;
+      return getReferenceId((approval as { validator?: unknown }).validator);
+    })
+    .filter((id): id is string => id !== null);
+}
+
+function getEmailAddresses(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((user: unknown) => {
+      if (typeof user !== 'object' || user === null) return null;
+      const email = (user as { email?: unknown }).email;
+      return typeof email === 'string' ? email : null;
+    })
+    .filter((email): email is string => email !== null);
+}
 
 @Injectable()
 export class MouvementsService {
@@ -247,8 +286,14 @@ export class MouvementsService {
     }
 
     // Prioritize createDto, then inferred, then if user has only 1 pays/base
-    const finalBase = createDto.base && createDto.base !== 'all' ? createDto.base : (inferredBase || (Array.isArray(user.base) && user.base.length === 1 ? user.base[0] : null));
-    let finalPays = createDto.pays && createDto.pays !== 'all' ? createDto.pays : (inferredPays || (Array.isArray(user.pays) && user.pays.length === 1 ? user.pays[0] : null));
+    const finalBase: string | null =
+      createDto.base && createDto.base !== 'all'
+        ? createDto.base
+        : getReferenceId(inferredBase) || getReferenceId(user.base?.[0]);
+    const finalPays: string | null =
+      createDto.pays && createDto.pays !== 'all'
+        ? createDto.pays
+        : getReferenceId(inferredPays) || getReferenceId(user.pays?.[0]);
     
 
 
@@ -320,9 +365,7 @@ export class MouvementsService {
     }
 
     if (savedMouvement.statutSecurite === 'en attente') {
-      const validatorIds = savedMouvement.securityApprovals.map(
-        (a: Record<string, any>) => a.validator as string,
-      );
+      const validatorIds = getValidatorIds(savedMouvement.securityApprovals);
       const valideursSecu = await this.userModel
         .find({ _id: { $in: validatorIds } })
         .exec();
@@ -333,11 +376,11 @@ export class MouvementsService {
       if (emails.length > 0) {
         await this.mailService.sendTemplateEmail(
           'sec_request',
-          (await savedMouvement.populate([
+          await savedMouvement.populate([
             { path: 'vehicule' },
             { path: 'stops.lieu' },
             { path: 'demandeur' },
-          ])) as unknown as MovementContext,
+          ]),
           emails,
         );
       }
@@ -381,9 +424,15 @@ export class MouvementsService {
 
       if (user) {
         let actionDesc = 'Mouvement mis à jour';
-        if (updateDto.statut && updateDto.statut !== oldMouvement.statut) {
+        if (
+          typeof updateDto.statut === 'string' &&
+          updateDto.statut !== oldMouvement.statut
+        ) {
             actionDesc = `Statut changé à : ${updateDto.statut}`;
-        } else if (updateDto.statutLogistique && updateDto.statutLogistique !== oldMouvement.statutLogistique) {
+        } else if (
+          typeof updateDto.statutLogistique === 'string' &&
+          updateDto.statutLogistique !== oldMouvement.statutLogistique
+        ) {
             actionDesc = `Validation Logistique : ${updateDto.statutLogistique}`;
         } else if (updateDto.vehicule && !oldMouvement.vehicule) {
             actionDesc = `Véhicule et chauffeur assignés`;
@@ -410,18 +459,18 @@ export class MouvementsService {
     let emailError = false;
     try {
       if (oldMouvement && oldMouvement.statut !== updated.statut) {
-         const demandeurEmail = (updated.demandeur as any)?.email;
+         const demandeurEmail = getEmailAddresses([updated.demandeur])[0];
          if (demandeurEmail) {
             if (updated.statut === 'validé') {
               await this.mailService.sendTemplateEmail(
                 'assigned',
-                updated as unknown as MovementContext,
+                updated as unknown,
                 [demandeurEmail],
               );
             } else if (updated.statut === 'refusé' || updated.statut === 'annulé') {
               await this.mailService.sendTemplateEmail(
                 'cancelled',
-                updated as unknown as MovementContext,
+                updated as unknown,
                 [demandeurEmail],
               );
             }
@@ -431,13 +480,13 @@ export class MouvementsService {
       if (oldMouvement && oldMouvement.statutLogistique !== updated.statutLogistique && updated.statutLogistique === 'validé') {
          // Logistique validée, on notifie la sécurité si requise
          if (updated.statutSecurite === 'en attente') {
-            const validatorIds = updated.securityApprovals.map((a: any) => a.validator);
+            const validatorIds = getValidatorIds(updated.securityApprovals);
             const valideursSecu = await this.userModel.find({ _id: { $in: validatorIds } }).exec();
-            const emails = valideursSecu.map(v => v.email).filter(e => e);
+            const emails = getEmailAddresses(valideursSecu);
             if (emails.length > 0) {
                await this.mailService.sendTemplateEmail(
                  'log_validated',
-                 updated as unknown as MovementContext,
+                updated as unknown,
                  emails,
                );
             }
@@ -525,13 +574,23 @@ export class MouvementsService {
     // Notifier le demandeur
     let emailError = false;
     try {
-      const demandeurEmail = (populatedMouvement?.demandeur as any)?.email;
+      const demandeurEmail = getEmailAddresses([
+        populatedMouvement?.demandeur,
+      ])[0];
       if (demandeurEmail) {
          if (allApproved && mouvement.statutSecurite === 'validé') {
-           await this.mailService.sendTemplateEmail('sec_validated', populatedMouvement as any, [demandeurEmail]);
+           await this.mailService.sendTemplateEmail(
+             'sec_validated',
+             populatedMouvement as unknown,
+             [demandeurEmail],
+           );
          }
          if (oldStatut !== updated.statut && updated.statut === 'validé') {
-           await this.mailService.sendTemplateEmail('assigned', populatedMouvement as any, [demandeurEmail]);
+           await this.mailService.sendTemplateEmail(
+             'assigned',
+             populatedMouvement as unknown,
+             [demandeurEmail],
+           );
          }
       }
     } catch (e) {

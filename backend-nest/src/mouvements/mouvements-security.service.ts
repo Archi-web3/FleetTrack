@@ -7,6 +7,12 @@ import {
 } from './schemas/security-config.schema';
 import { User, UserDocument } from '../users/schemas/user.schema';
 
+interface SecurityValidator {
+  validator: Types.ObjectId;
+  status: string;
+  isBackup: boolean;
+}
+
 @Injectable()
 export class MouvementsSecurityService {
   private readonly logger = new Logger(MouvementsSecurityService.name);
@@ -24,7 +30,7 @@ export class MouvementsSecurityService {
     paysId: string,
     baseId: string | null,
     maxSecurityLevel: number,
-  ): Promise<{ mode: string; validators: any[] }> {
+  ): Promise<{ mode: string; validators: SecurityValidator[] }> {
     if (maxSecurityLevel === 0) {
       return { mode: 'none', validators: [] };
     }

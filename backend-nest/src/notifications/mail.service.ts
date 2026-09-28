@@ -6,9 +6,13 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../users/schemas/user.schema';
 
 export interface MovementContext {
+  _id?: string | { toString: () => string };
+  reference?: string;
+  base?: unknown;
+  pays?: unknown;
   demandeur?: {
-    nom: string;
-    prenom: string;
+    nom?: string;
+    prenom?: string;
   };
   projet?: string;
   projetsPassagers?: string[];
@@ -17,7 +21,12 @@ export interface MovementContext {
       nom?: string;
     };
   }>;
-  [key: string]: any;
+}
+
+function asMovementContext(value: unknown): MovementContext {
+  return typeof value === 'object' && value !== null
+    ? (value as MovementContext)
+    : {};
 }
 
 @Injectable()
@@ -196,9 +205,10 @@ export class MailService {
    */
   async sendTemplateEmail(
     templateId: string,
-    movement: MovementContext,
+    movementValue: unknown,
     defaultEmails: string[],
   ): Promise<void> {
+    const movement = asMovementContext(movementValue);
     const isEnabled = await this.isNotificationEnabled(templateId);
     if (!isEnabled) return;
 
@@ -207,12 +217,17 @@ export class MailService {
     let template = null;
     
     // Helper pour extraire l'ID (string) de manière sécurisée
-    const extractId = (field: any): string | null => {
+    const extractId = (field: unknown): string | null => {
       if (!field) return null;
       if (typeof field === 'string') return field;
-      if (field._id) return field._id.toString();
-      if (typeof field.toString === 'function') return field.toString();
-      return String(field);
+      if (typeof field !== 'object') return null;
+      const reference = field as { _id?: unknown; toString?: () => string };
+      if (reference._id !== undefined && reference._id !== field) {
+        return extractId(reference._id);
+      }
+      return typeof reference.toString === 'function'
+        ? reference.toString()
+        : null;
     };
 
     // Essayer de trouver le template de la Base d'abord
@@ -244,7 +259,7 @@ export class MailService {
     }
 
     // Si on a un template, et qu'il demande de bypasser la matrice
-    let recipients = [...defaultEmails];
+    let recipients: string[] = [...defaultEmails];
     if (template && template.useMatrixRecipients === false) {
        // Chercher les emails des profils/users configurés
        recipients = [];
