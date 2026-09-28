@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import type { Request } from 'express';
 import { Axe, AxeDocument } from './schemas/axe.schema';
 import { CreateAxeDto, UpdateAxeDto } from './dto/axes.dto';
@@ -27,13 +27,16 @@ export class AxesService {
       'CREATE_AXE',
       'Axe',
       result._id.toString(),
-      result.toObject() as Record<string, unknown>,
+      result.toObject() as unknown as Record<string, unknown>,
     );
     return result.populate(['depart', 'arrivee', 'pays', 'base']);
   }
 
   async findAll(context: AxeContext): Promise<Axe[]> {
-    const filter: FilterQuery<AxeDocument> = {};
+    const filter: {
+      pays?: { $in: string[] };
+      base?: { $in: string[] };
+    } = {};
     if (context.paysIds && context.paysIds.length > 0) {
       filter.pays = { $in: context.paysIds };
     }
@@ -65,7 +68,7 @@ export class AxesService {
       'UPDATE_AXE',
       'Axe',
       id,
-      existingAxe.toObject() as Record<string, unknown>,
+      existingAxe.toObject() as unknown as Record<string, unknown>,
     );
 
     return existingAxe.populate(['depart', 'arrivee', 'pays', 'base']);
@@ -82,7 +85,7 @@ export class AxesService {
       'DELETE_AXE',
       'Axe',
       id,
-      deletedAxe.toObject() as Record<string, unknown>,
+      deletedAxe.toObject() as unknown as Record<string, unknown>,
     );
   }
 
