@@ -182,11 +182,6 @@ export class OfflineService extends Dexie {
             vehicles: '_id',
             deletedItems: '++id, collection, itemId, synced',
             syncConfig: 'key'
-        }).upgrade(tx => {
-            // Clear all tables to force re-sync with serverId
-            return tx.table('trips').clear()
-                .then(() => tx.table('fuels').clear())
-                .then(() => tx.table('maintenances').clear());
         });
 
         // Version 5: Add isFull to fuels for consumption calculation
