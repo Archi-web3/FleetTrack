@@ -5,7 +5,6 @@ import {
   Mouvement,
   MouvementDocument,
 } from './schemas/mouvement.schema';
-import type { SecurityApproval } from './schemas/mouvement.schema';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
 import { MailService } from '../notifications/mail.service';
@@ -520,7 +519,7 @@ export class MouvementsService {
       return mouvement;
     }
 
-    const securityApprovals = mouvement.securityApprovals as SecurityApproval[];
+    const securityApprovals = mouvement.securityApprovals;
 
     const userId = user._id || user.id;
     const userIdStr = userId.toString();
@@ -611,7 +610,7 @@ export class MouvementsService {
 
     mouvement.statutSecurite = 'en attente';
     if (mouvement.securityApprovals) {
-      (mouvement.securityApprovals as SecurityApproval[]).forEach((approval) => {
+      mouvement.securityApprovals.forEach((approval) => {
         approval.status = 'pending';
         approval.approvalDate = undefined;
       });
