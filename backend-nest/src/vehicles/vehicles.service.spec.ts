@@ -55,9 +55,11 @@ describe('VehiclesService', () => {
       { pays: 'country-1', base: 'base-2' },
     );
 
-    expect(model.find).toHaveBeenCalledWith({
-      pays: 'country-1',
-      base: 'base-2',
-    });
+    expect(model.find.mock.calls).toContainEqual([
+      {
+        pays: 'country-1',
+        base: 'base-2',
+      },
+    ]);
   });
 });
