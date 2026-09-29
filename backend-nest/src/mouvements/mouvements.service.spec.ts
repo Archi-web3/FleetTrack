@@ -7,6 +7,8 @@ import { User } from '../users/schemas/user.schema';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
 import { MailService } from '../notifications/mail.service';
+import { AxesService } from '../axes/axes.service';
+import { SettingsService } from '../settings/settings.service';
 
 const mockModel = () => ({
   find: jest.fn().mockReturnThis(),
@@ -49,6 +51,14 @@ describe('MouvementsService', () => {
         {
           provide: MailService,
           useValue: { sendMail: jest.fn().mockResolvedValue(undefined) },
+        },
+        {
+          provide: AxesService,
+          useValue: { findAxeBetween: jest.fn().mockResolvedValue(null) },
+        },
+        {
+          provide: SettingsService,
+          useValue: { getSetting: jest.fn().mockResolvedValue(false) },
         },
       ],
     }).compile();

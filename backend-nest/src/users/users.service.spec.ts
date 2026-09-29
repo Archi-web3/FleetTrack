@@ -55,7 +55,7 @@ describe('UsersService', () => {
 
   describe('create', () => {
     it('should throw BadRequestException when Admin tries to create another Admin', async () => {
-      const creator = { profil: 'Admin', pays: 'France' } as any;
+      const creator = { profil: 'Admin', pays: ['France'] } as any;
       const dto = {
         nom: 'User',
         email: 'u@u.com',
@@ -76,7 +76,7 @@ describe('UsersService', () => {
         nom: 'User',
         email: 'u@u.com',
         motDePasse: 'pass',
-        pays: 'Other',
+        pays: ['Other'],
         profil: 'User',
         base: 'B',
       };
@@ -85,7 +85,7 @@ describe('UsersService', () => {
         _id: '1',
         nom: 'User',
         profil: 'User',
-        pays: 'France',
+        pays: ['France'],
       });
       (service as any).userModel = jest
         .fn()
@@ -94,7 +94,7 @@ describe('UsersService', () => {
       await service.create(dto, creator);
 
       // The pays should have been overwritten with creator's pays
-      expect(dto.pays).toBe('France');
+      expect(dto.pays).toEqual(['France']);
     });
   });
 });

@@ -43,11 +43,13 @@ describe('BasesController', () => {
   describe('findAll', () => {
     it('should return a list of bases and apply country filter for Admin', async () => {
       const mockReq = {
-        user: { profil: 'Admin', pays: 'France' },
+        user: { profil: 'Admin', pays: ['France'] },
       } as AuthRequest;
       const result = await controller.findAll(mockReq, '');
 
-      expect(basesService.findAll).toHaveBeenCalledWith({ pays: 'France' });
+      expect(basesService.findAll).toHaveBeenCalledWith({
+        pays: { $in: ['France'] },
+      });
       expect(result).toEqual([{ id: '1', nom: 'Base Test' }]);
     });
 

@@ -31,7 +31,10 @@ describe('AnalyticsController', () => {
 
   describe('getGlobalStats', () => {
     it('should return global stats', async () => {
-      const mockReq = { user: { pays: 'France' } } as unknown as AuthRequest;
+      const mockReq = {
+        user: { pays: ['France'] },
+        headers: { 'x-selected-country': 'France' },
+      } as unknown as AuthRequest;
       const query = { dateDebut: '2023-01-01', dateFin: '2023-12-31' };
 
       const result = await controller.getGlobalStats(query, mockReq);
@@ -49,7 +52,10 @@ describe('AnalyticsController', () => {
 
   describe('getStatsByProject', () => {
     it('should return stats by project', async () => {
-      const mockReq = { user: { pays: 'France' } } as unknown as AuthRequest;
+      const mockReq = {
+        user: { pays: ['France'] },
+        headers: { 'x-selected-country': 'France' },
+      } as unknown as AuthRequest;
       const query = { projet: 'P1' };
 
       const result = await controller.getStatsByProject(query, mockReq);
@@ -67,7 +73,10 @@ describe('AnalyticsController', () => {
 
   describe('getTCO', () => {
     it('should calculate TCO', async () => {
-      const mockReq = { user: { pays: 'France' } } as unknown as AuthRequest;
+      const mockReq = {
+        user: { pays: ['France'] },
+        headers: { 'x-selected-country': 'France' },
+      } as unknown as AuthRequest;
       const query = { vehicleId: 'V1' };
 
       const result = await controller.getTCO(query, mockReq);
@@ -84,7 +93,10 @@ describe('AnalyticsController', () => {
 
   describe('getCostForecast', () => {
     it('should predict costs', async () => {
-      const mockReq = { user: { pays: 'France' } } as unknown as AuthRequest;
+      const mockReq = {
+        user: { pays: ['France'] },
+        headers: { 'x-selected-country': 'France' },
+      } as unknown as AuthRequest;
 
       const result = await controller.getCostForecast(6, mockReq);
 

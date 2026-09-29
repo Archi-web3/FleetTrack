@@ -53,7 +53,9 @@ describe('UsersController', () => {
       } as AuthRequest;
       const result = await controller.findAll(mockReq);
 
-      expect(usersService.findAll).toHaveBeenCalledWith({ pays: 'France' });
+      expect(usersService.findAll).toHaveBeenCalledWith({
+        pays: { $in: ['France'] },
+      });
       expect(result).toEqual([{ id: '1', nom: 'Test User' }]);
     });
 

@@ -45,10 +45,15 @@ describe('LieuxController', () => {
 
   describe('findAll', () => {
     it('should return a list of lieux', async () => {
-      const mockReq = { user: { profil: 'Admin' } } as AuthRequest;
+      const mockReq = {
+        user: { profil: 'Admin', pays: ['France'] },
+        headers: {},
+      } as unknown as AuthRequest;
       const result = await controller.findAll(mockReq);
 
-      expect(lieuxService.findAll).toHaveBeenCalledWith(mockReq.user);
+      expect(lieuxService.findAll).toHaveBeenCalledWith({
+        pays: { $in: ['France'] },
+      });
       expect(result).toEqual([{ id: '1', nom: 'Lieu Test' }]);
     });
   });

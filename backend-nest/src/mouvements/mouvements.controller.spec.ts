@@ -28,7 +28,11 @@ describe('MouvementsController', () => {
 
   describe('findAll', () => {
     it('should return a list of mouvements', async () => {
-      const result = await controller.findAll({});
+      const mockReq = {
+        user: { profil: 'SuperAdmin' },
+        headers: {},
+      } as unknown as AuthRequest;
+      const result = await controller.findAll({}, mockReq);
       expect(mouvementsService.findAll).toHaveBeenCalledWith({});
       expect(result).toEqual([{ id: '1', date: '2023-01-01' }]);
     });
