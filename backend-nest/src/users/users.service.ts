@@ -14,6 +14,34 @@ import { CreateUserDto, UpdateUserDto } from './dto/users.dto';
 import { UserPayloadDto } from '../mouvements/dto/mouvements.dto';
 import * as bcrypt from 'bcryptjs';
 
+function toReferenceId(value: unknown): string | null {
+  if (typeof value === 'string') return value;
+  if (typeof value !== 'object' || value === null) return null;
+
+  const reference = value as {
+    _id?: unknown;
+    id?: unknown;
+    toString?: () => string;
+  };
+  const nestedId = reference._id ?? reference.id;
+  if (nestedId !== undefined && nestedId !== value) {
+    return toReferenceId(nestedId);
+  }
+  return typeof reference.toString === 'function' &&
+    reference.toString !== Object.prototype.toString
+    ? reference.toString()
+    : null;
+}
+
+function isDuplicateKeyError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === 11000
+  );
+}
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -61,7 +89,9 @@ export class UsersService {
       }
       // RÈGLE 2 : Un Admin force le pays de l'utilisateur créé à être le sien
       if (creator.pays && Array.isArray(creator.pays) && creator.pays.length > 0) {
-        createUserDto.pays = creator.pays; // It's already string[]
+        createUserDto.pays = creator.pays
+          .map((country: unknown) => toReferenceId(country))
+          .filter((countryId): countryId is string => countryId !== null);
       } else if (creator.pays && typeof creator.pays === 'string') {
         createUserDto.pays = [creator.pays];
       }
@@ -70,8 +100,8 @@ export class UsersService {
     const createdUser = new this.userModel(createUserDto);
     try {
       return await createdUser.save();
-    } catch (error: any) {
-      if (error.code === 11000) {
+    } catch (error: unknown) {
+      if (isDuplicateKeyError(error)) {
         throw new BadRequestException('Cet email est déjà utilisé.');
       }
       throw error;
@@ -96,8 +126,8 @@ export class UsersService {
         throw new NotFoundException(`Cannot find user`);
       }
       return updatedUser;
-    } catch (error: any) {
-      if (error.code === 11000) {
+    } catch (error: unknown) {
+      if (isDuplicateKeyError(error)) {
         throw new BadRequestException('Cet email est déjà utilisé par un autre utilisateur.');
       }
       throw error;

@@ -1,6 +1,10 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 @Controller('settings')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
@@ -8,12 +12,20 @@ export class SettingsController {
   @Get('public/debug-email-keys')
   async debugEmailKeys() {
     const baseId = "6937ff5290074e68ade3c07b";
-    const emailSettings = await this.settingsService.getSetting(`emailSettings_base_${baseId}`) as any[];
-    const template = emailSettings?.find((t) => t.id === 'req_created');
+    const settingValue = await this.settingsService.getSetting(
+      `emailSettings_base_${baseId}`,
+    );
+    const emailSettings = Array.isArray(settingValue)
+      ? settingValue.filter(
+          (item): item is Record<string, unknown> =>
+            isRecord(item) && typeof item.id === 'string',
+        )
+      : [];
+    const template = emailSettings.find((item) => item.id === 'req_created');
     
     return {
-      foundArray: !!emailSettings,
-      arrayLength: emailSettings ? emailSettings.length : 0,
+      foundArray: Array.isArray(settingValue),
+      arrayLength: Array.isArray(settingValue) ? settingValue.length : 0,
       foundTemplate: !!template,
       templateData: template || null
     };

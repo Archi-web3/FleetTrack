@@ -4,8 +4,8 @@ import { Model } from 'mongoose';
 import {
   Mouvement,
   MouvementDocument,
-  SecurityApproval,
 } from './schemas/mouvement.schema';
+import type { SecurityApproval } from './schemas/mouvement.schema';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
 import { MailService } from '../notifications/mail.service';
