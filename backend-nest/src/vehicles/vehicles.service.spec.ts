@@ -47,4 +47,18 @@ describe('VehiclesService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('should filter vehicles by all assigned bases and country', async () => {
+    const model = service['vehiculeModel'];
+
+    await service.findAll(
+      { base: ['base-1', 'base-2'] },
+      { pays: { $in: ['country-1'] } },
+    );
+
+    expect(model.find).toHaveBeenCalledWith({
+      pays: { $in: ['country-1'] },
+      base: { $in: ['base-1', 'base-2'] },
+    });
+  });
 });

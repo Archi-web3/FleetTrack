@@ -10,6 +10,37 @@ import { Vehicule, VehiculeDocument } from './schemas/vehicule.schema';
 import { MaintenanceAutomationService } from '../maintenance/maintenance-automation.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './dto/vehicles.dto';
 
+function getReferenceIds(value: unknown): string[] {
+  const references: unknown[] = Array.isArray(value)
+    ? value
+    : value === null || value === undefined
+      ? []
+      : [value];
+
+  return references
+    .map((reference) => {
+      if (typeof reference === 'string' || typeof reference === 'number') {
+        return String(reference);
+      }
+      if (typeof reference !== 'object' || reference === null) return '';
+
+      const item = reference as {
+        _id?: unknown;
+        id?: unknown;
+        toString?: () => string;
+      };
+      const nestedId = item._id ?? item.id;
+      if (nestedId !== undefined && nestedId !== reference) {
+        return getReferenceIds(nestedId)[0] ?? '';
+      }
+      return typeof item.toString === 'function' &&
+        item.toString !== Object.prototype.toString
+        ? item.toString()
+        : '';
+    })
+    .filter(Boolean);
+}
+
 @Injectable()
 export class VehiclesService {
   constructor(
@@ -25,11 +56,9 @@ export class VehiclesService {
     const query: Record<string, any> = {
       ...countryFilter,
     };
-    if (user && user.base) {
-      query.base =
-        typeof user.base === 'object' && user.base !== null
-          ? (user.base as { _id?: string })._id
-          : user.base;
+    const baseIds = getReferenceIds(user?.base);
+    if (baseIds.length > 0) {
+      query.base = { $in: baseIds };
     }
     return this.vehiculeModel
       .find(query)

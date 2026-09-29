@@ -23,6 +23,37 @@ interface AuthRequest extends Request {
   user: UserPayloadDto;
 }
 
+function getReferenceIds(value: unknown): string[] {
+  const references: unknown[] = Array.isArray(value)
+    ? value
+    : value === null || value === undefined
+      ? []
+      : [value];
+
+  return references
+    .map((reference) => {
+      if (typeof reference === 'string' || typeof reference === 'number') {
+        return String(reference);
+      }
+      if (typeof reference !== 'object' || reference === null) return '';
+
+      const item = reference as {
+        _id?: unknown;
+        id?: unknown;
+        toString?: () => string;
+      };
+      const nestedId = item._id ?? item.id;
+      if (nestedId !== undefined && nestedId !== reference) {
+        return getReferenceIds(nestedId)[0] ?? '';
+      }
+      return typeof item.toString === 'function' &&
+        item.toString !== Object.prototype.toString
+        ? item.toString()
+        : '';
+    })
+    .filter(Boolean);
+}
+
 @Controller('vehicules')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class VehiclesController {
@@ -41,10 +72,10 @@ export class VehiclesController {
       'Unknown';
     const countryFilter: Record<string, any> = {};
     if ((userRole === 'Admin' || userRole === 'Superviseur') && req.user.pays) {
-      countryFilter.pays =
-        typeof req.user.pays === 'object' && req.user.pays !== null
-          ? (req.user.pays as { _id?: string })._id
-          : req.user.pays;
+      const countryIds = getReferenceIds(req.user.pays);
+      if (countryIds.length > 0) {
+        countryFilter.pays = { $in: countryIds };
+      }
     }
     return this.vehiclesService.findAll(req.user, countryFilter);
   }

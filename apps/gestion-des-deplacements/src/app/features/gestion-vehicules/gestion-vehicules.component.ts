@@ -114,9 +114,6 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   paysList: any[] = [];
   basesList: any[] = [];
 
-  // Pour filtrage
-  showAllBasesInPays = false;
-
   ngOnInit(): void {
     this.userProfile = this.authService.getUserProfile();
     this.userPaysId = this.authService.getUserPaysId();
@@ -268,24 +265,11 @@ export class GestionVehiculesComponent implements OnInit, AfterViewInit {
   loadVehicules(): void {
     this.vehiculeService.getVehicules().subscribe(
       (data) => {
-        if (this.userProfile === 'SuperAdmin') {
-          this.vehicules = data;
-        } else if (!this.showAllBasesInPays && this.userBaseId) {
-          this.vehicules = data.filter((v: any) => v.base && v.base._id === this.userBaseId);
-        } else if (this.showAllBasesInPays && this.userPaysId) {
-          this.vehicules = data.filter((v: any) => v.pays && v.pays._id === this.userPaysId);
-        } else {
-          this.vehicules = data;
-        }
+        this.vehicules = data;
         this.dataSource.data = this.vehicules;
       },
       (error) => console.error('Erreur chargement véhicules:', error),
     );
-  }
-
-  toggleShowAllBasesInPays(): void {
-    this.showAllBasesInPays = !this.showAllBasesInPays;
-    this.loadVehicules();
   }
 
   addVehicule(): void {

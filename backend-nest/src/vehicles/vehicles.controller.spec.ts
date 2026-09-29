@@ -60,12 +60,12 @@ describe('VehiclesController', () => {
   describe('findAll', () => {
     it('should return a list of vehicles and apply country filter for Admin', async () => {
       const mockReq = {
-        user: { profil: 'Admin', pays: 'France' },
+        user: { profil: 'Admin', pays: [{ id: 'country-1', nom: 'France' }] },
       } as unknown as AuthRequest;
       const result = await controller.findAll(mockReq);
 
       expect(vehiclesService.findAll).toHaveBeenCalledWith(mockReq.user, {
-        pays: 'France',
+        pays: { $in: ['country-1'] },
       });
       expect(result).toEqual([{ id: '1', immatriculation: 'AB-123-CD' }]);
     });
