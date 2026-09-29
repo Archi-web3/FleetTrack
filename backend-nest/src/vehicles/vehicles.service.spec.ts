@@ -48,17 +48,16 @@ describe('VehiclesService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should filter vehicles by all assigned bases and country', async () => {
+  it('should pass the country and base context filters to MongoDB', async () => {
     const model = service['vehiculeModel'];
 
     await service.findAll(
-      { base: ['base-1', 'base-2'] },
-      { pays: { $in: ['country-1'] } },
+      { pays: 'country-1', base: 'base-2' },
     );
 
     expect(model.find).toHaveBeenCalledWith({
-      pays: { $in: ['country-1'] },
-      base: { $in: ['base-1', 'base-2'] },
+      pays: 'country-1',
+      base: 'base-2',
     });
   });
 });

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Headers,
 } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -54,6 +55,10 @@ function getReferenceIds(value: unknown): string[] {
     .filter(Boolean);
 }
 
+function isSelectedContextId(value?: string): value is string {
+  return !!value && !['all', 'null', 'undefined'].includes(value);
+}
+
 @Controller('vehicules')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class VehiclesController {
@@ -63,21 +68,42 @@ export class VehiclesController {
   ) {}
 
   @Get()
-  async findAll(@Req() req: AuthRequest) {
+  async findAll(
+    @Req() req: AuthRequest,
+    @Headers('x-selected-country') selectedCountry?: string,
+    @Headers('x-selected-base') selectedBase?: string,
+  ) {
     const userRole =
       req.user?.profil ||
       (typeof req.user?.role === 'object' && req.user?.role !== null
         ? (req.user.role as { name?: string }).name
         : req.user?.role) ||
       'Unknown';
-    const countryFilter: Record<string, any> = {};
-    if ((userRole === 'Admin' || userRole === 'Superviseur') && req.user.pays) {
-      const countryIds = getReferenceIds(req.user.pays);
-      if (countryIds.length > 0) {
-        countryFilter.pays = { $in: countryIds };
+      const isSuperAdmin = userRole === 'SuperAdmin' || userRole === 'Super Admin';
+      const filter: Record<string, any> = {};
+
+      if (isSuperAdmin) {
+        if (isSelectedContextId(selectedCountry)) filter.pays = selectedCountry;
+        if (isSelectedContextId(selectedBase)) filter.base = selectedBase;
+      } else {
+        const allowedCountryIds = getReferenceIds(req.user?.pays);
+        const allowedBaseIds = getReferenceIds(req.user?.base);
+
+        if (allowedCountryIds.length > 0) {
+          filter.pays = isSelectedContextId(selectedCountry) &&
+            allowedCountryIds.includes(selectedCountry)
+            ? selectedCountry
+            : { $in: allowedCountryIds };
+        }
+        if (allowedBaseIds.length > 0) {
+          filter.base = isSelectedContextId(selectedBase) &&
+            allowedBaseIds.includes(selectedBase)
+            ? selectedBase
+            : { $in: allowedBaseIds };
       }
     }
-    return this.vehiclesService.findAll(req.user, countryFilter);
+
+      return this.vehiclesService.findAll(filter);
   }
 
   @Get(':id')

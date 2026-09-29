@@ -64,7 +64,7 @@ describe('VehiclesController', () => {
       } as unknown as AuthRequest;
       const result = await controller.findAll(mockReq);
 
-      expect(vehiclesService.findAll).toHaveBeenCalledWith(mockReq.user, {
+      expect(vehiclesService.findAll).toHaveBeenCalledWith({
         pays: { $in: ['country-1'] },
       });
       expect(result).toEqual([{ id: '1', immatriculation: 'AB-123-CD' }]);
@@ -76,8 +76,57 @@ describe('VehiclesController', () => {
       } as unknown as AuthRequest;
       const result = await controller.findAll(mockReq);
 
-      expect(vehiclesService.findAll).toHaveBeenCalledWith(mockReq.user, {});
+      expect(vehiclesService.findAll).toHaveBeenCalledWith({
+        pays: { $in: ['France'] },
+      });
       expect(result).toEqual([{ id: '1', immatriculation: 'AB-123-CD' }]);
+    });
+
+    it('should apply selected country and base when they are allowed', async () => {
+      const mockReq = {
+        user: {
+          profil: 'Admin',
+          pays: [{ id: 'country-1', nom: 'France' }],
+          base: [{ id: 'base-1', nom: 'Paris' }, { id: 'base-2', nom: 'Lyon' }],
+        },
+      } as unknown as AuthRequest;
+
+      await controller.findAll(mockReq, 'country-1', 'base-2');
+
+      expect(vehiclesService.findAll).toHaveBeenCalledWith({
+        pays: 'country-1',
+        base: 'base-2',
+      });
+    });
+
+    it('should retain allowed scope when selected country or base is not allowed', async () => {
+      const mockReq = {
+        user: {
+          profil: 'Admin',
+          pays: [{ id: 'country-1', nom: 'France' }],
+          base: [{ id: 'base-1', nom: 'Paris' }, { id: 'base-2', nom: 'Lyon' }],
+        },
+      } as unknown as AuthRequest;
+
+      await controller.findAll(mockReq, 'country-other', 'base-other');
+
+      expect(vehiclesService.findAll).toHaveBeenCalledWith({
+        pays: { $in: ['country-1'] },
+        base: { $in: ['base-1', 'base-2'] },
+      });
+    });
+
+    it('should apply global context filters for SuperAdmin', async () => {
+      const mockReq = {
+        user: { profil: 'SuperAdmin', pays: [], base: [] },
+      } as unknown as AuthRequest;
+
+      await controller.findAll(mockReq, 'country-1', 'base-2');
+
+      expect(vehiclesService.findAll).toHaveBeenCalledWith({
+        pays: 'country-1',
+        base: 'base-2',
+      });
     });
   });
 
