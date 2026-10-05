@@ -88,7 +88,11 @@ export class UsersService {
         );
       }
       // RÈGLE 2 : Un Admin force le pays de l'utilisateur créé à être le sien
-      if (creator.pays && Array.isArray(creator.pays) && creator.pays.length > 0) {
+      if (
+        creator.pays &&
+        Array.isArray(creator.pays) &&
+        creator.pays.length > 0
+      ) {
         createUserDto.pays = creator.pays
           .map((country: unknown) => toReferenceId(country))
           .filter((countryId): countryId is string => countryId !== null);
@@ -114,7 +118,10 @@ export class UsersService {
   ): Promise<UserDocument> {
     if (updateUserDto.motDePasse) {
       const salt = await bcrypt.genSalt(10);
-      updateUserDto.motDePasse = await bcrypt.hash(updateUserDto.motDePasse, salt);
+      updateUserDto.motDePasse = await bcrypt.hash(
+        updateUserDto.motDePasse,
+        salt,
+      );
     }
 
     try {
@@ -128,7 +135,9 @@ export class UsersService {
       return updatedUser;
     } catch (error: unknown) {
       if (isDuplicateKeyError(error)) {
-        throw new BadRequestException('Cet email est déjà utilisé par un autre utilisateur.');
+        throw new BadRequestException(
+          'Cet email est déjà utilisé par un autre utilisateur.',
+        );
       }
       throw error;
     }

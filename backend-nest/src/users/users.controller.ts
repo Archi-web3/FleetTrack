@@ -37,18 +37,36 @@ export class UsersController {
     const user = req.user;
     const filter: Record<string, any> = {};
 
-    const userRole = user?.profil || (user?.role as Record<string, unknown>)?.['name'];
+    const userRole =
+      user?.profil || (user?.role as Record<string, unknown>)?.['name'];
 
     // Check if we should enforce filtering by base or pays
     if (userRole === 'SuperAdmin' || userRole === 'Super Admin') {
-      if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
+      if (
+        headerPays &&
+        headerPays !== 'all' &&
+        headerPays !== 'null' &&
+        headerPays !== 'undefined'
+      ) {
         filter.pays = headerPays;
       }
-      if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined' && scope !== 'pays') {
+      if (
+        headerBase &&
+        headerBase !== 'all' &&
+        headerBase !== 'null' &&
+        headerBase !== 'undefined' &&
+        scope !== 'pays'
+      ) {
         filter.base = headerBase;
       }
     } else if (user) {
-      if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined' && scope !== 'pays') {
+      if (
+        headerBase &&
+        headerBase !== 'all' &&
+        headerBase !== 'null' &&
+        headerBase !== 'undefined' &&
+        scope !== 'pays'
+      ) {
         // If a specific base is selected, show users of this base
         filter.base = headerBase;
       } else if (user.pays) {

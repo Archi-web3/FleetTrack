@@ -36,7 +36,7 @@ export class MouvementsSecurityService {
     }
 
     try {
-      let config = await this.securityConfigModel
+      const config = await this.securityConfigModel
         .findOne({ pays: paysId, base: baseId })
         .exec();
       let allValidators: string[] = [];
@@ -77,8 +77,8 @@ export class MouvementsSecurityService {
           .findOne({ pays: paysId, base: null })
           .exec();
         if (paysConfig) {
-           configUsed = paysConfig;
-           allValidators = extractValidators(paysConfig);
+          configUsed = paysConfig;
+          allValidators = extractValidators(paysConfig);
         }
       }
 
@@ -86,9 +86,7 @@ export class MouvementsSecurityService {
       allValidators = [...new Set(allValidators)];
 
       if (configUsed && allValidators.length > 0) {
-        this.logger.log(
-          `🛡️ Using matrix config for level ${maxSecurityLevel}`,
-        );
+        this.logger.log(`🛡️ Using matrix config for level ${maxSecurityLevel}`);
         return {
           mode: 'matrix',
           validators: allValidators.map((uid) => ({

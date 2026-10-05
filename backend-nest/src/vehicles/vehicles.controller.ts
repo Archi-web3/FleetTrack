@@ -79,31 +79,34 @@ export class VehiclesController {
         ? (req.user.role as { name?: string }).name
         : req.user?.role) ||
       'Unknown';
-      const isSuperAdmin = userRole === 'SuperAdmin' || userRole === 'Super Admin';
-      const filter: Record<string, any> = {};
+    const isSuperAdmin =
+      userRole === 'SuperAdmin' || userRole === 'Super Admin';
+    const filter: Record<string, any> = {};
 
-      if (isSuperAdmin) {
-        if (isSelectedContextId(selectedCountry)) filter.pays = selectedCountry;
-        if (isSelectedContextId(selectedBase)) filter.base = selectedBase;
-      } else {
-        const allowedCountryIds = getReferenceIds(req.user?.pays);
-        const allowedBaseIds = getReferenceIds(req.user?.base);
+    if (isSuperAdmin) {
+      if (isSelectedContextId(selectedCountry)) filter.pays = selectedCountry;
+      if (isSelectedContextId(selectedBase)) filter.base = selectedBase;
+    } else {
+      const allowedCountryIds = getReferenceIds(req.user?.pays);
+      const allowedBaseIds = getReferenceIds(req.user?.base);
 
-        if (allowedCountryIds.length > 0) {
-          filter.pays = isSelectedContextId(selectedCountry) &&
-            allowedCountryIds.includes(selectedCountry)
+      if (allowedCountryIds.length > 0) {
+        filter.pays =
+          isSelectedContextId(selectedCountry) &&
+          allowedCountryIds.includes(selectedCountry)
             ? selectedCountry
             : { $in: allowedCountryIds };
-        }
-        if (allowedBaseIds.length > 0) {
-          filter.base = isSelectedContextId(selectedBase) &&
-            allowedBaseIds.includes(selectedBase)
+      }
+      if (allowedBaseIds.length > 0) {
+        filter.base =
+          isSelectedContextId(selectedBase) &&
+          allowedBaseIds.includes(selectedBase)
             ? selectedBase
             : { $in: allowedBaseIds };
       }
     }
 
-      return this.vehiclesService.findAll(filter);
+    return this.vehiclesService.findAll(filter);
   }
 
   @Get(':id')

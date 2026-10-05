@@ -77,19 +77,21 @@ export class AuthService {
         id: fullUser._id.toString(),
         nom: fullUser.nom,
         profil: fullUser.profil, // Backward compatibility
-        pays: Array.isArray(pays) && pays.length > 0
-          ? pays.map((country) => ({
-              id: country._id.toString(),
-              nom: country.nom,
-              code: country.code,
-            }))
-          : [],
-        base: Array.isArray(bases) && bases.length > 0
-          ? bases.map((base) => ({
-              id: base._id.toString(),
-              nom: base.nom,
-            }))
-          : [],
+        pays:
+          Array.isArray(pays) && pays.length > 0
+            ? pays.map((country) => ({
+                id: country._id.toString(),
+                nom: country.nom,
+                code: country.code,
+              }))
+            : [],
+        base:
+          Array.isArray(bases) && bases.length > 0
+            ? bases.map((base) => ({
+                id: base._id.toString(),
+                nom: base.nom,
+              }))
+            : [],
       },
     };
 

@@ -87,7 +87,10 @@ describe('VehiclesController', () => {
         user: {
           profil: 'Admin',
           pays: [{ id: 'country-1', nom: 'France' }],
-          base: [{ id: 'base-1', nom: 'Paris' }, { id: 'base-2', nom: 'Lyon' }],
+          base: [
+            { id: 'base-1', nom: 'Paris' },
+            { id: 'base-2', nom: 'Lyon' },
+          ],
         },
       } as unknown as AuthRequest;
 
@@ -104,7 +107,10 @@ describe('VehiclesController', () => {
         user: {
           profil: 'Admin',
           pays: [{ id: 'country-1', nom: 'France' }],
-          base: [{ id: 'base-1', nom: 'Paris' }, { id: 'base-2', nom: 'Lyon' }],
+          base: [
+            { id: 'base-1', nom: 'Paris' },
+            { id: 'base-2', nom: 'Lyon' },
+          ],
         },
       } as unknown as AuthRequest;
 

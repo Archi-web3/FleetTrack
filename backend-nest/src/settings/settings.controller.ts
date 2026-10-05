@@ -11,7 +11,7 @@ export class SettingsController {
 
   @Get('public/debug-email-keys')
   async debugEmailKeys() {
-    const baseId = "6937ff5290074e68ade3c07b";
+    const baseId = '6937ff5290074e68ade3c07b';
     const settingValue = await this.settingsService.getSetting(
       `emailSettings_base_${baseId}`,
     );
@@ -22,12 +22,12 @@ export class SettingsController {
         )
       : [];
     const template = emailSettings.find((item) => item.id === 'req_created');
-    
+
     return {
       foundArray: Array.isArray(settingValue),
       arrayLength: Array.isArray(settingValue) ? settingValue.length : 0,
       foundTemplate: !!template,
-      templateData: template || null
+      templateData: template || null,
     };
   }
 

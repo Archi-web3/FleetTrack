@@ -43,7 +43,9 @@ function isEmailTemplate(value: unknown): value is EmailTemplate {
       typeof template.useMatrixRecipients === 'boolean') &&
     (template.recipientProfiles === undefined ||
       (Array.isArray(template.recipientProfiles) &&
-        template.recipientProfiles.every((profile) => typeof profile === 'string'))) &&
+        template.recipientProfiles.every(
+          (profile) => typeof profile === 'string',
+        ))) &&
     (template.recipientUsers === undefined ||
       (Array.isArray(template.recipientUsers) &&
         template.recipientUsers.every((userId) => typeof userId === 'string')))
@@ -55,9 +57,7 @@ function getEmailTemplates(value: unknown): EmailTemplate[] {
 }
 
 function asMovementContext(value: unknown): MovementContext {
-  return typeof value === 'object' && value !== null
-    ? (value as MovementContext)
-    : {};
+  return typeof value === 'object' && value !== null ? value : {};
 }
 
 @Injectable()
@@ -245,7 +245,7 @@ export class MailService {
 
     // Chercher le template dans settings
     let template: EmailTemplate | undefined;
-    
+
     // Helper pour extraire l'ID (string) de manière sécurisée
     const extractId = (field: unknown): string | null => {
       if (!field) return null;
@@ -263,7 +263,9 @@ export class MailService {
     // Essayer de trouver le template de la Base d'abord
     const baseId = extractId(movement.base);
     if (baseId) {
-      this.logger.log(`🔍 Recherche template Base: emailSettings_base_${baseId}`);
+      this.logger.log(
+        `🔍 Recherche template Base: emailSettings_base_${baseId}`,
+      );
       const templates = getEmailTemplates(
         await this.settingsService.getSetting(`emailSettings_base_${baseId}`),
       );
@@ -273,7 +275,9 @@ export class MailService {
     // Sinon le template du Pays
     const paysId = extractId(movement.pays);
     if (!template && paysId) {
-      this.logger.log(`🔍 Recherche template Pays: emailSettings_pays_${paysId}`);
+      this.logger.log(
+        `🔍 Recherche template Pays: emailSettings_pays_${paysId}`,
+      );
       const templates = getEmailTemplates(
         await this.settingsService.getSetting(`emailSettings_pays_${paysId}`),
       );
@@ -291,55 +295,61 @@ export class MailService {
     }
 
     if (!template) {
-       this.logger.warn(`❌ Aucun template trouvé pour: ${templateId}, utilisation du fallback par défaut.`);
+      this.logger.warn(
+        `❌ Aucun template trouvé pour: ${templateId}, utilisation du fallback par défaut.`,
+      );
     }
 
     // Si on a un template, et qu'il demande de bypasser la matrice
     let recipients: string[] = [...defaultEmails];
     if (template && template.useMatrixRecipients === false) {
-       // Chercher les emails des profils/users configurés
-       recipients = [];
-       const queryOr: Array<{
-         profil?: { $in: string[] };
-         _id?: { $in: string[] };
-       }> = [];
-       if (template.recipientProfiles && template.recipientProfiles.length > 0) {
-         queryOr.push({ profil: { $in: template.recipientProfiles } });
-       }
-       if (template.recipientUsers && template.recipientUsers.length > 0) {
-         queryOr.push({ _id: { $in: template.recipientUsers } });
-       }
-       
-       if (queryOr.length > 0) {
-         const users = await this.userModel.find({ $or: queryOr }).exec();
-         users.forEach(u => {
-           if (u.email && !recipients.includes(u.email)) {
-             recipients.push(u.email);
-           }
-         });
-       }
+      // Chercher les emails des profils/users configurés
+      recipients = [];
+      const queryOr: Array<{
+        profil?: { $in: string[] };
+        _id?: { $in: string[] };
+      }> = [];
+      if (template.recipientProfiles && template.recipientProfiles.length > 0) {
+        queryOr.push({ profil: { $in: template.recipientProfiles } });
+      }
+      if (template.recipientUsers && template.recipientUsers.length > 0) {
+        queryOr.push({ _id: { $in: template.recipientUsers } });
+      }
+
+      if (queryOr.length > 0) {
+        const users = await this.userModel.find({ $or: queryOr }).exec();
+        users.forEach((u) => {
+          if (u.email && !recipients.includes(u.email)) {
+            recipients.push(u.email);
+          }
+        });
+      }
     }
 
     if (recipients.length === 0) {
-       this.logger.warn(`Aucun destinataire trouvé pour l'email template: ${templateId}`);
-       return;
+      this.logger.warn(
+        `Aucun destinataire trouvé pour l'email template: ${templateId}`,
+      );
+      return;
     }
 
     if (template && template.body && template.subject) {
-       // Remplacer les variables
-       const demandeurName = movement.demandeur ? (movement.demandeur.prenom + ' ' + movement.demandeur.nom) : 'Inconnu';
-       const link = `${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}`;
-       
-       const movementId =
-         movement.reference || movement._id?.toString().slice(-6) || '';
-       const subject = template.subject.replace(/{{movementId}}/g, movementId);
-       let body = template.body
-         .replace(/{{user}}/g, demandeurName)
-         .replace(/{{movementId}}/g, movementId)
-         .replace(/{{link}}/g, link)
-         .replace(/\\n/g, '<br/>');
+      // Remplacer les variables
+      const demandeurName = movement.demandeur
+        ? movement.demandeur.prenom + ' ' + movement.demandeur.nom
+        : 'Inconnu';
+      const link = `${process.env.FRONTEND_URL || 'https://fleettrack.vercel.app'}`;
 
-       const html = `
+      const movementId =
+        movement.reference || movement._id?.toString().slice(-6) || '';
+      const subject = template.subject.replace(/{{movementId}}/g, movementId);
+      const body = template.body
+        .replace(/{{user}}/g, demandeurName)
+        .replace(/{{movementId}}/g, movementId)
+        .replace(/{{link}}/g, link)
+        .replace(/\\n/g, '<br/>');
+
+      const html = `
          <div style="font-family: Arial, sans-serif; max-width: 600px; border: 1px solid #ccc; border-radius: 5px; padding: 20px;">
            <div style="text-align: center; margin-bottom: 20px;">
              <h2 style="color: #005FB6; margin: 0;">FleetTrack</h2>
@@ -354,16 +364,21 @@ export class MailService {
          </div>
        `;
 
-       for (const email of recipients) {
-         await this.sendMail(email, subject, html);
-       }
+      for (const email of recipients) {
+        await this.sendMail(email, subject, html);
+      }
     } else {
-       // Fallback
-       if (templateId === 'req_created' || templateId === 'sec_request' || templateId === 'log_validated' || templateId === 'sec_validated') {
-         for (const email of recipients) {
-           await this.sendValidationRequest(email, movement);
-         }
-       }
+      // Fallback
+      if (
+        templateId === 'req_created' ||
+        templateId === 'sec_request' ||
+        templateId === 'log_validated' ||
+        templateId === 'sec_validated'
+      ) {
+        for (const email of recipients) {
+          await this.sendValidationRequest(email, movement);
+        }
+      }
     }
   }
 

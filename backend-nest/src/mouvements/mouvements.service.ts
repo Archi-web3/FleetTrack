@@ -1,10 +1,12 @@
-import { Injectable, Logger, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  Mouvement,
-  MouvementDocument,
-} from './schemas/mouvement.schema';
+import { Mouvement, MouvementDocument } from './schemas/mouvement.schema';
 import { MouvementsConflictService } from './mouvements-conflict.service';
 import { MouvementsSecurityService } from './mouvements-security.service';
 import { MailService } from '../notifications/mail.service';
@@ -249,7 +251,9 @@ export class MouvementsService {
 
       // --- AXES SECURITY LOGIC ---
       try {
-        const isAxeSecurityEnabled = await this.settingsService.getSetting('FEATURE_AXES_SECURITY');
+        const isAxeSecurityEnabled = await this.settingsService.getSetting(
+          'FEATURE_AXES_SECURITY',
+        );
         if (isAxeSecurityEnabled && stopLieuIds.length > 1) {
           for (let i = 0; i < stopLieuIds.length - 1; i++) {
             const lieu1 = stopLieuIds[i];
@@ -297,12 +301,10 @@ export class MouvementsService {
       createDto.pays && createDto.pays !== 'all'
         ? createDto.pays
         : getReferenceId(inferredPays) || getReferenceId(user.pays?.[0]);
-    
-
 
     if (!finalPays && createDto.type !== 'maintenance') {
       throw new BadRequestException(
-        "Impossible de déterminer le pays pour ce mouvement. Veuillez sélectionner un pays de contexte ou préciser le lieu de départ.",
+        'Impossible de déterminer le pays pour ce mouvement. Veuillez sélectionner un pays de contexte ou préciser le lieu de départ.',
       );
     }
 
@@ -322,8 +324,8 @@ export class MouvementsService {
           action: 'Demande de mouvement créée',
           performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
           role: user.profil || 'Utilisateur',
-        }
-      ]
+        },
+      ],
     });
 
     // 6. Matrice de Sécurité (si requis)
@@ -398,31 +400,58 @@ export class MouvementsService {
     user?: UserPayloadDto,
   ): Promise<Mouvement> {
     const oldMouvement = await this.mouvementModel.findById(id).exec();
-    
+
     if (oldMouvement) {
-      let newStatutLogistique = updateDto.statutLogistique !== undefined ? updateDto.statutLogistique : oldMouvement.statutLogistique;
-      let newStatutSecurite = updateDto.statutSecurite !== undefined ? updateDto.statutSecurite : oldMouvement.statutSecurite;
-      
+      let newStatutLogistique =
+        updateDto.statutLogistique !== undefined
+          ? updateDto.statutLogistique
+          : oldMouvement.statutLogistique;
+      const newStatutSecurite =
+        updateDto.statutSecurite !== undefined
+          ? updateDto.statutSecurite
+          : oldMouvement.statutSecurite;
+
       // Implicit logistics validation when assigning vehicle & driver
-      if (updateDto.vehicule && updateDto.chauffeur && updateDto.statutLogistique === undefined) {
-          if (newStatutLogistique === 'en attente') {
-              newStatutLogistique = 'validé';
-              updateDto.statutLogistique = 'validé';
-          }
+      if (
+        updateDto.vehicule &&
+        updateDto.chauffeur &&
+        updateDto.statutLogistique === undefined
+      ) {
+        if (newStatutLogistique === 'en attente') {
+          newStatutLogistique = 'validé';
+          updateDto.statutLogistique = 'validé';
+        }
       }
 
-      const isPendingPhase = ['en attente', 'en attente validation logistique', 'en attente validation sécurité', 'validé'].includes(oldMouvement.statut);
-      
+      const isPendingPhase = [
+        'en attente',
+        'en attente validation logistique',
+        'en attente validation sécurité',
+        'validé',
+      ].includes(oldMouvement.statut);
+
       if (isPendingPhase && updateDto.statut === undefined) {
-          if (newStatutLogistique === 'validé' && (newStatutSecurite === 'validé' || newStatutSecurite === 'non requis')) {
-              updateDto.statut = 'validé';
-          } else if (newStatutLogistique === 'validé' && newStatutSecurite === 'en attente') {
-              updateDto.statut = 'en attente validation sécurité';
-          } else if (newStatutLogistique === 'en attente' && (newStatutSecurite === 'validé' || newStatutSecurite === 'non requis')) {
-              updateDto.statut = 'en attente validation logistique';
-          } else if (newStatutLogistique === 'en attente' && newStatutSecurite === 'en attente') {
-              updateDto.statut = 'en attente';
-          }
+        if (
+          newStatutLogistique === 'validé' &&
+          (newStatutSecurite === 'validé' || newStatutSecurite === 'non requis')
+        ) {
+          updateDto.statut = 'validé';
+        } else if (
+          newStatutLogistique === 'validé' &&
+          newStatutSecurite === 'en attente'
+        ) {
+          updateDto.statut = 'en attente validation sécurité';
+        } else if (
+          newStatutLogistique === 'en attente' &&
+          (newStatutSecurite === 'validé' || newStatutSecurite === 'non requis')
+        ) {
+          updateDto.statut = 'en attente validation logistique';
+        } else if (
+          newStatutLogistique === 'en attente' &&
+          newStatutSecurite === 'en attente'
+        ) {
+          updateDto.statut = 'en attente';
+        }
       }
 
       if (user) {
@@ -431,28 +460,32 @@ export class MouvementsService {
           typeof updateDto.statut === 'string' &&
           updateDto.statut !== oldMouvement.statut
         ) {
-            actionDesc = `Statut changé à : ${updateDto.statut}`;
+          actionDesc = `Statut changé à : ${updateDto.statut}`;
         } else if (
           typeof updateDto.statutLogistique === 'string' &&
           updateDto.statutLogistique !== oldMouvement.statutLogistique
         ) {
-            actionDesc = `Validation Logistique : ${updateDto.statutLogistique}`;
+          actionDesc = `Validation Logistique : ${updateDto.statutLogistique}`;
         } else if (updateDto.vehicule && !oldMouvement.vehicule) {
-            actionDesc = `Véhicule et chauffeur assignés`;
+          actionDesc = `Véhicule et chauffeur assignés`;
         }
-        
+
         const auditEntry = {
-            action: actionDesc,
-            performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
-            role: user.profil || 'Utilisateur',
-            timestamp: new Date()
+          action: actionDesc,
+          performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
+          role: user.profil || 'Utilisateur',
+          timestamp: new Date(),
         };
-        updateDto['$push'] = { auditTrail: auditEntry } as any;
+        updateDto['$push'] = { auditTrail: auditEntry };
       }
     }
     const updated = await this.mouvementModel
       .findByIdAndUpdate(id, updateDto, { new: true })
-      .populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }])
+      .populate([
+        { path: 'demandeur' },
+        { path: 'vehicule' },
+        { path: 'stops.lieu' },
+      ])
       .exec();
     if (!updated) {
       throw new ConflictException('Mouvement non trouvé');
@@ -462,47 +495,53 @@ export class MouvementsService {
     let emailError = false;
     try {
       if (oldMouvement && oldMouvement.statut !== updated.statut) {
-         const demandeurEmail = getEmailAddresses([updated.demandeur])[0];
-         if (demandeurEmail) {
-            if (updated.statut === 'validé') {
-              await this.mailService.sendTemplateEmail(
-                'assigned',
-                updated as unknown,
-                [demandeurEmail],
-              );
-            } else if (updated.statut === 'refusé' || updated.statut === 'annulé') {
-              await this.mailService.sendTemplateEmail(
-                'cancelled',
-                updated as unknown,
-                [demandeurEmail],
-              );
-            }
-         }
+        const demandeurEmail = getEmailAddresses([updated.demandeur])[0];
+        if (demandeurEmail) {
+          if (updated.statut === 'validé') {
+            await this.mailService.sendTemplateEmail('assigned', updated, [
+              demandeurEmail,
+            ]);
+          } else if (
+            updated.statut === 'refusé' ||
+            updated.statut === 'annulé'
+          ) {
+            await this.mailService.sendTemplateEmail('cancelled', updated, [
+              demandeurEmail,
+            ]);
+          }
+        }
       }
-      
-      if (oldMouvement && oldMouvement.statutLogistique !== updated.statutLogistique && updated.statutLogistique === 'validé') {
-         // Logistique validée, on notifie la sécurité si requise
-         if (updated.statutSecurite === 'en attente') {
-            const validatorIds = getValidatorIds(updated.securityApprovals);
-            const valideursSecu = await this.userModel.find({ _id: { $in: validatorIds } }).exec();
-            const emails = getEmailAddresses(valideursSecu);
-            if (emails.length > 0) {
-               await this.mailService.sendTemplateEmail(
-                 'log_validated',
-                updated as unknown,
-                 emails,
-               );
-            }
-         }
+
+      if (
+        oldMouvement &&
+        oldMouvement.statutLogistique !== updated.statutLogistique &&
+        updated.statutLogistique === 'validé'
+      ) {
+        // Logistique validée, on notifie la sécurité si requise
+        if (updated.statutSecurite === 'en attente') {
+          const validatorIds = getValidatorIds(updated.securityApprovals);
+          const valideursSecu = await this.userModel
+            .find({ _id: { $in: validatorIds } })
+            .exec();
+          const emails = getEmailAddresses(valideursSecu);
+          if (emails.length > 0) {
+            await this.mailService.sendTemplateEmail(
+              'log_validated',
+              updated,
+              emails,
+            );
+          }
+        }
       }
     } catch (e) {
-      this.logger.error('Erreur lors de l\'envoi des emails de notification', e);
+      this.logger.error("Erreur lors de l'envoi des emails de notification", e);
       emailError = true;
     }
 
     const result = updated.toObject() as unknown as Record<string, unknown>;
     if (emailError) {
-      result.emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
+      result.emailWarning =
+        "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
     }
 
     return result as unknown as Mouvement;
@@ -542,7 +581,7 @@ export class MouvementsService {
       .filter((a) => !a.isBackup)
       .every((a) => a.status === 'approved');
 
-    let oldStatut = mouvement.statut;
+    const oldStatut = mouvement.statut;
 
     if (allApproved) {
       mouvement.statutSecurite = 'validé';
@@ -562,12 +601,19 @@ export class MouvementsService {
       action: 'Validation Sécurité approuvée',
       performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
       role: user.profil || 'Sécurité',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     const updated = await mouvement.save();
 
-    const populatedMouvement = await this.mouvementModel.findById(updated._id).populate([{ path: 'demandeur' }, { path: 'vehicule' }, { path: 'stops.lieu' }]).exec();
+    const populatedMouvement = await this.mouvementModel
+      .findById(updated._id)
+      .populate([
+        { path: 'demandeur' },
+        { path: 'vehicule' },
+        { path: 'stops.lieu' },
+      ])
+      .exec();
 
     // Notifier le demandeur
     let emailError = false;
@@ -576,35 +622,39 @@ export class MouvementsService {
         populatedMouvement?.demandeur,
       ])[0];
       if (demandeurEmail) {
-         if (allApproved && mouvement.statutSecurite === 'validé') {
-           await this.mailService.sendTemplateEmail(
-             'sec_validated',
-             populatedMouvement as unknown,
-             [demandeurEmail],
-           );
-         }
-         if (oldStatut !== updated.statut && updated.statut === 'validé') {
-           await this.mailService.sendTemplateEmail(
-             'assigned',
-             populatedMouvement as unknown,
-             [demandeurEmail],
-           );
-         }
+        if (allApproved && mouvement.statutSecurite === 'validé') {
+          await this.mailService.sendTemplateEmail(
+            'sec_validated',
+            populatedMouvement,
+            [demandeurEmail],
+          );
+        }
+        if (oldStatut !== updated.statut && updated.statut === 'validé') {
+          await this.mailService.sendTemplateEmail(
+            'assigned',
+            populatedMouvement,
+            [demandeurEmail],
+          );
+        }
       }
     } catch (e) {
-      this.logger.error('Erreur lors de l\'envoi des emails de notification', e);
+      this.logger.error("Erreur lors de l'envoi des emails de notification", e);
       emailError = true;
     }
 
     const result = updated.toObject() as unknown as Record<string, unknown>;
     if (emailError) {
-      result.emailWarning = "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
+      result.emailWarning =
+        "L'envoi de l'e-mail de notification a échoué, mais l'action a bien été enregistrée.";
     }
 
     return result as unknown as Mouvement;
   }
 
-  async revertSecurityToDraft(id: string, user: UserPayloadDto): Promise<Mouvement> {
+  async revertSecurityToDraft(
+    id: string,
+    user: UserPayloadDto,
+  ): Promise<Mouvement> {
     const mouvement = await this.mouvementModel.findById(id).exec();
     if (!mouvement) throw new ConflictException('Mouvement non trouvé');
 
@@ -627,13 +677,16 @@ export class MouvementsService {
       action: 'Validation Sécurité annulée (retour en attente)',
       performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
       role: user.profil || 'Utilisateur',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return mouvement.save();
   }
 
-  async revertLogisticsToDraft(id: string, user: UserPayloadDto): Promise<Mouvement> {
+  async revertLogisticsToDraft(
+    id: string,
+    user: UserPayloadDto,
+  ): Promise<Mouvement> {
     const mouvement = await this.mouvementModel.findById(id).exec();
     if (!mouvement) throw new ConflictException('Mouvement non trouvé');
 
@@ -648,7 +701,7 @@ export class MouvementsService {
       action: 'Validation Logistique annulée (retour en attente)',
       performedBy: user.nom ? `${user.prenom} ${user.nom}` : 'Système',
       role: user.profil || 'Utilisateur',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     return mouvement.save();

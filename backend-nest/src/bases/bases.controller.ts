@@ -34,10 +34,16 @@ export class BasesController {
       (((user?.role as Record<string, any>)?.name as string) ?? 'Unknown');
     const query: Record<string, any> = {};
 
-    if ((userRole === 'Admin' || userRole === 'Superviseur') && user?.pays && user.pays.length > 0) {
+    if (
+      (userRole === 'Admin' || userRole === 'Superviseur') &&
+      user?.pays &&
+      user.pays.length > 0
+    ) {
       if (paysQuery) {
-        const requestedPays = paysQuery.includes(',') ? paysQuery.split(',') : [paysQuery];
-        const allowedPays = requestedPays.filter(p => user.pays.includes(p));
+        const requestedPays = paysQuery.includes(',')
+          ? paysQuery.split(',')
+          : [paysQuery];
+        const allowedPays = requestedPays.filter((p) => user.pays.includes(p));
         query.pays = { $in: allowedPays.length > 0 ? allowedPays : user.pays };
       } else {
         query.pays = { $in: user.pays };

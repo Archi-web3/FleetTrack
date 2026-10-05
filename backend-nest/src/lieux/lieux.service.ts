@@ -31,10 +31,16 @@ export class LieuxService {
 
     if (userRole !== 'SuperAdmin') {
       if (!createLieuDto.pays && user.pays) {
-        createLieuDto.pays = Array.isArray(user.pays) && user.pays.length > 0 ? String(user.pays[0]) : String(user.pays);
+        createLieuDto.pays =
+          Array.isArray(user.pays) && user.pays.length > 0
+            ? String(user.pays[0])
+            : String(user.pays);
       }
       if (!createLieuDto.base && user.base) {
-        createLieuDto.base = Array.isArray(user.base) && user.base.length > 0 ? String(user.base[0]) : String(user.base);
+        createLieuDto.base =
+          Array.isArray(user.base) && user.base.length > 0
+            ? String(user.base[0])
+            : String(user.base);
       }
     }
 

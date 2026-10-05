@@ -26,19 +26,25 @@ function getReferenceIds(value: unknown): string[] {
       ? []
       : [value];
 
-  return references.map((reference) => {
-    if (typeof reference === 'string' || typeof reference === 'number') {
-      return String(reference);
-    }
-    if (typeof reference !== 'object' || reference === null) return '';
+  return references
+    .map((reference) => {
+      if (typeof reference === 'string' || typeof reference === 'number') {
+        return String(reference);
+      }
+      if (typeof reference !== 'object' || reference === null) return '';
 
-    const item = reference as { _id?: unknown; id?: unknown; toString: () => string };
-    const nestedId = item._id ?? item.id;
-    if (nestedId !== undefined && nestedId !== reference) {
-      return getReferenceIds(nestedId)[0] ?? '';
-    }
-    return item.toString();
-  }).filter(Boolean);
+      const item = reference as {
+        _id?: unknown;
+        id?: unknown;
+        toString: () => string;
+      };
+      const nestedId = item._id ?? item.id;
+      if (nestedId !== undefined && nestedId !== reference) {
+        return getReferenceIds(nestedId)[0] ?? '';
+      }
+      return item.toString();
+    })
+    .filter(Boolean);
 }
 
 @Controller('mouvements')
@@ -55,43 +61,55 @@ export class MouvementsController {
     @Headers('x-selected-base') headerBase?: string,
   ) {
     const user = req.user;
-    const userRole = user?.profil || (user?.role as Record<string, unknown>)?.['name'];
-    const isSuperAdmin = userRole === 'SuperAdmin' || userRole === 'Super Admin';
+    const userRole =
+      user?.profil || (user?.role as Record<string, unknown>)?.['name'];
+    const isSuperAdmin =
+      userRole === 'SuperAdmin' || userRole === 'Super Admin';
 
     // Context Country
-    if (headerPays && headerPays !== 'all' && headerPays !== 'null' && headerPays !== 'undefined') {
-       // If not SuperAdmin, verify the requested country is in the user's allowed countries
-       if (!isSuperAdmin) {
-          const userPaysIds = getReferenceIds(user.pays as unknown);
-          if (!userPaysIds.includes(headerPays)) {
-             // Not allowed, fallback to allowed countries
-             query['pays'] = { $in: userPaysIds };
-          } else {
-             query['pays'] = headerPays;
-          }
-       } else {
+    if (
+      headerPays &&
+      headerPays !== 'all' &&
+      headerPays !== 'null' &&
+      headerPays !== 'undefined'
+    ) {
+      // If not SuperAdmin, verify the requested country is in the user's allowed countries
+      if (!isSuperAdmin) {
+        const userPaysIds = getReferenceIds(user.pays as unknown);
+        if (!userPaysIds.includes(headerPays)) {
+          // Not allowed, fallback to allowed countries
+          query['pays'] = { $in: userPaysIds };
+        } else {
           query['pays'] = headerPays;
-       }
+        }
+      } else {
+        query['pays'] = headerPays;
+      }
     } else if (!isSuperAdmin && user && user.pays) {
       const userPaysIds = getReferenceIds(user.pays as unknown);
-       query['pays'] = { $in: userPaysIds };
+      query['pays'] = { $in: userPaysIds };
     }
 
     // Context Base
-    if (headerBase && headerBase !== 'all' && headerBase !== 'null' && headerBase !== 'undefined') {
-       if (!isSuperAdmin) {
-          const userBaseIds = getReferenceIds(user.base as unknown);
-          if (!userBaseIds.includes(headerBase)) {
-             query['base'] = { $in: userBaseIds };
-          } else {
-             query['base'] = headerBase;
-          }
-       } else {
+    if (
+      headerBase &&
+      headerBase !== 'all' &&
+      headerBase !== 'null' &&
+      headerBase !== 'undefined'
+    ) {
+      if (!isSuperAdmin) {
+        const userBaseIds = getReferenceIds(user.base as unknown);
+        if (!userBaseIds.includes(headerBase)) {
+          query['base'] = { $in: userBaseIds };
+        } else {
           query['base'] = headerBase;
-       }
+        }
+      } else {
+        query['base'] = headerBase;
+      }
     } else if (!isSuperAdmin && user && user.base) {
       const userBaseIds = getReferenceIds(user.base as unknown);
-       query['base'] = { $in: userBaseIds };
+      query['base'] = { $in: userBaseIds };
     }
 
     return this.mouvementsService.findAll(query);
@@ -149,12 +167,18 @@ export class MouvementsController {
   }
 
   @Put(':id/revert-secu')
-  async revertSecurityToDraft(@Param('id') id: string, @Req() req: AuthRequest) {
+  async revertSecurityToDraft(
+    @Param('id') id: string,
+    @Req() req: AuthRequest,
+  ) {
     return this.mouvementsService.revertSecurityToDraft(id, req.user);
   }
 
   @Put(':id/revert-log')
-  async revertLogisticsToDraft(@Param('id') id: string, @Req() req: AuthRequest) {
+  async revertLogisticsToDraft(
+    @Param('id') id: string,
+    @Req() req: AuthRequest,
+  ) {
     return this.mouvementsService.revertLogisticsToDraft(id, req.user);
   }
 

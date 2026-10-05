@@ -33,7 +33,11 @@ export class PermissionsGuard implements CanActivate {
       const role = user.role as { name: string; permissions: string[] };
 
       // SuperAdmin bypass
-      if (role.name === 'SuperAdmin' || role.name === 'Super Admin' || role.permissions.includes('ALL')) {
+      if (
+        role.name === 'SuperAdmin' ||
+        role.name === 'Super Admin' ||
+        role.permissions.includes('ALL')
+      ) {
         return true;
       }
 

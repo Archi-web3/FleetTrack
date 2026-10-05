@@ -237,21 +237,18 @@ export class Mouvement {
       role: String,
       timestamp: { type: Date, default: Date.now },
       details: String,
-    }
+    },
   ])
   auditTrail: any[];
 }
 
 export const MouvementSchema = SchemaFactory.createForClass(Mouvement);
 
-MouvementSchema.pre(
-  'save',
-  function () {
-    if (this.stops && this.stops.length > 0) {
-      this.dateDepart = this.stops[0].dateDepart;
-      this.dateArrivee = this.stops[this.stops.length - 1].dateArrivee;
-    }
-  },
-);
+MouvementSchema.pre('save', function () {
+  if (this.stops && this.stops.length > 0) {
+    this.dateDepart = this.stops[0].dateDepart;
+    this.dateArrivee = this.stops[this.stops.length - 1].dateArrivee;
+  }
+});
 
 export type MouvementDocument = HydratedDocument<Mouvement>;

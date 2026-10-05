@@ -49,17 +49,27 @@ describe('VehiclesService', () => {
   });
 
   it('should pass the country and base context filters to MongoDB', async () => {
-    const model = service['vehiculeModel'];
+    const vehiculeModel = {
+      find: jest.fn().mockReturnThis(),
+      populate: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
+      exec: jest.fn().mockResolvedValue([]),
+    } as unknown as Parameters<typeof VehiclesService>[0];
 
-    await service.findAll(
-      { pays: 'country-1', base: 'base-2' },
+    const maintenanceAutomationService = {
+      initializeVehicleSchedule: jest.fn().mockResolvedValue(undefined),
+    } as unknown as Parameters<typeof VehiclesService>[1];
+
+    const serviceWithMockedModel = new VehiclesService(
+      vehiculeModel,
+      maintenanceAutomationService,
     );
 
-    expect(model.find.mock.calls).toContainEqual([
-      {
-        pays: 'country-1',
-        base: 'base-2',
-      },
-    ]);
+    await serviceWithMockedModel.findAll({ pays: 'country-1', base: 'base-2' });
+
+    expect(vehiculeModel.find).toHaveBeenCalledWith({
+      pays: 'country-1',
+      base: 'base-2',
+    });
   });
 });

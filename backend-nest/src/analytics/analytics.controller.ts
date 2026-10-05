@@ -76,6 +76,9 @@ export class AnalyticsController {
     @Query('months') months: number,
     @Req() req: AuthRequest,
   ) {
-    return this.analyticsService.predictCosts(req.headers['x-selected-country'] as string, months);
+    return this.analyticsService.predictCosts(
+      req.headers['x-selected-country'] as string,
+      months,
+    );
   }
 }

@@ -191,8 +191,14 @@ export class LogbookSyncService {
             .findById(tripData.driverId)
             .populate('base pays');
           if (driver) {
-            driverBase = Array.isArray(driver.base) && driver.base.length > 0 ? driver.base[0] : null;
-            driverCountry = Array.isArray(driver.pays) && driver.pays.length > 0 ? driver.pays[0] : null;
+            driverBase =
+              Array.isArray(driver.base) && driver.base.length > 0
+                ? driver.base[0]
+                : null;
+            driverCountry =
+              Array.isArray(driver.pays) && driver.pays.length > 0
+                ? driver.pays[0]
+                : null;
           }
 
           const newMouvement = new this.mouvementModel({

@@ -86,7 +86,9 @@ export class AuditLogsService {
             role: safeRole,
           };
           const paysValue = user.pays as unknown;
-          const pays = Array.isArray(paysValue) ? (paysValue[0] as unknown) : paysValue;
+          const pays = Array.isArray(paysValue)
+            ? (paysValue[0] as unknown)
+            : paysValue;
           logEntry.pays = getReferenceId(pays);
         }
       }

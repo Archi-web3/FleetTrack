@@ -43,18 +43,28 @@ export class AxesService {
     if (context.baseIds && context.baseIds.length > 0) {
       filter.base = { $in: context.baseIds };
     }
-    return this.axeModel.find(filter).populate(['depart', 'arrivee', 'pays', 'base']).exec();
+    return this.axeModel
+      .find(filter)
+      .populate(['depart', 'arrivee', 'pays', 'base'])
+      .exec();
   }
 
   async findOne(id: string): Promise<Axe> {
-    const axe = await this.axeModel.findById(id).populate(['depart', 'arrivee', 'pays', 'base']).exec();
+    const axe = await this.axeModel
+      .findById(id)
+      .populate(['depart', 'arrivee', 'pays', 'base'])
+      .exec();
     if (!axe) {
       throw new NotFoundException(`Axe with ID ${id} not found`);
     }
     return axe;
   }
 
-  async update(id: string, updateAxeDto: UpdateAxeDto, req: Request): Promise<Axe> {
+  async update(
+    id: string,
+    updateAxeDto: UpdateAxeDto,
+    req: Request,
+  ): Promise<Axe> {
     const existingAxe = await this.axeModel
       .findByIdAndUpdate(id, updateAxeDto, { new: true })
       .exec();
@@ -92,14 +102,16 @@ export class AxesService {
   // Helper method for MouvementsService to find an axe between two locations
   async findAxeBetween(lieu1Id: string, lieu2Id: string): Promise<Axe | null> {
     // Check both directions
-    const axe = await this.axeModel.findOne({
-      actif: true,
-      $or: [
-        { depart: lieu1Id, arrivee: lieu2Id },
-        { depart: lieu2Id, arrivee: lieu1Id },
-      ]
-    }).exec();
-    
+    const axe = await this.axeModel
+      .findOne({
+        actif: true,
+        $or: [
+          { depart: lieu1Id, arrivee: lieu2Id },
+          { depart: lieu2Id, arrivee: lieu1Id },
+        ],
+      })
+      .exec();
+
     return axe;
   }
 }
